@@ -5,26 +5,19 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Stage;
 import odms.commons.model.Appointment;
 import odms.commons.model.Clinician;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
 import odms.commons.utils.AttributeValidation;
-import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
 import odms.controller.gui.panel.logic.ClinicianAppointmentRequestLogicController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
-import odms.controller.gui.popup.view.RejectAppointmentReasonViewController;
 import odms.socket.ServerEventNotifier;
 
-import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
@@ -171,36 +164,29 @@ public class ClinicianAppointmentRequestViewController {
     }
 
     /**
-     * @see ClinicianAppointmentRequestLogicController rejectAppointment()
+     * @see ClinicianAppointmentRequestLogicController rejectAppointment(), cancelAppointment()
      */
     @FXML
     private void rejectAppointment() {
         Appointment selectedAppointment = getSelectedAppointment();
 
         if (selectedAppointment == null) {
-            AlertWindowFactory.generateInfoWindow("You must select an appointment to reject");
+            AlertWindowFactory.generateInfoWindow("You must select an appointment");
             return;
         }
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/appointmentRejection.fxml"));
-        Stage rejectionStage = new Stage();
-        Parent root;
-        try {
-            root = loader.load();
-            RejectAppointmentReasonViewController rejectionController = loader.getController();
-            rejectionStage.setScene(new Scene(root));
+        AppointmentStatus status = selectedAppointment.getAppointmentStatus();
 
-            rejectionController.init(selectedAppointment, rejectionStage);
-            rejectionStage.show();
-        } catch (IOException e) {
-            Log.severe("failed to load login window FXML", e);
+        if (status == AppointmentStatus.PENDING) {
+            logicController.rejectAppointment(selectedAppointment);
+
+        } else if (status == AppointmentStatus.ACCEPTED || status == AppointmentStatus.ACCEPTED_SEEN) {
+            logicController.cancelAppointment(selectedAppointment);
         }
-
-         // logicController.rejectAppointment(selectedAppointment);
     }
 
     /**
-     * @see ClinicianAppointmentRequestLogicController rejectAppointment()
+     * @see ClinicianAppointmentRequestLogicController acceptAppointment(), updateAppointment()
      */
     @FXML
     private void acceptAppointment() {
@@ -210,13 +196,30 @@ public class ClinicianAppointmentRequestViewController {
             return;
         }
 
-        if (AttributeValidation.validateTimeString(appointmentRequestTime.getText())) {
-            logicController.acceptAppointment(selectedAppointment, appointmentRequestTime.getText(), AppController.getInstance().getAppointmentsBridge());
-        } else {
+        boolean valid = true;
+        if (!AttributeValidation.validateTimeString(appointmentRequestTime.getText())) {
             appointmentRequestTime.setStyle("-fx-background-color: rgba(100%, 0%, 0%, 0.25); -fx-border-color: RED");
+            valid = false;
         }
 
-        //         logicController.acceptAppointment(selectedAppointment);
+        if (!AttributeValidation.validateDateOfAppointment(appointmentRequestDate.getValue())) {
+            appointmentRequestDate.setStyle("-fx-background-color: rgba(100%, 0%, 0%, 0.25); -fx-border-color: RED");
+            valid = false;
+        }
+
+        AppointmentStatus status = selectedAppointment.getAppointmentStatus();
+
+        if (valid) {
+            if (status == AppointmentStatus.PENDING) {
+                logicController.acceptAppointment(selectedAppointment, appointmentRequestTime.getText(), AppController.getInstance().getAppointmentsBridge());
+            } else if (status == AppointmentStatus.ACCEPTED || status == AppointmentStatus.ACCEPTED_SEEN) {
+                logicController.updateAppointment(selectedAppointment, appointmentRequestCategory.getValue(),
+                        appointmentRequestDate.getValue(), appointmentRequestTime.getText(), appointmentRequestDescription.getText());
+            } else {
+                AlertWindowFactory.generateInfoWindow("This appointment is no longer available");
+            }
+        }
+
     }
 
     /**
