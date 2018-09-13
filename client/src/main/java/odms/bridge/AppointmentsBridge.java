@@ -274,10 +274,10 @@ public class AppointmentsBridge extends Bifrost {
      *
      * @param appointment the updated appointment
      */
-    public void putAppointment(Appointment appointment) {
+    public void putAppointment(Appointment appointment, String token) {
         String url = String.format("%s/clinicians/%s%s/%d", ip, appointment.getRequestedClinicianId(), APPOINTMENTS, appointment.getAppointmentId());
         RequestBody body = RequestBody.create(json, new Gson().toJson(appointment));
-        Request request = new Request.Builder().put(body).url(url).build();
+        Request request = new Request.Builder().addHeader(tokenHeader, token).put(body).url(url).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {

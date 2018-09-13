@@ -154,7 +154,7 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
         String[] timeParts = time.split(":");
         selectedAppointment.setRequestedDate(LocalDateTime.of(selectedAppointment.getRequestedDate().toLocalDate(), LocalTime.of(Integer.valueOf(timeParts[0]), Integer.valueOf(timeParts[1]))));
         selectedAppointment.setAppointmentStatus(AppointmentStatus.ACCEPTED);
-        appointmentsBridge.putAppointment(selectedAppointment);
+        appointmentsBridge.putAppointment(selectedAppointment, AppController.getInstance().getToken());
     }
 
     /**
@@ -169,7 +169,7 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
         appointment.setRequestedDate(LocalDateTime.of(date, localTime));
         appointment.setAppointmentCategory(category);
         appointment.setRequestDescription(description);
-        AppController.getInstance().getAppointmentsBridge().putAppointment(appointment);
+        AppController.getInstance().getAppointmentsBridge().putAppointment(appointment, AppController.getInstance().getToken());
     }
 
     /**

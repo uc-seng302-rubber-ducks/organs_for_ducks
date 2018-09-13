@@ -21,12 +21,12 @@ public class RejectionAppointmentReasonLogicControllerTest {
     @Before
     public void setUp() {
         appointment = new Appointment("ABC1234", "0", AppointmentCategory.GENERAL_CHECK_UP, LocalDateTime.of(2018, 5, 20, 15, 30), "Halp", AppointmentStatus.PENDING);
-        doNothing().when(appointmentsBridge).putAppointment(any(Appointment.class));
+        doNothing().when(appointmentsBridge).putAppointment(any(Appointment.class), anyString());
     }
 
     @Test
     public void rejectAppointmentTest() {
         controller.rejectAppointment(appointment, "he ded", appointmentsBridge);
-        verify(appointmentsBridge, atLeastOnce()).putAppointment(any(Appointment.class));
+        verify(appointmentsBridge, atLeastOnce()).putAppointment(any(Appointment.class), anyString());
     }
 }
