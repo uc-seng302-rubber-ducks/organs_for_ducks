@@ -10,6 +10,7 @@ import odms.commons.model.MedicalProcedure;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.utils.Log;
+import odms.controller.gui.panel.ProcedureTabController;
 import odms.controller.gui.widget.TextStringCheckBox;
 
 import java.time.LocalDate;
@@ -37,10 +38,14 @@ public class ProcedureModificationViewController {
     private Button newProcedureConfirm;
     private Stage stage;
     private User user;
+    private ProcedureTabController procedureTabController;
+    private MedicalProcedure procedure;
 
-    public void init(@Nullable MedicalProcedure procedure, Stage stage, User currentUser){
+    public void init(@Nullable MedicalProcedure procedure, Stage stage, User currentUser, ProcedureTabController procedureTabController){
         this.stage = stage;
         this.user = currentUser;
+        this.procedureTabController = procedureTabController;
+        this.procedure = procedure;
         setupOrgans();
         if(procedure != null){
             showProcedureToEdit(procedure);
@@ -92,16 +97,23 @@ public class ProcedureModificationViewController {
             return;
         }
         user.saveStateForUndo();
-
-        MedicalProcedure procedure = new MedicalProcedure(procedureDate, procedureName,
-                descriptionTextArea.getText(), new ArrayList<>());
+        if(procedure == null) {
+            procedure = new MedicalProcedure(procedureDate, procedureName,
+                    descriptionTextArea.getText(), new ArrayList<>());
+            user.addMedicalProcedure(procedure);
+        } else {
+            procedure.setProcedureDate(procedureDate);
+            procedure.setSummary(procedureName);
+            procedure.setDescription(descriptionTextArea.getText());
+            procedure.setOrgansAffected(new ArrayList<>());
+        }
         for (TextStringCheckBox cb : organsAffectedByProcedureListView.getItems()) {
             if(cb.isSelected()){
                 procedure.addOrgan(Organs.fromString(cb.toString()));
             }
 
         }
-        user.addMedicalProcedure(procedure);
+        procedureTabController.updateProcedureTables(user);
         stage.close();
     }
 }

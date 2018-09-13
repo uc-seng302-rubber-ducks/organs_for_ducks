@@ -26,7 +26,7 @@ import java.time.LocalDate;
 import java.util.stream.Collectors;
 
 public class ProcedureTabController {
-    public static final String FOR_USER_NHI = " for User NHI: ";
+    private static final String FOR_USER_NHI = " for User NHI: ";
 
 
     @FXML
@@ -43,7 +43,7 @@ public class ProcedureTabController {
     private TableView<MedicalProcedure> pendingProcedureTableView;
 
 
-    private TableView<MedicalProcedure> currentProcedureList;
+    private TableView<MedicalProcedure> currentProcedureList; //I am used just ignore intellij //NOSONAR
     private ObservableList<MedicalProcedure> medicalProcedures;
     private ObservableList<MedicalProcedure> previousProcedures;
     private ObservableList<MedicalProcedure> pendingProcedures;
@@ -181,7 +181,6 @@ public class ProcedureTabController {
     @FXML
     void addProcedure() {
         openProceduresPopUp(null);
-        clearProcedure();
         application.update(currentUser);
         parent.updateUndoRedoButtons();
 
@@ -190,64 +189,27 @@ public class ProcedureTabController {
     }
 
     /**
-     * * Helper function for the updateProcedures button. Takes a procedure and updates it
-     *
-     * @param procedure      procedure to be updated
-     * @param newName        new procedure name
-     * @param newDate        new procedure date
-     * @param newDescription new procedure description
-     */
-    private void updateProcedure(MedicalProcedure procedure, String newName, LocalDate newDate,
-                                 String newDescription) {
-        procedure.setSummary(newName);
-        procedure.setDescription(newDescription);
-        LocalDate oldDate = procedure.getProcedureDate();
-        if (newDate != null) {
-            procedure.setProcedureDate(newDate);
-        }
-        if (procedure.getProcedureDate().isBefore(LocalDate.now()) && !oldDate
-                .isBefore(LocalDate.now())) {
-            pendingProcedures.remove(procedure);
-            previousProcedures.add(procedure);
-        } else if (procedure.getProcedureDate().isAfter(LocalDate.now()) && !oldDate
-                .isAfter(LocalDate.now())) {
-            previousProcedures.remove(procedure);
-            pendingProcedures.add(procedure);
-        }
-        application.update(currentUser);
-    }
-
-
-    /**
-     * Clears the information of a shown procedure
-     */
-    @FXML
-    void clearProcedure() {
-        pendingProcedureTableView.getSelectionModel().select(null);
-        previousProcedureTableView.getSelectionModel().select(null);
-        currentProcedureList = null;
-        addProcedureButton.setVisible(true);
-        Log.info("Successfully cleared procedure for User NHI: " + currentUser.getNhi());
-    }
-
-    /**
      * Removes a procedure from the current users profile
      */
     @FXML
     void removeProcedure() {
         currentUser.saveStateForUndo();
+        MedicalProcedure procedure = null;
         if (previousProcedureTableView.getSelectionModel().getSelectedItem() != null) {
             previousProcedureTableView.getSelectionModel().getSelectedItem().setDeleted(true);
             Log.info("Successfully removed procedure: " + previousProcedureTableView.getSelectionModel().getSelectedItem().toString() + FOR_USER_NHI + currentUser.getNhi());
-            previousProcedures.remove(previousProcedureTableView.getSelectionModel().getSelectedItem());
+            procedure = previousProcedureTableView.getSelectionModel().getSelectedItem();
+            previousProcedures.remove(procedure);
         } else if (pendingProcedureTableView.getSelectionModel().getSelectedItem() != null) {
             pendingProcedureTableView.getSelectionModel().getSelectedItem().setDeleted(true);
             Log.info("Successfully removed procedure: " + pendingProcedureTableView.getSelectionModel().getSelectedItem().toString() + FOR_USER_NHI + currentUser.getNhi());
-            pendingProcedures.remove(pendingProcedureTableView.getSelectionModel().getSelectedItem());
+            procedure = pendingProcedureTableView.getSelectionModel().getSelectedItem();
+            pendingProcedures.remove(procedure);
         } else {
             currentUser.getUndoStack().pop();
             Log.warning("Failed to remove procedure for User NHI: " + currentUser.getNhi() + " as no procedure is selected");
         }
+        currentUser.removeMedicalProcedure(procedure);
         currentUser.getRedoStack().clear();
 
         application.update(currentUser);
@@ -262,7 +224,7 @@ public class ProcedureTabController {
             root = procedureModificationLoader.load();
             ProcedureModificationViewController procedureModificationViewController = procedureModificationLoader.getController();
             Stage stage = new Stage();
-            procedureModificationViewController.init(procedure, stage, currentUser);
+            procedureModificationViewController.init(procedure, stage, currentUser, this);
             stage.setScene(new Scene(root));
             stage.show();
             Log.info("successfully launched add procedures pop-up window for User NHI: " + currentUser.getNhi());
