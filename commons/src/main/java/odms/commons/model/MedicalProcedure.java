@@ -9,6 +9,7 @@ import odms.commons.model.datamodel.ProcedureKey;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Class for instantiating a medical procedure
@@ -110,5 +111,21 @@ public class MedicalProcedure extends Deletable {
      */
     public ProcedureKey getKey() {
         return new ProcedureKey(summary, procedureDate);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MedicalProcedure that = (MedicalProcedure) o;
+        return Objects.equals(procedureDate, that.procedureDate) &&
+                Objects.equals(summary, that.summary) &&
+                Objects.equals(description, that.description);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(procedureDate, summary, description);
     }
 }
