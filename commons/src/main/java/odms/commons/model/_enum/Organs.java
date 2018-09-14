@@ -49,6 +49,16 @@ public enum Organs {
         this.upperBoundSeconds = (long) (storageSeconds * HOURS_TO_SECONDS);
     }
 
+
+    /**
+     * Takes a string argument for an organ and returns the organ if it exists
+     * @param organName organ in the enum to make
+     * @return organ as an object
+     */
+    public static Organs fromString(String organName){
+        return Organs.valueOf(organName.replaceAll(" ", "_").toUpperCase());
+    }
+
     @Override
     public String toString() {
         return organName;
