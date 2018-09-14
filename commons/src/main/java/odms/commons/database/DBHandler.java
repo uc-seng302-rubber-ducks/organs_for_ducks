@@ -598,12 +598,17 @@ public class DBHandler {
             try (ResultSet resultSet = stmt.executeQuery()) {
                 MedicalProcedure medicalProcedure = null;
                 while (resultSet != null && resultSet.next()) {
-                    if (medicalProcedure != null) {
+                    MedicalProcedure holdingMedicalProcedure = new MedicalProcedure(resultSet.getDate(2).toLocalDate(), resultSet.getString(1), resultSet.getString(3), null);
+                    if (medicalProcedure != null && medicalProcedure.equals(holdingMedicalProcedure)) {
                         medicalProcedure.addOrgan(Organs.valueOf(resultSet.getString(4)));
 
                     } else {
                         medicalProcedure = new MedicalProcedure(resultSet.getDate(2).toLocalDate(), resultSet.getString(1), resultSet.getString(3), null);
-                        medicalProcedure.addOrgan(Organs.valueOf(resultSet.getString(4)));
+                        try {
+                            medicalProcedure.addOrgan(Organs.valueOf(resultSet.getString(4)));
+                        } catch (NullPointerException e){
+                            // just needs to catch can move on as normal if this occurs
+                        }
                         user.getMedicalProcedures().add(medicalProcedure);
                     }
                 }
