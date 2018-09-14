@@ -55,7 +55,7 @@ public class AppointmentsBridge extends Bifrost {
         try (Response res = client.newCall(request).execute()) {
             return res.body().string().equalsIgnoreCase("true");
         } catch (NullPointerException | IOException ex) {
-            Log.warning("Failed to check for cancelled appointments", ex);
+            Log.warning("Failed to check for " + status.toString() + " appointments for " + id, ex);
             return false;
         }
     }
@@ -158,7 +158,7 @@ public class AppointmentsBridge extends Bifrost {
                 return null;
             }
         } catch (NullPointerException | IOException ex) {
-            Log.warning("", ex);
+            Log.warning("Failed to get an unseen appointment for user " + nhi, ex);
             return null;
         }
     }
