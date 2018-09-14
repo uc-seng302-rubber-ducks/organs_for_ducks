@@ -9,9 +9,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="453.0" prefWidth="694.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.UpdateUserController">
+<AnchorPane prefHeight="508.0" prefWidth="694.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.NewUserController">
    <children>
-      <TabPane layoutY="46.0" prefHeight="439.0" prefWidth="694.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane layoutY="46.0" prefHeight="421.0" prefWidth="694.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab text="User Details">
             <content>
@@ -51,8 +51,6 @@
                         <Button layoutX="522.0" layoutY="301.0" mnemonicParsing="false" text="Reset profile image" />
                         <Button layoutX="395.0" layoutY="300.0" mnemonicParsing="false" text="upload photo" />
                         <ImageView fx:id="profileImage" fitHeight="216.0" fitWidth="298.0" layoutX="393.0" layoutY="62.0" pickOnBounds="true" preserveRatio="true" />
-                        <Button layoutX="14.0" layoutY="361.0" mnemonicParsing="false" onAction="#goBack" text="Cancel" />
-                        <Button layoutX="571.0" layoutY="358.0" mnemonicParsing="false" onAction="#confirmUpdate" text="Update Profile" />
                         <Separator layoutY="30.0" prefHeight="9.0" prefWidth="706.0" />
                         <Label layoutX="7.0" layoutY="7.0" styleClass="label-sub-title" text="User Details" />
                      </children>
@@ -158,8 +156,6 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                         </GridPane>
-                        <Button layoutX="571.0" layoutY="359.0" mnemonicParsing="false" onAction="#confirmUpdate" text="Update Profile" />
-                        <Button layoutX="14.0" layoutY="359.0" mnemonicParsing="false" text="Cancel" />
                         <Separator layoutY="34.0" prefHeight="9.0" prefWidth="706.0" />
                         <Label layoutX="9.0" layoutY="9.0" styleClass="label-sub-title" text="Health Details" />
                      </children>
@@ -252,8 +248,6 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                         </GridPane>
-                        <Button layoutX="570.0" layoutY="366.0" mnemonicParsing="false" onAction="#confirmUpdate" text="Update Profile" />
-                        <Button layoutX="14.0" layoutY="362.0" mnemonicParsing="false" text="Cancel" />
                         <Label layoutX="14.0" layoutY="9.0" styleClass="label-sub-title" text="Contact Details" />
                         <Separator layoutX="-13.0" layoutY="31.0" prefHeight="9.0" prefWidth="706.0" />
                      </children></AnchorPane>
@@ -331,62 +325,16 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                         </GridPane>
-                        <Button layoutX="10.0" layoutY="364.0" mnemonicParsing="false" text="Cancel" />
-                        <Button layoutX="571.0" layoutY="364.0" mnemonicParsing="false" onAction="#confirmUpdate" text="Update Profile" />
                         <Separator layoutY="29.0" prefHeight="9.0" prefWidth="706.0" />
                         <Label layoutX="7.0" layoutY="7.0" styleClass="label-sub-title" text="Emergency Contact" />
-                        <Separator layoutX="-6.0" layoutY="357.0" prefHeight="4.0" prefWidth="710.0" />
-                     </children></AnchorPane>
-              </content>
-            </Tab>
-            <Tab fx:id="deathtab" text="Death Details">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <GridPane hgap="5.0" layoutX="13.0" layoutY="32.0" prefHeight="283.0" prefWidth="452.0" vgap="5.0">
-                           <children>
-                              <Label styleClass="label-title" text="Date of Death:" />
-                              <Label styleClass="label-title" text="Time of Death:" GridPane.rowIndex="1" />
-                              <Label styleClass="label-title" text="City of Death:" GridPane.rowIndex="3" />
-                              <Label styleClass="label-title" text="Region of Death:" GridPane.rowIndex="4" />
-                              <Label styleClass="label-title" text="Country of Death:" GridPane.rowIndex="5" />
-                              <TextField fx:id="updateDeathDetailsCityTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <DatePicker fx:id="updateDeathDetailsDatePicker" prefHeight="27.0" prefWidth="260.0" promptText="YYYY-MM-DD" GridPane.columnIndex="1" />
-                              <TextField fx:id="updateDeathDetailsTimeTextField" promptText="hh:mm" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <ComboBox fx:id="updateDeathDetailsCountryComboBox" onAction="#deathCountrySelectorListener" prefHeight="27.0" prefWidth="259.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                              <TextField fx:id="updateDeathDetailsRegionTextField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                              <ComboBox fx:id="updateDeathDetailsRegionComboBox" prefHeight="27.0" prefWidth="259.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                           </children>
-                           <columnConstraints>
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="169.0" minWidth="10.0" prefWidth="123.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="262.0" minWidth="10.0" prefWidth="202.0" />
-                           </columnConstraints>
-                           <padding>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                           </padding>
-                           <rowConstraints>
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                           </rowConstraints>
-                        </GridPane>
-                        <Label fx:id="updateDeathDetailsErrorLabel" layoutX="14.0" layoutY="321.0" text="Error message" textFill="RED" />
-                        <Button fx:id="removeUpdateDeathDetailsButton" layoutX="287.0" layoutY="363.0" mnemonicParsing="false" onAction="#removeUpdateDeathDetails" text="Remove Death Details" />
-                        <Button fx:id="confirmUpdateDeathDetailsButton" layoutX="571.0" layoutY="364.0" mnemonicParsing="false" onAction="#confirmUpdate" text="Update Profile" />
-                        <Button fx:id="cancelUpdateDeathDetailsButton" layoutX="14.0" layoutY="365.0" mnemonicParsing="false" text="Cancel" />
-                        <Label fx:id="updateDeathDetailsOverrideWarningLabel" layoutX="22.0" layoutY="129.0" prefHeight="45.0" prefWidth="437.0" text="You cannot change the date and time of death if the user has a manually expired organ" textFill="#fc940d" wrapText="true" />
-                        <Separator layoutY="27.0" prefHeight="9.0" prefWidth="706.0" />
-                        <Label layoutX="8.0" layoutY="6.0" styleClass="label-sub-title" text="Death Details" />
                      </children></AnchorPane>
               </content>
             </Tab>
         </tabs>
       </TabPane>
-      <Label layoutX="11.0" layoutY="10.0" styleClass="label-sub-title" text="Update User" />
-      <Button fx:id="redoUpdateButton" layoutX="630.0" layoutY="5.0" mnemonicParsing="false" onAction="#redo" text="Redo" />
-      <Button fx:id="undoUpdateButton" layoutX="569.0" layoutY="5.0" mnemonicParsing="false" onAction="#undo" text="Undo" />
+      <Label layoutX="11.0" layoutY="10.0" styleClass="label-sub-title" text="Create New User" />
+      <Button fx:id="cancelButton" layoutX="12.0" layoutY="470.0" mnemonicParsing="false" onAction="#cancelCreation" text="Cancel" />
+      <Button fx:id="confirmButton" layoutX="574.0" layoutY="472.0" mnemonicParsing="false" onAction="#confirmCreation" text="Create Profile" />
+      <Separator layoutX="1.0" layoutY="464.0" prefHeight="4.0" prefWidth="710.0" />
    </children>
 </AnchorPane>
