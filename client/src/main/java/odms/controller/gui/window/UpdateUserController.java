@@ -53,16 +53,6 @@ public class UpdateUserController {
     private final int MAX_FILE_SIZE = 2097152;
     //<editor-fold desc="fxml stuff">
     @FXML
-    private Label errorLabel;
-    @FXML
-    private Label existingNHI;
-    @FXML
-    private Label invalidNHI;
-    @FXML
-    private Label invalidFirstName;
-    @FXML
-    private Label invalidDOB;
-    @FXML
     private TextField nhiInput;
     @FXML
     private TextField fNameInput;
@@ -151,7 +141,7 @@ public class UpdateUserController {
     @FXML
     private TextField updateDeathDetailsRegionTextField;
     @FXML
-    private ChoiceBox<String> updateDeathDetailsRegionChoiceBox;
+    private ComboBox<String> updateDeathDetailsRegionComboBox;
     @FXML
     private ComboBox<String> updateDeathDetailsCountryComboBox;
     @FXML
@@ -239,7 +229,7 @@ public class UpdateUserController {
                 lNameInput,
                 heightInput, weightInput, phone, cell, street, streetNumber, city, neighborhood, zipCode, email,
                 ecName, ecPhone, ecCell, ecEmail, ecStreet, ecStreetNumber, ecCity, ecNeighborhood, ecZipCode,
-                ecRelationship, regionInput, ecRegionInput};
+                ecRelationship, regionInput, ecRegionInput, updateDeathDetailsCityTextField, updateDeathDetailsRegionTextField, updateDeathDetailsTimeTextField};
 
         // creates a listener for each text field
         for (TextField tf : allTextFields) {
@@ -258,8 +248,11 @@ public class UpdateUserController {
         comboBoxListener(ecRegionSelector);
         comboBoxListener(countrySelector);
         comboBoxListener(ecCountrySelector);
+        comboBoxListener(updateDeathDetailsCountryComboBox);
+        comboBoxListener(updateDeathDetailsRegionComboBox);
 
         datePickerListener(dobInput);
+        datePickerListener(updateDeathDetailsDatePicker);
 
         addCheckBoxListener(smokerCheckBox);
 
@@ -383,7 +376,7 @@ public class UpdateUserController {
     @FXML
     private void prefillDeathDetailsTab() {
         for (Regions regions : Regions.values()) {
-            updateDeathDetailsRegionChoiceBox.getItems().add(regions.toString());
+            updateDeathDetailsRegionComboBox.getItems().add(regions.toString());
         }
         for (String country : appController.getAllCountries()) {
             updateDeathDetailsCountryComboBox.getItems().add(country);
@@ -446,9 +439,9 @@ public class UpdateUserController {
         updateDeathDetailsRegionTextField.setDisable(isNewZealand);
         updateDeathDetailsRegionTextField.setVisible(!isNewZealand);
 
-        updateDeathDetailsRegionChoiceBox.setValue(currentChoiceRegion);
-        updateDeathDetailsRegionChoiceBox.setDisable(!isNewZealand);
-        updateDeathDetailsRegionChoiceBox.setVisible(isNewZealand);
+        updateDeathDetailsRegionComboBox.setValue(currentChoiceRegion);
+        updateDeathDetailsRegionComboBox.setDisable(!isNewZealand);
+        updateDeathDetailsRegionComboBox.setVisible(isNewZealand);
 
     }
 
@@ -795,9 +788,6 @@ public class UpdateUserController {
      */
     @FXML
     public void confirmUpdate() throws IOException {
-
-        hideErrorMessages();
-        errorLabel.setText("Please make sure your details are correct.");
         boolean valid = validateFields();
 
 
@@ -840,11 +830,9 @@ public class UpdateUserController {
         String nhi = nhiInput.getText();
         if (!AttributeValidation.validateNHI(nhi)) {
             invalidateTextField(nhiInput);
-            invalidNHI.setVisible(true);
             valid = false;
         } else if (appController.getUserBridge().getExists(nhi) && !oldUser.getNhi().equals(nhi)) { // if a user was found, but it is not the current user
             invalidateTextField(nhiInput);
-            existingNHI.setVisible(true);
             valid = false;
         }
 
@@ -853,13 +841,11 @@ public class UpdateUserController {
         String fName = fNameInput.getText();
         if (!AttributeValidation.checkRequiredString(fName)) {
             invalidateTextField(fNameInput);
-            invalidFirstName.setVisible(true);
             valid = false;
         }
 
         if (!AttributeValidation.validateDateOfBirth(dob)) {
             invalidateTextField(dobInput);
-            invalidDOB.setVisible(true);
             valid = false;
         }
 
@@ -868,26 +854,22 @@ public class UpdateUserController {
         if (height == -1 || weight == -1) {
             invalidateTextField(heightInput);
             invalidateTextField(weightInput);
-            errorLabel.setVisible(true);
             valid = false;
         }
 
         // validate contact info
         if (!AttributeValidation.validateEmail(this.email.getText())) {
             invalidateTextField(this.email);
-            errorLabel.setVisible(true);
             valid = false;
         }
 
         if (!AttributeValidation.validatePhoneNumber(phone.getText().replaceAll(" ", ""))) {
             invalidateTextField(phone);
-            errorLabel.setVisible(true);
             valid = false;
         }
 
         if (!AttributeValidation.validateCellNumber(cell.getText().replaceAll(" ", ""))) {
             invalidateTextField(cell);
-            errorLabel.setVisible(true);
             valid = false;
         }
 
@@ -896,7 +878,7 @@ public class UpdateUserController {
         } catch (InvalidFieldsException e) {
             valid = false;
         }
-        if (!validateDeathDetailsFields()){
+        if (!validateDeathDetailsFields()) {
             valid = false;
         }
 
@@ -933,21 +915,13 @@ public class UpdateUserController {
         // validate emergency contact info
         String emergencyEmail = ecEmail.getText();
         valid = AttributeValidation.validateEmail(emergencyEmail);
-        if (!valid) {
-            errorLabel.setVisible(true);
-        }
+
 
         String emergencyPhone = ecPhone.getText();
         valid &= AttributeValidation.validatePhoneNumber(emergencyPhone.replaceAll(" ", ""));
-        if (!valid) {
-            errorLabel.setVisible(true);
-        }
 
         String emergencyCell = ecCell.getText();
         valid &= AttributeValidation.validateCellNumber(emergencyCell.replaceAll(" ", ""));
-        if (!valid) {
-            errorLabel.setVisible(true);
-        }
 
         String eName = ecName.getText();
         valid &= AttributeValidation.checkString(eName);
@@ -968,11 +942,7 @@ public class UpdateUserController {
         valid &= AttributeValidation.checkString(eRelationship);
 
         // the name and cell number are required if any other attributes are filled out
-        if ((eName.isEmpty() != emergencyCell.isEmpty()) && !valid) {
-            errorLabel.setText("Name and cell phone number are required for an emergency contact.");
-            errorLabel.setVisible(true);
-            throw new InvalidFieldsException();
-        }
+
     }
 
     private boolean updateDeathDetails(){
@@ -984,7 +954,7 @@ public class UpdateUserController {
         currentUser.setDeathCity(updateDeathDetailsCityTextField.getText());
         if (isNewZealand) {
             //if checkChangedProperty(u)
-            currentUser.setDeathRegion(updateDeathDetailsRegionChoiceBox.getValue());
+            currentUser.setDeathRegion(updateDeathDetailsRegionComboBox.getValue());
         } else {
             currentUser.setDeathRegion(updateDeathDetailsRegionTextField.getText());
         }
@@ -1376,16 +1346,5 @@ public class UpdateUserController {
             }
             stage.close();
         }
-    }
-
-    /**
-     * Makes all the error messages no longer visible.
-     */
-    private void hideErrorMessages() {
-        existingNHI.setVisible(false);
-        invalidNHI.setVisible(false);
-        invalidDOB.setVisible(false);
-        errorLabel.setVisible(false);
-        invalidFirstName.setVisible(false);
     }
 }
