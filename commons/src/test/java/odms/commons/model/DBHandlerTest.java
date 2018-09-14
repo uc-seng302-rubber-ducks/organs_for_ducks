@@ -313,4 +313,22 @@ public class DBHandlerTest {
         verify(mockStmt, times(1)).executeQuery();
     }
 
+    @Test
+    public void testGetPreferredBasicClinician() throws SQLException {
+        when(mockResultSet.next()).thenReturn(true, false);
+        testClinician.setMiddleName("mid");
+        testClinician.setLastName("last");
+        DBHandlerMocker.setClinicianResultSet(mockResultSet, testClinician);
+        ComboBoxClinician clinician = dbHandler.getPreferredBasicClinician(connection,"ABC1234");
+
+        verify(mockStmt, times(1)).executeQuery();
+        Assert.assertEquals("Jon mid last", clinician.toString());
+    }
+
+    @Test
+    public void testPutPreferredBasicClinician() throws SQLException {
+        dbHandler.putPreferredBasicClinician(connection, "ABC1234", "0");
+        verify(mockStmt, times(1)).executeUpdate();
+    }
+
 }
