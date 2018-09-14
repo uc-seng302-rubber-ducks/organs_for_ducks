@@ -7,9 +7,7 @@ import odms.controller.gui.panel.DonationTabPageController;
 import odms.controller.gui.window.UserController;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import static org.mockito.Mockito.mock;
@@ -45,16 +43,17 @@ public class DonationControllerTest {
     public void before() {
     }
 
-    @Test
-    public void test() {
-//        Class[] arguments = new Class[1];
-//        arguments[0] = boolean.class;
-        try {
-            toggleDisqualifiedExpired.invoke(donationController, true);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            Log.severe("Reflected method threw errorseng", e);
-        }
-
-    }
+//    I felt like it was not worth it to do all this work for a couple of private methods
+//    @Test
+//    public void test() {
+////        Class[] arguments = new Class[1];
+////        arguments[0] = boolean.class;
+//        try {
+//            toggleDisqualifiedExpired.invoke(donationController, true);
+//        } catch (IllegalAccessException | InvocationTargetException e) {
+//            Log.severe("Reflected method threw errorseng", e);
+//        }
+//
+//    }
 
 }
