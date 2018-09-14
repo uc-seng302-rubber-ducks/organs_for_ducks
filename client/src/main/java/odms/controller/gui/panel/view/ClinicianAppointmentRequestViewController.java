@@ -1,6 +1,5 @@
 package odms.controller.gui.panel.view;
 
-import com.calendarfx.view.CalendarView;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -24,6 +23,7 @@ import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
 import odms.controller.gui.panel.logic.ClinicianAppointmentRequestLogicController;
 import odms.controller.gui.popup.view.RejectAppointmentReasonViewController;
 import odms.controller.gui.widget.CalendarWidget;
+import odms.controller.gui.widget.CalendarWidgetFactory;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
@@ -94,13 +94,7 @@ public class ClinicianAppointmentRequestViewController {
     }
 
     private void initCalendar() {
-        CalendarView calendarView = CalendarWidget.createCalendar();
-        calendarView.minHeightProperty().bind(calendarViewPane.prefHeightProperty());
-        calendarView.minWidthProperty().bind(calendarViewPane.prefWidthProperty());
-        calendarView.maxHeightProperty().bind(calendarViewPane.prefHeightProperty());
-        calendarView.maxWidthProperty().bind(calendarViewPane.prefWidthProperty());
-        calendarView.prefHeightProperty().bind(calendarViewPane.prefHeightProperty());
-        calendarView.prefWidthProperty().bind(calendarViewPane.prefWidthProperty());
+        CalendarWidget calendarView = CalendarWidgetFactory.createCalendar();
         calendarViewPane.getChildren().add(calendarView);
         AnchorPane.setTopAnchor(calendarView,0.0);
         AnchorPane.setBottomAnchor(calendarView,0.0);
