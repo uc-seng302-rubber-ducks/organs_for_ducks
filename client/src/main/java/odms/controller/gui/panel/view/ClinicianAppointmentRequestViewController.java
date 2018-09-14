@@ -90,12 +90,22 @@ public class ClinicianAppointmentRequestViewController {
 
         logicController = new ClinicianAppointmentRequestLogicController(availableAppointments, appController, clinician);
         initAppointmentTable();
+        initCalendar();
+    }
+
+    private void initCalendar() {
         CalendarView calendarView = CalendarWidget.createCalendar();
+        calendarView.minHeightProperty().bind(calendarViewPane.prefHeightProperty());
+        calendarView.minWidthProperty().bind(calendarViewPane.prefWidthProperty());
+        calendarView.maxHeightProperty().bind(calendarViewPane.prefHeightProperty());
+        calendarView.maxWidthProperty().bind(calendarViewPane.prefWidthProperty());
+        calendarView.prefHeightProperty().bind(calendarViewPane.prefHeightProperty());
+        calendarView.prefWidthProperty().bind(calendarViewPane.prefWidthProperty());
         calendarViewPane.getChildren().add(calendarView);
         AnchorPane.setTopAnchor(calendarView,0.0);
         AnchorPane.setBottomAnchor(calendarView,0.0);
-        AnchorPane.setLeftAnchor(calendarView,10.0);
-        AnchorPane.setRightAnchor(calendarView, 10.0);
+        AnchorPane.setLeftAnchor(calendarView, 0.0);
+        AnchorPane.setRightAnchor(calendarView, 0.0);
     }
 
     /**
