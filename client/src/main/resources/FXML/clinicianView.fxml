@@ -6,7 +6,6 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <?import java.lang.String?>
-
 <AnchorPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.ClinicianController">
     <children>
         <MenuBar prefHeight="37.0" prefWidth="619.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -160,7 +159,7 @@
                         <fx:include fx:id="availableOrgansView" source="availableOrgansPanel.fxml" />
                     </content>
                 </Tab>
-            <Tab text="Appointments">
+            <Tab fx:id="appointmentsTab" text="Appointments">
               <content>
                   <fx:include fx:id="appointmentRequestView" source="appointmentRequestsTabView.fxml" />
               </content>

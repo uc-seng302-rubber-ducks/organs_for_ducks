@@ -1386,6 +1386,24 @@ public class DBHandler {
     }
 
     /**
+     * Gets the number of appointments pending for a clinician
+     * @param connection connection to the database
+     * @param staffId clinicians staff id
+     * @return number of pending appointments
+     * @throws SQLException thrown on invalid SQL results
+     */
+    public int getPendingAppointmentsCount(Connection connection, String staffId) throws SQLException {
+        try(PreparedStatement preparedStatement = connection.prepareStatement("SELECT count(*) FROM AppointmentDetails JOIN AppointmentCategory ON fkCategoryId = categoryId WHERE fkStaffId = ? AND fkStatusId = 1")){
+            preparedStatement.setString(1, staffId);
+            try(ResultSet resultSet = preparedStatement.executeQuery()){
+                resultSet.next();
+                return resultSet.getInt(1);
+            }
+        }
+
+    }
+
+    /**
      * gets all date and time of booked appointments of a clinician.
      *
      * @param connection Connection to the target database
