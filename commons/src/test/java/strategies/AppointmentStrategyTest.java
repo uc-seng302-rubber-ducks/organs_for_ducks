@@ -50,4 +50,14 @@ public class AppointmentStrategyTest {
         appointmentStrategy.postSingleAppointment(connection, testAppointment);
         verify(mockStmt, times(1)).executeUpdate();
     }
+
+    @Test
+    public void testUpdateAppointment() throws SQLException {
+        LocalDateTime testDate = LocalDateTime.now().plusDays(2);
+        Appointment testAppointment = new Appointment("ABC1234", "id1234", AppointmentCategory.GENERAL_CHECK_UP, testDate, "Help", AppointmentStatus.ACCEPTED);
+        testAppointment.setAppointmentId(100);
+
+        appointmentStrategy.putSingleAppointment(connection, testAppointment);
+        verify(mockStmt, times(1)).executeUpdate();
+    }
 }

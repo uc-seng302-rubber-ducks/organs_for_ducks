@@ -5,8 +5,12 @@ import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.Address;
+import odms.commons.model.datamodel.ComboBoxClinician;
 import odms.commons.model.datamodel.DeathDetails;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import test_utils.DBHandlerMocker;
 
 import java.io.FileInputStream;
@@ -19,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -168,23 +173,21 @@ public class DBHandlerTest {
     }
 
     @Test
-    @Ignore //TODO: Unignore when changes have been properly made.
     public void testAddClinician() throws SQLException {
         testClinician.addChange(new Change("Created clinician"));
         Collection<Clinician> clinicians = new ArrayList<>(Collections.singleton(testClinician));
 
         dbHandler.saveClinicians(clinicians, connection);
-        verify(mockStmt, times(4)).executeUpdate();
+        verify(mockStmt, times(3)).executeUpdate();
     }
 
     @Test
-    @Ignore //TODO: Unignore when changes have been properly made.
     public void testAddAdmin() throws SQLException {
         testAdmin.addChange(new Change("Created administrator"));
         Collection<Administrator> admins = new ArrayList<>(Collections.singleton(testAdmin));
 
         dbHandler.saveAdministrators(admins, connection);
-        verify(mockStmt, times(4)).executeUpdate();
+        verify(mockStmt, times(2)).executeUpdate();
     }
 
     @Test
@@ -272,4 +275,54 @@ public class DBHandlerTest {
         Assert.assertEquals(0, id);
 
     }
+
+    @Test
+    public void testGetBookedAppointmentTimes() throws SQLException {
+        when(mockResultSet.next()).thenReturn(true, false);
+        when(mockResultSet.getTimestamp("requestedTime")).thenReturn(Timestamp.valueOf(LocalDateTime.now()));
+
+        List<LocalDateTime> bookedAppointmentTimes = dbHandler.getBookedAppointmentTimes(connection, anyString());
+        verify(mockStmt, times(1)).executeQuery();
+        Assert.assertEquals(1, bookedAppointmentTimes.size());
+    }
+
+
+    @Test
+    public void testGetBasicClinicians() throws SQLException {
+        when(mockResultSet.next()).thenReturn(true, false);
+        testClinician.setMiddleName("mid");
+        testClinician.setLastName("last");
+        DBHandlerMocker.setClinicianResultSet(mockResultSet, testClinician);
+        Collection<ComboBoxClinician> clinicians = dbHandler.getBasicClinicians(connection,"");
+
+        verify(mockStmt, times(1)).executeQuery();
+        Assert.assertEquals("Jon mid last", clinicians.iterator().next().toString());
+    }
+
+    @Test
+    public void testDeleteAppointment() throws SQLException {
+        Appointment appointment = new Appointment();
+        appointment.setAppointmentId(1);
+        dbHandler.deleteAppointment(appointment, connection);
+        verify(mockStmt, times(1)).executeUpdate();
+    }
+
+    @Test
+    public void testGetPreferredBasicClinician() throws SQLException {
+        when(mockResultSet.next()).thenReturn(true, false);
+        testClinician.setMiddleName("mid");
+        testClinician.setLastName("last");
+        DBHandlerMocker.setClinicianResultSet(mockResultSet, testClinician);
+        ComboBoxClinician clinician = dbHandler.getPreferredBasicClinician(connection,"ABC1234");
+
+        verify(mockStmt, times(1)).executeQuery();
+        Assert.assertEquals("Jon mid last", clinician.toString());
+    }
+
+    @Test
+    public void testPutPreferredBasicClinician() throws SQLException {
+        dbHandler.putPreferredBasicClinician(connection, "ABC1234", "0");
+        verify(mockStmt, times(1)).executeUpdate();
+    }
+
 }

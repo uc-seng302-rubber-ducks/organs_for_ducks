@@ -1,8 +1,10 @@
 DROP EVENT IF EXISTS qualifyOrgans;
 DROP TABLE IF EXISTS DisqualifiedOrgans;
+DROP TABLE IF EXISTS PreferredClinician;
 DROP TABLE IF EXISTS AppointmentDetails;
 DROP TABLE IF EXISTS AppointmentType;
 DROP TABLE IF EXISTS AppointmentStatus;
+DROP TABLE IF EXISTS AppointmentCategory;
 DROP TABLE IF EXISTS OrganExpiryDetails;
 DROP TRIGGER IF EXISTS removeZombies;
 DROP TABLE IF EXISTS DeathDetails;
@@ -293,6 +295,16 @@ CREATE TABLE DisqualifiedOrgans(
     ON DELETE CASCADE
 );
 
+CREATE TABLE PreferredClinician (
+  fkUserNhi VARCHAR(7) PRIMARY KEY,
+  fkStaffId VARCHAR(255),
+  FOREIGN KEY (fkUserNhi) REFERENCES User (nhi)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE,
+  FOREIGN KEY (fkStaffId) REFERENCES Clinician (staffId)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
 
 CREATE TRIGGER removeZombies AFTER UPDATE ON DeathDetails
   FOR EACH ROW

@@ -90,6 +90,7 @@ public class AppController {
         loginBridge = new LoginBridge(client);
         transplantBridge = new TransplantBridge(client);
         countriesBridge = new CountriesBridge(client);
+        appointmentsBridge = new AppointmentsBridge(client);
     }
 
     /**
@@ -764,5 +765,9 @@ public class AppController {
 
     public OkHttpClient getClient() {
         return client;
+    }
+
+    public void setAppointmentsBridge(AppointmentsBridge appointmentsBridge) {
+        this.appointmentsBridge = appointmentsBridge;
     }
 }

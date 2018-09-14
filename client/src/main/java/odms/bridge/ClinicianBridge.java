@@ -4,9 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.exception.ApiException;
 import odms.commons.model.Appointment;
 import odms.commons.model.Clinician;
+import odms.commons.model.datamodel.ComboBoxClinician;
 import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
 import odms.commons.utils.PhotoHelper;
@@ -14,11 +16,12 @@ import odms.controller.AppController;
 import okhttp3.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ClinicianBridge extends RoleBridge {
 
-    public static final String CLINICIANS = "/clinicians/";
+    private static final String CLINICIANS = "/clinicians/";
 
     public ClinicianBridge(OkHttpClient client) {
         super(client);
@@ -36,6 +39,11 @@ public class ClinicianBridge extends RoleBridge {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 ResponseBody body = response.body();
+                if (body == null) {
+                    Log.warning("The response body was null");
+                    response.close();
+                    return;
+                }
                 List<Clinician> clinicians = new Gson().fromJson(body.string(), new TypeToken<List<Clinician>>() {
                 }.getType());
                 for (Clinician clinician : clinicians) {
@@ -44,6 +52,36 @@ public class ClinicianBridge extends RoleBridge {
                 response.close();
             }
         });
+    }
+
+    /**
+     * Gets a list of clinicians from a particular region. Does not require authentication and returns their full name
+     * and staff Id only
+     * @param region that the clinicians are registered to
+     * @return list of ComboBoxClinicians
+     */
+    public List<ComboBoxClinician> getBasicClinicians(String region) throws IOException{
+        List<ComboBoxClinician> returnList = new ArrayList<>();
+        String url = ip + "/basic-clinicians/" + region;
+        Request request = new Request.Builder().url(url).build();
+        Response response = client.newCall(request).execute();
+        if (response.isSuccessful()) {
+            ResponseBody body = response.body();
+            if (body == null) {
+                Log.warning("The response body was null");
+                response.close();
+                return returnList;
+            }
+            if (body.contentLength() == 2) { //if it returns empty array
+                response.close();
+                return returnList;
+            }
+            List<ComboBoxClinician> clinicians = new Gson().fromJson(body.string(), new TypeToken<List<ComboBoxClinician>>() {
+            }.getType());
+            returnList.addAll(clinicians);
+        }
+        response.close();
+        return returnList;
     }
 
     public void postClinician(Clinician clinician, String token) {
@@ -71,55 +109,17 @@ public class ClinicianBridge extends RoleBridge {
         String url = ip + CLINICIANS + staffID;
         RequestBody requestBody = RequestBody.create(json, new Gson().toJson(clinician));
         Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).put(requestBody).build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.warning("Could not PUT to " + url, e);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    throw new IOException("Failed to PUT to " + url);
-                }
-                response.close();
-            }
-        });
+        client.newCall(request).enqueue(CommonMethods.loggedCallback("PUT", url));
     }
 
     public void deleteClinician(Clinician clinician, String token) {
         String url = ip + CLINICIANS + clinician.getStaffId();
         Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).delete().build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.warning("Could not DELETE " + url, e);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    response.close();
-                    throw new IOException("Failed to DELETE to " + url);
-                }
-                response.close();
-            }
-
-        });
-
+        client.newCall(request).enqueue(CommonMethods.loggedCallback("DELETE", url));
     }
 
     public Clinician getClinician(String wantedClinician, String token) throws ApiException {
-        Response response;
-        try {
-            Headers headers = new Headers.Builder().add(tokenHeader, token).build();
-            Request request = new Request.Builder()
-                    .url(ip + CLINICIANS + wantedClinician).headers(headers).build();
-            response = client.newCall(request).execute();
-        } catch (IOException e) {
-            Log.severe("failed to make request", e);
-            return null;
-        }
+        Response response = CommonMethods.getRole(client, ip, CLINICIANS, wantedClinician, tokenHeader, token);
         if (response == null) {
             Log.warning("A null response was returned to the user");
             return null;
@@ -137,7 +137,10 @@ public class ClinicianBridge extends RoleBridge {
 
         try {
             Clinician c = new JsonHandler().decodeClinician(response);
-            c.setProfilePhotoFilePath(getProfilePicture(c.getStaffId(), token));
+            if (ConfigPropertiesSession.getInstance().getProperty("testConfig", "false").equalsIgnoreCase("false")) {
+                c.setProfilePhotoFilePath(getProfilePicture(c.getStaffId(), token));
+                return c;
+            }
             return c;
         } catch (IOException ex) {
             Log.severe("could not interpret the given clinician", ex);
@@ -170,6 +173,10 @@ public class ClinicianBridge extends RoleBridge {
         Request request = new Request.Builder().get().url(url).headers(headers).build();
         try (Response response = client.newCall(request).execute()) {
             String contentType = response.header("Content-Type");
+            if (contentType == null) {
+                Log.warning("The content-type in the header was null");
+                return null;
+            }
             String[] bits = contentType.split("/");
             String format = bits[bits.length - 1];
             if (response.code() == 200) {
@@ -206,37 +213,6 @@ public class ClinicianBridge extends RoleBridge {
                     throw new IOException("Could not PUT " + url);
                 }
                 response.close();
-            }
-        });
-    }
-
-    public void getAppointments(int startIndex, int count, String staffId, String token, ObservableList<Appointment> observableAppointments) {
-        String url = ip + CLINICIANS + staffId + "/appointments?startIndex=" + startIndex + "&count=" + count;
-        Request request = new Request.Builder().addHeader(tokenHeader, token).url(url).build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.warning("Failed to get clinicians. On Failure Triggered", e);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response == null) {
-                    Log.warning("A null response was returned to the user");
-                    return;
-                }
-                ResponseBody body = response.body();
-                if (body == null) {
-                    Log.warning("A null response body was returned to the user");
-                    return;
-                }
-                List<Appointment> appointments = new Gson().fromJson(body.string(), new TypeToken<List<Appointment>>() {
-                }.getType());
-
-                Platform.runLater(() -> {
-                    observableAppointments.clear();
-                    observableAppointments.addAll(appointments);
-                });
             }
         });
     }

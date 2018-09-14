@@ -7,6 +7,7 @@ import odms.commons.model.Disease;
 import odms.commons.model.MedicalProcedure;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
+import odms.commons.model.datamodel.ComboBoxClinician;
 import odms.commons.model.datamodel.Medication;
 import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 import odms.commons.model.dto.UserOverview;
@@ -274,80 +275,28 @@ public class UserBridge extends RoleBridge {
         String url = ip + USERS + nhi + "/receiving";
         RequestBody body = RequestBody.create(json, new Gson().toJson(receiving));
         Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).post(body).build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.warning(COULD_NOT_MAKE_A_CALL_TO + url, e);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    throw new IOException(FAILED_TO_POST_TO + url);
-                }
-                response.close();
-            }
-        });
+        client.newCall(request).enqueue(CommonMethods.loggedCallback("POST", url));
     }
 
     public void putReceivingOrgans(Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> receiving, String nhi, String token) {
         String url = ip + USERS + nhi + "/receiving";
         RequestBody body = RequestBody.create(json, new Gson().toJson(receiving));
         Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).put(body).build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.warning(COULD_NOT_MAKE_A_CALL_TO + url, e);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    throw new IOException(FAILED_TO_PUT_TO + url);
-                }
-                response.close();
-            }
-        });
+        client.newCall(request).enqueue(CommonMethods.loggedCallback("PUT", url));
     }
 
     public void postDonatingOrgans(Set<Organs> donating, String nhi) {
         String url = ip + USERS + nhi + "/donating";
         RequestBody body = RequestBody.create(json, new Gson().toJson(donating));
         Request request = new Request.Builder().url(url).post(body).build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.warning(COULD_NOT_MAKE_A_CALL_TO + url, e);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    throw new IOException(FAILED_TO_POST_TO + url);
-                }
-                response.close();
-            }
-        });
+        client.newCall(request).enqueue(CommonMethods.loggedCallback("POST", url));
     }
 
     public void putDonatingOrgans(Set<Organs> donating, String nhi) {
         String url = ip + USERS + nhi + "/donating";
         RequestBody body = RequestBody.create(json, new Gson().toJson(donating));
         Request request = new Request.Builder().url(url).put(body).build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.warning(COULD_NOT_MAKE_A_CALL_TO + url, e);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    throw new IOException(FAILED_TO_PUT_TO + url);
-                }
-                response.close();
-            }
-        });
+        client.newCall(request).enqueue(CommonMethods.loggedCallback("PUT", url));
     }
 
     public String getProfilePicture(String nhi) throws IOException {
@@ -407,6 +356,46 @@ public class UserBridge extends RoleBridge {
             Log.warning("could not determine if the admin exists", ex);
             return false;
         }
+    }
+
+    /**
+     * Asks the server to get the preferred clinician for the specified user
+     * @param nhi of the user to get the preferred clinician for.
+     * @return comboBoxClinician representing the preferred clinician
+     */
+    public ComboBoxClinician getPreferredClinician(String nhi) throws IOException{
+        ComboBoxClinician clinician = null;
+        String url = ip + USERS + nhi + "/preferred-clinician";
+        Request request = new Request.Builder().url(url).build();
+        Response response = client.newCall(request).execute();
+        if (response.isSuccessful()) {
+            ResponseBody body = response.body();
+            if (body == null) {
+                Log.warning("The response body was null");
+                response.close();
+                return null;
+            }
+            if (body.contentLength() == 2) { //if it returns empty array
+                response.close();
+                return null;
+            }
+            clinician = new Gson().fromJson(body.string(), new TypeToken<ComboBoxClinician>() {
+            }.getType());
+        }
+        response.close();
+        return clinician;
+    }
+
+    /**
+     * Updates the preferred clinician of the user
+     * @param nhi of the user to get the preferred clinician for.
+     * @param staffId the id of the preferred clinician
+     */
+    public void putPreferredClinician(String nhi, String staffId) {
+        String url = ip + USERS + nhi + "/preferred-clinician";
+        RequestBody body = RequestBody.create(json, new Gson().toJson(staffId));
+        Request request = new Request.Builder().put(body).url(url).build();
+        client.newCall(request).enqueue(CommonMethods.loggedCallback("PUT", url));
     }
 
 

@@ -3,6 +3,7 @@ package odms.bridge;
 import com.mysql.jdbc.StringUtils;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.exception.ApiException;
 import odms.commons.model.datamodel.AvailableOrganDetail;
 import odms.commons.model.datamodel.TransplantDetails;
@@ -53,7 +54,7 @@ public class OrgansBridge extends Bifrost {
         }
 
         if (!StringUtils.isNullOrEmpty(country)){
-            url.append("&country=").append(city);
+            url.append("&country=").append(country);
         }
         Request request = new Request.Builder().get()
                 .header(tokenHeader, AppController.getInstance().getToken())
@@ -71,8 +72,10 @@ public class OrgansBridge extends Bifrost {
                 }
 
                 List<AvailableOrganDetail> availableOrgansDetails = handler.decodeAvailableOrgansList(response);
-                for (AvailableOrganDetail detail : availableOrgansDetails) {
-                    detail.generateProgressTask();
+                if (ConfigPropertiesSession.getInstance().getProperty("testConfig", "false").equalsIgnoreCase("false")) {
+                    for (AvailableOrganDetail detail : availableOrgansDetails) {
+                        detail.generateProgressTask();
+                    }
                 }
                 Platform.runLater(()-> observableList.addAll(availableOrgansDetails));
             }
@@ -85,24 +88,21 @@ public class OrgansBridge extends Bifrost {
      * @param startIndex the position to start obtaining items from
      * @param count how many entries to obtain
      * @param donorNhi user who is donating the organ
-     * @param organ organ being donated
      * @param organToDonate Available organ detail to identify the map entry of the response
      * @param observableList the observable list to populate the potential matches with
      */
-    public void getMatchingOrgansList(int startIndex, int count, String donorNhi, String organ, AvailableOrganDetail organToDonate,
+    public void getMatchingOrgansList(int startIndex, int count, String donorNhi, AvailableOrganDetail organToDonate,
                                       ObservableList<TransplantDetails> observableList) {
-        StringBuilder url = new StringBuilder(ip);
-        url.append("/matchingOrgans?");
-        url.append("&count=").append(count);
-        url.append("&organ=").append(organ);
-        url.append("&startIndex=").append(startIndex);
-        url.append("&donorNhi=").append(donorNhi);
+        String url = ip + "/matchingOrgans?" +
+                "count=" + count +
+                "&organ=" + organToDonate.getOrgan().toString() +
+                "&startIndex=" + startIndex +
+                "&donorNhi=" + donorNhi;
 
-        url = url.deleteCharAt(url.indexOf("&")); //removes first occurrence of "&"
 
         Request request = new Request.Builder().get()
                 .header(tokenHeader, AppController.getInstance().getToken())
-                .url(url.toString().replaceAll(" ", "_")).build();
+                .url(url.replaceAll(" ", "_")).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
