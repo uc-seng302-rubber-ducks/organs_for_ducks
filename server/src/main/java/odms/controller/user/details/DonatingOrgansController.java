@@ -5,6 +5,7 @@ import odms.commons.database.JDBCDriver;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.ExpiryReason;
+import odms.commons.model.datamodel.OrgansWithDisqualification;
 import odms.commons.utils.Log;
 import odms.controller.BaseController;
 import odms.controller.OdmsController;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 
 @OdmsController
@@ -65,6 +68,35 @@ public class DonatingOrgansController extends BaseController {
             handler.saveUser(toModify, connection);
         } catch (SQLException ex) {
             Log.severe("Could not put donating organs to user " + nhi, ex);
+            throw new ServerDBException(ex);
+        }
+        return new ResponseEntity(HttpStatus.CREATED);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/disqualified")
+    public Collection<OrgansWithDisqualification> getDisqualifiedOrgans(@PathVariable String nhi) {
+        try (Connection connection = driver.getConnection()) {
+            return new ArrayList<>(); //TODO Task to create sql
+        } catch (SQLException ex) {
+            Log.severe("could not get admins", ex);
+            throw new ServerDBException(ex);
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/users/{nhi}/donating")
+    public ResponseEntity postDisqualifiedOrgans(@PathVariable String nhi,
+                                             @RequestBody Map<Organs, ExpiryReason> donating) {
+        try (Connection connection = driver.getConnection()) {
+            User toModify = handler.getOneUser(connection, nhi);
+            if (toModify == null) {
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
+            }
+            for (Map.Entry<Organs, ExpiryReason> entry: donating.entrySet()) {
+                toModify.getDonorDetails().addOrgan(entry.getKey(), entry.getValue());
+            }
+            handler.saveUser(toModify, connection);
+        } catch (SQLException ex) {
+            Log.severe("Could not post donating organs to user " + nhi, ex);
             throw new ServerDBException(ex);
         }
         return new ResponseEntity(HttpStatus.CREATED);
