@@ -277,6 +277,17 @@ public class DBHandlerTest {
     }
 
     @Test
+    public void testGetBookedAppointmentTimes() throws SQLException {
+        when(mockResultSet.next()).thenReturn(true, false);
+        when(mockResultSet.getTimestamp("requestedTime")).thenReturn(Timestamp.valueOf(LocalDateTime.now()));
+
+        List<LocalDateTime> bookedAppointmentTimes = dbHandler.getBookedAppointmentTimes(connection, anyString());
+        verify(mockStmt, times(1)).executeQuery();
+        Assert.assertEquals(1, bookedAppointmentTimes.size());
+    }
+
+
+    @Test
     public void testGetBasicClinicians() throws SQLException {
         when(mockResultSet.next()).thenReturn(true, false);
         testClinician.setMiddleName("mid");
@@ -293,6 +304,24 @@ public class DBHandlerTest {
         Appointment appointment = new Appointment();
         appointment.setAppointmentId(1);
         dbHandler.deleteAppointment(appointment, connection);
+        verify(mockStmt, times(1)).executeUpdate();
+    }
+
+    @Test
+    public void testGetPreferredBasicClinician() throws SQLException {
+        when(mockResultSet.next()).thenReturn(true, false);
+        testClinician.setMiddleName("mid");
+        testClinician.setLastName("last");
+        DBHandlerMocker.setClinicianResultSet(mockResultSet, testClinician);
+        ComboBoxClinician clinician = dbHandler.getPreferredBasicClinician(connection,"ABC1234");
+
+        verify(mockStmt, times(1)).executeQuery();
+        Assert.assertEquals("Jon mid last", clinician.toString());
+    }
+
+    @Test
+    public void testPutPreferredBasicClinician() throws SQLException {
+        dbHandler.putPreferredBasicClinician(connection, "ABC1234", "0");
         verify(mockStmt, times(1)).executeUpdate();
     }
 
