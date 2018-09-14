@@ -2,7 +2,7 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.AnchorPane?>
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="582.0" prefWidth="790.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.panel.DonationTabPageController">
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" minHeight="0.0" minWidth="0.0" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" fx:controller="odms.controller.gui.panel.DonationTabPageController">
     <children>
         <ListView fx:id="canDonate" layoutX="41.0" layoutY="86.0" prefHeight="437.0" prefWidth="200.0" />
         <ListView fx:id="currentOrgans" layoutX="368.0" layoutY="86.0" prefHeight="437.0" prefWidth="200.0" />
@@ -34,5 +34,6 @@
       </TableView>
       <Button fx:id="toggleDisqualificationExpiryButton" layoutX="714.0" layoutY="14.0" mnemonicParsing="false" onAction="#toggleDisqualificationExpiry" text="Button" />
       <Label fx:id="disqualifiedOrgansTableLabel" layoutX="594.0" layoutY="66.0" text="Disqualified Organs" />
+      <Button fx:id="organQualificationStatusChangerButton" disable="true" layoutX="245.0" layoutY="14.0" mnemonicParsing="false" onAction="#changeDisqulifiactionStatus" text="Disqulify Organ" />
     </children>
 </AnchorPane>
