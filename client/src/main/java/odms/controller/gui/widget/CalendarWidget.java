@@ -1,17 +1,24 @@
 package odms.controller.gui.widget;
 
 import com.calendarfx.model.Calendar;
+import com.calendarfx.model.CalendarEvent;
 import com.calendarfx.model.CalendarSource;
+import com.calendarfx.model.Entry;
 import com.calendarfx.view.CalendarView;
 import com.calendarfx.view.DateControl;
 import com.calendarfx.view.page.DayPage;
+import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
+import odms.commons.model.Appointment;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.utils.Log;
 
+import java.time.Duration;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAmount;
 
 /**
  * class that holds the configurations of
@@ -26,7 +33,7 @@ public class CalendarWidget {
      */
     public static CalendarView createCalendar() {
         CalendarView calendarView = new CalendarView();
-        calendarView.getCalendarSources().clear(); //removes default calendar
+        //calendarView.getCalendarSources().clear(); //removes default calendar
         calendarView.setHeader(null);
         calendarView.setFooter(null);
         calendarView.setShowAddCalendarButton(false);
@@ -49,7 +56,6 @@ public class CalendarWidget {
         otherCalendar.setStyle(Calendar.Style.STYLE5);
 
         appointmentCategories.getCalendars().addAll(bloodTestCalendar, generalCheckUpCalendar, healthAdviceCalendar, prescriptionCalendar, otherCalendar);
-        calendarView.getCalendarSources().clear();
         calendarView.getCalendarSources().add(appointmentCategories);
         calendarView.setRequestedTime(LocalTime.now());
         calendarView.setStartTime(LocalTime.of(8, 0));
@@ -77,43 +83,14 @@ public class CalendarWidget {
         });
         thread.setDaemon(true);
         thread.start();
-        calendarView.getWeekPage().onMouseClickedProperty().unbind();
-        calendarView.getWeekPage().entryFactoryProperty().unbind();
 
-        calendarView.getWeekPage().getDetailedWeekView().onMouseClickedProperty().unbind();
-        calendarView.getWeekPage().getDetailedWeekView().entryFactoryProperty().unbind();
-        calendarView.getWeekPage().getDetailedWeekView().onMouseReleasedProperty().unbind();
+        appointmentCategories.getCalendars().forEach(c -> {
+            c.setReadOnly(true);
+        });
 
-        calendarView.getWeekPage().getDetailedWeekView().getWeekView().entryFactoryProperty().unbind();
-        calendarView.getWeekPage().getDetailedWeekView().getWeekView().onMouseClickedProperty().unbind();
-        calendarView.getWeekPage().getDetailedWeekView().getWeekView().onMouseReleasedProperty().unbind();
-
-        calendarView.getDayPage().entryFactoryProperty().unbind();
-        calendarView.getDayPage().onMouseClickedProperty().unbind();
-        calendarView.getDayPage().onMouseReleasedProperty().unbind();
-
-        calendarView.getDayPage().getDetailedDayView().entryFactoryProperty().unbind();
-        calendarView.getDayPage().getDetailedDayView().onMouseClickedProperty().unbind();
-        calendarView.getDayPage().getDetailedDayView().onMouseReleasedProperty().unbind();
-
-        calendarView.getDayPage().getDetailedDayView().getDayView().entryFactoryProperty().unbind();
-        calendarView.getDayPage().getDetailedDayView().getDayView().onMouseClickedProperty().unbind();
-        calendarView.getDayPage().getDetailedDayView().getDayView().onMouseReleasedProperty().unbind();
-        calendarView.getDayPage().getDetailedDayView().getDayView().entryViewFactoryProperty().unbind();
-        calendarView.getDayPage().getDetailedDayView().getDayView().entryEditPolicyProperty().unbind();
-        calendarView.getDayPage().getDetailedDayView().getDayView().setOnMouseClicked(Event::consume);
-
-        calendarView.getDayPage().getDetailedDayView().getDayView().getBoundDateControls().clear();
-        ((ObservableList<DateControl>) calendarView.getDayPage().getDetailedDayView().getDayView().getBoundDateControls()).addListener((ListChangeListener<DateControl>) c -> c.getList().clear());
-
-
-        calendarView.getDayPage().getDetailedDayView().getDayView().setStyle("-fx-background-color: GREEN");
-
-        //.setOnMouseClicked(e -> System.out.println("aaaaa"));
-
-        calendarView.entryFactoryProperty().unbind();
-        calendarView.onMouseClickedProperty().unbind();
-        calendarView.onMouseReleasedProperty().unbind();
+        calendarView.getCalendarSources().get(0).getCalendars().forEach(c -> c.addEventHandler(evt -> {
+            Platform.runLater(() -> calendarView.getCalendarSources().get(0).getCalendars().forEach(Calendar::clear));
+        }));
 
 
 
