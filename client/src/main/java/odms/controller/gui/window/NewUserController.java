@@ -209,8 +209,6 @@ public class NewUserController {
             genderIdentity = birthGender;
         }
 
-        System.out.println(bloodComboBox.getValue());
-        System.out.println("hello");
         String bloodType = bloodComboBox.getValue();
         valid &= (AttributeValidation.validateBlood(bloodComboBox.getValue()));
 
