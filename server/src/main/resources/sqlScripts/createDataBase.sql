@@ -276,14 +276,14 @@ CREATE TABLE AppointmentDetails (
 );
 
 CREATE TABLE DisqualifiedOrgans(
-  disqulifiedId  INT AUTO_INCREMENT PRIMARY KEY,
+  disqualifiedId  INT AUTO_INCREMENT PRIMARY KEY,
   fkUserNhi VARCHAR(7),
   description TEXT,
   fkOrgan SMALLINT,
   fkStaffId VARCHAR(255),
-  dateDisqulified DATE,
+  dateDisqualified DATE,
   dateEligable DATE,
-  isCurrentlyDisqulifed BOOL,
+  isCurrentlyDisqualifed BOOL,
   FOREIGN KEY (fkUserNhi) REFERENCES User(nhi)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
