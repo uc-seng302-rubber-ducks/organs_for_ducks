@@ -117,6 +117,10 @@ public class DonatingOrgansControllerTest {
         controller.putDonatingOrgans("ABC1234", donating);
     }
 
+    /**
+     * Helper function for tests to use instead of repeating code
+     * @return a collection of OrgansWithDisqualification
+     */
     private Collection<OrgansWithDisqualification> createTestCollection() {
         Collection<OrgansWithDisqualification> disqualified = new ArrayList<>();
         ExpiryReason expiryDetails = new ExpiryReason("ABC1234", LocalDateTime.now(), "Testing", "Tester");
