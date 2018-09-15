@@ -1,6 +1,7 @@
 package odms.controller.user.details;
 
 import odms.commons.database.DBHandler;
+import odms.commons.database.DisqualifiedOrgansHandler;
 import odms.commons.database.JDBCDriver;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
@@ -10,6 +11,7 @@ import odms.commons.utils.Log;
 import odms.controller.BaseController;
 import odms.controller.OdmsController;
 import odms.exception.ServerDBException;
+import odms.security.IsClinician;
 import odms.utils.DBManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
@@ -28,11 +29,13 @@ import java.util.Map;
 public class DonatingOrgansController extends BaseController {
     private JDBCDriver driver;
     private DBHandler handler;
+    private DisqualifiedOrgansHandler disqualifiedOrgansHandler;
 
     public DonatingOrgansController(DBManager manager) {
         super(manager);
         driver = super.getDriver();
         handler = super.getHandler();
+        disqualifiedOrgansHandler = new DisqualifiedOrgansHandler();
     }
 
 
@@ -73,32 +76,42 @@ public class DonatingOrgansController extends BaseController {
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
+    @IsClinician
     @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/disqualified")
     public Collection<OrgansWithDisqualification> getDisqualifiedOrgans(@PathVariable String nhi) {
         try (Connection connection = driver.getConnection()) {
-            return new ArrayList<>(); //TODO Task to create sql
+            return disqualifiedOrgansHandler.getDisqualifiedOrgans(connection);
         } catch (SQLException ex) {
-            Log.severe("could not get admins", ex);
+            Log.severe("could not get disqualified organs for user " + nhi, ex);
             throw new ServerDBException(ex);
         }
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/users/{nhi}/donating")
-    public ResponseEntity postDisqualifiedOrgans(@PathVariable String nhi,
-                                             @RequestBody Map<Organs, ExpiryReason> donating) {
+    @IsClinician
+    @RequestMapping(method = RequestMethod.POST, value = "/users/{nhi}/disqualified")
+    public ResponseEntity postDisqualifiedOrgan(@PathVariable String nhi,
+                                             @RequestBody Collection<OrgansWithDisqualification> disqualified) {
         try (Connection connection = driver.getConnection()) {
-            User toModify = handler.getOneUser(connection, nhi);
-            if (toModify == null) {
-                return new ResponseEntity(HttpStatus.NOT_FOUND);
-            }
-            for (Map.Entry<Organs, ExpiryReason> entry: donating.entrySet()) {
-                toModify.getDonorDetails().addOrgan(entry.getKey(), entry.getValue());
-            }
-            handler.saveUser(toModify, connection);
+
+            disqualifiedOrgansHandler.postDisqualifiedOrgan(connection, disqualified);
         } catch (SQLException ex) {
-            Log.severe("Could not post donating organs to user " + nhi, ex);
+            Log.severe("Could not post disqualified organs to user " + nhi, ex);
             throw new ServerDBException(ex);
         }
         return new ResponseEntity(HttpStatus.CREATED);
+    }
+
+    @IsClinician
+    @RequestMapping(method = RequestMethod.DELETE, value = "/users/{nhi}/disqualified")
+    public ResponseEntity deleteDisqualifiedOrgan(@PathVariable String nhi,
+                                                  @RequestBody Collection<OrgansWithDisqualification> disqualified) {
+        try (Connection connection = driver.getConnection()) {
+
+            disqualifiedOrgansHandler.deleteDisqualifiedOrgan(connection, disqualified);
+        } catch (SQLException ex) {
+            Log.severe("Could not delete disqualified organs for user " + nhi, ex);
+            throw new ServerDBException(ex);
+        }
+        return new ResponseEntity(HttpStatus.I_AM_A_TEAPOT);
     }
 }

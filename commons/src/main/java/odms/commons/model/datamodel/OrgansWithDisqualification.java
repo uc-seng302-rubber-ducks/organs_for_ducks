@@ -6,6 +6,7 @@ import java.time.LocalDate;
 
 public class OrgansWithDisqualification {
 
+    private Integer disqualifiedId;
     private Organs organType;
     private String reason;
     private LocalDate date;
@@ -16,6 +17,14 @@ public class OrgansWithDisqualification {
         this.reason = disqualificationDetails.getReason();
         this.date = disqualificationDetails.getTimeOrganExpired().toLocalDate();
         this.staffId = disqualificationDetails.getId();
+    }
+
+    public Integer getDisqualifiedId() {
+        return disqualifiedId;
+    }
+
+    public void setDisqualifiedId(Integer disqualifiedId) {
+        this.disqualifiedId = disqualifiedId;
     }
 
     public Organs getOrganType() {

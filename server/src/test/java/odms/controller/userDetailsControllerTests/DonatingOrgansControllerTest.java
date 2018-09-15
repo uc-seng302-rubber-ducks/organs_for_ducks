@@ -1,10 +1,12 @@
 package odms.controller.userDetailsControllerTests;
 
 import odms.commons.database.DBHandler;
+import odms.commons.database.DisqualifiedOrgansHandler;
 import odms.commons.database.JDBCDriver;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.ExpiryReason;
+import odms.commons.model.datamodel.OrgansWithDisqualification;
 import odms.controller.user.details.DonatingOrgansController;
 import odms.exception.ServerDBException;
 import odms.utils.DBManager;
@@ -17,6 +19,9 @@ import org.springframework.http.ResponseEntity;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,6 +33,7 @@ import static org.mockito.Mockito.when;
 
 public class DonatingOrgansControllerTest {
     private DonatingOrgansController controller;
+    DisqualifiedOrgansHandler disqualifiedOrgansHandler;
     private Connection connection;
     private JDBCDriver driver;
     private DBManager manager;
@@ -44,6 +50,7 @@ public class DonatingOrgansControllerTest {
         when(manager.getHandler()).thenReturn(handler);
         when(manager.getDriver()).thenReturn(driver);
         controller = new DonatingOrgansController(manager);
+        disqualifiedOrgansHandler = new DisqualifiedOrgansHandler();
         testUser = new User("steve", LocalDate.now(), "ABC1234");
     }
 
@@ -108,5 +115,38 @@ public class DonatingOrgansControllerTest {
         donating.put(LIVER, null);
         donating.put(HEART, null);
         controller.putDonatingOrgans("ABC1234", donating);
+    }
+
+    private Collection<OrgansWithDisqualification> createTestCollection() {
+        Collection<OrgansWithDisqualification> disqualified = new ArrayList<>();
+        ExpiryReason expiryDetails = new ExpiryReason("ABC1234", LocalDateTime.now(), "Testing", "Tester");
+        OrgansWithDisqualification testOrgan = new OrgansWithDisqualification(Organs.LIVER, expiryDetails);
+
+        disqualified.add(testOrgan);
+        return disqualified;
+    }
+
+    @Test
+    public void postDisqualifiedOrgansShouldReturnCreated() {
+        ResponseEntity res = controller.postDisqualifiedOrgan("ABC1234", createTestCollection());
+        Assert.assertEquals(HttpStatus.CREATED, res.getStatusCode());
+    }
+
+    @Test(expected = ServerDBException.class)
+    public void postDisqualifiedOrgansShouldThrowExceptionAndReturn500() throws SQLException {
+        when(driver.getConnection()).thenThrow(new SQLException());
+        controller.postDisqualifiedOrgan("ABC1234", createTestCollection());
+    }
+
+    @Test
+    public void deleteDisqualifiedOrgansShouldReturnOk() {
+        ResponseEntity res = controller.deleteDisqualifiedOrgan("ABC1234", createTestCollection());
+        Assert.assertEquals(HttpStatus.I_AM_A_TEAPOT, res.getStatusCode());
+    }
+
+    @Test(expected = ServerDBException.class)
+    public void deleteDisqualifiedOrgansShouldThrowExceptionAndReturn500() throws SQLException {
+        when(driver.getConnection()).thenThrow(new SQLException());
+        controller.postDisqualifiedOrgan("ABC1234", createTestCollection());
     }
 }
