@@ -225,9 +225,7 @@ public class ClinicianAppointmentRequestViewController {
         boolean valid = true;
 
 
-        if (AttributeValidation.validateTimeString(appointmentRequestTime.getSelectionModel().getSelectedItem().toString())) {
-            logicController.acceptAppointment(selectedAppointment, appointmentRequestTime.getSelectionModel().getSelectedItem().toString(), AppController.getInstance().getAppointmentsBridge());
-        } else {
+        if (!AttributeValidation.validateTimeString(appointmentRequestTime.getValue().toString())) {
             appointmentRequestTime.setStyle("-fx-background-color: rgba(100%, 0%, 0%, 0.25); -fx-border-color: RED");
             valid = false;
         }
@@ -242,14 +240,15 @@ public class ClinicianAppointmentRequestViewController {
         if (valid) {
             if (status == AppointmentStatus.PENDING) {
                 logicController.updateAppointment(selectedAppointment, appointmentRequestCategory.getValue(),
-                        appointmentRequestDate.getValue(), appointmentRequestTime.getText(), appointmentRequestDescription.getText(), true);
+                        appointmentRequestDate.getValue(), appointmentRequestTime.getValue().toString(), appointmentRequestDescription.getText(), true);
             } else if (status == AppointmentStatus.ACCEPTED || status == AppointmentStatus.ACCEPTED_SEEN) {
                 logicController.updateAppointment(selectedAppointment, appointmentRequestCategory.getValue(),
-                        appointmentRequestDate.getValue(), appointmentRequestTime.getText(), appointmentRequestDescription.getText(), false);
+                        appointmentRequestDate.getValue(), appointmentRequestTime.getValue().toString(), appointmentRequestDescription.getText(), false);
             } else {
                 AlertWindowFactory.generateInfoWindow("This appointment is no longer available");
             }
         }
+
 
     }
 

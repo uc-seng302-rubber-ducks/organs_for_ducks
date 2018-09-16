@@ -170,13 +170,6 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
         String[] timeParts = time.split(":");
         LocalTime localTime = LocalTime.of(Integer.valueOf(timeParts[0]), Integer.valueOf(timeParts[1]));
 
-
-
-    /**
-     *
-     * @param appointment
-     */
-    private void updateAppointment(Appointment appointment) {
         if (pending) {
             appointment.setAppointmentStatus(AppointmentStatus.ACCEPTED);
         }
@@ -185,6 +178,7 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
         appointment.setAppointmentCategory(category);
         appointment.setRequestDescription(description);
         AppController.getInstance().getAppointmentsBridge().putAppointment(appointment, AppController.getInstance().getToken());
+
     }
 
     /**
