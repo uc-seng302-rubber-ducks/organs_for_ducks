@@ -1,4 +1,4 @@
-package odms.controller.gui.panel.view;
+package odms.commons.utils;
 
 import javafx.scene.control.TableCell;
 import javafx.scene.paint.Color;
@@ -10,26 +10,27 @@ public class AppointmentTableCellFactory {
         throw new IllegalStateException("Utility Class");
     }
 
-    public static <T> TableCell<T, AppointmentStatus> generateAppointmentTableCell() { //TableColumn<T, Appointment> column
+    /**
+     * Colours the appointment status text within the appointment tables according to their status type
+     *
+     * @param <T>   The generic type of the TableView
+     * @return      The table cell with coloured text
+     */
+    public static <T> TableCell<T, AppointmentStatus> generateAppointmentTableCell() {
         return new TableCell<T, AppointmentStatus>() {
             @Override
             public void updateItem(final AppointmentStatus item, final boolean empty) {
                 super.updateItem(item, empty);
                 if (item != null) {
-                    if (this.getItem().equals(AppointmentStatus.REJECTED)
-                            || this.getItem().equals(AppointmentStatus.REJECTED_SEEN)
-                            || this.getItem().equals(AppointmentStatus.CANCELLED_BY_CLINICIAN)
-                            || this.getItem().equals(AppointmentStatus.CANCELLED_BY_CLINICIAN_SEEN)
-                            || this.getItem().equals(AppointmentStatus.CANCELLED_BY_USER)
-                            || this.getItem().equals(AppointmentStatus.CANCELLED_BY_USER_SEEN)) {
-                        this.setTextFill(Color.RED);
+                    if (this.getItem().equals(AppointmentStatus.UPDATED)) {
+                        this.setTextFill(Color.BLACK); //This only occurs if the status is updated.
                     } else if (this.getItem().equals(AppointmentStatus.ACCEPTED)
                             || this.getItem().equals(AppointmentStatus.ACCEPTED_SEEN)) {
                         this.setTextFill(Color.GREEN);
                     } else if (this.getItem().equals(AppointmentStatus.PENDING)) {
                         this.setTextFill(Color.GOLDENROD);
                     } else {
-                        this.setTextFill(Color.BLACK); //This only occurs if the status is updated. 
+                        this.setTextFill(Color.RED);
                     }
                     setText(item.toString());
 

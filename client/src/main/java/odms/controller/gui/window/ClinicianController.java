@@ -280,6 +280,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         stage.close();
         availableOrgansViewController.shutdownThreads();
         appointmentRequestViewController.shutdownPropertyChangeListener();
+        ServerEventNotifier.getInstance().removePropertyChangeListener(this);
         Log.info("Successfully closed update user window for Clinician StaffID: " + clinician.getStaffId());
     }
 
@@ -546,6 +547,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
             stage.close();
             availableOrgansViewController.shutdownThreads();
             appointmentRequestViewController.shutdownPropertyChangeListener();
+            ServerEventNotifier.getInstance().removePropertyChangeListener(this);
             LoginController loginController = loader.getController();
             loginController.init(AppController.getInstance(), newStage);
             deleteTempDirectory();
@@ -698,8 +700,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
                 Log.warning("failed to retrieve updated clinician. response code: " + ex.getResponseCode(), ex);
                 AlertWindowFactory.generateError(("could not refresh clinician from the server. Please check your connection before trying again."));
             }
-        } else if(event.getType().equals(EventTypes.APPOINTMENT_UPDATE)){
-
+        } else if (event.getType().equals(EventTypes.APPOINTMENT_UPDATE)) {
             showAppointmentNotifications();
         }
     }
