@@ -2,6 +2,7 @@ package odms.controller.gui.panel;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -129,15 +130,9 @@ public class DonationTabPageController {
         populateOrganLists(user);
         updateButton();
         currentlyDonating.getSelectionModel().selectedItemProperty().addListener(a-> {
-            System.out.println("Im listening");
-            canDonate.getSelectionModel().select(-1);
-            if(currentlyDonating.getSelectionModel().getSelectedItems().isEmpty()){
-                organQualificationStatusChangerButton.setDisable(true);
+            if(currentlyDonating.getSelectionModel().getSelectedItem() == null) {
                 return;
-            }else {
-                organQualificationStatusChangerButton.setDisable(false);
             }
-
             if (!currentlyDonating.getSelectionModel().getSelectedItem().getExpired()){
                 removeExpiryReasonButton.setDisable(true);
                 expireOrganButton.setText("Expire Organ");
@@ -147,12 +142,20 @@ public class DonationTabPageController {
             }
         });
 
-        canDonate.getSelectionModel().selectedItemProperty().addListener(a ->{
-            System.out.println("Im listening here");
-            currentlyDonating.getSelectionModel().select(-1);
+        currentOrgans.getSelectionModel().getSelectedItems().addListener((ListChangeListener<? super Organs>) a ->{
+            if(!currentOrgans.getSelectionModel().getSelectedItems().isEmpty()) {
+                canDonate.getSelectionModel().select(null);
+                organQualificationStatusChangerButton.setDisable(false);
+            } else {
+                organQualificationStatusChangerButton.setDisable(true);
+            }
+        });
+
+        canDonate.getSelectionModel().getSelectedItems().addListener((ListChangeListener<? super Organs>) a ->{
             if(canDonate.getSelectionModel().getSelectedItems().isEmpty()){
                 organQualificationStatusChangerButton.setDisable(true);
             } else {
+                currentOrgans.getSelectionModel().select(null);
                 organQualificationStatusChangerButton.setDisable(false);
             }
         });
