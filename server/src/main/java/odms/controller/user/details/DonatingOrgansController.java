@@ -80,7 +80,7 @@ public class DonatingOrgansController extends BaseController {
     @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/disqualified")
     public Collection<OrgansWithDisqualification> getDisqualifiedOrgans(@PathVariable String nhi) {
         try (Connection connection = driver.getConnection()) {
-            return disqualifiedOrgansHandler.getDisqualifiedOrgans(connection);
+            return disqualifiedOrgansHandler.getDisqualifiedOrgans(connection, nhi);
         } catch (SQLException ex) {
             Log.severe("could not get disqualified organs for user " + nhi, ex);
             throw new ServerDBException(ex);

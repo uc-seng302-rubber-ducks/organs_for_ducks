@@ -3,15 +3,19 @@ package odms.commons.database;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.OrgansWithDisqualification;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 
@@ -20,12 +24,14 @@ public class DisqualifiedOrgansHandlerTest {
     private Connection connection;
     private PreparedStatement mockStmt;
     private DisqualifiedOrgansHandler handler;
+    private ResultSet resultSet;
 
     @Before
     public void beforeTest() throws SQLException {
         connection = mock(Connection.class);
         mockStmt = mock(PreparedStatement.class);
         handler = new DisqualifiedOrgansHandler();
+        resultSet = mock(ResultSet.class);
 
         when(connection.prepareStatement(anyString())).thenReturn(mockStmt);
         doNothing().when(mockStmt).setString(anyInt(), anyString());
@@ -41,9 +47,28 @@ public class DisqualifiedOrgansHandlerTest {
      * @return a collection of OrgansWithDisqualification
      */
     private OrgansWithDisqualification createTestDisqualifiedOrgan(Integer id) {
-        OrgansWithDisqualification testOrgan = new OrgansWithDisqualification(Organs.LIVER, "Testing", LocalDate.now(),"ABC1234");
+        OrgansWithDisqualification testOrgan = new OrgansWithDisqualification(Organs.LIVER, "Testing", LocalDate.now(),"0");
         testOrgan.setDisqualifiedId(id);
         return testOrgan;
+    }
+
+    @Test
+    public void testGetDisqualifiedOrgans_ReturnsList_NoIssues() throws SQLException {
+        OrgansWithDisqualification testOrgan = createTestDisqualifiedOrgan(null);
+        testOrgan.setDisqualifiedId(0);
+        List<OrgansWithDisqualification> disqualifications = new ArrayList<>();
+        disqualifications.add(testOrgan);
+        when(mockStmt.executeQuery()).thenReturn(resultSet);
+        when(resultSet.next()).thenReturn(true, false);
+        when(resultSet.getInt("fkCategoryId")).thenReturn(testOrgan.getOrganType().getDbValue());
+        when(resultSet.getInt("disqualifiedId")).thenReturn(testOrgan.getDisqualifiedId());
+        when(resultSet.getString("description")).thenReturn(testOrgan.getReason());
+        when(resultSet.getString("fkStaffId")).thenReturn(testOrgan.getStaffId());
+        LocalDateTime date = LocalDateTime.now();
+        when(resultSet.getString(anyString())).thenReturn("");
+
+        List<OrgansWithDisqualification> resultCollection = new ArrayList<>(handler.getDisqualifiedOrgans(connection, "ABC2134"));
+        Assert.assertEquals(disqualifications.get(0), resultCollection.get(0));
     }
 
     @Test
