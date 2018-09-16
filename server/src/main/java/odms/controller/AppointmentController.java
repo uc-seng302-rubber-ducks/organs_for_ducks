@@ -128,7 +128,6 @@ public class AppointmentController extends BaseController {
         return new ResponseEntity(HttpStatus.ACCEPTED);
     }
 
-
     @RequestMapping(method = RequestMethod.PATCH, value = "/appointments/{appointmentId}/status")
     public ResponseEntity patchAppointmentStatus(@RequestBody int statusId,
                                                  @PathVariable(name = "appointmentId") int appointmentId) {
@@ -268,7 +267,6 @@ public class AppointmentController extends BaseController {
 
             AppointmentUpdateStrategy appointmentStrategy = handler.getAppointmentStrategy();
             appointmentStrategy.putSingleAppointment(connection, appointment);
-
             socketHandler.broadcast(EventTypes.APPOINTMENT_UPDATE, Integer.toString(appointmentId), Integer.toString(appointmentId));
 
         } catch (SQLException s) {

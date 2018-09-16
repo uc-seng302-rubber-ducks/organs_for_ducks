@@ -15,6 +15,7 @@ import odms.commons.model.Appointment;
 import odms.commons.model.User;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
+import odms.commons.utils.AppointmentTableCellFactory;
 import odms.controller.AppController;
 import odms.controller.gui.panel.logic.UserAppointmentLogicController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
