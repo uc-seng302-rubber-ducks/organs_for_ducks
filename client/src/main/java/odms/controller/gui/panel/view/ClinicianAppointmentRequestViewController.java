@@ -258,9 +258,9 @@ public class ClinicianAppointmentRequestViewController {
     @FXML
     private void populateClinicianTimes(){
         if (appointmentRequestDate.getValue() != null) {
+            availableTimes.add(LocalTime.of(8,00));
             logicController.refreshClincianAvaliableTimes(AppController.getInstance().getAppointmentsBridge(), appointmentRequestDate.getValue());
             appointmentRequestTime.setItems(availableTimes);
-            //TODO change text field to combo box 1-9-2018
         }
 
 

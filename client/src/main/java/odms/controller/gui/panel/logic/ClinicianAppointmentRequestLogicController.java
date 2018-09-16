@@ -29,6 +29,7 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 
 public class ClinicianAppointmentRequestLogicController implements PropertyChangeListener {
@@ -40,6 +41,7 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
     private Clinician clinician;
     private ObservableList<LocalTime> availableTimes;
     private ObservableList<LocalDateTime> bookedTimes;
+
 
     public ClinicianAppointmentRequestLogicController(ObservableList<Appointment> availableAppointment, AppController controller, Clinician clinician, ObservableList<LocalTime> availableTimes) {
         this.availableAppointments = availableAppointment;
@@ -154,11 +156,13 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
 
 
     public void refreshClincianAvaliableTimes(AppointmentsBridge appointmentsbridge, LocalDate wantedDate){
-        System.out.println(wantedDate.toString() + " 00:00");
-        System.out.println(wantedDate.toString() + " 19:00");
         appointmentsbridge.getClinicianAppointmentsTimes(clinician.getStaffId(), wantedDate.atStartOfDay().toString(),wantedDate.atStartOfDay().plusHours(24).toString(), appController.getToken(), bookedTimes);
-        availableTimes.add(LocalTime.of(8,00));
-        System.out.println(availableTimes + "hello");
+        availableTimes.clear();
+        IntStream.range(8,17).forEach(n -> {
+            if (!bookedTimes.contains(LocalDateTime.of(wantedDate,LocalTime.of(n,00)))) {
+                availableTimes.add(LocalTime.of(n,00));
+            }
+        });
     }
 
     /**
