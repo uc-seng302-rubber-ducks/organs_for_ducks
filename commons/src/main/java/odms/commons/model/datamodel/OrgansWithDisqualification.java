@@ -1,8 +1,10 @@
 package odms.commons.model.datamodel;
 
 import odms.commons.model._enum.Organs;
+import odms.commons.utils.Log;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class OrgansWithDisqualification {
 
@@ -67,4 +69,24 @@ public class OrgansWithDisqualification {
     public void setStaffId(String staffId) {
         this.staffId = staffId;
     }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(disqualifiedId, organType, reason, dateDisqualified, staffId, dateEligible);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrgansWithDisqualification organ = (OrgansWithDisqualification) o;
+        if (disqualifiedId == null || organ.disqualifiedId == null) {
+            Log.warning("Trying to compare OrgansWithDisqualifications when at least one does not have a unique id. Comparison failed.");
+            return false;
+        }
+        return disqualifiedId.equals(organ.disqualifiedId);
+
+    }
+
 }

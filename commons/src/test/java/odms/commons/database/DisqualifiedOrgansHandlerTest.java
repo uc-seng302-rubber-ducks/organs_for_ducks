@@ -11,8 +11,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -52,23 +53,41 @@ public class DisqualifiedOrgansHandlerTest {
         return testOrgan;
     }
 
-    @Test
-    public void testGetDisqualifiedOrgans_ReturnsList_NoIssues() throws SQLException {
-        OrgansWithDisqualification testOrgan = createTestDisqualifiedOrgan(null);
-        testOrgan.setDisqualifiedId(0);
-        List<OrgansWithDisqualification> disqualifications = new ArrayList<>();
-        disqualifications.add(testOrgan);
+    private void setUpResultSetWhenMocks(OrgansWithDisqualification testOrgan) throws SQLException {
         when(mockStmt.executeQuery()).thenReturn(resultSet);
         when(resultSet.next()).thenReturn(true, false);
         when(resultSet.getInt("fkCategoryId")).thenReturn(testOrgan.getOrganType().getDbValue());
         when(resultSet.getInt("disqualifiedId")).thenReturn(testOrgan.getDisqualifiedId());
         when(resultSet.getString("description")).thenReturn(testOrgan.getReason());
         when(resultSet.getString("fkStaffId")).thenReturn(testOrgan.getStaffId());
-        LocalDateTime date = LocalDateTime.now();
-        when(resultSet.getString(anyString())).thenReturn("");
+        Long dateLong = Instant.now().truncatedTo(ChronoUnit.MILLIS).toEpochMilli();
+        java.sql.Date date = new java.sql.Date(dateLong);
+        when(resultSet.getDate("dateDisqualified")).thenReturn(date);
+        when(resultSet.getDate("dateEligible")).thenReturn(date);
+    }
+
+    @Test
+    public void testGetDisqualifiedOrgans_ReturnsList_NoIssues() throws SQLException {
+        OrgansWithDisqualification testOrgan = createTestDisqualifiedOrgan(null);
+        testOrgan.setDisqualifiedId(0);
+        List<OrgansWithDisqualification> disqualifications = new ArrayList<>();
+        disqualifications.add(testOrgan);
+        setUpResultSetWhenMocks(testOrgan);
 
         List<OrgansWithDisqualification> resultCollection = new ArrayList<>(handler.getDisqualifiedOrgans(connection, "ABC2134"));
         Assert.assertEquals(disqualifications.get(0), resultCollection.get(0));
+    }
+
+    @Test
+    public void testGetDisqualifiedOrgans_ReturnsList_WithResultSetError() throws SQLException {
+        OrgansWithDisqualification testOrgan = createTestDisqualifiedOrgan(null);
+        testOrgan.setDisqualifiedId(0);
+        setUpResultSetWhenMocks(testOrgan);
+        int incorrectOrganType = -1;
+        when(resultSet.getInt("fkCategoryId")).thenReturn(incorrectOrganType);
+
+        List<OrgansWithDisqualification> resultCollection = new ArrayList<>(handler.getDisqualifiedOrgans(connection, "ABC2134"));
+        Assert.assertTrue(resultCollection.isEmpty());
     }
 
     @Test
