@@ -316,6 +316,6 @@ CREATE EVENT qualifyOrgans
   ON SCHEDULE AT Current_timestamp + Interval 1 DAY
   ON COMPLETION PRESERVE
   DO
-    UPDATE DisqualifiedOrgans set isCurrentlyDisqulifed = 0
+    UPDATE DisqualifiedOrgans set isCurrentlyDisqulified = 0
     WHERE dateEligable <= CURDATE();
 

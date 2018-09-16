@@ -1,7 +1,6 @@
 package odms.commons.database;
 
 import odms.commons.model._enum.Organs;
-import odms.commons.model.datamodel.ExpiryReason;
 import odms.commons.model.datamodel.OrgansWithDisqualification;
 import org.junit.After;
 import org.junit.Before;
@@ -10,7 +9,7 @@ import org.junit.Test;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -42,8 +41,7 @@ public class DisqualifiedOrgansHandlerTest {
      * @return a collection of OrgansWithDisqualification
      */
     private OrgansWithDisqualification createTestDisqualifiedOrgan(Integer id) {
-        ExpiryReason expiryDetails = new ExpiryReason("ABC1234", LocalDateTime.now(), "Testing", "Tester");
-        OrgansWithDisqualification testOrgan = new OrgansWithDisqualification(Organs.LIVER, expiryDetails);
+        OrgansWithDisqualification testOrgan = new OrgansWithDisqualification(Organs.LIVER, "Testing", LocalDate.now(),"ABC1234");
         testOrgan.setDisqualifiedId(id);
         return testOrgan;
     }

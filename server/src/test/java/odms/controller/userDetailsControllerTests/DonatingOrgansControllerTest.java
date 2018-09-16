@@ -19,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -123,8 +122,7 @@ public class DonatingOrgansControllerTest {
      */
     private Collection<OrgansWithDisqualification> createTestCollection() {
         Collection<OrgansWithDisqualification> disqualified = new ArrayList<>();
-        ExpiryReason expiryDetails = new ExpiryReason("ABC1234", LocalDateTime.now(), "Testing", "Tester");
-        OrgansWithDisqualification testOrgan = new OrgansWithDisqualification(Organs.LIVER, expiryDetails);
+        OrgansWithDisqualification testOrgan = new  OrgansWithDisqualification(Organs.LIVER, "Testing", LocalDate.now(),"ABC1234");
 
         disqualified.add(testOrgan);
         return disqualified;
