@@ -228,6 +228,9 @@ public class User extends Undoable<User> implements Listenable {
         for (Map.Entry<Organs, ExpiryReason> entry : organMap) {
             newUser.donorDetails.getOrganMap().put(entry.getKey(), entry.getValue());
         }
+        for (OrgansWithDisqualification disqualification : user.donorDetails.getDisqualifiedOrgans()) {
+            newUser.donorDetails.addDisqualification(disqualification);
+        }
 
         newUser.receiverDetails = new ReceiverDetails(newUser);
         for (Organs o : user.receiverDetails.getOrgans().keySet()) {

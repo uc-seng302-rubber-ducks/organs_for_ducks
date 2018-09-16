@@ -4,6 +4,7 @@ import odms.commons.model.datamodel.OrgansWithDisqualification;
 import odms.commons.utils.Log;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.Collection;
 
 public class DisqualifiedOrgansHandler {
 
+    private static final String CREATE_DISQUALIFIED_STATEMENT = "INSERT INTO DisqualifiedOrgans (fkUserNhi, description, fkOrgan, fkStaffId, dateDisqualified, dateEligible, isCurrentlyDisqualified) VALUES (?, ?, ?, ?, ?, ?, ?)";
     private static final String DELETE_DISQUALIFIED_STATEMENT = "DELETE FROM DisqualifiedOrgans WHERE disqualifiedId = ?";
 
     public Collection<OrgansWithDisqualification> getDisqualifiedOrgans(Connection connection) {
@@ -18,9 +20,21 @@ public class DisqualifiedOrgansHandler {
         return new ArrayList<>();
     }
 
-    public void postDisqualifiedOrgan(Connection connection, Collection<OrgansWithDisqualification> disqualifications) {
-        //for organ in disqualifications
-            //Code for constructing sql goes here
+    public void postDisqualifiedOrgan(Connection connection, Collection<OrgansWithDisqualification> disqualifications, String nhi) throws SQLException {
+        for (OrgansWithDisqualification disqualification : disqualifications) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(CREATE_DISQUALIFIED_STATEMENT)) {
+                preparedStatement.setString(1, nhi);
+                preparedStatement.setString(2, disqualification.getReason());
+                preparedStatement.setInt(3, disqualification.getOrganType().getDbValue());
+                preparedStatement.setString(4, disqualification.getStaffId());
+                preparedStatement.setDate(5, Date.valueOf(disqualification.getDate()));
+                preparedStatement.setDate(6, Date.valueOf(disqualification.getEligibleDate()));
+                preparedStatement.setBoolean(7, true);
+                // todo: do we actually need a boolean flag saying the organ is disqualified?
+
+                preparedStatement.executeUpdate();
+            }
+        }
     }
 
     /**

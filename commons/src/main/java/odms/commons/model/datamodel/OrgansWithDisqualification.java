@@ -9,13 +9,14 @@ public class OrgansWithDisqualification {
     private Integer disqualifiedId;
     private Organs organType;
     private String reason;
-    private LocalDate date;
+    private LocalDate disqualificationDate;
+    private LocalDate eligibleDate;
     private String staffId;
 
     public OrgansWithDisqualification(Organs organType, ExpiryReason disqualificationDetails) {
         this.organType = organType;
         this.reason = disqualificationDetails.getReason();
-        this.date = disqualificationDetails.getTimeOrganExpired().toLocalDate();
+        this.disqualificationDate = disqualificationDetails.getTimeOrganExpired().toLocalDate();
         this.staffId = disqualificationDetails.getId();
     }
 
@@ -44,11 +45,19 @@ public class OrgansWithDisqualification {
     }
 
     public LocalDate getDate() {
-        return date;
+        return disqualificationDate;
     }
 
     public void setDate(LocalDate date) {
-        this.date = date;
+        this.disqualificationDate = date;
+    }
+
+    public LocalDate getEligibleDate() {
+        return eligibleDate;
+    }
+
+    public void setEligibleDate(LocalDate eligibleDate) {
+        this.eligibleDate = eligibleDate;
     }
 
     public String getStaffId() {
@@ -57,5 +66,16 @@ public class OrgansWithDisqualification {
 
     public void setStaffId(String staffId) {
         this.staffId = staffId;
+    }
+
+    @Override
+    public String toString() {
+        return "OrgansWithDisqualification{" +
+                "organType=" + organType +
+                ", reason='" + reason + '\'' +
+                ", disqualificationDate=" + disqualificationDate +
+                ", eligibleDate=" + eligibleDate +
+                ", staffId='" + staffId + '\'' +
+                '}';
     }
 }
