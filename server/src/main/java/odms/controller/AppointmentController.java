@@ -98,6 +98,18 @@ public class AppointmentController extends BaseController {
     }
 
     @IsClinician
+    @RequestMapping(method = RequestMethod.GET, value = "/clinicians/{staffId}/appointments/pending")
+    public int getPendingAppointments(@PathVariable String staffId) {
+        try (Connection connection = driver.getConnection()) {
+            return handler.getPendingAppointmentsCount(connection, staffId);
+        } catch (SQLException e) {
+            Log.severe("Got bad response from DB. SQL error code: " + e.getErrorCode(), e);
+            throw new ServerDBException(e);
+        }
+    }
+
+
+    @IsClinician
     @RequestMapping(method = RequestMethod.GET, value = "/clinicians/{staffId}/appointmentsTimes")
     public Collection<LocalDateTime> getClinicainAppoinmentsTimes(@PathVariable(name = "staffId") String staffid,
                                                                   @RequestParam(name = "startDateTime") String startDate,
@@ -264,7 +276,7 @@ public class AppointmentController extends BaseController {
                                          @PathVariable(value = "appointmentId") Integer appointmentId,
                                          @RequestBody Appointment appointment) {
         try (Connection connection = driver.getConnection()) {
-            if (!validateRequestedAppointmentTime(appointment.getRequestedClinicianId(), appointment.getRequestedDate()) && !appointment.getAppointmentStatus().equals(AppointmentStatus.REJECTED) && !appointment.getAppointmentStatus().equals(AppointmentStatus.REJECTED_SEEN)) {
+            if (!validateRequestedAppointmentTime(staffId, appointment.getRequestedDate()) && !appointment.getAppointmentStatus().equals(AppointmentStatus.REJECTED) && !appointment.getAppointmentStatus().equals(AppointmentStatus.REJECTED_SEEN)) {
                 return new ResponseEntity(HttpStatus.BAD_REQUEST);
             }
 

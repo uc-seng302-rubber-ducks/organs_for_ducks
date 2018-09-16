@@ -1,27 +1,23 @@
 package odms.controller.gui.panel.view;
 
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Stage;
 import odms.commons.model.Appointment;
 import odms.commons.model.Clinician;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
 import odms.commons.utils.AttributeValidation;
-import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
 import odms.controller.gui.panel.logic.ClinicianAppointmentRequestLogicController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
-import odms.controller.gui.popup.view.RejectAppointmentReasonViewController;
 import odms.socket.ServerEventNotifier;
 
 import java.io.IOException;
@@ -29,6 +25,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class ClinicianAppointmentRequestViewController {
 
@@ -77,17 +74,25 @@ public class ClinicianAppointmentRequestViewController {
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm");
 
-
     /**
      * Initialises the panel
      */
     public void init(AppController appController, Clinician clinician) {
         availableAppointments.addListener((ListChangeListener<? super Appointment>) observable -> populateTable());
         logicController = new ClinicianAppointmentRequestLogicController(availableAppointments, appController, clinician, availableTimes);
+        appointmentRequestDescription.setTextFormatter(new TextFormatter<String>(change ->
+                change.getControlNewText().length() <= 255 ? change : null)); // limits user input to 255 characters
+
         initAppointmentTable();
         logicController.refreshClincianAvaliableTimes(AppController.getInstance().getAppointmentsBridge(), LocalDate.now());
         populateClinicianTimes();
     }
+
+    /**
+     * Compares the appointment status value so that when applied to the table view, pending appointments will be
+     * displayed at the top of the table
+     */
+    private Comparator<AppointmentStatus> statusComparator = Comparator.comparingInt(AppointmentStatus::getDbValue);
 
     /**
      * Populates the table view of appointments for the specified clinician
@@ -98,13 +103,24 @@ public class ClinicianAppointmentRequestViewController {
         clinicianAppointmentStatusColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentStatus"));
         clinicianAppointmentDateColumn.setCellValueFactory(foo -> new SimpleStringProperty(foo.getValue().getRequestedDate().format(formatter)));
         clinicianAppointmentCategoryColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentCategory"));
+        clinicianAppointmentStatusColumn.setCellFactory(cell -> AppointmentTableCellFactory.generateAppointmentTableCell());
+
         logicController.updateTable(0);
         populateTable();
         setOnClickBehaviour();
+        clinicianAppointmentStatusColumn.setSortType(TableColumn.SortType.ASCENDING);
+        clinicianAppointmentStatusColumn.setComparator(statusComparator);
     }
 
+    /**
+     * Creates a sorted list to change the default ordering of the table view and then populates the table
+     * with all of the clinicians appointments
+     */
     private void populateTable() {
+        SortedList<Appointment> sortedAppointments = new SortedList<>(availableAppointments);
+        sortedAppointments.comparatorProperty().bind(clinicianAppointmentsRequestView.comparatorProperty());
         clinicianAppointmentsRequestView.setItems(availableAppointments);
+        Platform.runLater(() -> clinicianAppointmentsRequestView.getSortOrder().add(clinicianAppointmentStatusColumn));
     }
 
     /**
@@ -175,36 +191,29 @@ public class ClinicianAppointmentRequestViewController {
     }
 
     /**
-     * @see ClinicianAppointmentRequestLogicController rejectAppointment()
+     * @see ClinicianAppointmentRequestLogicController rejectAppointment(), cancelAppointment()
      */
     @FXML
     private void rejectAppointment() {
         Appointment selectedAppointment = getSelectedAppointment();
 
         if (selectedAppointment == null) {
-            AlertWindowFactory.generateInfoWindow("You must select an appointment to reject");
+            AlertWindowFactory.generateInfoWindow("You must select an appointment");
             return;
         }
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/appointmentRejection.fxml"));
-        Stage rejectionStage = new Stage();
-        Parent root;
-        try {
-            root = loader.load();
-            RejectAppointmentReasonViewController rejectionController = loader.getController();
-            rejectionStage.setScene(new Scene(root));
+        AppointmentStatus status = selectedAppointment.getAppointmentStatus();
 
-            rejectionController.init(selectedAppointment, rejectionStage);
-            rejectionStage.show();
-        } catch (IOException e) {
-            Log.severe("failed to load login window FXML", e);
+        if (status == AppointmentStatus.PENDING) {
+            logicController.rejectAppointment(selectedAppointment);
+
+        } else if (status == AppointmentStatus.ACCEPTED || status == AppointmentStatus.ACCEPTED_SEEN) {
+            logicController.cancelAppointment(selectedAppointment);
         }
-
-         // logicController.rejectAppointment(selectedAppointment);
     }
 
     /**
-     * @see ClinicianAppointmentRequestLogicController rejectAppointment()
+     * @see ClinicianAppointmentRequestLogicController acceptAppointment(), updateAppointment()
      */
     @FXML
     private void acceptAppointment() {
@@ -213,14 +222,35 @@ public class ClinicianAppointmentRequestViewController {
             AlertWindowFactory.generateInfoWindow("You must select an appointment to accept");
             return;
         }
+        boolean valid = true;
+
 
         if (AttributeValidation.validateTimeString(appointmentRequestTime.getSelectionModel().getSelectedItem().toString())) {
             logicController.acceptAppointment(selectedAppointment, appointmentRequestTime.getSelectionModel().getSelectedItem().toString(), AppController.getInstance().getAppointmentsBridge());
         } else {
             appointmentRequestTime.setStyle("-fx-background-color: rgba(100%, 0%, 0%, 0.25); -fx-border-color: RED");
+            valid = false;
         }
 
-        //         logicController.acceptAppointment(selectedAppointment);
+        if (!AttributeValidation.validateDateOfAppointment(appointmentRequestDate.getValue())) {
+            appointmentRequestDate.setStyle("-fx-background-color: rgba(100%, 0%, 0%, 0.25); -fx-border-color: RED");
+            valid = false;
+        }
+
+        AppointmentStatus status = selectedAppointment.getAppointmentStatus();
+
+        if (valid) {
+            if (status == AppointmentStatus.PENDING) {
+                logicController.updateAppointment(selectedAppointment, appointmentRequestCategory.getValue(),
+                        appointmentRequestDate.getValue(), appointmentRequestTime.getText(), appointmentRequestDescription.getText(), true);
+            } else if (status == AppointmentStatus.ACCEPTED || status == AppointmentStatus.ACCEPTED_SEEN) {
+                logicController.updateAppointment(selectedAppointment, appointmentRequestCategory.getValue(),
+                        appointmentRequestDate.getValue(), appointmentRequestTime.getText(), appointmentRequestDescription.getText(), false);
+            } else {
+                AlertWindowFactory.generateInfoWindow("This appointment is no longer available");
+            }
+        }
+
     }
 
     /**

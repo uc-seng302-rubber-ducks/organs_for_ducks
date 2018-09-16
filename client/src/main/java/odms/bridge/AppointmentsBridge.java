@@ -56,7 +56,7 @@ public class AppointmentsBridge extends Bifrost {
         try (Response res = client.newCall(request).execute()) {
             return res.body().string().equalsIgnoreCase("true");
         } catch (NullPointerException | IOException ex) {
-            Log.warning("Failed to check for cancelled appointments", ex);
+            Log.warning("Failed to check for " + status.toString() + " appointments for " + id, ex);
             return false;
         }
     }
@@ -191,9 +191,34 @@ public class AppointmentsBridge extends Bifrost {
                 return null;
             }
         } catch (NullPointerException | IOException ex) {
-            Log.warning("", ex);
+            Log.warning("Failed to get an unseen appointment for user " + nhi, ex);
             return null;
         }
+    }
+
+    /**
+     * Gets the count of a clinicians pending appointments
+     *
+     * @param staffId clinicians appointments to get
+     * @param token auth token for the server
+     * @return number of appointments pending
+     */
+    public int getPendingAppointments(String staffId, String token) {
+        String url = String.format("%s/clinicians/%s/appointments/pending", ip, staffId);
+        Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).build();
+        try (Response res = client.newCall(request).execute()) {
+            try {
+                return Integer.parseInt(res.body().string().replaceAll("\\[", "").replaceAll("]", ""));
+            } catch (IOException e) {
+                Log.severe("response body for pending appointments could not be parsed", e);
+            } catch (NumberFormatException e) {
+                Log.severe("Invalid pending appointment response returned.", e);
+            }
+            return 0;
+        } catch (IOException e) {
+            Log.severe("request to pending appointments failed", e);
+        }
+        return 0;
     }
 
     /**
@@ -307,10 +332,10 @@ public class AppointmentsBridge extends Bifrost {
      *
      * @param appointment the updated appointment
      */
-    public void putAppointment(Appointment appointment) {
+    public void putAppointment(Appointment appointment, String token) {
         String url = String.format("%s/clinicians/%s%s/%d", ip, appointment.getRequestedClinicianId(), APPOINTMENTS, appointment.getAppointmentId());
         RequestBody body = RequestBody.create(json, new Gson().toJson(appointment));
-        Request request = new Request.Builder().put(body).url(url).build();
+        Request request = new Request.Builder().addHeader(tokenHeader, token).put(body).url(url).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {

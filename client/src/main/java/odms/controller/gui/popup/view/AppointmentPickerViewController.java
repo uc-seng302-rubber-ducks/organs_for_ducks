@@ -1,10 +1,7 @@
 package odms.controller.gui.popup.view;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import odms.commons.model.User;
 import odms.commons.model._enum.AppointmentCategory;
@@ -45,6 +42,9 @@ public class AppointmentPickerViewController {
     public void init(User user, Stage stage) {
         this.logicController = new AppointmentPickerLogicController(user, stage);
         appointmentBookingTypeInput.getItems().addAll(AppointmentCategory.values());
+
+        appointmentBookingDescriptionInput.setTextFormatter(new TextFormatter<String>(change ->
+                change.getControlNewText().length() <= 255 ? change : null)); // limits user input to 255 characters
         loadPreferredClinicians(user);
     }
 

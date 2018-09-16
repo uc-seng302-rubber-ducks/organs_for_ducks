@@ -603,12 +603,17 @@ public class DBHandler {
             try (ResultSet resultSet = stmt.executeQuery()) {
                 MedicalProcedure medicalProcedure = null;
                 while (resultSet != null && resultSet.next()) {
-                    if (medicalProcedure != null) {
+                    MedicalProcedure holdingMedicalProcedure = new MedicalProcedure(resultSet.getDate(2).toLocalDate(), resultSet.getString(1), resultSet.getString(3), null);
+                    if (medicalProcedure != null && medicalProcedure.equals(holdingMedicalProcedure)) {
                         medicalProcedure.addOrgan(Organs.valueOf(resultSet.getString(4)));
 
                     } else {
                         medicalProcedure = new MedicalProcedure(resultSet.getDate(2).toLocalDate(), resultSet.getString(1), resultSet.getString(3), null);
-                        medicalProcedure.addOrgan(Organs.valueOf(resultSet.getString(4)));
+                        try {
+                            medicalProcedure.addOrgan(Organs.valueOf(resultSet.getString(4)));
+                        } catch (NullPointerException e){
+                            // just needs to catch can move on as normal if this occurs
+                        }
                         user.getMedicalProcedures().add(medicalProcedure);
                     }
                 }
@@ -1403,6 +1408,24 @@ public class DBHandler {
             }
         }
         return bookedAppointmnetDateTimes;
+    }
+
+    /**
+     * Gets the number of appointments pending for a clinician
+     * @param connection connection to the database
+     * @param staffId clinicians staff id
+     * @return number of pending appointments
+     * @throws SQLException thrown on invalid SQL results
+     */
+    public int getPendingAppointmentsCount(Connection connection, String staffId) throws SQLException {
+        try(PreparedStatement preparedStatement = connection.prepareStatement("SELECT count(*) FROM AppointmentDetails JOIN AppointmentCategory ON fkCategoryId = categoryId WHERE fkStaffId = ? AND fkStatusId = 1")){
+            preparedStatement.setString(1, staffId);
+            try(ResultSet resultSet = preparedStatement.executeQuery()){
+                resultSet.next();
+                return resultSet.getInt(1);
+            }
+        }
+
     }
 
     /**
