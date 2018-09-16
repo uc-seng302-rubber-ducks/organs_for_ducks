@@ -249,6 +249,36 @@ public class AppointmentControllerTests {
     }
 
     @Test
+    public void validateRequestedAppointmentTimeShouldReturnFalseWhenSecondsIsNot0() throws SQLException {
+        LocalDateTime testDateTime = LocalDate.now().plusDays(1).atTime(9, 0, 1);
+        boolean result = controller.validateRequestedAppointmentTime("",testDateTime);
+        Assert.assertEquals(false, result);
+    }
+
+    @Test
+    public void validateRequestedAppointmentTimeShouldReturnFalseWhenDateTimeClashesWithDateTimeOfBookedAppointment() throws SQLException {
+        List<LocalDateTime> testBookedAppointmentTimes = new ArrayList<>();
+        LocalDateTime testDateTime = LocalDate.now().plusDays(1).atTime(9, 0);
+        testBookedAppointmentTimes.add(testDateTime);
+        when(handler.getBookedAppointmentTimes(connection, "")).thenReturn(testBookedAppointmentTimes);
+
+        boolean result = controller.validateRequestedAppointmentTime("",testDateTime);
+        Assert.assertEquals(false, result);
+    }
+
+    @Test
+    public void validateRequestedAppointmentTimeShouldReturnTrueWhenDateTimeIsValidAndNotClashWithDateTimeOfBookedAppointment() throws SQLException {
+        List<LocalDateTime> testBookedAppointmentTimes = new ArrayList<>();
+        LocalDateTime testDateTime1 = LocalDate.now().plusDays(1).atTime(9, 0);
+        LocalDateTime testDateTime2 = LocalDate.now().plusDays(1).atTime(12, 0);
+        testBookedAppointmentTimes.add(testDateTime1);
+        when(handler.getBookedAppointmentTimes(connection, "")).thenReturn(testBookedAppointmentTimes);
+
+        boolean result = controller.validateRequestedAppointmentTime("",testDateTime2);
+        Assert.assertEquals(true, result);
+    }
+
+    @Test
     public void testCheckStatusUpdateAllowedReturnsTrueOnAcceptedSeen() throws SQLException {
         int currentStatus = 2;
         int newStatus = 7;
@@ -341,35 +371,5 @@ public class AppointmentControllerTests {
         int newStatus = AppointmentStatus.CANCELLED_BY_CLINICIAN_SEEN.getDbValue();
         when(driver.getConnection()).thenThrow(new SQLException());
         controller.checkStatusUpdateAllowed(0, newStatus);
-    }
-
-    @Test
-    public void validateRequestedAppointmentTimeShouldReturnFalseWhenSecondsIsNot0() throws SQLException {
-        LocalDateTime testDateTime = LocalDate.now().plusDays(1).atTime(9, 0, 1);
-        boolean result = controller.validateRequestedAppointmentTime("",testDateTime);
-        Assert.assertEquals(false, result);
-    }
-
-    @Test
-    public void validateRequestedAppointmentTimeShouldReturnFalseWhenDateTimeClashesWithDateTimeOfBookedAppointment() throws SQLException {
-        List<LocalDateTime> testBookedAppointmentTimes = new ArrayList<>();
-        LocalDateTime testDateTime = LocalDate.now().plusDays(1).atTime(9, 0);
-        testBookedAppointmentTimes.add(testDateTime);
-        when(handler.getBookedAppointmentTimes(connection, "")).thenReturn(testBookedAppointmentTimes);
-
-        boolean result = controller.validateRequestedAppointmentTime("",testDateTime);
-        Assert.assertEquals(false, result);
-    }
-
-    @Test
-    public void validateRequestedAppointmentTimeShouldReturnTrueWhenDateTimeIsValidAndNotClashWithDateTimeOfBookedAppointment() throws SQLException {
-        List<LocalDateTime> testBookedAppointmentTimes = new ArrayList<>();
-        LocalDateTime testDateTime1 = LocalDate.now().plusDays(1).atTime(9, 0);
-        LocalDateTime testDateTime2 = LocalDate.now().plusDays(1).atTime(12, 0);
-        testBookedAppointmentTimes.add(testDateTime1);
-        when(handler.getBookedAppointmentTimes(connection, "")).thenReturn(testBookedAppointmentTimes);
-
-        boolean result = controller.validateRequestedAppointmentTime("",testDateTime2);
-        Assert.assertEquals(true, result);
     }
 }

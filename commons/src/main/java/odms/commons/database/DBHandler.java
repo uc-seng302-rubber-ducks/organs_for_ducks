@@ -598,12 +598,17 @@ public class DBHandler {
             try (ResultSet resultSet = stmt.executeQuery()) {
                 MedicalProcedure medicalProcedure = null;
                 while (resultSet != null && resultSet.next()) {
-                    if (medicalProcedure != null) {
+                    MedicalProcedure holdingMedicalProcedure = new MedicalProcedure(resultSet.getDate(2).toLocalDate(), resultSet.getString(1), resultSet.getString(3), null);
+                    if (medicalProcedure != null && medicalProcedure.equals(holdingMedicalProcedure)) {
                         medicalProcedure.addOrgan(Organs.valueOf(resultSet.getString(4)));
 
                     } else {
                         medicalProcedure = new MedicalProcedure(resultSet.getDate(2).toLocalDate(), resultSet.getString(1), resultSet.getString(3), null);
-                        medicalProcedure.addOrgan(Organs.valueOf(resultSet.getString(4)));
+                        try {
+                            medicalProcedure.addOrgan(Organs.valueOf(resultSet.getString(4)));
+                        } catch (NullPointerException e){
+                            // just needs to catch can move on as normal if this occurs
+                        }
                         user.getMedicalProcedures().add(medicalProcedure);
                     }
                 }
@@ -1027,7 +1032,7 @@ public class DBHandler {
     }
 
     /**
-     * gets all relevant details relating to users waiting to receive an organ transplant
+     * Gets all relevant details relating to users waiting to receive an organ transplant
      *
      * @param conn connection to the target database
      * @param nhi  nhi of user to find details for
@@ -1048,7 +1053,6 @@ public class DBHandler {
                 "FROM EmergencyContactDetails)) Q ON U.nhi = Q.fkUserNhi " +
                 "LEFT JOIN OrganAwaitingDates Dates ON awaitingId = Dates.fkAwaitingId" +
                 " WHERE Dates.dateDeregistered IS NULL AND U.nhi = ? AND organName = ?";
-
 
         try (PreparedStatement stmt = conn.prepareStatement(queryString)) {
             stmt.setString(1, nhi);
@@ -1072,7 +1076,6 @@ public class DBHandler {
                                 selectedOrgan, dateRegistered, results.getString("region"), age, bloodType);
                     }
                 }
-
             }
         }
         return null;
@@ -1081,9 +1084,9 @@ public class DBHandler {
     /**
      * Gets the user's profile photo on the database based on user's ID.
      *
-     * @param <T>        generic for type of the user
-     * @param role       user's role. e.g. Clinician.class
-     * @param roleId     id of user
+     * @param <T> generic for type of the user
+     * @param role user's role. e.g. Clinician.class
+     * @param roleId id of user
      * @param connection connection to the target database
      * @return Profile Picture of type ImageStream if such user exists or has a profile picture, null otherwise.
      * @throws SQLException exception thrown during the transaction
@@ -1457,6 +1460,7 @@ public class DBHandler {
 
     /**
      * Gets an appointment from the database that is accepted or rejected and has not been seen by the specified user.
+     *
      * @param connection Connection to the target database
      * @param nhi        Nhi of the user to check appointments for
      * @return           Appointment that the user has not seen but has been updated
@@ -1490,6 +1494,7 @@ public class DBHandler {
 
     /**
      * Gets the status id of the appointment with the specified id
+     *
      * @param connection connection to the database
      * @param apptId Id of the appointment to update
      * @return integer of the status id
@@ -1509,6 +1514,7 @@ public class DBHandler {
 
     /**
      * Gets a list of clinicians with only their id and names, from a specific region
+     *
      * @param connection  Connection to the target database
      * @param userNhi nhi of the user to ge the preferred clinician from
      * @return the Collection of clinicians
@@ -1536,6 +1542,7 @@ public class DBHandler {
 
     /**
      * Updates the preferred clinician of a user.
+     *
      * @param connection Connection to the target database
      * @param userNhi nhi of the user to ge the preferred clinician from
      * @param staffId identifier for the preferred clinician
