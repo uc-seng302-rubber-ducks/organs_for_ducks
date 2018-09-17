@@ -26,6 +26,8 @@ public class User extends Undoable<User> implements Listenable {
 
     //<editor-fold desc="properties">
     @Expose
+    private int uniqueId; //identifier used in the database
+    @Expose
     private String nhi;
     @Expose
     private String name;
@@ -75,14 +77,10 @@ public class User extends Undoable<User> implements Listenable {
     private List<Disease> pastDiseases;
     @Expose
     private List<Disease> currentDiseases;
-
     @Expose
     private transient String profilePhotoFilePath;
     private transient List<Change> changes;
     private transient PropertyChangeSupport pcs;
-    //</editor-fold>
-
-
     /**
      * Constructor for a User
      *
@@ -123,8 +121,6 @@ public class User extends Undoable<User> implements Listenable {
         contact.setAttachedUser(this);
         this.profilePhotoFilePath = "";
     }
-
-
     /**
      * empty constructor to allow an empty user to be created for the gui
      */
@@ -161,6 +157,7 @@ public class User extends Undoable<User> implements Listenable {
         contact.setAttachedUser(this);
         this.profilePhotoFilePath = "";
     }
+    //</editor-fold>
 
     public static User clone(User user) {
         User newUser = new User();
@@ -277,6 +274,14 @@ public class User extends Undoable<User> implements Listenable {
         return newUser;
     }
 
+    public int getUniqueId() {
+        return uniqueId;
+    }
+
+    public void setUniqueId(int uniqueId) {
+        this.uniqueId = uniqueId;
+    }
+
     public DeathDetails getDeathDetails() {
         return deathDetails;
     }
@@ -285,7 +290,7 @@ public class User extends Undoable<User> implements Listenable {
         this.deathDetails = deathDetails;
     }
 
-    public String getDeathCity(){
+    public String getDeathCity() {
         return deathDetails.getCity();
     }
 
@@ -607,7 +612,7 @@ public class User extends Undoable<User> implements Listenable {
                 : "Removed moment of death"));
     }
 
-    public LocalDateTime getMomentDeath(){
+    public LocalDateTime getMomentDeath() {
         return deathDetails.getMomentOfDeath();
     }
 
@@ -910,15 +915,15 @@ public class User extends Undoable<User> implements Listenable {
         return currentDiseases;
     }
 
+    public void setCurrentDiseases(List<Disease> currentDiseases) {
+        this.currentDiseases = currentDiseases;
+    }
+
     public void addCurrentDisease(Disease currentDisease) {
         this.saveStateForUndo();
         updateLastModified();
         currentDiseases.add(currentDisease);
         addChange(new Change("Added current disease " + currentDisease.toString()));
-    }
-
-    public void setCurrentDiseases(List<Disease> currentDiseases) {
-        this.currentDiseases = currentDiseases;
     }
 
     public List<Disease> getPastDiseases() {
@@ -1102,7 +1107,7 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public List<Change> getChanges() {
-        if(changes == null)
+        if (changes == null)
             changes = new ArrayList<>();
         return changes;
     }
@@ -1219,7 +1224,7 @@ public class User extends Undoable<User> implements Listenable {
                 ",\npreviousMedication=" + previousMedication +
                 ",\ncurrentMedication=" + currentMedication +
                 ",\nmedicalProcedures=" + medicalProcedures +
-                ",\n" +donorDetails.toString() +
+                ",\n" + donorDetails.toString() +
                 ",\n" + receiverDetails.toString() +
                 ",\ncommonOrgans=" + commonOrgans +
                 ",\npastDiseases=" + pastDiseases +
