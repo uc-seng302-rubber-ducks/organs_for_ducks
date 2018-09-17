@@ -52,8 +52,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
 
     @Test
     public void testSignUpBasicInfo() {
-
-        setTextField(this,"#nhiInput","ADE1987");
+        setTextField(this,"#newUserNhiInput","ADE1987");
         setTextField(this,"#fNameInput","Dwayne");
         lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
         clickOnButton(this,"#confirmButton");
@@ -63,23 +62,23 @@ public class CreateUserControllerGUITest extends ApplicationTest {
     @Test
     public void testSignUpNoInfo() {
         clickOnButton(this,"#confirmButton");
-        verifyThat("#invalidFirstName", Node::isVisible);
-        verifyThat("#invalidNHI", Node::isVisible);
-        verifyThat("#invalidDOB", Node::isVisible);
+        verifyThat("#fNameErrorLabel", Node::isVisible);
+        verifyThat("#nhiErrorLabel", Node::isVisible);
+        verifyThat("#dobErrorLabel", Node::isVisible);
     }
 
     @Test
     public void testFutureDob() {
-        setTextField(this,"#nhiInput","ADE1987");
+        setTextField(this,"#newUserNhiInput","ADE1987");
         setTextField(this,"#fNameInput","Dwayne");
         lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.now().plusYears(10));
         clickOnButton(this,"#confirmButton");
-        verifyThat("#invalidDOB", Node::isVisible);
+        verifyThat("#dobErrorLabel", Node::isVisible);
     }
 
     @Test
     public void testHealthDetails() {
-        setTextField(this,"#nhiInput","ADE1987");
+        setTextField(this,"#newUserNhiInput","ADE1987");
         setTextField(this,"#fNameInput","Dwayne");
         lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
         clickOn("#birthGenderComboBox");
@@ -105,7 +104,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
 
     @Test
     public void testPreferredName() {
-        setTextField(this,"#nhiInput","ADE1987");
+        setTextField(this,"#newUserNhiInput","ADE1987");
         setTextField(this,"#fNameInput","Dwayne");
         setTextField(this,"#preferredFNameTextField","The Rock");
         lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
@@ -115,7 +114,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
 
     @Test
     public void testHomePhoneInput() {
-        setTextField(this,"#nhiInput","ADE1987");
+        setTextField(this,"#newUserNhiInput","ADE1987");
         setTextField(this,"#fNameInput","Dwayne");
         setTextField(this,"#phone","033552847");
         lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
@@ -126,37 +125,37 @@ public class CreateUserControllerGUITest extends ApplicationTest {
 
     @Test
     public void testInvalidHomePhone() {
-        setTextField(this,"#nhiInput","ADE1987");
+        setTextField(this,"#newUserNhiInput","ADE1987");
         setTextField(this,"#fNameInput","Dwayne");
         lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
         setTextField(this,"#phone","asdf");
         clickOnButton(this,"#confirmButton");
-        verifyThat("#errorLabel", Node::isVisible);
+        verifyThat("#homePhoneErrorLabel", Node::isVisible);
     }
 
     @Test
     public void testInvalidEmail() {
-        setTextField(this,"#nhiInput","ADE1987");
+        setTextField(this,"#newUserNhiInput","ADE1987");
         setTextField(this,"#fNameInput","Dwayne");
         setTextField(this,"#email","asdf");
         lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));;
         clickOnButton(this,"#confirmButton");
-        verifyThat("#errorLabel", Node::isVisible);
+        verifyThat("#emailErrorLabel", Node::isVisible);
     }
 
     @Test
     public void testInvalidMobilePhone() {
-        setTextField(this,"#nhiInput","ADE1987");
+        setTextField(this,"#newUserNhiInput","ADE1987");
         setTextField(this,"#fNameInput","Dwayne");
         setTextField(this,"#cell","asdf");
         lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
         clickOnButton(this,"#confirmButton");
-        verifyThat("#errorLabel", Node::isVisible);
+        verifyThat("#cellPhoneErrorLabel", Node::isVisible);
     }
 
     @Test
     public void testValidMobilePhone() {
-        setTextField(this,"#nhiInput","ADE1987");
+        setTextField(this,"#newUserNhiInput","ADE1987");
         setTextField(this,"#fNameInput","Dwayne");
         lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
         setTextField(this,"#cell","0224973642");
@@ -167,7 +166,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
 
     @Test
     public void testValidEmail() {
-        setTextField(this,"#nhiInput","ADE1987");
+        setTextField(this,"#newUserNhiInput","ADE1987");
         setTextField(this,"#fNameInput","Dwayne");
         lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
         setTextField(this,"#email","dwayneRock@gmail.com");
@@ -178,7 +177,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
 
     @Test
     public void testValidAddress() {
-            setTextField(this, "#nhiInput", "ADE1987");
+            setTextField(this, "#newUserNhiInput", "ADE1987");
             setTextField(this, "#fNameInput", "Dwayne");
             setDateValue(this, "#dobInput", LocalDate.now().minusYears(1));
             setTextField(this, "#streetNumber", "76B");
@@ -200,11 +199,11 @@ public class CreateUserControllerGUITest extends ApplicationTest {
 
     @Test
     public void testValidEmergencyContact() {
-        setTextField(this,"#nhiInput","ADE1987");
+        setTextField(this,"#newUserNhiInput","ADE1987");
         setTextField(this,"#fNameInput","Dwayne");
         lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
         setTextField(this,"#ecName","John Cena");
-        setTextField(this,"#ecCell","0214583341");
+        setTextField(this,"#ecCellPhone","0214583341");
         clickOnButton(this,"#confirmButton");
         clickOn("#detailsTab");
         verifyThat("#eName", LabeledMatchers.hasText("John Cena"));
@@ -213,11 +212,11 @@ public class CreateUserControllerGUITest extends ApplicationTest {
 
     @Test
     public void testValidEmergencyContactAddress() {
-            setTextField(this, "#nhiInput", "ADE1987");
+            setTextField(this, "#newUserNhiInput", "ADE1987");
             setTextField(this, "#fNameInput", "Dwayne");
         setDateValue(this, "#dobInput", LocalDate.now().minusYears(1));
             setTextField(this, "#ecName", "John Cena");
-            setTextField(this, "#ecCell", "0214583341");
+            setTextField(this, "#ecCellPhone", "0214583341");
             setTextField(this, "#ecStreetNumber", "55E");
             setTextField(this, "#ecStreet", "Oxford St");
             setTextField(this, "#ecNeighborhood", "Ilam");
@@ -237,31 +236,31 @@ public class CreateUserControllerGUITest extends ApplicationTest {
 
     @Test
     public void testInvalidEmergencyContactName() {
-        setTextField(this,"#nhiInput","ADE1987");
+        setTextField(this,"#newUserNhiInput","ADE1987");
         setTextField(this,"#fNameInput","Dwayne");
         lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
-        setTextField(this,"#ecCell","0214583341");
+        setTextField(this,"#ecCellPhone","0214583341");
         clickOnButton(this,"#confirmButton");
-        verifyThat("#errorLabel", LabeledMatchers.hasText("Name and cell phone number are required for an emergency contact."));
+        verifyThat("#eNameErrorLabel", Node::isVisible);
     }
 
     @Test
     public void testInvalidEmergencyPhone() {
-        setTextField(this,"#nhiInput","ADE1987");
+        setTextField(this,"#newUserNhiInput","ADE1987");
         setTextField(this,"#fNameInput","Dwayne");
         lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
         setTextField(this,"#ecName","John Cena");
         clickOnButton(this,"#confirmButton");
-        verifyThat("#errorLabel", LabeledMatchers.hasText("Name and cell phone number are required for an emergency contact."));
+        verifyThat("#eCellPhoneErrorLabel", Node::isVisible);
     }
 
     @Test
     public void testAllEmergencyDetails() {
-        setTextField(this,"#nhiInput","ADE1987");
+        setTextField(this,"#newUserNhiInput","ADE1987");
         setTextField(this,"#fNameInput","Dwayne");
         lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
         setTextField(this,"#ecName","John Cena");
-        setTextField(this,"#ecCell","0221557621");
+        setTextField(this,"#ecCellPhone","0221557621");
         setTextField(this,"#ecPhone","033594573");
         setTextField(this,"#ecEmail","johnCena@gmail.com");
         setTextField(this,"#ecRelationship","Leader");
