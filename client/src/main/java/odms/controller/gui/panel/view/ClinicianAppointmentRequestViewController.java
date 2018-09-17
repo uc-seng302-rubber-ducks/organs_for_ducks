@@ -236,10 +236,15 @@ public class ClinicianAppointmentRequestViewController {
         }
         boolean valid = true;
 
-
-        if (!AttributeValidation.validateTimeString(appointmentRequestTime.getValue().toString())) {
-            appointmentRequestTime.setStyle("-fx-background-color: rgba(100%, 0%, 0%, 0.25); -fx-border-color: RED");
+        if (appointmentRequestTime.getSelectionModel().getSelectedItem() == null){
             valid = false;
+            AlertWindowFactory.generateInfoWindow("please pick a time");
+        } else {
+
+            if (!AttributeValidation.validateTimeString(appointmentRequestTime.getValue().toString())) {
+                appointmentRequestTime.setStyle("-fx-background-color: rgba(100%, 0%, 0%, 0.25); -fx-border-color: RED");
+                valid = false;
+            }
         }
 
         if (!AttributeValidation.validateDateOfAppointment(appointmentRequestDate.getValue())) {
