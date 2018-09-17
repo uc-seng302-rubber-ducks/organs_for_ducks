@@ -11,8 +11,7 @@ import odms.controller.AppController;
 
 import java.util.Optional;
 
-import static odms.commons.utils.AttributeValidation.checkRequiredString;
-import static odms.commons.utils.AttributeValidation.checkRequiredStringName;
+import static odms.commons.utils.AttributeValidation.*;
 import static odms.commons.utils.UndoHelpers.removeFormChanges;
 
 public class UpdateAdminController {
@@ -295,7 +294,7 @@ public class UpdateAdminController {
             }
         }
         if (!middleNameTextField.getText().isEmpty() && (!middleNameTextField.getText().equals(admin.getMiddleName()) || newAdmin)) {
-            if (checkRequiredStringName(middleNameTextField.getText())) {
+            if (checkString(middleNameTextField.getText())) {
                 admin.setMiddleName(middleNameTextField.getText());
             } else {
                 invalidateNode(middleNameTextField);
@@ -305,7 +304,7 @@ public class UpdateAdminController {
         }
 
         if (!lastNameTextField.getText().isEmpty() && (!lastNameTextField.getText().equals(admin.getLastName()) || newAdmin)) {
-            if (checkRequiredStringName(lastNameTextField.getText())) {
+            if (checkString(lastNameTextField.getText())) {
                 admin.setLastName(lastNameTextField.getText());
             } else {
                 invalidateNode(lastNameTextField);

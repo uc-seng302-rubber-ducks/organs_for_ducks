@@ -5,6 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -18,9 +19,10 @@ import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+
+import static odms.commons.utils.AttributeValidation.checkString;
 
 
 /**
@@ -32,7 +34,7 @@ public class NewUserController {
     private Stage stage;
     //<editor-fold desc="FXML declarations">
     @FXML
-    private TextField nhiInput;
+    private TextField newUserNhiInput;
     @FXML
     private TextField fNameInput;
     @FXML
@@ -72,7 +74,7 @@ public class NewUserController {
     @FXML
     private TextField ecPhone;
     @FXML
-    private TextField ecCell;
+    private TextField ecCellPhone;
     @FXML
     private TextField ecStreetNumber;
     @FXML
@@ -105,6 +107,64 @@ public class NewUserController {
     private ComboBox<String> alcoholComboBox;
     @FXML
     private DatePicker dobInput;
+
+    // error labels
+    @FXML
+    private Label nhiErrorLabel;
+    @FXML
+    private Label fNameErrorLabel;
+    @FXML
+    private Label pFNameErrorLabel;
+    @FXML
+    private Label mNameErrorLabel;
+    @FXML
+    private Label lNameErrorLabel;
+    @FXML
+    private Label dobErrorLabel;
+    @FXML
+    private Label heightErrorLabel;
+    @FXML
+    private Label weightErrorLabel;
+    @FXML
+    private Label homePhoneErrorLabel;
+    @FXML
+    private Label cellPhoneErrorLabel;
+    @FXML
+    private Label streetNumberErrorLabel;
+    @FXML
+    private Label streetNameErrorLabel;
+    @FXML
+    private Label neighborhoodErrorLabel;
+    @FXML
+    private Label cityErrorLabel;
+    @FXML
+    private Label regionErrorLabel;
+    @FXML
+    private Label zipCodeErrorLabel;
+    @FXML
+    private Label emailErrorLabel;
+    @FXML
+    private Label eNameErrorLabel;
+    @FXML
+    private Label eHomePhoneErrorLabel;
+    @FXML
+    private Label eCellPhoneErrorLabel;
+    @FXML
+    private Label eStreetNumberErrorLabel;
+    @FXML
+    private Label eStreetNameErrorLabel;
+    @FXML
+    private Label eNeighborhoodErrorLabel;
+    @FXML
+    private Label eCityErrorLabel;
+    @FXML
+    private Label eRegionErrorLabel;
+    @FXML
+    private Label eZipCodeErrorLabel;
+    @FXML
+    private Label eEmailErrorLabel;
+    @FXML
+    private Label eRelationshipErrorLabel;
 
     //</editor-fold>
     private Stage ownStage;
@@ -176,53 +236,72 @@ public class NewUserController {
 
 
     /**
-     * Creates the new user with at least the required attributes.
+     * Method to add a style class onto a node to make it appear invalid
      *
-     * @param nhi   The national health index.
-     * @param fName First Name.
-     * @param dob   Date of birth.
-     * @throws IOException if fxml cannot is read.
+     * @param node node to add styleclass to
      */
-    //TODO: Find a way to clean this up
-    private void createUser(String nhi, String fName, LocalDate dob) throws IOException {
-        boolean valid; // prevents the account being created if false
+    private void invalidateTextField(Node node) {
+        node.getStyleClass().add("invalid");
+    }
 
+    /**
+     * Checks if all the user details are valid
+     *
+     * @return true if all values are valid, false otherwise
+     */
+    private boolean validateUserDetails() {
+        boolean valid = true;
         // User attributes
         String preferredFirstName = preferredFNameTextField.getText();
-        valid = AttributeValidation.checkString(preferredFirstName);
-        if (preferredFirstName.isEmpty()) {
-            preferredFirstName = fName;
+        if (!AttributeValidation.checkString(preferredFirstName)) {
+            invalidateTextField(preferredFNameTextField);
+            pFNameErrorLabel.setVisible(true);
+            valid = false;
         }
 
-        String middleName = mNameInput.getText();
-        valid &= AttributeValidation.checkString(middleName);
-
-        String lastName = lNameInput.getText();
-        valid &= AttributeValidation.checkString(lastName);
-
-        String birthGender = birthGenderComboBox.getValue();
-        valid &= AttributeValidation.validateGender(birthGender);
-
-        String genderIdentity = genderIdComboBox.getValue();
-        valid &= AttributeValidation.validateGender(genderIdentity);
-        if (genderIdentity.isEmpty() && !birthGender.isEmpty()) {
-            genderIdentity = birthGender;
+        if (!checkString(mNameInput.getText())) {
+            invalidateTextField(mNameInput);
+            mNameErrorLabel.setVisible(true);
+            valid = false;
         }
 
-        String bloodType = bloodComboBox.getValue();
-        valid &= (AttributeValidation.validateBlood(bloodComboBox.getValue()));
+        if (!checkString(lNameInput.getText())) {
+            invalidateTextField(lNameInput);
+            lNameErrorLabel.setVisible(true);
+            valid = false;
+        }
 
-        boolean smoker = smokerCheckBox.isSelected();
+        return valid;
+    }
 
-        String alcoholConsumption = alcoholComboBox.getValue();
+    /**
+     * Checks if all the users health details are valid
+     *
+     * @return true if all the health details are valid, false otherwise
+     */
+    private boolean validateHealthDetails() {
+        boolean valid = true;
 
         // validate doubles return -1 if the value is 0 or below, and 0 if the textfield is empty
         double height = AttributeValidation.validateDouble(heightInput.getText());
         double weight = AttributeValidation.validateDouble(weightInput.getText());
-        if (height == -1 || weight == -1) {
+        if (height == -1) {
+            invalidateTextField(heightInput);
+            heightErrorLabel.setVisible(true);
             valid = false;
         }
 
+        if (weight == -1) {
+            invalidateTextField(weightInput);
+            weightErrorLabel.setVisible(true);
+            valid = false;
+        }
+
+        return valid;
+    }
+
+    private boolean validateContactDetails() {
+        boolean valid = true;
         // contact details
         String streetName = street.getText();
         valid &= (AttributeValidation.checkString(streetName));
@@ -237,14 +316,23 @@ public class NewUserController {
 
         valid &= (AttributeValidation.checkString(region));
 
-        String homePhone = phone.getText();
-        valid &= (AttributeValidation.validatePhoneNumber(homePhone.replaceAll(" ", "")));
+        if (!AttributeValidation.validateEmail(this.email.getText())) {
+            invalidateTextField(this.email);
+            emailErrorLabel.setVisible(true);
+            valid = false;
+        }
 
-        String cellPhone = cell.getText();
-        valid &= (AttributeValidation.validateCellNumber(cellPhone.replaceAll(" ", "")));
+        if (!AttributeValidation.validatePhoneNumber(phone.getText().replaceAll(" ", ""))) {
+            invalidateTextField(phone);
+            homePhoneErrorLabel.setVisible(true);
+            valid = false;
+        }
 
-        String email = this.email.getText();
-        valid &= (AttributeValidation.validateEmail(email));
+        if (!AttributeValidation.validateCellNumber(cell.getText().replaceAll(" ", ""))) {
+            invalidateTextField(cell);
+            cellPhoneErrorLabel.setVisible(true);
+            valid = false;
+        }
 
 
         String neighborhood = this.neighborhood.getText();
@@ -262,27 +350,49 @@ public class NewUserController {
         String zipcode = this.zipCode.getText();
         valid &= (AttributeValidation.checkString(zipcode));
 
+        return valid;
+    }
+
+
+    /**
+     * Creates the new user with at least the required attributes.
+     *
+     * @param nhi   The national health index.
+     * @param fName First Name.
+     * @param dob   Date of birth.
+     * @throws IOException if fxml cannot is read.
+     */
+    private void createUser(String nhi, String fName, LocalDate dob) throws IOException {
+        boolean valid; // prevents the account being created if false
+
+        valid = validateUserDetails();
+        valid &= validateHealthDetails();
+        valid &= validateContactDetails();
 
         if (valid) {
             // create the new user
             User newUser = new User(fName, dob, nhi);
 
             try {
-                newUser.setMiddleName(middleName);
-                newUser.setLastName(lastName);
-                newUser.setPreferredFirstName(preferredFirstName);
-                newUser.setHomePhone(homePhone);
-                newUser.setCellPhone(cellPhone);
-                newUser.setEmail(email);
-                newUser.setRegion(region);
-                newUser.setNeighborhood(neighborhood);
-                newUser.setCity(city);
-                newUser.setCountry(country);
-                newUser.setStreetNumber(streetnum);
-                newUser.setStreetName(streetName);
-                newUser.setZipCode(zipcode);
+                newUser.setMiddleName(mNameInput.getText());
+                newUser.setLastName(lNameInput.getText());
+                if (preferredFNameTextField.getText().isEmpty()) {
+                    newUser.setPreferredFirstName(fName);
+                } else {
+                    newUser.setPreferredFirstName(preferredFNameTextField.getText());
+                }
+                newUser.setHomePhone(phone.getText());
+                newUser.setCellPhone(cell.getText());
+                newUser.setEmail(email.getText());
+                newUser.setRegion(regionInput.getText());
+                newUser.setNeighborhood(neighborhood.getText());
+                newUser.setCity(city.getText());
+                newUser.setCountry(countrySelector.getValue());
+                newUser.setStreetNumber(streetNumber.getText());
+                newUser.setStreetName(street.getText());
+                newUser.setZipCode(zipCode.getText());
                 newUser.setProfilePhotoFilePath("");
-                HealthDetails healthDetails = collectHealthDetails(birthGender, genderIdentity, height, weight, bloodType, alcoholConsumption, smoker);
+                HealthDetails healthDetails = collectHealthDetails();
                 newUser.setHealthDetails(healthDetails);
 
                 EmergencyContact contact = collectEmergencyContact(newUser);
@@ -366,26 +476,31 @@ public class NewUserController {
     /**
      * Sets all health detail variables based off the details entered
      *
-     * @param birthGender        the birth gender entered by the user
-     * @param genderIdentity     the gender identity entered by the user
-     * @param height             the height entered by the user
-     * @param weight             the weight entered by the user
-     * @param bloodType          the blood type entered by the user
-     * @param alcoholConsumption the alcohol consumption entered by the user
-     * @param smoker             the status of the user being a smoker or not
      * @return the collated health details of the user
      */
-    private HealthDetails collectHealthDetails(String birthGender, String genderIdentity, double height, double weight,
-                                               String bloodType, String alcoholConsumption, boolean smoker) {
+    private HealthDetails collectHealthDetails() {
         HealthDetails healthDetails = new HealthDetails();
 
-        healthDetails.setBirthGender(birthGender);
-        healthDetails.setGenderIdentity(genderIdentity);
-        healthDetails.setHeight(height);
-        healthDetails.setWeight(weight);
-        healthDetails.setBloodType(bloodType);
-        healthDetails.setAlcoholConsumption(alcoholConsumption);
-        healthDetails.setSmoker(smoker);
+        if (birthGenderComboBox.getValue() != null) {
+            healthDetails.setBirthGender(birthGenderComboBox.getValue());
+        }
+
+        if (genderIdComboBox.getValue() != null) {
+            healthDetails.setGenderIdentity(genderIdComboBox.getValue());
+        }
+
+        healthDetails.setHeight(Double.parseDouble(heightInput.getText()));
+        healthDetails.setWeight(Double.parseDouble(weightInput.getText()));
+
+        if (bloodComboBox.getValue() != null) {
+            healthDetails.setBloodType(bloodComboBox.getValue());
+        }
+
+        if (alcoholComboBox.getValue() != null) {
+            healthDetails.setAlcoholConsumption(alcoholComboBox.getValue());
+        }
+
+        healthDetails.setSmoker(smokerCheckBox.isSelected());
 
         return healthDetails;
     }
@@ -399,8 +514,8 @@ public class NewUserController {
         String eName = ecName.getText();
         valid = (AttributeValidation.checkString(ecName.getText()));
 
-        String eCellPhone = ecCell.getText();
-        valid &= (AttributeValidation.validateCellNumber(ecCell.getText().replaceAll(" ", "")));
+        String eCellPhone = ecCellPhone.getText();
+        valid &= (AttributeValidation.validateCellNumber(ecCellPhone.getText().replaceAll(" ", "")));
 
         String eHomePhone = ecPhone.getText();
         valid &= (AttributeValidation.validatePhoneNumber(ecPhone.getText().replaceAll(" ", "")));
@@ -475,44 +590,38 @@ public class NewUserController {
      */
     @FXML
     private void confirmCreation() throws IOException {
-
-        boolean valid;
-
-        String nhi = nhiInput.getText();
-        valid = (AttributeValidation.validateNHI(nhiInput.getText()));
-        if (!valid) {
-
+        boolean valid = true;
+        String nhi = newUserNhiInput.getText();
+        if (!AttributeValidation.validateNHI(nhi)) {
+            invalidateTextField(newUserNhiInput);
+            nhiErrorLabel.setText("Enter a valid NHI. e.g. ABC1234");
+            nhiErrorLabel.setVisible(true);
+            valid = false;
+        } else if (controller.getUserBridge().getExists(nhi)) {
+            invalidateTextField(newUserNhiInput);
+            nhiErrorLabel.setText("This NHI is already in use");
+            nhiErrorLabel.setVisible(true);
+            valid = false;
         }
 
         String fName = fNameInput.getText();
-        valid &= (AttributeValidation.checkRequiredString(fNameInput.getText()));
-        if (!valid) {
-
+        if (!AttributeValidation.checkRequiredStringName(fName)) {
+            invalidateTextField(fNameInput);
+            fNameErrorLabel.setVisible(true);
+            valid = false;
         }
 
         LocalDate dob = dobInput.getValue();
-
-        valid &= AttributeValidation.validateDateOfBirth(dob);
-        if (!valid) {
-
+        if (!AttributeValidation.validateDateOfBirth(dob)) {
+            invalidateTextField(dobInput);
+            dobErrorLabel.setVisible(true);
+            valid = false;
         }
 
-        if (dob != null) {
-            valid &= AttributeValidation.validateDateOfBirth(dob); // checks if the dod is before tomorrow's date and that the dob is before the dod
-            if (!valid) {
-                valid = false;
-            }
-        }
-
-        User user = controller.findUser(nhi); // checks if the nhi already exists within the system
-        if (valid && user == null) {
+        if (valid) {
             createUser(nhi, fName, dob);
-        } else if (valid) { // user is not null
         }
     }
 
 
-    /**
-     * Makes all the error messages no longer visible.
-     */
 }

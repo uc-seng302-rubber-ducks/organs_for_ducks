@@ -334,7 +334,7 @@ public class UpdateClinicianController {
      *
      * @param cb The current ComboBox.
      */
-    private void comboBoxListener(ComboBox cb) {
+    private void comboBoxListener(ComboBox<String> cb) {
         cb.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (Listen) {
                 update();

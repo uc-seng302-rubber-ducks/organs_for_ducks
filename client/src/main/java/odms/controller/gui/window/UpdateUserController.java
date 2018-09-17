@@ -876,7 +876,7 @@ public class UpdateUserController {
         LocalDate dob = dobInput.getValue();
 
         String fName = fNameInput.getText();
-        if (!AttributeValidation.checkRequiredString(fName)) {
+        if (!AttributeValidation.checkRequiredStringName(fName)) {
             invalidateTextField(fNameInput);
             fNameErrorLabel.setVisible(true);
             valid = false;
