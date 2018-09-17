@@ -4,6 +4,7 @@ import odms.commons.database.DBHandler;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
 import odms.commons.model._enum.Organs;
+import odms.commons.model._enum.UserType;
 import odms.commons.model.datamodel.Address;
 import odms.commons.model.datamodel.ComboBoxClinician;
 import odms.commons.model.datamodel.DeathDetails;
@@ -248,7 +249,6 @@ public class DBHandlerTest {
 
         dbHandler.saveUsers(users, connection);
         verify(mockStmt, times(11)).executeUpdate();
-
     }
 
     @Test
@@ -277,6 +277,17 @@ public class DBHandlerTest {
     }
 
     @Test
+    public void testGetBookedAppointmentTimes() throws SQLException {
+        when(mockResultSet.next()).thenReturn(true, false);
+        when(mockResultSet.getTimestamp("requestedTime")).thenReturn(Timestamp.valueOf(LocalDateTime.now()));
+
+        List<LocalDateTime> bookedAppointmentTimes = dbHandler.getBookedAppointmentTimes(connection, anyString());
+        verify(mockStmt, times(1)).executeQuery();
+        Assert.assertEquals(1, bookedAppointmentTimes.size());
+    }
+
+
+    @Test
     public void testGetBasicClinicians() throws SQLException {
         when(mockResultSet.next()).thenReturn(true, false);
         testClinician.setMiddleName("mid");
@@ -294,6 +305,74 @@ public class DBHandlerTest {
         appointment.setAppointmentId(1);
         dbHandler.deleteAppointment(appointment, connection);
         verify(mockStmt, times(1)).executeUpdate();
+    }
+
+    @Test
+    public void testGetPreferredBasicClinician() throws SQLException {
+        when(mockResultSet.next()).thenReturn(true, false);
+        testClinician.setMiddleName("mid");
+        testClinician.setLastName("last");
+        DBHandlerMocker.setClinicianResultSet(mockResultSet, testClinician);
+        ComboBoxClinician clinician = dbHandler.getPreferredBasicClinician(connection,"ABC1234");
+
+        verify(mockStmt, times(1)).executeQuery();
+        Assert.assertEquals("Jon mid last", clinician.toString());
+    }
+
+    @Test
+    public void testPutPreferredBasicClinician() throws SQLException {
+        dbHandler.putPreferredBasicClinician(connection, "ABC1234", "0");
+        verify(mockStmt, times(1)).executeUpdate();
+    }
+
+    @Test
+    public void testGetAppointmentStatus() throws SQLException {
+        dbHandler.getAppointmentStatus(connection, 0);
+        verify(mockStmt, times(1)).executeQuery();
+    }
+
+    @Test
+    public void testCheckUserHasPendingAppointmentReturnsTrue() throws SQLException {
+        when(mockResultSet.getInt(1)).thenReturn(1);
+        boolean result = dbHandler.checkAppointmentStatusExists(connection, "ABC1234", AppointmentStatus.PENDING.getDbValue(), UserType.USER);
+        verify(mockStmt, times(1)).executeQuery();
+        Assert.assertTrue(result);
+    }
+
+    @Test
+    public void testCheckUserHasPendingAppointmentReturnsFalse() throws SQLException {
+        when(mockResultSet.getInt(1)).thenReturn(0);
+        boolean result = dbHandler.checkAppointmentStatusExists(connection, "ABC1234", AppointmentStatus.PENDING.getDbValue(), UserType.USER);
+        verify(mockStmt, times(1)).executeQuery();
+        Assert.assertFalse(result);
+    }
+
+    @Test(expected = SQLException.class)
+    public void testCheckUserHasAppointmentThrowsSQLException() throws SQLException {
+        when(mockStmt.executeQuery()).thenThrow(new SQLException());
+        dbHandler.checkAppointmentStatusExists(connection, "ABC1234", 20, UserType.USER);
+    }
+
+    @Test
+    public void testCheckClinicianHasPendingAppointmentReturnsTrue() throws SQLException {
+        when(mockResultSet.getInt(1)).thenReturn(1);
+        boolean result = dbHandler.checkAppointmentStatusExists(connection, "staff1", AppointmentStatus.PENDING.getDbValue(), UserType.CLINICIAN);
+        verify(mockStmt, times(1)).executeQuery();
+        Assert.assertTrue(result);
+    }
+
+    @Test
+    public void testCheckClinicianHasPendingAppointmentReturnsFalse() throws SQLException {
+        when(mockResultSet.getInt(1)).thenReturn(0);
+        boolean result = dbHandler.checkAppointmentStatusExists(connection, "staff1", AppointmentStatus.PENDING.getDbValue(), UserType.CLINICIAN);
+        verify(mockStmt, times(1)).executeQuery();
+        Assert.assertFalse(result);
+    }
+
+    @Test(expected = SQLException.class)
+    public void testCheckClinicianHasAppointmentThrowsSQLException() throws SQLException {
+        when(mockStmt.executeQuery()).thenThrow(new SQLException());
+        dbHandler.checkAppointmentStatusExists(connection, "ABC1234", 20, UserType.USER);
     }
 
 }

@@ -3,9 +3,10 @@ package odms.controller.gui.popup.view;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextFormatter;
+import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import odms.bridge.AppointmentsBridge;
 import odms.commons.model.Appointment;
 import odms.controller.AppController;
 import odms.controller.gui.popup.logic.RejectAppointmentReasonLogicController;
@@ -23,6 +24,9 @@ public class RejectAppointmentReasonViewController {
     @FXML
     private TextArea reasonTextArea;
 
+    @FXML
+    private GridPane rejectionGridPane;
+
     private Appointment appointment;
     private RejectAppointmentReasonLogicController logicController;
     private Stage stage;
@@ -35,6 +39,10 @@ public class RejectAppointmentReasonViewController {
         apptDate.setText(appointment.getRequestedDate().toLocalDate().toString());
         apptDescription.setText(appointment.getRequestDescription());
 
+        apptDescription.wrappingWidthProperty().bind(rejectionGridPane.widthProperty());
+        reasonTextArea.setTextFormatter(new TextFormatter<String>(change ->
+                change.getControlNewText().length() <= 255 ? change : null)); // limits user input to 255 characters
+
     }
 
     /**
@@ -42,7 +50,8 @@ public class RejectAppointmentReasonViewController {
      */
     @FXML
     private void confirmRejectionReason() {
-        logicController.rejectAppointment(appointment, reasonTextArea.getText(), new AppointmentsBridge(AppController.getInstance().getClient()));
+        logicController.rejectAppointment(appointment, reasonTextArea.getText(), AppController.getInstance().getAppointmentsBridge());
+        stage.close();
     }
 
     /**
