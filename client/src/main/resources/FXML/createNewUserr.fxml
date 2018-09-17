@@ -138,8 +138,8 @@
                                     <Insets left="5.0" />
                                  </padding></Label>
                               <CheckBox fx:id="smokerCheckBox" mnemonicParsing="false" text="Yes" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                               <Label fx:id="heightErrorLabel" styleClass="label-error" text="Good ones." visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
-                               <Label fx:id="weightErrorLabel" styleClass="label-error" text="They exist." visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.valignment="BOTTOM" />
+                               <Label fx:id="heightErrorLabel" styleClass="label-error" text="Only numbers are allowed" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
+                               <Label fx:id="weightErrorLabel" styleClass="label-error" text="Only numbers are allowed" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.valignment="BOTTOM" />
                            </children>
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="279.0" minWidth="10.0" prefWidth="121.0" />
@@ -176,9 +176,9 @@
                               <TextField fx:id="neighborhood" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                <TextField fx:id="city" GridPane.columnIndex="4" />
                                <TextField fx:id="regionInput" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-                               <ComboBox fx:id="regionSelector" prefHeight="27.0" prefWidth="179.0" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                               <ComboBox fx:id="regionSelector" prefHeight="27.0" prefWidth="204.0" GridPane.columnIndex="4" GridPane.rowIndex="1" />
                                <TextField fx:id="zipCode" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-                               <ComboBox fx:id="countrySelector" onAction="#countrySelectorListener" prefHeight="25.0" prefWidth="173.0" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+                               <ComboBox fx:id="countrySelector" onAction="#countrySelectorListener" prefHeight="27.0" prefWidth="207.0" GridPane.columnIndex="4" GridPane.rowIndex="3" />
                                <TextField fx:id="email" GridPane.columnIndex="4" GridPane.rowIndex="4" />
                               <Label styleClass="label-title" text="Home Phone:">
                                  <padding>
@@ -241,11 +241,11 @@
                                <Label fx:id="emailErrorLabel" styleClass="label-error" text="Only alphanumeric characters are allowed" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="4" GridPane.valignment="BOTTOM" />
                            </children>
                            <columnConstraints>
-                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="139.0" minWidth="10.0" prefWidth="139.0" />
-                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="216.0" minWidth="10.0" prefWidth="185.0" />
-                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="189.0" minWidth="10.0" prefWidth="91.0" />
-                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="189.0" minWidth="10.0" prefWidth="114.0" />
-                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="189.0" minWidth="10.0" prefWidth="185.0" />
+                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="139.0" minWidth="10.0" prefWidth="124.0" />
+                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="216.0" minWidth="10.0" prefWidth="200.0" />
+                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="189.0" minWidth="10.0" prefWidth="41.0" />
+                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="189.0" minWidth="10.0" prefWidth="85.0" />
+                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="213.0" minWidth="10.0" prefWidth="200.0" />
                            </columnConstraints>
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -267,7 +267,7 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                         <GridPane layoutY="26.0" prefHeight="366.0" prefWidth="675.0">
+                         <GridPane layoutY="26.0" prefHeight="366.0" prefWidth="704.0">
                            <children>
                               <TextField fx:id="ecName" GridPane.columnIndex="1" />
                               <TextField fx:id="ecPhone" GridPane.columnIndex="1" GridPane.rowIndex="1" />
@@ -277,9 +277,9 @@
                               <TextField fx:id="ecNeighborhood" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                <TextField fx:id="ecCity" GridPane.columnIndex="4" />
                                <TextField fx:id="ecRegionInput" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-                               <ComboBox fx:id="ecRegionSelector" prefHeight="25.0" prefWidth="187.0" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                               <ComboBox fx:id="ecRegionSelector" prefHeight="27.0" prefWidth="203.0" GridPane.columnIndex="4" GridPane.rowIndex="1" />
                                <TextField fx:id="ecZipCode" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-                               <ComboBox fx:id="ecCountrySelector" onAction="#ecCountrySelectorListener" prefHeight="25.0" prefWidth="176.0" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+                               <ComboBox fx:id="ecCountrySelector" onAction="#ecCountrySelectorListener" prefHeight="27.0" prefWidth="204.0" GridPane.columnIndex="4" GridPane.rowIndex="3" />
                                <TextField fx:id="ecEmail" GridPane.columnIndex="4" GridPane.rowIndex="4" />
                                <TextField fx:id="ecRelationship" GridPane.columnIndex="4" GridPane.rowIndex="5" />
                               <Label styleClass="label-title" text="Home Phone:" GridPane.rowIndex="1" />
@@ -327,11 +327,11 @@
                                <Label fx:id="eRelationshipErrorLabel" styleClass="label-error" text="Only alphanumeric characters are allowed" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="5" GridPane.valignment="BOTTOM" />
                            </children>
                            <columnConstraints>
-                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="141.0" minWidth="10.0" prefWidth="138.0" />
-                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="185.0" />
-                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="74.0" />
-                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="124.0" />
-                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="185.0" />
+                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="141.0" minWidth="10.0" prefWidth="118.0" />
+                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="210.0" minWidth="10.0" prefWidth="200.0" />
+                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="53.0" />
+                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="95.0" />
+                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="202.0" minWidth="10.0" prefWidth="200.0" />
                            </columnConstraints>
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -354,7 +354,7 @@
       </TabPane>
       <Label layoutX="11.0" layoutY="10.0" styleClass="label-sub-title" text="Create New User" />
       <Button fx:id="cancelButton" layoutX="12.0" layoutY="470.0" mnemonicParsing="false" onAction="#cancelCreation" text="Cancel" />
-      <Button fx:id="confirmButton" layoutX="574.0" layoutY="472.0" mnemonicParsing="false" onAction="#confirmCreation" text="Create Profile" />
+      <Button fx:id="confirmButton" layoutX="606.0" layoutY="471.0" mnemonicParsing="false" onAction="#confirmCreation" text="Create Profile" />
       <Separator layoutX="1.0" layoutY="464.0" prefHeight="4.0" prefWidth="710.0" />
    </children>
 </AnchorPane>

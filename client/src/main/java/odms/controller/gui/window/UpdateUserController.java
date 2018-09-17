@@ -263,11 +263,9 @@ public class UpdateUserController {
 
         // creates a listener for each text field
         for (TextField tf : allTextFields) {
-
-            if (tf == null) {
-            System.out.println(tf);
+            if (tf != null) {
+                textFieldListener(tf);
             }
-            textFieldListener(tf);
         }
 
         comboBoxListener(birthGenderComboBox);
@@ -312,9 +310,7 @@ public class UpdateUserController {
      */
     @FXML
     private void countrySelectorListener(ActionEvent event) {
-//        if (listen) {
         appController.countrySelectorEventHandler(countrySelector, regionSelector, regionInput, currentUser, null);
-//        }
     }
 
     /**
@@ -328,9 +324,7 @@ public class UpdateUserController {
      */
     @FXML
     private void ecCountrySelectorListener(ActionEvent event) {
-//        if (listen) {
         appController.countrySelectorEventHandler(ecCountrySelector, ecRegionSelector, ecRegionInput, currentUser, null);
-//        }
     }
 
     /**
@@ -378,7 +372,7 @@ public class UpdateUserController {
      *
      * @param cb The current ComboBox.
      */
-    private void comboBoxListener(ComboBox cb) {
+    private void comboBoxListener(ComboBox<String> cb) {
         cb.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (listen) {
                 update();

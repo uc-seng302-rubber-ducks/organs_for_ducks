@@ -196,6 +196,34 @@ public class NewUserController {
         ecRegionSelector.setValue("");
         bloodComboBox.setValue("");
 
+        // add listeners to all the text fields that have error feedback
+        final TextField[] allTextFields = {newUserNhiInput, fNameInput, preferredFNameTextField, mNameInput,
+                lNameInput, heightInput, weightInput, phone, cell, street, streetNumber, city, neighborhood, zipCode,
+                email, ecName, ecPhone, ecCellPhone, ecEmail, ecStreet, ecStreetNumber, ecCity, ecNeighborhood,
+                ecZipCode, ecRelationship, regionInput, ecRegionInput};
+
+        for (TextField tf : allTextFields) {
+            if (tf != null) {
+                textFieldListener(tf);
+            }
+        }
+
+        dobInput.valueProperty().addListener((observable, oldValue, newValue) -> {
+            dobInput.getStyleClass().remove("invalid");
+        });
+
+    }
+
+    /**
+     * Changes the title bar to contain an asterisk if a change was detected on the textfields.
+     *
+     * @param field The current textfield.
+     */
+    private void textFieldListener(TextField field) {
+        field.textProperty().addListener((observable, oldValue, newValue) -> {
+                field.getStyleClass().remove("invalid");
+        });
+
     }
 
     /**
@@ -373,13 +401,18 @@ public class NewUserController {
         return valid;
     }
 
+    /**
+     * Checks if the emergency contact details are valid
+     *
+     * @return true if all details are valid, false otherwise
+     */
     private boolean validateEmergencyContactDetails() {
         boolean valid = true;
 
         String eName = ecName.getText();
-        if (!AttributeValidation.checkRequiredStringName(eName)) {
+        if (!AttributeValidation.checkString(eName)) {
             invalidateTextField(ecName);
-            fNameErrorLabel.setVisible(true);
+            eNameErrorLabel.setVisible(true);
             valid = false;
         }
 
@@ -475,6 +508,85 @@ public class NewUserController {
         return valid;
     }
 
+    /**
+     * Sets all the valid fields to the newly created user
+     *
+     * @param newUser   Newly created user to set fields to
+     * @param fName     First name of the newly created user
+     */
+    private boolean setFields(User newUser, String fName) {
+        newUser.setMiddleName(mNameInput.getText());
+        newUser.setLastName(lNameInput.getText());
+        if (preferredFNameTextField.getText().isEmpty()) {
+            newUser.setPreferredFirstName(fName);
+        } else {
+            newUser.setPreferredFirstName(preferredFNameTextField.getText());
+        }
+        newUser.setHomePhone(phone.getText());
+        newUser.setCellPhone(cell.getText());
+        newUser.setEmail(email.getText());
+
+        String region;
+        if (regionInput.isVisible()) {
+            region = regionInput.getText();
+
+        } else {
+            region = regionSelector.getSelectionModel().getSelectedItem();
+        }
+        newUser.setRegion(region);
+        newUser.setNeighborhood(neighborhood.getText());
+        newUser.setCity(city.getText());
+        newUser.setCountry(countrySelector.getValue());
+        newUser.setStreetNumber(streetNumber.getText());
+        newUser.setStreetName(street.getText());
+        newUser.setZipCode(zipCode.getText());
+        newUser.setProfilePhotoFilePath("");
+        HealthDetails healthDetails = collectHealthDetails();
+        newUser.setHealthDetails(healthDetails);
+
+        boolean valid = true;
+        try {
+            EmergencyContact contact = collectEmergencyContact(newUser);
+            newUser.setContact(contact);
+        } catch (InvalidFieldsException ex) {
+            eNameErrorLabel.setText("An emergency contact needs a name");
+            eCellPhoneErrorLabel.setText("An emergency contact needs a cell number");
+            eCellPhoneErrorLabel.setVisible(true);
+            eNameErrorLabel.setVisible(true);
+            invalidateTextField(ecCellPhone);
+            invalidateTextField(ecName);
+            valid = false;
+        }
+        return valid;
+    }
+
+    /**
+     * Saves the user created and loads their overview from either the login screen,
+     * or the administrator screen.
+     *
+     * @param newUser   User to be saved and loaded
+     * @param nhi       Unique identifier of the newly created user
+     * @throws  IOException if fxml cannot be read.
+     */
+    private void saveAndLoad(User newUser, String nhi) throws IOException  {
+        // add the new user to the list of users and save them
+        controller.saveUser(newUser);
+
+        // load to the overview page
+        if (stage.getTitle().matches("Administrator*")) {
+            ownStage.close();
+            FXMLLoader userLoader = new FXMLLoader(
+                    getClass().getResource("/FXML/userView.fxml"));
+
+            try {
+                launchUserScene(nhi, newUser, userLoader);
+            } catch (IOException e) {
+                Log.severe("Failed to load User Overview for User NHI: " + nhi, e);
+            }
+        } else {
+            loadUserScene(nhi, newUser);
+        }
+    }
 
     /**
      * Creates the new user with at least the required attributes.
@@ -482,11 +594,10 @@ public class NewUserController {
      * @param nhi   The national health index.
      * @param fName First Name.
      * @param dob   Date of birth.
-     * @throws IOException if fxml cannot is read.
+     * @throws IOException if fxml cannot be read.
      */
-    private void createUser(String nhi, String fName, LocalDate dob) throws IOException {
-        boolean valid; // prevents the account being created if false
-        valid = validateUserDetails();
+    private void createUser(String nhi, String fName, LocalDate dob, boolean valid) throws IOException {
+        valid &= validateUserDetails();
         valid &= validateHealthDetails();
         valid &= validateContactDetails();
         valid &= validateEmergencyContactDetails();
@@ -495,63 +606,12 @@ public class NewUserController {
             // create the new user
             User newUser = new User(fName, dob, nhi);
 
-            try {
-                newUser.setMiddleName(mNameInput.getText());
-                newUser.setLastName(lNameInput.getText());
-                if (preferredFNameTextField.getText().isEmpty()) {
-                    newUser.setPreferredFirstName(fName);
-                } else {
-                    newUser.setPreferredFirstName(preferredFNameTextField.getText());
-                }
-                newUser.setHomePhone(phone.getText());
-                newUser.setCellPhone(cell.getText());
-                newUser.setEmail(email.getText());
-
-                String region;
-                if (regionInput.isVisible()) {
-                    region = regionInput.getText();
-
-                } else {
-                    region = regionSelector.getSelectionModel().getSelectedItem();
-                }
-                newUser.setRegion(region);
-                newUser.setNeighborhood(neighborhood.getText());
-                newUser.setCity(city.getText());
-                newUser.setCountry(countrySelector.getValue());
-                newUser.setStreetNumber(streetNumber.getText());
-                newUser.setStreetName(street.getText());
-                newUser.setZipCode(zipCode.getText());
-                newUser.setProfilePhotoFilePath("");
-                HealthDetails healthDetails = collectHealthDetails();
-                newUser.setHealthDetails(healthDetails);
-
-                EmergencyContact contact = collectEmergencyContact(newUser, true);
-                newUser.setContact(contact);
-
+            valid = setFields(newUser, fName);
+            if (valid) {
                 newUser.getUndoStack().clear();
-
-                // add the new user to the list of users and save them
-                controller.saveUser(newUser);
-
-                // load to the overview page
-                if (stage.getTitle().matches("Administrator*")) {
-                    ownStage.close();
-                    FXMLLoader userLoader = new FXMLLoader(
-                            getClass().getResource("/FXML/userView.fxml"));
-
-                    try {
-                        launchUserScene(nhi, newUser, userLoader);
-                    } catch (IOException e) {
-                        Log.severe("Failed to load User Overview for User NHI: " + nhi, e);
-                    }
-                } else {
-                    loadUserScene(nhi, newUser);
-                }
-            } catch (InvalidFieldsException e) {
+                saveAndLoad(newUser, nhi);
             }
-        } else {
         }
-
     }
 
     /**
@@ -613,8 +673,12 @@ public class NewUserController {
 
         healthDetails.setBirthGender(birthGenderComboBox.getValue());
         healthDetails.setGenderIdentity(genderIdComboBox.getValue());
-        healthDetails.setHeight(Double.parseDouble(heightInput.getText()));
-        healthDetails.setWeight(Double.parseDouble(weightInput.getText()));
+        if (!heightInput.getText().isEmpty()) {
+            healthDetails.setHeight(Double.parseDouble(heightInput.getText()));
+        }
+        if (!weightInput.getText().isEmpty()) {
+            healthDetails.setWeight(Double.parseDouble(weightInput.getText()));
+        }
         healthDetails.setBloodType(bloodComboBox.getValue());
         healthDetails.setAlcoholConsumption(alcoholComboBox.getValue());
         healthDetails.setSmoker(smokerCheckBox.isSelected());
@@ -625,10 +689,10 @@ public class NewUserController {
     /**
      * Collects and returns an EmergencyContact based off the details entered
      */
-    private EmergencyContact collectEmergencyContact(User user, boolean valid) throws InvalidFieldsException {
+    private EmergencyContact collectEmergencyContact(User user) throws InvalidFieldsException {
 
         // the name and cell number are required if any other attributes are filled out
-        if ((ecName.getText().isEmpty() != ecCellPhone.getText().isEmpty()) && valid) {
+        if ((ecName.getText().isEmpty() != ecCellPhone.getText().isEmpty())) {
             throw new InvalidFieldsException(); // Throws invalid field exception if inputs are found to be invalid
         } else {
             EmergencyContact contact = new EmergencyContact("", "", "");
@@ -641,7 +705,7 @@ public class NewUserController {
                 contact.setCellPhoneNumber(ecCellPhone.getText());
                 contact.setHomePhoneNumber(ecPhone.getText());
                 contact.setStreetNumber(ecStreetNumber.getText());
-                contact.setStreetName(eStreetNameErrorLabel.getText());
+                contact.setStreetName(ecStreet.getText());
                 contact.setCity(ecCity.getText());
                 contact.setCountry(ecCountrySelector.getValue());
                 contact.setZipCode(ecZipCode.getText());
@@ -669,7 +733,9 @@ public class NewUserController {
      */
     @FXML
     private void confirmCreation() throws IOException {
-        boolean valid = true;
+        hideErrorMessages();
+        boolean valid = true; // prevents the account being created if false
+
         String nhi = newUserNhiInput.getText();
         if (!AttributeValidation.validateNHI(nhi)) {
             invalidateTextField(newUserNhiInput);
@@ -687,6 +753,7 @@ public class NewUserController {
         if (!AttributeValidation.checkRequiredStringName(fName)) {
             String error;
             if (fName.isEmpty()) {
+                System.out.println("empty");
                 error = "The first name cannot be empty";
             } else {
                 error = "Only alphanumeric characters are allowed";
@@ -711,10 +778,40 @@ public class NewUserController {
             valid = false;
         }
 
-        if (valid) {
-            createUser(nhi, fName, dob);
-        }
+        createUser(nhi, fName, dob, valid);
     }
 
+    /**
+     * Hides all the error messages.
+     */
+    private void hideErrorMessages() {
+        nhiErrorLabel.setVisible(false);
+        dobErrorLabel.setVisible(false);
+        fNameErrorLabel.setVisible(false);
+        pFNameErrorLabel.setVisible(false);
+        mNameErrorLabel.setVisible(false);
+        lNameErrorLabel.setVisible(false);
+        weightErrorLabel.setVisible(false);
+        heightErrorLabel.setVisible(false);
 
+        homePhoneErrorLabel.setVisible(false);
+        cellPhoneErrorLabel.setVisible(false);
+        emailErrorLabel.setVisible(false);
+        streetNumberErrorLabel.setVisible(false);
+        streetNameErrorLabel.setVisible(false);
+        neighborhoodErrorLabel.setVisible(false);
+        cityErrorLabel.setVisible(false);
+        zipCodeErrorLabel.setVisible(false);
+
+        eCellPhoneErrorLabel.setVisible(false);
+        eEmailErrorLabel.setVisible(false);
+        eZipCodeErrorLabel.setVisible(false);
+        eHomePhoneErrorLabel.setVisible(false);
+        eNameErrorLabel.setVisible(false);
+        eStreetNameErrorLabel.setVisible(false);
+        eStreetNumberErrorLabel.setVisible(false);
+        eNeighborhoodErrorLabel.setVisible(false);
+        eCityErrorLabel.setVisible(false);
+        eRelationshipErrorLabel.setVisible(false);
+    }
 }
