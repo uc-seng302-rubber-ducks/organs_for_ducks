@@ -373,6 +373,108 @@ public class NewUserController {
         return valid;
     }
 
+    private boolean validateEmergencyContactDetails() {
+        boolean valid = true;
+
+        String eName = ecName.getText();
+        if (!AttributeValidation.checkRequiredStringName(eName)) {
+            invalidateTextField(ecName);
+            fNameErrorLabel.setVisible(true);
+            valid = false;
+        }
+
+        if (!AttributeValidation.validateEmail(ecEmail.getText())) {
+            invalidateTextField(ecEmail);
+            eEmailErrorLabel.setVisible(true);
+            valid = false;
+        }
+
+        if (!AttributeValidation.validatePhoneNumber(ecPhone.getText().replaceAll(" ", ""))) {
+            invalidateTextField(ecPhone);
+            eHomePhoneErrorLabel.setVisible(true);
+            valid = false;
+        }
+
+        if (!AttributeValidation.validateCellNumber(ecCellPhone.getText().replaceAll(" ", ""))) {
+            invalidateTextField(ecCellPhone);
+            cellPhoneErrorLabel.setVisible(true);
+            valid = false;
+        }
+
+        String eRegion;
+        if (ecRegionInput.isVisible()) {
+            eRegion = ecRegionInput.getText();
+
+        } else {
+            eRegion = ecRegionSelector.getSelectionModel().getSelectedItem();
+        }
+        valid &= (AttributeValidation.checkString(eRegion));
+
+        if (!AttributeValidation.checkString(ecStreetNumber.getText())) {
+            invalidateTextField(ecStreetNumber);
+            eStreetNumberErrorLabel.setVisible(true);
+            valid = false;
+        }
+
+        if (!AttributeValidation.checkString(ecStreet.getText())) {
+            invalidateTextField(ecStreet);
+            eStreetNameErrorLabel.setVisible(true);
+            valid = false;
+        }
+
+        if (!AttributeValidation.checkString(ecNeighborhood.getText())) {
+            invalidateTextField(ecNeighborhood);
+            eNeighborhoodErrorLabel.setVisible(true);
+            valid = false;
+        }
+
+        String region;
+        if (ecRegionInput.isVisible()) {
+            region = ecRegionInput.getText();
+
+        } else {
+            region = ecRegionSelector.getSelectionModel().getSelectedItem();
+        }
+
+        if (!AttributeValidation.checkString(region)) {
+            invalidateTextField(ecRegionInput);
+            eRegionErrorLabel.setVisible(true);
+            valid = false;
+        }
+
+        if (!AttributeValidation.checkString(ecCity.getText())) {
+            invalidateTextField(ecCity);
+            eCityErrorLabel.setVisible(true);
+            valid = false;
+        }
+
+        if (!AttributeValidation.checkString(ecZipCode.getText())) {
+            invalidateTextField(ecZipCode);
+            ecZipCode.setVisible(true);
+            valid = false;
+        }
+
+        if (!AttributeValidation.validatePhoneNumber(phone.getText().replaceAll(" ", ""))) {
+            invalidateTextField(phone);
+            homePhoneErrorLabel.setVisible(true);
+            valid = false;
+        }
+
+        if (!AttributeValidation.validateCellNumber(cell.getText().replaceAll(" ", ""))) {
+            invalidateTextField(cell);
+            cellPhoneErrorLabel.setVisible(true);
+            valid = false;
+        }
+
+        if (!AttributeValidation.checkString(ecRelationship.getText())) {
+            invalidateTextField(ecRelationship);
+            eRelationshipErrorLabel.setVisible(true);
+            valid = false;
+        }
+
+        return valid;
+    }
+
 
     /**
      * Creates the new user with at least the required attributes.
@@ -384,10 +486,10 @@ public class NewUserController {
      */
     private void createUser(String nhi, String fName, LocalDate dob) throws IOException {
         boolean valid; // prevents the account being created if false
-
         valid = validateUserDetails();
         valid &= validateHealthDetails();
         valid &= validateContactDetails();
+        valid &= validateEmergencyContactDetails();
 
         if (valid) {
             // create the new user
@@ -404,7 +506,15 @@ public class NewUserController {
                 newUser.setHomePhone(phone.getText());
                 newUser.setCellPhone(cell.getText());
                 newUser.setEmail(email.getText());
-                newUser.setRegion(regionInput.getText());// dep
+
+                String region;
+                if (regionInput.isVisible()) {
+                    region = regionInput.getText();
+
+                } else {
+                    region = regionSelector.getSelectionModel().getSelectedItem();
+                }
+                newUser.setRegion(region);
                 newUser.setNeighborhood(neighborhood.getText());
                 newUser.setCity(city.getText());
                 newUser.setCountry(countrySelector.getValue());
@@ -415,7 +525,7 @@ public class NewUserController {
                 HealthDetails healthDetails = collectHealthDetails();
                 newUser.setHealthDetails(healthDetails);
 
-                EmergencyContact contact = collectEmergencyContact(newUser);
+                EmergencyContact contact = collectEmergencyContact(newUser, true);
                 newUser.setContact(contact);
 
                 newUser.getUndoStack().clear();
@@ -501,25 +611,12 @@ public class NewUserController {
     private HealthDetails collectHealthDetails() {
         HealthDetails healthDetails = new HealthDetails();
 
-        if (birthGenderComboBox.getValue() != null) {
-            healthDetails.setBirthGender(birthGenderComboBox.getValue());
-        }
-
-        if (genderIdComboBox.getValue() != null) {
-            healthDetails.setGenderIdentity(genderIdComboBox.getValue());
-        }
-
+        healthDetails.setBirthGender(birthGenderComboBox.getValue());
+        healthDetails.setGenderIdentity(genderIdComboBox.getValue());
         healthDetails.setHeight(Double.parseDouble(heightInput.getText()));
         healthDetails.setWeight(Double.parseDouble(weightInput.getText()));
-
-        if (bloodComboBox.getValue() != null) {
-            healthDetails.setBloodType(bloodComboBox.getValue());
-        }
-
-        if (alcoholComboBox.getValue() != null) {
-            healthDetails.setAlcoholConsumption(alcoholComboBox.getValue());
-        }
-
+        healthDetails.setBloodType(bloodComboBox.getValue());
+        healthDetails.setAlcoholConsumption(alcoholComboBox.getValue());
         healthDetails.setSmoker(smokerCheckBox.isSelected());
 
         return healthDetails;
@@ -528,74 +625,36 @@ public class NewUserController {
     /**
      * Collects and returns an EmergencyContact based off the details entered
      */
-    private EmergencyContact collectEmergencyContact(User user) throws InvalidFieldsException {
-        boolean valid;
-        // Emergency Contact attributes
-        String eName = ecName.getText();
-        valid = (AttributeValidation.checkString(ecName.getText()));
-
-        String eCellPhone = ecCellPhone.getText();
-        valid &= (AttributeValidation.validateCellNumber(ecCellPhone.getText().replaceAll(" ", "")));
-
-        String eHomePhone = ecPhone.getText();
-        valid &= (AttributeValidation.validatePhoneNumber(ecPhone.getText().replaceAll(" ", "")));
-
-        String eStreet = ecStreet.getText();
-        valid &= (AttributeValidation.checkString(ecStreet.getText()));
-
-        String eRegion;
-        if (ecRegionInput.isVisible()) {
-            eRegion = ecRegionInput.getText();
-
-        } else {
-            eRegion = ecRegionSelector.getSelectionModel().getSelectedItem();
-        }
-        valid &= (AttributeValidation.checkString(eRegion));
-
-        String eEmail = ecEmail.getText();
-        valid &= (AttributeValidation.validateEmail(ecEmail.getText()));
-
-        String eRelationship = ecRelationship.getText();
-        valid &= (AttributeValidation.checkString(ecRelationship.getText()));
-
-
-        String eneighborhood = ecNeighborhood.getText();
-        valid &= (AttributeValidation.checkString(eneighborhood));
-
-        String ecity = ecCity.getText();
-        valid &= (AttributeValidation.checkString(ecity));
-
-        String ecountry = ecCountrySelector.getSelectionModel().getSelectedItem();
-        valid &= (AttributeValidation.checkString(ecountry));
-
-        String estreetnum = ecStreetNumber.getText();
-        valid &= (AttributeValidation.checkString(estreetnum));
-
-        String ezipcode = ecZipCode.getText();
-        valid &= (AttributeValidation.checkString(ezipcode));
+    private EmergencyContact collectEmergencyContact(User user, boolean valid) throws InvalidFieldsException {
 
         // the name and cell number are required if any other attributes are filled out
-        if ((eName.isEmpty() != eCellPhone.isEmpty()) && valid) {
+        if ((ecName.getText().isEmpty() != ecCellPhone.getText().isEmpty()) && valid) {
             throw new InvalidFieldsException(); // Throws invalid field exception if inputs are found to be invalid
         } else {
             EmergencyContact contact = new EmergencyContact("", "", "");
             //need this until we update undo/redo
             contact.setAttachedUser(user);
 
-            if (!eName.isEmpty() && !eCellPhone.isEmpty()) {
+            if (!ecName.getText().isEmpty() && !ecCellPhone.getText().isEmpty()) {
                 // create the emergency contact
-                contact.setName(eName);
-                contact.setCellPhoneNumber(eCellPhone);
-                contact.setHomePhoneNumber(eHomePhone);
-                contact.setStreetNumber(estreetnum);
-                contact.setStreetName(eStreet);
-                contact.setCity(ecity);
-                contact.setCountry(ecountry);
-                contact.setZipCode(ezipcode);
-                contact.setRegion(eRegion);
-                contact.setNeighborhood(eneighborhood);
-                contact.setEmail(eEmail);
-                contact.setRelationship(eRelationship);
+                contact.setName(ecName.getText());
+                contact.setCellPhoneNumber(ecCellPhone.getText());
+                contact.setHomePhoneNumber(ecPhone.getText());
+                contact.setStreetNumber(ecStreetNumber.getText());
+                contact.setStreetName(eStreetNameErrorLabel.getText());
+                contact.setCity(ecCity.getText());
+                contact.setCountry(ecCountrySelector.getValue());
+                contact.setZipCode(ecZipCode.getText());
+                String region;
+                if (!ecRegionInput.getText().isEmpty()) {
+                    region = ecRegionInput.getText();
+                } else {
+                    region = ecRegionSelector.getValue();
+                }
+                contact.setRegion(region);
+                contact.setNeighborhood(ecNeighborhood.getText());
+                contact.setEmail(ecEmail.getText());
+                contact.setRelationship(ecRelationship.getText());
             }
             return contact;
         }
@@ -626,14 +685,28 @@ public class NewUserController {
 
         String fName = fNameInput.getText();
         if (!AttributeValidation.checkRequiredStringName(fName)) {
+            String error;
+            if (fName.isEmpty()) {
+                error = "The first name cannot be empty";
+            } else {
+                error = "Only alphanumeric characters are allowed";
+            }
             invalidateTextField(fNameInput);
+            fNameErrorLabel.setText(error);
             fNameErrorLabel.setVisible(true);
             valid = false;
         }
 
         LocalDate dob = dobInput.getValue();
         if (!AttributeValidation.validateDateOfBirth(dob)) {
+            String error;
+            if (dob == null) {
+                error = "A date of birth must be selected";
+            } else {
+                error = "The date of birth must be before the current date";
+            }
             invalidateTextField(dobInput);
+            dobErrorLabel.setText(error);
             dobErrorLabel.setVisible(true);
             valid = false;
         }
