@@ -31,7 +31,7 @@ public class UserAppointmentAlertControllerTest {
     }
 
     @Test
-    public void testCreateAlert_UnseenAccepted_AndCancelledAppointments() {
+    public void testCreateAlertWhenUnseenAcceptedAndCancelledAppointments() {
         when(controller.getAppointmentsBridge().getUnseenAppointment(anyString())).thenReturn(testAppointment);
         when(controller.getAppointmentsBridge().checkAppointmentStatusExists(anyString(), eq(UserType.USER), eq(AppointmentStatus.CANCELLED_BY_CLINICIAN))).thenReturn(true);
         doNothing().when(alertController).generateAlertWindow(anyString());
@@ -41,7 +41,7 @@ public class UserAppointmentAlertControllerTest {
     }
 
     @Test
-    public void testCreateAlert_UnseenAccepted_AndNoCancelledAppointments() {
+    public void testCreateAlertWhenUnseenAcceptedAndNoCancelledAppointments() {
         when(controller.getAppointmentsBridge().getUnseenAppointment(anyString())).thenReturn(testAppointment);
         when(controller.getAppointmentsBridge().checkAppointmentStatusExists(anyString(), eq(UserType.USER), eq(AppointmentStatus.CANCELLED_BY_CLINICIAN))).thenReturn(false);
         doNothing().when(alertController).generateAlertWindow(anyString());
@@ -51,7 +51,7 @@ public class UserAppointmentAlertControllerTest {
     }
 
     @Test
-    public void testCreateAlert_UnseenRejected_AndCancelledAppointments() {
+    public void testCreateAlertWhenUnseenRejectedAndCancelledAppointments() {
         testAppointment.setAppointmentStatus(AppointmentStatus.REJECTED);
         when(controller.getAppointmentsBridge().getUnseenAppointment(anyString())).thenReturn(testAppointment);
         when(controller.getAppointmentsBridge().checkAppointmentStatusExists(anyString(), eq(UserType.USER), eq(AppointmentStatus.CANCELLED_BY_CLINICIAN))).thenReturn(true);
@@ -62,7 +62,7 @@ public class UserAppointmentAlertControllerTest {
     }
 
     @Test
-    public void testCreateAlert_UnseenRejected_AndNoCancelledAppointments() {
+    public void testCreateAlertWhenUnseenRejectedAndNoCancelledAppointments() {
         testAppointment.setAppointmentStatus(AppointmentStatus.REJECTED);
         when(controller.getAppointmentsBridge().getUnseenAppointment(anyString())).thenReturn(testAppointment);
         when(controller.getAppointmentsBridge().checkAppointmentStatusExists(anyString(), eq(UserType.USER), eq(AppointmentStatus.CANCELLED_BY_CLINICIAN))).thenReturn(false);
@@ -73,7 +73,7 @@ public class UserAppointmentAlertControllerTest {
     }
 
     @Test
-    public void testCreateAlert_CancelledAppointments_AndNoUnseen() {
+    public void testCreateAlertWhenCancelledAppointmentsAndNoUnseen() {
         when(controller.getAppointmentsBridge().getUnseenAppointment(anyString())).thenReturn(null);
         when(controller.getAppointmentsBridge().checkAppointmentStatusExists(anyString(), eq(UserType.USER), eq(AppointmentStatus.CANCELLED_BY_CLINICIAN))).thenReturn(true);
         doNothing().when(alertController).generateAlertWindow(anyString());
@@ -83,7 +83,7 @@ public class UserAppointmentAlertControllerTest {
     }
 
     @Test
-    public void testNoAlertCreated_NoCancelled_NoUnseen() {
+    public void testNoAlertCreatedWhenNoCancelledAndNoUnseen() {
         when(controller.getAppointmentsBridge().getUnseenAppointment(anyString())).thenReturn(null);
         when(controller.getAppointmentsBridge().checkAppointmentStatusExists(anyString(), eq(UserType.USER), eq(AppointmentStatus.CANCELLED_BY_CLINICIAN))).thenReturn(false);
         doNothing().when(alertController).generateAlertWindow(anyString());
@@ -93,7 +93,7 @@ public class UserAppointmentAlertControllerTest {
     }
 
     @Test
-    public void testCreateAlert_CancelledAppointments_AndIncorrectUnseenType() {
+    public void testCreateAlertWhenCancelledAppointmentsAndIncorrectUnseenType() {
         testAppointment.setAppointmentStatus(AppointmentStatus.PENDING);
         when(controller.getAppointmentsBridge().getUnseenAppointment(anyString())).thenReturn(testAppointment);
         when(controller.getAppointmentsBridge().checkAppointmentStatusExists(anyString(), eq(UserType.USER), eq(AppointmentStatus.CANCELLED_BY_CLINICIAN))).thenReturn(true);
@@ -104,7 +104,7 @@ public class UserAppointmentAlertControllerTest {
     }
 
     @Test
-    public void testNoAlertCreated_IncorrectUnseenType() {
+    public void testNoAlertCreatedWhenIncorrectUnseenType() {
         testAppointment.setAppointmentStatus(AppointmentStatus.PENDING);
         when(controller.getAppointmentsBridge().getUnseenAppointment(anyString())).thenReturn(testAppointment);
         when(controller.getAppointmentsBridge().checkAppointmentStatusExists(anyString(), eq(UserType.USER), eq(AppointmentStatus.CANCELLED_BY_CLINICIAN))).thenReturn(false);

@@ -220,7 +220,6 @@ public class AppointmentControllerTests {
         controller.deleteAppointment(testAppointment);
     }
 
-
     @Test
     public void validateRequestedAppointmentTimeShouldReturnFalseWhenDateTimeIsInPast() throws SQLException {
         LocalDateTime testDateTime = LocalDateTime.now().minusDays(1);
@@ -278,8 +277,9 @@ public class AppointmentControllerTests {
         boolean result = controller.validateRequestedAppointmentTime("",testDateTime2);
         Assert.assertEquals(true, result);
     }
+
     @Test
-    public void testCheckStatusUpdateAllowed_ReturnsTrue_OnAcceptedSeen() throws SQLException {
+    public void testCheckStatusUpdateAllowedReturnsTrueOnAcceptedSeen() throws SQLException {
         int currentStatus = 2;
         int newStatus = 7;
         when(driver.getConnection()).thenReturn(connection);
@@ -289,7 +289,7 @@ public class AppointmentControllerTests {
     }
 
     @Test
-    public void testCheckStatusUpdateAllowed_ReturnsTrue_OnRejectedSeen() throws SQLException {
+    public void testCheckStatusUpdateAllowedReturnsTrueOnRejectedSeen() throws SQLException {
         int currentStatus = 3;
         int newStatus = 8;
         when(driver.getConnection()).thenReturn(connection);
@@ -299,7 +299,7 @@ public class AppointmentControllerTests {
     }
 
     @Test
-    public void testCheckStatusUpdateAllowed_ReturnsFalse_CurrentNotMatchNew1() throws SQLException {
+    public void testCheckStatusUpdateAllowedReturnsFalseWhenCurrentNotMatchNew1() throws SQLException {
         int currentStatus = 2;
         int newStatus = 8;
         when(driver.getConnection()).thenReturn(connection);
@@ -309,7 +309,7 @@ public class AppointmentControllerTests {
     }
 
     @Test
-    public void testCheckStatusUpdateAllowed_ReturnsFalse_CurrentNotMatchNew2() throws SQLException {
+    public void testCheckStatusUpdateAllowedReturnsFalseWhenCurrentNotMatchNew2() throws SQLException {
         int currentStatus = 3;
         int newStatus = 7;
         when(driver.getConnection()).thenReturn(connection);
@@ -319,19 +319,19 @@ public class AppointmentControllerTests {
     }
 
     @Test
-    public void testCheckStatusUpdateAllowed_ReturnsTrue_OnCancelledByUser() {
+    public void testCheckStatusUpdateAllowedReturnsTrueOnCancelledByUser() {
         int newStatus = AppointmentStatus.CANCELLED_BY_USER.getDbValue();
         Assert.assertTrue(controller.checkStatusUpdateAllowed(0, newStatus));
     }
 
     @Test
-    public void testCheckStatusUpdateAllowed_ReturnsTrue_OnCancelledByClinician() {
+    public void testCheckStatusUpdateAllowedReturnsTrueOnCancelledByClinician() {
         int newStatus = AppointmentStatus.CANCELLED_BY_CLINICIAN.getDbValue();
         Assert.assertTrue(controller.checkStatusUpdateAllowed(0, newStatus));
     }
 
     @Test
-    public void testCheckStatusUpdateAllowed_ReturnsTrue_OnCancelledByUserSeen() throws SQLException {
+    public void testCheckStatusUpdateAllowedReturnsTrueOnCancelledByUserSeen() throws SQLException {
         int currentStatus = AppointmentStatus.CANCELLED_BY_USER.getDbValue();
         int newStatus = AppointmentStatus.CANCELLED_BY_USER_SEEN.getDbValue();
 
@@ -340,7 +340,7 @@ public class AppointmentControllerTests {
     }
 
     @Test
-    public void testCheckStatusUpdateAllowed_ReturnsFalse_OnCancelledByUserSeen() throws SQLException {
+    public void testCheckStatusUpdateAllowedReturnsFalseOnCancelledByUserSeen() throws SQLException {
         int currentStatus = AppointmentStatus.PENDING.getDbValue();
         int newStatus = AppointmentStatus.CANCELLED_BY_USER_SEEN.getDbValue();
 
@@ -349,7 +349,7 @@ public class AppointmentControllerTests {
     }
 
     @Test
-    public void testCheckStatusUpdateAllowed_ReturnsTrue_OnCancelledByClinicianSeen() throws SQLException {
+    public void testCheckStatusUpdateAllowedReturnsTrueOnCancelledByClinicianSeen() throws SQLException {
         int currentStatus = AppointmentStatus.CANCELLED_BY_CLINICIAN.getDbValue();
         int newStatus = AppointmentStatus.CANCELLED_BY_CLINICIAN_SEEN.getDbValue();
 
@@ -358,7 +358,7 @@ public class AppointmentControllerTests {
     }
 
     @Test
-    public void testCheckStatusUpdateAllowed_ReturnsFalse_OnCancelledByClinicianSeen() throws SQLException {
+    public void testCheckStatusUpdateAllowedReturnsFalseOnCancelledByClinicianSeen() throws SQLException {
         int currentStatus = AppointmentStatus.PENDING.getDbValue();
         int newStatus = AppointmentStatus.CANCELLED_BY_CLINICIAN_SEEN.getDbValue();
 
@@ -372,5 +372,4 @@ public class AppointmentControllerTests {
         when(driver.getConnection()).thenThrow(new SQLException());
         controller.checkStatusUpdateAllowed(0, newStatus);
     }
-
 }

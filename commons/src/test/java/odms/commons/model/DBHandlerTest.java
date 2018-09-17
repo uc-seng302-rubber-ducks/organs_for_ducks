@@ -249,7 +249,6 @@ public class DBHandlerTest {
 
         dbHandler.saveUsers(users, connection);
         verify(mockStmt, times(11)).executeUpdate();
-
     }
 
     @Test
