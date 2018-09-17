@@ -119,6 +119,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         doubleClickOn(getCell("#searchTableView", 0, 0));
     }
 
+    //needs to change
     @Test
     public void testUserCannotEditDeathDetails() {
         setTextField(this,"#userIDTextField", "ABC1244");
@@ -129,7 +130,10 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
     @Test
     public void testDateOfDeathCannotBeAfterCurrentDay() {
         loginAsClinician();
-        clickOnButton(this, "#updateDeathDetailsButton");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
+        clickOn("#deathtab");
+
         setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now().plusDays(1));
         setTextField(this, "#updateDeathDetailsTimeTextField", LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
         clickOnButton(this, "#confirmUpdateDeathDetailsButton");
@@ -139,7 +143,9 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
     @Test
     public void testDateOfDeathCannotBeBeforeBirthDate() {
         loginAsClinician();
-        clickOnButton(this, "#updateDeathDetailsButton");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
+        clickOn("#deathtab");
         setDateValue(this, "#updateDeathDetailsDatePicker", testUser.getDateOfBirth().minusDays(1));
         setTextField(this, "#updateDeathDetailsTimeTextField", LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
         clickOnButton(this, "#confirmUpdateDeathDetailsButton");
@@ -150,7 +156,9 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
     public void testTimeOfDeathCannotBeInvalid() {
         final String errorText = "The format of the Time of Death is incorrect";
         loginAsClinician();
-        clickOnButton(this, "#updateDeathDetailsButton");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
+        clickOn("#deathtab");
         setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now()); //Make sure date is not invalid
         //Doing multiple in one test to speed up tests
         setTextField(this, "#updateDeathDetailsTimeTextField", "12:30pm");
@@ -169,7 +177,9 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
     @Test
     public void testOverviewUpdatesWhenConfirmClicked() {
         loginAsClinician();
-        clickOnButton(this, "#updateDeathDetailsButton");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
+        clickOn("#deathtab");
         setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now());
         setTextField(this, "#updateDeathDetailsTimeTextField", "02:45");
         setTextField(this, "#updateDeathDetailsCityTextField", "Atlantis");
@@ -184,7 +194,9 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
     @Test
     public void testOverviewUpdatesWhenCancelClicked() {
         loginAsClinician();
-        clickOnButton(this, "#updateDeathDetailsButton");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
+        clickOn("#deathtab");
         setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now());
         setTextField(this, "#updateDeathDetailsTimeTextField", LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
         setTextField(this, "#updateDeathDetailsCityTextField", "Atlantis");
@@ -201,7 +213,9 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
     public void testNoChangeWhenRemoveDeathDetailsIsCancelled() {
         loginAsClinician();
         String timeString = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
-        clickOnButton(this, "#updateDeathDetailsButton");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
+        clickOn("#deathtab");
         setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now());
         setTextField(this, "#updateDeathDetailsTimeTextField", timeString);
         setTextField(this, "#updateDeathDetailsCityTextField", "Atlantis");
@@ -223,7 +237,9 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         testUser.setDeathCountry("Australia");
 
         loginAsClinician();
-        clickOnButton(this, "#updateDeathDetailsButton");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
+        clickOn("#deathtab");
         clickOnButton(this, "#removeUpdateDeathDetailsButton");
         clickOnButton(this, "#confirmRemoveDeathDetailsButton");
 
@@ -240,7 +256,9 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         testUser.getDonorDetails().getOrganMap().put(Organs.LIVER, testReason);
 
         loginAsClinician();
-        clickOnButton(this, "#updateDeathDetailsButton");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
+        clickOn("#deathtab");
 
         verifyThat("#updateDeathDetailsOverrideWarningLabel", Node::isVisible);
         verifyThat("#updateDeathDetailsTimeTextField", Node::isDisabled);
@@ -254,7 +272,9 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         String inputTime = actualTime.plusMinutes(1).format(DateTimeFormatter.ofPattern("HH:mm"));
 
         loginAsClinician();
-        clickOnButton(this, "#updateDeathDetailsButton");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
+        clickOn("#deathtab");
         setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now());
         setTextField(this, "#updateDeathDetailsTimeTextField", inputTime);
         clickOnButton(this, "#confirmUpdateDeathDetailsButton");
@@ -283,7 +303,9 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         String inputTime = actualTime.format(DateTimeFormatter.ofPattern("HH:mm"));
 
         loginAsClinician();
-        clickOnButton(this, "#updateDeathDetailsButton");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
+        clickOn("#deathtab");
         setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now());
         setTextField(this, "#updateDeathDetailsTimeTextField", inputTime);
         clickOnButton(this, "#confirmUpdateDeathDetailsButton");
