@@ -131,7 +131,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         loginAsClinician();
         clickOnButton(this, "#updateDeathDetailsButton");
         setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now().plusDays(1));
-        setTextField(this, "#updateDeathDetailsTimeTextField", "02:45"); // Make sure time doesn't through an error
+        setTextField(this, "#updateDeathDetailsTimeTextField", LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
         clickOnButton(this, "#confirmUpdateDeathDetailsButton");
         verifyThat("#updateDeathDetailsErrorLabel", LabeledMatchers.hasText(dateErrorText));
     }
@@ -141,7 +141,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         loginAsClinician();
         clickOnButton(this, "#updateDeathDetailsButton");
         setDateValue(this, "#updateDeathDetailsDatePicker", testUser.getDateOfBirth().minusDays(1));
-        setTextField(this, "#updateDeathDetailsTimeTextField", "02:45");
+        setTextField(this, "#updateDeathDetailsTimeTextField", LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
         clickOnButton(this, "#confirmUpdateDeathDetailsButton");
         verifyThat("#updateDeathDetailsErrorLabel", LabeledMatchers.hasText(dateErrorText));
     }
@@ -186,7 +186,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         loginAsClinician();
         clickOnButton(this, "#updateDeathDetailsButton");
         setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now());
-        setTextField(this, "#updateDeathDetailsTimeTextField", "02:45");
+        setTextField(this, "#updateDeathDetailsTimeTextField", LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
         setTextField(this, "#updateDeathDetailsCityTextField", "Atlantis");
         setTextField(this, "#updateDeathDetailsRegionTextField", "Atlantic");
         clickOnButton(this, "#cancelUpdateDeathDetailsButton");
@@ -200,15 +200,16 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
     @Test
     public void testNoChangeWhenRemoveDeathDetailsIsCancelled() {
         loginAsClinician();
+        String timeString = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
         clickOnButton(this, "#updateDeathDetailsButton");
         setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now());
-        setTextField(this, "#updateDeathDetailsTimeTextField", "02:45");
+        setTextField(this, "#updateDeathDetailsTimeTextField", timeString);
         setTextField(this, "#updateDeathDetailsCityTextField", "Atlantis");
         setTextField(this, "#updateDeathDetailsRegionTextField", "Atlantic");
         clickOnButton(this, "#removeUpdateDeathDetailsButton");
         clickOnButton(this, "#cancelRemoveDeathDetailsButton");
 
-        verifyThat("#updateDeathDetailsTimeTextField", TextInputControlMatchers.hasText("02:45"));
+        verifyThat("#updateDeathDetailsTimeTextField", TextInputControlMatchers.hasText(timeString));
         verifyThat("#updateDeathDetailsCityTextField", TextInputControlMatchers.hasText("Atlantis"));
         verifyThat("#updateDeathDetailsRegionTextField", TextInputControlMatchers.hasText("Atlantic"));
     }

@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS PreferredClinician;
 DROP TABLE IF EXISTS AppointmentDetails;
 DROP TABLE IF EXISTS AppointmentType;
 DROP TABLE IF EXISTS AppointmentStatus;
@@ -271,7 +272,16 @@ CREATE TABLE AppointmentDetails (
     ON UPDATE CASCADE
 );
 
-
+CREATE TABLE PreferredClinician (
+  fkUserNhi VARCHAR(7) PRIMARY KEY,
+  fkStaffId VARCHAR(255),
+  FOREIGN KEY (fkUserNhi) REFERENCES User (nhi)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE,
+  FOREIGN KEY (fkStaffId) REFERENCES Clinician (staffId)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
 
 CREATE TRIGGER removeZombies AFTER UPDATE ON DeathDetails
   FOR EACH ROW

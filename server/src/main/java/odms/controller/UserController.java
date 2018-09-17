@@ -4,6 +4,7 @@ import odms.commons.database.DBHandler;
 import odms.commons.database.JDBCDriver;
 import odms.commons.model.User;
 import odms.commons.model._enum.EventTypes;
+import odms.commons.model.datamodel.ComboBoxClinician;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.Log;
 import odms.exception.NotFoundException;
@@ -48,7 +49,7 @@ public class UserController extends BaseController {
                                              @RequestParam("count") int count,
                                              @RequestParam(value = "name", required = false) String name,
                                              @RequestParam(value = "region", required = false) String region,
-                                             @RequestParam(value = "gender", required = false) String gender) {
+                                             @RequestParam(value = "gender", required = false, defaultValue = "All") String gender) {
         try (Connection connection = driver.getConnection()) {
             Collection<User> rawUsers = handler.getUsers(connection, count, startIndex, name, region, gender.equals("All") ? "" : gender);
             Log.info("Getting all user overviews...");
@@ -144,5 +145,26 @@ public class UserController extends BaseController {
             Log.severe("cannot find whether user exists", ex);
             throw  new ServerDBException(ex);
         }
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/preferred-clinician")
+    public ComboBoxClinician getPreferredClinician(@PathVariable("nhi") String userNhi) {
+        try (Connection connection = driver.getConnection()) {
+            return handler.getPreferredBasicClinician(connection, userNhi);
+        } catch (SQLException ex) {
+            Log.severe("Could not get basic clinician", ex);
+            throw new ServerDBException(ex);
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, value = "/users/{nhi}/preferred-clinician")
+    public ResponseEntity putPreferredClinician(@PathVariable("nhi") String userNhi, @RequestBody String staffId) {
+        try (Connection connection = driver.getConnection()) {
+            handler.putPreferredBasicClinician(connection, userNhi, staffId);
+        } catch (SQLException ex) {
+            Log.severe("cannot put preferred clinician " + staffId + " to user " + userNhi, ex);
+            throw new ServerDBException(ex);
+        }
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

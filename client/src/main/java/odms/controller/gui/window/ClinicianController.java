@@ -17,17 +17,28 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextBoundsType;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import odms.bridge.AppointmentsBridge;
 import odms.bridge.ClinicianBridge;
 import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.exception.ApiException;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model._abstract.UserLauncher;
+import odms.commons.model._enum.AppointmentStatus;
+import odms.commons.model._enum.AppointmentStatus;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.Organs;
+import odms.commons.model._enum.UserType;
+import odms.commons.model._enum.UserType;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.model.event.UpdateNotificationEvent;
 import odms.commons.utils.Log;
@@ -118,6 +129,8 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
     @FXML
     private AvailableOrgansViewController availableOrgansViewController;
     @FXML
+    private ClinicianAppointmentRequestViewController appointmentRequestViewController;
+    @FXML
     private Button redoButton;
     @FXML
     private MenuItem deleteClinician;
@@ -129,8 +142,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
     @FXML
     private StatusBarController statusBarPageController;
 
-    @FXML
-    private ClinicianAppointmentRequestViewController appointmentRequestViewController;
+    @FXML Tab appointmentsTab;
 
     //</editor-fold>
 
@@ -142,6 +154,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
     private FilteredList<UserOverview> fListUsers;
     private PauseTransition pause = new PauseTransition(Duration.millis(300));
     private ClinicianBridge clinicianBridge;
+    private StackPane notificationBadge = new StackPane();
 
     //Initiliase table columns as class level so it is accessible for sorting in pagination methods
     private TableColumn<UserOverview, String> lNameColumn;
@@ -153,6 +166,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
     private Collection<PropertyChangeListener> parentListeners;
 
     private boolean admin = false;
+    private AppointmentsBridge appointmentsBridge;
 
     /**
      * Initializes the controller class for the clinician overview.
@@ -168,6 +182,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         this.stage = stage;
         this.clinician = clinician;
         this.admin = fromAdmin;
+        this.appointmentsBridge = appController.getAppointmentsBridge();
         openStages = new ArrayList<>();
         stage.setMaximized(true);
 
@@ -181,7 +196,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         transplantWaitListTabPageController.init(appController, this);
         statusBarPageController.init();
         availableOrgansViewController.init(this);
-        appointmentRequestViewController.init();
+        appointmentRequestViewController.init(appController, clinician);
 
         if (clinician.getStaffId().equals("0")) {
             deleteClinician.setDisable(true);
@@ -214,6 +229,49 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
                 displayImage(profileImage, clinician.getProfilePhotoFilePath());
             }
         }
+
+        showAppointmentNotifications();
+        checkForCanceledAppointments();
+    }
+
+    /**
+     * Finds the nmber of pending appointments for a clinician and shows it to them
+     *
+     * Will show 9+ for notifications over 10 due to size constraints
+     *
+     */
+    private void showAppointmentNotifications() {
+
+        int notificationsPending = appointmentsBridge.getPendingAppointments(clinician.getStaffId(),appController.getToken());
+        String notifications;
+        Text numberOfNotifications = new Text();
+        if(notificationsPending <= 0 ){
+            return;
+        } else if(notificationsPending > 9){
+            notifications = "9+";
+            numberOfNotifications.setFont(new Font(8));
+        } else {
+            notifications = String.valueOf(notificationsPending);
+        }
+        Circle notificationCircle = new Circle(0, 0, 10);
+        notificationCircle.setFill(Color.RED);
+        numberOfNotifications.setText(notifications);
+        numberOfNotifications.setBoundsType(TextBoundsType.VISUAL);
+
+        notificationBadge.getChildren().add(notificationCircle);
+        notificationBadge.getChildren().add(numberOfNotifications);
+        appointmentsTab.setGraphic(notificationBadge);
+    }
+
+    /**
+     * Asks the server if there are any canceled appointments for the clinician and notifies them if there are
+     */
+    private void checkForCanceledAppointments() {
+        boolean hasCanceled = appController.getAppointmentsBridge().checkAppointmentStatusExists(clinician.getStaffId(), UserType.CLINICIAN, AppointmentStatus.CANCELLED_BY_USER);
+        if (hasCanceled) {
+            String message = "You have appointments that have been cancelled. Please check your list of appointments.";
+            AlertWindowFactory.generateAlertWindow(message);
+        }
     }
 
     /**
@@ -224,6 +282,8 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         checkSave();
         stage.close();
         availableOrgansViewController.shutdownThreads();
+        appointmentRequestViewController.shutdownPropertyChangeListener();
+        ServerEventNotifier.getInstance().removePropertyChangeListener(this);
         Log.info("Successfully closed update user window for Clinician StaffID: " + clinician.getStaffId());
     }
 
@@ -489,6 +549,8 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
             newStage.show();
             stage.close();
             availableOrgansViewController.shutdownThreads();
+            appointmentRequestViewController.shutdownPropertyChangeListener();
+            ServerEventNotifier.getInstance().removePropertyChangeListener(this);
             LoginController loginController = loader.getController();
             loginController.init(AppController.getInstance(), newStage);
             deleteTempDirectory();
@@ -641,6 +703,8 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
                 Log.warning("failed to retrieve updated clinician. response code: " + ex.getResponseCode(), ex);
                 AlertWindowFactory.generateError(("could not refresh clinician from the server. Please check your connection before trying again."));
             }
+        } else if (event.getType().equals(EventTypes.APPOINTMENT_UPDATE)) {
+            showAppointmentNotifications();
         }
     }
 
