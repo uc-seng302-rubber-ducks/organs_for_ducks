@@ -1,6 +1,6 @@
-package odms.commons.model;
+package odms.database;
 
-import odms.commons.database.DBHandler;
+import odms.commons.model.*;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
 import odms.commons.model._enum.Organs;
@@ -8,11 +8,11 @@ import odms.commons.model._enum.UserType;
 import odms.commons.model.datamodel.Address;
 import odms.commons.model.datamodel.ComboBoxClinician;
 import odms.commons.model.datamodel.DeathDetails;
+import odms.test_utils.DBHandlerMocker;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import test_utils.DBHandlerMocker;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

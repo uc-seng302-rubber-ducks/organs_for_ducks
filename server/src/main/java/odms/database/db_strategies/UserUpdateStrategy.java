@@ -1,4 +1,4 @@
-package odms.commons.database.db_strategies;
+package odms.database.db_strategies;
 
 import odms.commons.model.Disease;
 import odms.commons.model.MedicalProcedure;
@@ -130,9 +130,9 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
      * Creates a contact object with for the given user using the CREATE_USER_CONTACT_STMT.
      * Must have an active connection to the database (created through connect())
      *
-     * @param userNhi    nhi of the user to associate the contact object with.
-     * @param contactDetails       user to create the associated contact for
-     * @param connection Connection to the target database
+     * @param userNhi        nhi of the user to associate the contact object with.
+     * @param contactDetails user to create the associated contact for
+     * @param connection     Connection to the target database
      * @throws SQLException if there is a problem with creating the contact
      */
     private void createContact(String userNhi, ContactDetails contactDetails, Connection connection) throws SQLException {
@@ -376,7 +376,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             deleteStatement.setString(1, user.getNhi());
             deleteStatement.execute();
         }
-        for (Map.Entry<Organs, ExpiryReason> organsExpiry: user.getDonorDetails().getOrganMap().entrySet()) {
+        for (Map.Entry<Organs, ExpiryReason> organsExpiry : user.getDonorDetails().getOrganMap().entrySet()) {
             if (organsExpiry.getValue() != null) {
                 int organDBValue = organsExpiry.getKey().getDbValue();
                 int donatingId = getDonatingId(user.getNhi(), organDBValue, connection);
@@ -403,9 +403,9 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
      * Retrieves the foreign key donating id referencing
      * the Organ Donating table
      *
-     * @param userNhi NHI of user
+     * @param userNhi      NHI of user
      * @param organDBValue the database value of organ
-     * @param connection Connection to the database
+     * @param connection   Connection to the database
      * @return The foreign key donating id referencing the Organ Donating table
      * @throws SQLException If there is an issue retrieving the contact id
      */
@@ -428,7 +428,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     /**
      * Retrieves the emergency contact foreign key to the contact details table
      *
-     * @param user User object to find the specific entry
+     * @param user       User object to find the specific entry
      * @param connection Connection to the database
      * @return The foreign key contact id referencing the ContactDetails table
      * @throws SQLException If there is an issue retrieving the contact id
@@ -589,8 +589,9 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
 
     /**
      * Creates a medical procedure in the database that is linked to the provided user nhi
-     * @param nhi user's nhi to associate the medical procedure with
-     * @param procedure procedure to create in the database
+     *
+     * @param nhi        user's nhi to associate the medical procedure with
+     * @param procedure  procedure to create in the database
      * @param connection a non null, active and valid connection to the database
      * @throws SQLException If there is an error with the database
      */
@@ -636,7 +637,8 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
 
     /**
      * Updates the database with the user's previous and current diseases
-     * @param user user for which to update the diseases in the database for
+     *
+     * @param user       user for which to update the diseases in the database for
      * @param connection A non null and active connection to the database
      * @throws SQLException if there is an error with the database
      */
@@ -660,7 +662,8 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
 
     /**
      * Updates the database with the users new death details
-     * @param user for which to update the death details for
+     *
+     * @param user       for which to update the death details for
      * @param connection A non null and active connection to the database
      * @throws SQLException if there is an error with the database
      */
@@ -673,7 +676,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
         }
 
 
-        try (PreparedStatement createDeathDetails  = connection.prepareStatement(UPDATE_DEATH_DETAILS)) {
+        try (PreparedStatement createDeathDetails = connection.prepareStatement(UPDATE_DEATH_DETAILS)) {
             createDeathDetails.setTimestamp(1, sqlDeathMoment);
             createDeathDetails.setString(2, user.getDeathCity());
             createDeathDetails.setString(3, user.getDeathRegion());
@@ -686,8 +689,9 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
 
     /**
      * Creates a disease in the CurrentDisease table associated with the provided user nhi
-     * @param userNhi user to associate the disease with
-     * @param disease disease to insert into the database
+     *
+     * @param userNhi    user to associate the disease with
+     * @param disease    disease to insert into the database
      * @param connection an active and valid connection to the database
      * @throws SQLException if there is an error with the database
      */
@@ -704,8 +708,9 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
 
     /**
      * Creates a disease in the PastDisease table associated with the provided user nhi
-     * @param userNhi user to associate the disease with
-     * @param disease disease to insert into the database
+     *
+     * @param userNhi    user to associate the disease with
+     * @param disease    disease to insert into the database
      * @param connection an active and valid connection to the database
      * @throws SQLException if there is an error with the database
      */
@@ -721,9 +726,10 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
 
     /**
      * Deletes all entries associated with the user in a provided table. SHOULD NEVER BE EXPOSED TO USERS
-     * @param tableName table to delete from
-     * @param user user for which to delete all corresponding entries of the provided table for
-     *             e.g. providing table A and user ABC1234 will delete all the entries in table A associated with ABC1234
+     *
+     * @param tableName  table to delete from
+     * @param user       user for which to delete all corresponding entries of the provided table for
+     *                   e.g. providing table A and user ABC1234 will delete all the entries in table A associated with ABC1234
      * @param connection A non null and active connection to the database
      * @throws SQLException if there is an error with the database
      */
@@ -736,7 +742,8 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
 
     /**
      * Deletes and repopulates the medication entries for a user
-     * @param user user to repopulate the medication table for
+     *
+     * @param user       user to repopulate the medication table for
      * @param connection A non null and active connection to the database
      * @throws SQLException if there is an error with the database
      */
@@ -762,8 +769,9 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
 
     /**
      * Obtains the medication instance id of a given medication from the database. Only works if the medication already exists in the database
-     * @param userNhi the user associated with the medication searched for
-     * @param med the medication searched for that is already present in the database
+     *
+     * @param userNhi    the user associated with the medication searched for
+     * @param med        the medication searched for that is already present in the database
      * @param connection A non null and active connection to the database
      * @return the medication instance id of a medication associated with the provided user
      * @throws SQLException if there is an error with the database
@@ -782,9 +790,10 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
 
     /**
      * Creates the rows for all the medication times for an associated medication in MedicationDates
+     *
      * @param medicationInstanceId medication instance id of the medication stored in the database obtained through getMedicationInstanceId
-     * @param med medication to create times for
-     * @param connection A non null and active connection to the database
+     * @param med                  medication to create times for
+     * @param connection           A non null and active connection to the database
      * @throws SQLException if there is an error with the database
      */
     private void createMedicationTimeRows(int medicationInstanceId, Medication med, Connection connection) throws SQLException {
@@ -805,8 +814,9 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
 
     /**
      * Creates a medication entry in the database that is associated to the provided user
-     * @param userNhi the user to associate the medication with.
-     * @param med the medication to create in the database
+     *
+     * @param userNhi    the user to associate the medication with.
+     * @param med        the medication to create in the database
      * @param connection A non null and active connection to the database
      * @throws SQLException If there is an error in the database
      */
@@ -821,7 +831,8 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
 
     /**
      * Creates or updates a deathDetails entry in the deathDetails table
-     * @param user to update or create for
+     *
+     * @param user       to update or create for
      * @param connection A non null and active connection to the database
      * @throws SQLException If there is an error in the database
      */
@@ -835,7 +846,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             return;
         }
 
-        try (PreparedStatement createDeathDetails  = connection.prepareStatement(CREATE_DEATH_DETAILS)) {
+        try (PreparedStatement createDeathDetails = connection.prepareStatement(CREATE_DEATH_DETAILS)) {
 
             createDeathDetails.setString(1, user.getNhi());
             createDeathDetails.setTimestamp(2, sqlDeathMoment);

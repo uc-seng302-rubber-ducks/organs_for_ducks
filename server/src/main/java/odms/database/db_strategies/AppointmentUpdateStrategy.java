@@ -1,4 +1,4 @@
-package odms.commons.database.db_strategies;
+package odms.database.db_strategies;
 
 import odms.commons.model.Appointment;
 import odms.commons.model._enum.AppointmentStatus;
@@ -25,10 +25,9 @@ public class AppointmentUpdateStrategy extends AbstractUpdateStrategy {
      * @param roles      Collection of appointments to update
      * @param connection Connection to the target database
      * @param <T>        Appointment objects
-     * @throws SQLException
      */
     @Override
-    public <T> void update(Collection<T> roles, Connection connection) throws SQLException {
+    public <T> void update(Collection<T> roles, Connection connection) {
         // todo: use this for saving recurring appointments
     }
 
@@ -54,8 +53,9 @@ public class AppointmentUpdateStrategy extends AbstractUpdateStrategy {
 
     /**
      * Updates the status of an appointment in the database
-     * @param connection Connection to the database
-     * @param statusId id of the status to update to
+     *
+     * @param connection    Connection to the database
+     * @param statusId      id of the status to update to
      * @param appointmentId id of the appointment to update
      * @throws SQLException If there is an error updating the appointment in the database or the connection is invalid
      */
@@ -70,7 +70,8 @@ public class AppointmentUpdateStrategy extends AbstractUpdateStrategy {
 
     /**
      * Runs sql to delete an appointment in the database with status of rejected seen (id 7)
-     * @param connection Connection to the database
+     *
+     * @param connection    Connection to the database
      * @param appointmentId id fo the appointment to update
      * @throws SQLException If there is an error updating the appointment in the database or the connection is invalid
      */
@@ -111,7 +112,8 @@ public class AppointmentUpdateStrategy extends AbstractUpdateStrategy {
 
     /**
      * Updates an existing appointment in the database
-     * @param connection Connection to the target database
+     *
+     * @param connection  Connection to the target database
      * @param appointment Appointment to updated details from
      * @throws SQLException If there is an error updating the appointment in the database or the connection is invalid
      */

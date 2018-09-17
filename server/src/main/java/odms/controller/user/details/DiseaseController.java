@@ -1,12 +1,12 @@
 package odms.controller.user.details;
 
-import odms.commons.database.DBHandler;
-import odms.commons.database.JDBCDriver;
 import odms.commons.model.Disease;
 import odms.commons.model.User;
 import odms.commons.utils.Log;
 import odms.controller.BaseController;
 import odms.controller.OdmsController;
+import odms.database.DBHandler;
+import odms.database.JDBCDriver;
 import odms.exception.ServerDBException;
 import odms.security.IsClinician;
 import odms.utils.DBManager;
