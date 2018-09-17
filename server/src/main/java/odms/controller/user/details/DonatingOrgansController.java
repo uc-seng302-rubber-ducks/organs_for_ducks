@@ -92,7 +92,6 @@ public class DonatingOrgansController extends BaseController {
     public ResponseEntity postDisqualifiedOrgan(@PathVariable String nhi,
                                              @RequestBody Collection<OrgansWithDisqualification> disqualified) {
         try (Connection connection = driver.getConnection()) {
-
             disqualifiedOrgansHandler.postDisqualifiedOrgan(connection, disqualified, nhi);
         } catch (SQLException ex) {
             Log.severe("Could not post disqualified organs to user " + nhi, ex);

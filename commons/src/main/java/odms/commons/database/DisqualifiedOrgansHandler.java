@@ -5,11 +5,7 @@ import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.OrgansWithDisqualification;
 import odms.commons.utils.Log;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -71,7 +67,7 @@ public class DisqualifiedOrgansHandler {
 
         OrgansWithDisqualification disqualifiedOrgan = new OrgansWithDisqualification(organ, reason, dateDisqualified, staffId);
         disqualifiedOrgan.setDisqualifiedId(disqualifiedId);
-        disqualifiedOrgan.setDateEligible(dateEligible);
+        disqualifiedOrgan.setEligibleDate(dateEligible);
 
         return disqualifiedOrgan;
     }

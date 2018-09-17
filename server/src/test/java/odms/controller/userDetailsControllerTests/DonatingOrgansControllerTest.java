@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -123,13 +124,16 @@ public class DonatingOrgansControllerTest {
     private Collection<OrgansWithDisqualification> createTestCollection() {
         Collection<OrgansWithDisqualification> disqualified = new ArrayList<>();
         OrgansWithDisqualification testOrgan = new  OrgansWithDisqualification(Organs.LIVER, "Testing", LocalDate.now(),"ABC1234");
+        testOrgan.setEligibleDate(LocalDate.now().plusDays(1));
 
         disqualified.add(testOrgan);
         return disqualified;
     }
 
     @Test
-    public void postDisqualifiedOrgansShouldReturnCreated() {
+    public void postDisqualifiedOrgansShouldReturnCreated() throws SQLException {
+        PreparedStatement mockStmt = mock(PreparedStatement.class);
+        when(connection.prepareStatement(anyString())).thenReturn(mockStmt);
         ResponseEntity res = controller.postDisqualifiedOrgan("ABC1234", createTestCollection());
         Assert.assertEquals(HttpStatus.CREATED, res.getStatusCode());
     }

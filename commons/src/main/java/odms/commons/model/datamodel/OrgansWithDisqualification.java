@@ -53,7 +53,7 @@ public class OrgansWithDisqualification {
     public void setDate(LocalDate date) {
         this.disqualificationDate = date;
     }
-    
+
     public LocalDate getEligibleDate() {
         return eligibleDate;
     }

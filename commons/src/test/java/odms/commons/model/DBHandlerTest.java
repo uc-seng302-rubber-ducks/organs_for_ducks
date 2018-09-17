@@ -77,7 +77,7 @@ public class DBHandlerTest {
 
         when(mockResultSet.next()).thenReturn(false).thenReturn(true);
         dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(18)).executeUpdate();
+        verify(mockStmt, times(19)).executeUpdate();
     }
 
     @Test
@@ -99,7 +99,7 @@ public class DBHandlerTest {
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(11)).executeUpdate();
+        verify(mockStmt, times(12)).executeUpdate();
     }
 
     @Test
@@ -124,7 +124,7 @@ public class DBHandlerTest {
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(13)).executeUpdate();
+        verify(mockStmt, times(14)).executeUpdate();
     }
 
     @Test
@@ -137,7 +137,7 @@ public class DBHandlerTest {
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(15)).executeUpdate();
+        verify(mockStmt, times(16)).executeUpdate();
         verify(mockStmt, never()).setNull(3, Types.DATE);
         verify(mockStmt, times(2)).setInt(2, Organs.CONNECTIVE_TISSUE.getDbValue());
         verify(mockStmt, times(2)).setInt(2, Organs.CORNEA.getDbValue());
@@ -153,7 +153,7 @@ public class DBHandlerTest {
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(13)).executeUpdate();
+        verify(mockStmt, times(14)).executeUpdate();
         verify(mockResultSet, times(1)).getInt("procedureId");
         verify(mockStmt, times(2)).setString(2, procedure.getSummary());
         verify(mockStmt, times(1)).setInt(1, Organs.LUNG.getDbValue());
@@ -166,7 +166,7 @@ public class DBHandlerTest {
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(13)).executeUpdate();
+        verify(mockStmt, times(14)).executeUpdate();
         verify(mockResultSet, times(1)).getInt("medicationInstanceId");
         verify(mockStmt, times(2)).setString(2, "panadol");
         verify(mockStmt, times(1)).setNull(3, Types.TIMESTAMP);
@@ -247,7 +247,7 @@ public class DBHandlerTest {
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(11)).executeUpdate();
+        verify(mockStmt, times(12)).executeUpdate();
 
     }
 
@@ -261,7 +261,7 @@ public class DBHandlerTest {
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(11)).executeUpdate();
+        verify(mockStmt, times(12)).executeUpdate();
     }
 
     @Test
