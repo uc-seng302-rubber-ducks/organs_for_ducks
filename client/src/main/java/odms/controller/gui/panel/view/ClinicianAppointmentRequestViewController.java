@@ -21,7 +21,6 @@ import odms.controller.gui.panel.logic.ClinicianAppointmentRequestLogicControlle
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.socket.ServerEventNotifier;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -85,7 +84,7 @@ public class ClinicianAppointmentRequestViewController {
                 change.getControlNewText().length() <= 255 ? change : null)); // limits user input to 255 characters
 
         initAppointmentTable();
-        logicController.refreshClincianAvaliableTimes(LocalDate.now());
+        logicController.refreshClinicianAvailableTimes(LocalDate.now());
         populateClinicianTimes();
         datePickerListener(appointmentRequestDate);
     }
@@ -266,13 +265,13 @@ public class ClinicianAppointmentRequestViewController {
     }
 
     /**
-     *
+     * @see ClinicianAppointmentRequestLogicController refreshClinicianAvailableTimes
      */
     @FXML
     private void populateClinicianTimes(){
         if (appointmentRequestDate.getValue() != null) {
             LocalTime localTime = getSelectedAppointment().getRequestedDate().toLocalTime();
-            logicController.refreshClincianAvaliableTimes(appointmentRequestDate.getValue());
+            logicController.refreshClinicianAvailableTimes(appointmentRequestDate.getValue());
             availableTimes.add(localTime);
             appointmentRequestTime.setItems(availableTimes);
         }

@@ -169,7 +169,7 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
      * gets all the times the clinician is booked for the given date and add
      * @param wantedDate the date for the appointment
      */
-    public void refreshClincianAvaliableTimes(LocalDate wantedDate){
+    public void refreshClinicianAvailableTimes(LocalDate wantedDate){
         AppointmentsBridge appointmentsbridge = appController.getAppointmentsBridge();
         bookedDateTimes.addListener((SetChangeListener<LocalDateTime>) c -> {
             availableTimes.clear();
