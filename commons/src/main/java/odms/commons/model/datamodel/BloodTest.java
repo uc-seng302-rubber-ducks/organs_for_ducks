@@ -3,16 +3,17 @@ package odms.commons.model.datamodel;
 import java.time.LocalDate;
 
 public class BloodTest {
-    double redBloodCellCount;
-    double whiteBloodCellCount;
-    double haemoglobinLevel;
-    double platelets;
-    double glucoseLevels;
-    double meanCellVolume;
-    double haematocrit;
-    double meanCellHaematocrit;
-    LocalDate requestedDate;
-    LocalDate resultsRecived;
+    private double redBloodCellCount;
+    private double whiteBloodCellCount;
+    private double haemoglobinLevel;
+    private double platelets;
+    private double glucoseLevels;
+    private double meanCellVolume;
+    private double haematocrit;
+    private double meanCellHaematocrit;
+    private LocalDate requestedDate;
+    private LocalDate resultsRecived;
+    private String requestedByClinician;
 
     public BloodTest() {
         this.redBloodCellCount = 0.0;
@@ -25,9 +26,10 @@ public class BloodTest {
         this.meanCellHaematocrit = 0.0;
         this.requestedDate = null;
         this.resultsRecived = null;
+        this.requestedByClinician = "";
     }
 
-    public BloodTest(double redBloodCellCount, double whiteBloodCellCount, double haemoglobinLevel, double platelets, double glucoseLevels, double meanCellVolume, double haematocrit, double meanCellHaematocrit, LocalDate requestedDate, LocalDate resultsRecived) {
+    public BloodTest(double redBloodCellCount, double whiteBloodCellCount, double haemoglobinLevel, double platelets, double glucoseLevels, double meanCellVolume, double haematocrit, double meanCellHaematocrit, LocalDate requestedDate, LocalDate resultsRecived, String requestedByClinician) {
         this.redBloodCellCount = redBloodCellCount;
         this.whiteBloodCellCount = whiteBloodCellCount;
         this.haemoglobinLevel = haemoglobinLevel;
@@ -38,8 +40,33 @@ public class BloodTest {
         this.meanCellHaematocrit = meanCellHaematocrit;
         this.requestedDate = requestedDate;
         this.resultsRecived = resultsRecived;
+        this.requestedByClinician = requestedByClinician;
     }
 
+
+    public String getRequestedByClinician() {
+        return requestedByClinician;
+    }
+
+    public void setRequestedByClinician(String requestedByClinician) {
+        this.requestedByClinician = requestedByClinician;
+    }
+
+    public LocalDate getRequestedDate() {
+        return requestedDate;
+    }
+
+    public void setRequestedDate(LocalDate requestedDate) {
+        this.requestedDate = requestedDate;
+    }
+
+    public LocalDate getResultsRecived() {
+        return resultsRecived;
+    }
+
+    public void setResultsRecived(LocalDate resultsRecived) {
+        this.resultsRecived = resultsRecived;
+    }
 
     public double getRedBloodCellCount() {
         return redBloodCellCount;
