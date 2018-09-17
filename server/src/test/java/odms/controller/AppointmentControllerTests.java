@@ -57,9 +57,9 @@ public class AppointmentControllerTests {
     }
 
     @Test
-    public void postAppointmentShouldReturnAcceptedIfConnectionValid() throws SQLException {
+    public void postAppointmentShouldReturnAcceptedIfConnectionValid() {
         ResponseEntity res = controller.postAppointment(testAppointment);
-        Assert.assertEquals(res.getStatusCode(), HttpStatus.ACCEPTED);
+        Assert.assertEquals(HttpStatus.ACCEPTED, res.getStatusCode());
     }
 
     @Test(expected = ServerDBException.class)
@@ -95,7 +95,8 @@ public class AppointmentControllerTests {
     }
 
     @Test
-    public void DeleteAppointmentShouldReturnOKIfConnectionValid() throws SQLException {
+    public void deleteAppointmentShouldReturnOKIfConnectionValid() throws SQLException {
+        testAppointment.setAppointmentId(1);
         ResponseEntity res = controller.deleteAppointment(testAppointment);
         Assert.assertEquals(HttpStatus.OK, res.getStatusCode());
     }
@@ -105,4 +106,18 @@ public class AppointmentControllerTests {
         when(driver.getConnection()).thenThrow(new SQLException());
         controller.deleteAppointment(testAppointment);
     }
+
+    @Test
+    public void putAppointmentShouldReturnAcceptedIfConnectionValid() {
+        testAppointment.setAppointmentId(100);
+        ResponseEntity res = controller.putAppointment("0", 100, testAppointment);
+        Assert.assertEquals(HttpStatus.ACCEPTED, res.getStatusCode());
+    }
+
+    @Test(expected = ServerDBException.class)
+    public void putAppointmentShouldThrowExceptionWhenNoConnection() throws SQLException {
+        when(driver.getConnection()).thenThrow(new SQLException());
+        controller.putAppointment("0", 100, testAppointment);
+    }
+
 }

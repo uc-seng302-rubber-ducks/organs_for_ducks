@@ -54,19 +54,14 @@ public class UpdateUserController {
     //<editor-fold desc="fxml stuff">
     @FXML
     private Label fNameErrorLabel;
-
     @FXML
     private Label genericErrorLabel;
-
     @FXML
     private Label phoneErrorLabel;
-
     @FXML
     private Label cellErrorLabel;
-
     @FXML
     private Label emailErrorLabel;
-
     @FXML
     private Label ecCellPhoneErrorLabel;
     @FXML
@@ -81,7 +76,6 @@ public class UpdateUserController {
     private Label heightErrorLabel;
     @FXML
     private Label weightErrorLabel;
-
     @FXML
     private Label nhiErrorLabel;
     @FXML
@@ -177,7 +171,7 @@ public class UpdateUserController {
     @FXML
     private TextField updateDeathDetailsRegionTextField;
     @FXML
-    private ChoiceBox<String> updateDeathDetailsRegionChoiceBox;
+    private ComboBox<String> updateDeathDetailsRegionComboBox;
     @FXML
     private ComboBox<String> updateDeathDetailsCountryComboBox;
     @FXML
@@ -265,7 +259,7 @@ public class UpdateUserController {
                 lNameInput,
                 heightInput, weightInput, phone, cell, street, streetNumber, city, neighborhood, zipCode, email,
                 ecName, ecPhone, ecCell, ecEmail, ecStreet, ecStreetNumber, ecCity, ecNeighborhood, ecZipCode,
-                ecRelationship, regionInput, ecRegionInput};
+                ecRelationship, regionInput, ecRegionInput, updateDeathDetailsCityTextField, updateDeathDetailsRegionTextField, updateDeathDetailsTimeTextField};
 
         // creates a listener for each text field
         for (TextField tf : allTextFields) {
@@ -284,8 +278,11 @@ public class UpdateUserController {
         comboBoxListener(ecRegionSelector);
         comboBoxListener(countrySelector);
         comboBoxListener(ecCountrySelector);
+        comboBoxListener(updateDeathDetailsCountryComboBox);
+        comboBoxListener(updateDeathDetailsRegionComboBox);
 
         datePickerListener(dobInput);
+        datePickerListener(updateDeathDetailsDatePicker);
 
         addCheckBoxListener(smokerCheckBox);
 
@@ -411,7 +408,7 @@ public class UpdateUserController {
     @FXML
     private void prefillDeathDetailsTab() {
         for (Regions regions : Regions.values()) {
-            updateDeathDetailsRegionChoiceBox.getItems().add(regions.toString());
+            updateDeathDetailsRegionComboBox.getItems().add(regions.toString());
         }
         for (String country : appController.getAllCountries()) {
             updateDeathDetailsCountryComboBox.getItems().add(country);
@@ -474,9 +471,9 @@ public class UpdateUserController {
         updateDeathDetailsRegionTextField.setDisable(isNewZealand);
         updateDeathDetailsRegionTextField.setVisible(!isNewZealand);
 
-        updateDeathDetailsRegionChoiceBox.setValue(currentChoiceRegion);
-        updateDeathDetailsRegionChoiceBox.setDisable(!isNewZealand);
-        updateDeathDetailsRegionChoiceBox.setVisible(isNewZealand);
+        updateDeathDetailsRegionComboBox.setValue(currentChoiceRegion);
+        updateDeathDetailsRegionComboBox.setDisable(!isNewZealand);
+        updateDeathDetailsRegionComboBox.setVisible(isNewZealand);
 
     }
 
@@ -817,14 +814,13 @@ public class UpdateUserController {
     }
 
     /**
-     *
+     * Checks that all fields with user input are valid and confirms the update if they are,
+     * otherwise the update is rejected.
      */
     @FXML
     public void confirmUpdate() throws IOException {
-
         hideErrorMessages();
         boolean valid = validateFields();
-
 
         if (valid) {
             removeFormChanges();
@@ -930,7 +926,7 @@ public class UpdateUserController {
         } catch (InvalidFieldsException e) {
             valid = false;
         }
-        if (!validateDeathDetailsFields()){
+        if (!validateDeathDetailsFields()) {
             valid = false;
         }
 
@@ -1030,7 +1026,12 @@ public class UpdateUserController {
         }
     }
 
-    private boolean updateDeathDetails(){
+    /**
+     * Updates the users death details with new values
+     *
+     * @return true if the death details values have changed, false otherwise
+     */
+    private boolean updateDeathDetails() {
         boolean changed = false;
         LocalDate dateOfDeath = updateDeathDetailsDatePicker.getValue();
         LocalTime timeOfDeath = LocalTime.parse(updateDeathDetailsTimeTextField.getText());
@@ -1039,7 +1040,7 @@ public class UpdateUserController {
         currentUser.setDeathCity(updateDeathDetailsCityTextField.getText());
         if (isNewZealand) {
             //if checkChangedProperty(u)
-            currentUser.setDeathRegion(updateDeathDetailsRegionChoiceBox.getValue());
+            currentUser.setDeathRegion(updateDeathDetailsRegionComboBox.getValue());
         } else {
             currentUser.setDeathRegion(updateDeathDetailsRegionTextField.getText());
         }
@@ -1452,12 +1453,5 @@ public class UpdateUserController {
         ecNameErrorLabel.setVisible(false);
         weightErrorLabel.setVisible(false);
         heightErrorLabel.setVisible(false);
-    }
-
-    public void confirmUpdateDeathDetails() {
-
-    }
-
-    public void cancelUpdateDeathDetails() {
     }
 }

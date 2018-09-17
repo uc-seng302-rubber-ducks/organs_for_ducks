@@ -32,16 +32,6 @@ public class NewUserController {
     private Stage stage;
     //<editor-fold desc="FXML declarations">
     @FXML
-    private Label errorLabel;
-    @FXML
-    private Label existingNHI;
-    @FXML
-    private Label invalidNHI;
-    @FXML
-    private Label invalidFirstName;
-    @FXML
-    private Label invalidDOB;
-    @FXML
     private TextField nhiInput;
     @FXML
     private TextField fNameInput;
@@ -144,6 +134,7 @@ public class NewUserController {
         }
         regionSelector.setValue("");
         ecRegionSelector.setValue("");
+        bloodComboBox.setValue("");
 
     }
 
@@ -229,7 +220,6 @@ public class NewUserController {
         double height = AttributeValidation.validateDouble(heightInput.getText());
         double weight = AttributeValidation.validateDouble(weightInput.getText());
         if (height == -1 || weight == -1) {
-            errorLabel.setVisible(true);
             valid = false;
         }
 
@@ -318,11 +308,8 @@ public class NewUserController {
                     loadUserScene(nhi, newUser);
                 }
             } catch (InvalidFieldsException e) {
-                errorLabel.setText("Name and cell phone number are required for an emergency contact.");
-                errorLabel.setVisible(true);
             }
         } else {
-            errorLabel.setVisible(true);
         }
 
     }
@@ -488,28 +475,26 @@ public class NewUserController {
      */
     @FXML
     private void confirmCreation() throws IOException {
-        hideErrorMessages();
-        errorLabel.setText("Error in creating profile.\n" +
-                "Please make sure your details are correct.");
+
         boolean valid;
 
         String nhi = nhiInput.getText();
         valid = (AttributeValidation.validateNHI(nhiInput.getText()));
         if (!valid) {
-            invalidNHI.setVisible(true);
+
         }
 
         String fName = fNameInput.getText();
         valid &= (AttributeValidation.checkRequiredString(fNameInput.getText()));
         if (!valid) {
-            invalidFirstName.setVisible(true);
+
         }
 
         LocalDate dob = dobInput.getValue();
 
         valid &= AttributeValidation.validateDateOfBirth(dob);
         if (!valid) {
-            invalidDOB.setVisible(true);
+
         }
 
         if (dob != null) {
@@ -523,7 +508,6 @@ public class NewUserController {
         if (valid && user == null) {
             createUser(nhi, fName, dob);
         } else if (valid) { // user is not null
-            existingNHI.setVisible(true);
         }
     }
 
@@ -531,11 +515,4 @@ public class NewUserController {
     /**
      * Makes all the error messages no longer visible.
      */
-    private void hideErrorMessages() {
-        errorLabel.setVisible(false);
-        invalidNHI.setVisible(false);
-        invalidDOB.setVisible(false);
-        invalidFirstName.setVisible(false);
-        existingNHI.setVisible(false);
-    }
 }

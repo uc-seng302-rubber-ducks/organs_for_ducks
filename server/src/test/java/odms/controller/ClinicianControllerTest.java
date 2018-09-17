@@ -3,6 +3,7 @@ package odms.controller;
 import odms.commons.database.DBHandler;
 import odms.commons.database.JDBCDriver;
 import odms.commons.model.Clinician;
+import odms.commons.model.datamodel.ComboBoxClinician;
 import odms.exception.NotFoundException;
 import odms.exception.ServerDBException;
 import odms.socket.SocketHandler;
@@ -66,6 +67,27 @@ public class ClinicianControllerTest {
 
         //should throw an exception here
         controller.getClinicians(0, 1, "", "");
+    }
+
+    @Test
+    public void testGetBasicClinicians() throws SQLException {
+        ComboBoxClinician testComboBoxClinician = new ComboBoxClinician("steven", "13");
+
+        List<ComboBoxClinician> clinicians = new ArrayList<>();
+        clinicians.add(testComboBoxClinician);
+        when(handler.getBasicClinicians(any(Connection.class), anyString())).thenReturn(clinicians);
+        List<ComboBoxClinician> results = new ArrayList<>(controller.getBasicClinicians(""));
+
+        Assert.assertEquals(testComboBoxClinician, results.get(0));
+        Assert.assertEquals(1, results.size());
+    }
+
+    @Test(expected = ServerDBException.class)
+    public void getBasicCliniciansShouldThrowExceptionWhenNoConnection() throws SQLException {
+        when(driver.getConnection()).thenThrow(new SQLException());
+
+        //should throw an exception here
+        controller.getBasicClinicians("");
     }
 
 
