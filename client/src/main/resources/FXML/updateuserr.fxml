@@ -6,11 +6,11 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import java.lang.*?>
-<AnchorPane prefHeight="453.0" prefWidth="694.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.UpdateUserController">
+<AnchorPane prefHeight="551.0" prefWidth="694.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.UpdateUserController">
    <children>
       <TabPane layoutY="46.0" prefHeight="439.0" prefWidth="694.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
-          <Tab text="User Details">
+          <Tab fx:id="userTab" text="User Details">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="167.0" prefWidth="336.0">
                      <children>
@@ -68,15 +68,13 @@
                            </children>
                         </VBox>
                         <ImageView fx:id="profileImage" fitHeight="216.0" fitWidth="298.0" layoutX="393.0" layoutY="62.0" pickOnBounds="true" preserveRatio="true" />
-                        <Button layoutX="14.0" layoutY="361.0" mnemonicParsing="false" onAction="#goBack" text="Cancel" />
-                        <Button layoutX="571.0" layoutY="358.0" mnemonicParsing="false" onAction="#confirmUpdate" text="Update Profile" />
                         <Separator layoutY="30.0" prefHeight="9.0" prefWidth="706.0" />
                         <Label layoutX="7.0" layoutY="7.0" styleClass="label-sub-title" text="User Details" />
                      </children>
                   </AnchorPane>
             </content>
           </Tab>
-          <Tab text="Health Details">
+          <Tab fx:id="healthDetailsTab" text="Health Details">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -185,15 +183,13 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                         </GridPane>
-                        <Button layoutX="571.0" layoutY="359.0" mnemonicParsing="false" onAction="#confirmUpdate" text="Update Profile" />
-                        <Button layoutX="14.0" layoutY="359.0" mnemonicParsing="false" onAction="#goBack" text="Cancel" />
                         <Separator layoutY="34.0" prefHeight="9.0" prefWidth="706.0" />
                         <Label layoutX="9.0" layoutY="9.0" styleClass="label-sub-title" text="Health Details" />
                      </children>
                   </AnchorPane>
             </content>
           </Tab>
-            <Tab text="Contact Details">
+            <Tab fx:id="detailsTab" text="Contact Details">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="463.0" prefWidth="694.0">
                      <children>
@@ -294,14 +290,12 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                         </GridPane>
-                        <Button layoutX="578.0" layoutY="366.0" mnemonicParsing="false" onAction="#confirmUpdate" text="Update Profile" />
-                        <Button layoutX="14.0" layoutY="362.0" mnemonicParsing="false" onAction="#goBack" text="Cancel" />
                         <Label layoutX="14.0" layoutY="9.0" styleClass="label-sub-title" text="Contact Details" />
                         <Separator layoutX="-13.0" layoutY="31.0" prefHeight="9.0" prefWidth="706.0" />
                      </children></AnchorPane>
               </content>
             </Tab>
-            <Tab text="Emergency Contact">
+            <Tab fx:id="ecTab" text="Emergency Contact">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -398,8 +392,6 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                         </GridPane>
-                        <Button layoutX="10.0" layoutY="364.0" mnemonicParsing="false" onAction="#goBack" text="Cancel" />
-                        <Button layoutX="571.0" layoutY="364.0" mnemonicParsing="false" onAction="#confirmUpdate" text="Update Profile" />
                         <Separator layoutY="29.0" prefHeight="9.0" prefWidth="706.0" />
                         <Label layoutX="7.0" layoutY="7.0" styleClass="label-sub-title" text="Emergency Contact" />
                         <Separator layoutX="-6.0" layoutY="357.0" prefHeight="4.0" prefWidth="710.0" />
@@ -441,7 +433,7 @@
                            </rowConstraints>
                         </GridPane>
                         <Label fx:id="updateDeathDetailsErrorLabel" layoutX="14.0" layoutY="321.0" text="Error message" textFill="RED" />
-                        <Button fx:id="removeUpdateDeathDetailsButton" layoutX="287.0" layoutY="363.0" mnemonicParsing="false" onAction="#removeUpdateDeathDetails" text="Remove Death Details" />
+                        <Button fx:id="removeUpdateDeathDetailsButton" layoutX="270.0" layoutY="363.0" mnemonicParsing="false" onAction="#removeUpdateDeathDetails" text="Remove Death Details" />
                         <Button fx:id="confirmUpdateDeathDetailsButton" layoutX="571.0" layoutY="364.0" mnemonicParsing="false" onAction="#confirmUpdate" text="Update Profile" />
                         <Button fx:id="cancelUpdateDeathDetailsButton" layoutX="14.0" layoutY="365.0" mnemonicParsing="false" onAction="#goBack" text="Cancel" />
                         <Label fx:id="updateDeathDetailsOverrideWarningLabel" layoutX="22.0" layoutY="129.0" prefHeight="45.0" prefWidth="437.0" text="You cannot change the date and time of death if the user has a manually expired organ" textFill="#fc940d" wrapText="true" />
@@ -456,5 +448,7 @@
       <Button fx:id="redoUpdateButton" layoutX="630.0" layoutY="5.0" mnemonicParsing="false" onAction="#redo" text="Redo" />
       <Button fx:id="undoUpdateButton" layoutX="569.0" layoutY="5.0" mnemonicParsing="false" onAction="#undo" text="Undo" />
       <Label fx:id="genericErrorLabel" layoutX="88.0" layoutY="449.0" styleClass="label-error" text="There is an error with one of the entered fields. Please double check your input" visible="false" />
+      <Button fx:id="UserCancelButton" layoutX="15.0" layoutY="514.0" mnemonicParsing="false" onAction="#goBack" text="Cancel" />
+      <Button fx:id="updateProfileButton" layoutX="577.0" layoutY="516.0" mnemonicParsing="false" onAction="#confirmUpdate" text="Update Profile" />
    </children>
 </AnchorPane>

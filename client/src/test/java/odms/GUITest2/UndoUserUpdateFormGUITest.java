@@ -115,6 +115,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         setTextField(this,"#mNameInput","geoff");
+        clickOn("#healthDetailsTab");
         clickOn("#smokerCheckBox");
         clickOnButton(this,"#confirmButton");
 
