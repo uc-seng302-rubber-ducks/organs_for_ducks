@@ -733,7 +733,7 @@ public class UpdateClinicianController {
         }
 
         if ((firstNameTextField.getText()).isEmpty()) {
-            emptyFNameLabel.setVisible(true);
+            firstNameErrorLabel.setVisible(true);
         } else {
             fName = firstNameTextField.getText();
         }
