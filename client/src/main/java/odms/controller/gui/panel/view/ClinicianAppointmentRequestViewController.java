@@ -272,7 +272,6 @@ public class ClinicianAppointmentRequestViewController {
         if (appointmentRequestDate.getValue() != null) {
             LocalTime localTime = getSelectedAppointment().getRequestedDate().toLocalTime();
             logicController.refreshClincianAvaliableTimes(appointmentRequestDate.getValue());
-            System.out.println(localTime);
             availableTimes.add(localTime);
             appointmentRequestTime.setItems(availableTimes);
         }
