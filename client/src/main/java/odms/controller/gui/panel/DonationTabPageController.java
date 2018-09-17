@@ -465,7 +465,7 @@ public class DonationTabPageController {
     }
 
     @FXML
-    void changeDisqulifiactionStatus(){
+    void changeDisqualificationStatus() {
 
     }
 }

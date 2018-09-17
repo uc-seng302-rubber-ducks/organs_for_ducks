@@ -11,14 +11,14 @@ public class OrgansWithDisqualification {
     private Integer disqualifiedId;
     private Organs organType;
     private String reason;
-    private LocalDate dateDisqualified;
-    private LocalDate dateEligible;
+    private LocalDate disqualificationDate;
+    private LocalDate eligibleDate;
     private String staffId;
 
-    public OrgansWithDisqualification(Organs organType, String reason, LocalDate dateDisqualified, String staffId) {
+    public OrgansWithDisqualification(Organs organType, String reason, LocalDate disqualificationDate, String staffId) {
         this.organType = organType;
         this.reason = reason;
-        this.dateDisqualified = dateDisqualified;
+        this.disqualificationDate = disqualificationDate;
         this.staffId = staffId;
     }
 
@@ -46,20 +46,20 @@ public class OrgansWithDisqualification {
         this.reason = reason;
     }
 
-    public LocalDate getDateDisqualified() {
-        return dateDisqualified;
+    public LocalDate getDate() {
+        return disqualificationDate;
     }
 
-    public void setDateDisqualified(LocalDate date) {
-        this.dateDisqualified = date;
+    public void setDate(LocalDate date) {
+        this.disqualificationDate = date;
+    }
+    
+    public LocalDate getEligibleDate() {
+        return eligibleDate;
     }
 
-    public LocalDate getDateEligible() {
-        return dateEligible;
-    }
-
-    public void setDateEligible(LocalDate dateEligible) {
-        this.dateEligible = dateEligible;
+    public void setEligibleDate(LocalDate eligibleDate) {
+        this.eligibleDate = eligibleDate;
     }
 
     public String getStaffId() {
@@ -71,9 +71,20 @@ public class OrgansWithDisqualification {
     }
 
     @Override
+    public String toString() {
+        return "OrgansWithDisqualification{" +
+                "organType=" + organType +
+                ", reason='" + reason + '\'' +
+                ", disqualificationDate=" + disqualificationDate +
+                ", eligibleDate=" + eligibleDate +
+                ", staffId='" + staffId + '\'' +
+                '}';
+    }
+
+    @Override
     public int hashCode() {
 
-        return Objects.hash(disqualifiedId, organType, reason, dateDisqualified, staffId, dateEligible);
+        return Objects.hash(disqualifiedId, organType, reason, disqualificationDate, staffId, eligibleDate);
     }
 
     @Override

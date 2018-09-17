@@ -1,5 +1,6 @@
 package odms.commons.database.db_strategies;
 
+import odms.commons.database.DisqualifiedOrgansHandler;
 import odms.commons.model.Disease;
 import odms.commons.model.MedicalProcedure;
 import odms.commons.model.User;
@@ -273,6 +274,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             updateUserDiseases(user, connection);
             updateMedications(user, connection);
             updateDeathDetails(user, connection);
+            updateDisqualifiedOrgans(user, connection);
         } catch (SQLException sqlEx) {
             Log.severe("A fatal error in deletion, cancelling operation", sqlEx);
             connection.prepareStatement(ROLLBACK).execute();
@@ -282,8 +284,24 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     }
 
     /**
-     * @param user
-     * @param connection
+     * Stores all disqualified organs for the given user in the database
+     *
+     * @param user          The user containing disqualified organs
+     * @param connection    Connection to the target database
+     * @throws SQLException if there is an error with the database, or the connection is invalid
+     */
+    private void updateDisqualifiedOrgans(User user, Connection connection) throws SQLException {
+        DisqualifiedOrgansHandler disqualifiedOrgansHandler = new DisqualifiedOrgansHandler();
+        deleteFieldsOfUser("DisqualifiedOrgans", user.getNhi(), connection);
+        disqualifiedOrgansHandler.postDisqualifiedOrgan(connection, user.getDonorDetails().getDisqualifiedOrgans(), user.getNhi());
+    }
+
+    /**
+     * Stores all the organs the user is currently receiving in the database
+     *
+     * @param user          The user containing the receiver details to be stored
+     * @param connection    Connection to the target database
+     * @throws SQLException if there is an error with the database, or the connection is invalid
      */
     private void updateUserReceivingOrgans(User user, Connection connection) throws SQLException {
         deleteFieldsOfUser("OrganAwaiting", user.getNhi(), connection);
