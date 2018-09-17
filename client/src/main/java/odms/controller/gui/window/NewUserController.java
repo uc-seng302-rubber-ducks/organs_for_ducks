@@ -300,11 +300,31 @@ public class NewUserController {
         return valid;
     }
 
+    /**
+     * Checks if all the contact details are valid
+     *
+     * @return true if all contact detail fields are valid, false otherwise
+     */
     private boolean validateContactDetails() {
         boolean valid = true;
-        // contact details
-        String streetName = street.getText();
-        valid &= (AttributeValidation.checkString(streetName));
+
+        if (!AttributeValidation.checkString(streetNumber.getText())) {
+            invalidateTextField(streetNumber);
+            streetNumberErrorLabel.setVisible(true);
+            valid = false;
+        }
+
+        if (!AttributeValidation.checkString(street.getText())) {
+            invalidateTextField(street);
+            streetNameErrorLabel.setVisible(true);
+            valid = false;
+        }
+
+        if (!AttributeValidation.checkString(neighborhood.getText())) {
+            invalidateTextField(neighborhood);
+            neighborhoodErrorLabel.setVisible(true);
+            valid = false;
+        }
 
         String region;
         if (regionInput.isVisible()) {
@@ -314,10 +334,26 @@ public class NewUserController {
             region = this.regionSelector.getSelectionModel().getSelectedItem();
         }
 
-        valid &= (AttributeValidation.checkString(region));
+        if (!AttributeValidation.checkString(region)) {
+            invalidateTextField(regionInput);
+            regionErrorLabel.setVisible(true);
+            valid = false;
+        }
 
-        if (!AttributeValidation.validateEmail(this.email.getText())) {
-            invalidateTextField(this.email);
+        if (!AttributeValidation.checkString(city.getText())) {
+            invalidateTextField(city);
+            cityErrorLabel.setVisible(true);
+            valid = false;
+        }
+
+        if (!AttributeValidation.checkString(zipCode.getText())) {
+            invalidateTextField(zipCode);
+            zipCodeErrorLabel.setVisible(true);
+            valid = false;
+        }
+
+        if (!AttributeValidation.validateEmail(email.getText())) {
+            invalidateTextField(email);
             emailErrorLabel.setVisible(true);
             valid = false;
         }
@@ -333,22 +369,6 @@ public class NewUserController {
             cellPhoneErrorLabel.setVisible(true);
             valid = false;
         }
-
-
-        String neighborhood = this.neighborhood.getText();
-        valid &= (AttributeValidation.checkString(neighborhood));
-
-        String city = this.city.getText();
-        valid &= (AttributeValidation.checkString(city));
-
-        String country = this.countrySelector.getSelectionModel().getSelectedItem();
-        valid &= (AttributeValidation.checkString(country));
-
-        String streetnum = this.streetNumber.getText();
-        valid &= (AttributeValidation.checkString(streetnum));
-
-        String zipcode = this.zipCode.getText();
-        valid &= (AttributeValidation.checkString(zipcode));
 
         return valid;
     }
@@ -384,7 +404,7 @@ public class NewUserController {
                 newUser.setHomePhone(phone.getText());
                 newUser.setCellPhone(cell.getText());
                 newUser.setEmail(email.getText());
-                newUser.setRegion(regionInput.getText());
+                newUser.setRegion(regionInput.getText());// dep
                 newUser.setNeighborhood(neighborhood.getText());
                 newUser.setCity(city.getText());
                 newUser.setCountry(countrySelector.getValue());
