@@ -3,6 +3,7 @@ package odms.bridge;
 import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 import odms.commons.model.Appointment;
 import odms.commons.model._enum.AppointmentStatus;
 import odms.commons.model._enum.UserType;
@@ -13,6 +14,7 @@ import okhttp3.*;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class AppointmentsBridge extends Bifrost {
     private static final String APPOINTMENTS = "/appointments";
@@ -142,7 +144,7 @@ public class AppointmentsBridge extends Bifrost {
         });
     }
 
-    public void getClinicianAppointmentsTimes(String staffId, String startDate, String endDate, String token,ObservableList<LocalDateTime> observableDateTimes){
+    public void getClinicianAppointmentsTimes(String staffId, String startDate, String endDate, String token,ObservableSet<LocalDateTime> observableDateTimes){
         String url = String.format("%s/clinicians/%s/appointmentsTimes?startDateTime=%s&endDateTime=%s", ip,staffId,startDate,endDate);
         Request request = new Request.Builder().addHeader(tokenHeader, token).url(url).build();
         client.newCall(request).enqueue(new Callback() {

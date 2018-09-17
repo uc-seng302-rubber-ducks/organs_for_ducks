@@ -84,8 +84,20 @@ public class ClinicianAppointmentRequestViewController {
                 change.getControlNewText().length() <= 255 ? change : null)); // limits user input to 255 characters
 
         initAppointmentTable();
-        logicController.refreshClincianAvaliableTimes(AppController.getInstance().getAppointmentsBridge(), LocalDate.now());
+        logicController.refreshClincianAvaliableTimes(LocalDate.now());
         populateClinicianTimes();
+        datePickerListener(appointmentRequestDate);
+    }
+
+    /**
+     * Changes the title bar to add/remove an asterisk when a change was detected on the date picker.
+     *
+     * @param dp The current date picker.
+     */
+    private void datePickerListener(DatePicker dp) {
+        dp.valueProperty().addListener((observable, oldValue, newValue) -> {
+                populateClinicianTimes();
+        });
     }
 
     /**
@@ -258,12 +270,12 @@ public class ClinicianAppointmentRequestViewController {
     @FXML
     private void populateClinicianTimes(){
         if (appointmentRequestDate.getValue() != null) {
-            availableTimes.add(LocalTime.of(8,00));
-            logicController.refreshClincianAvaliableTimes(AppController.getInstance().getAppointmentsBridge(), appointmentRequestDate.getValue());
+            LocalTime localTime = getSelectedAppointment().getRequestedDate().toLocalTime();
+            logicController.refreshClincianAvaliableTimes(appointmentRequestDate.getValue());
+            System.out.println(localTime);
+            availableTimes.add(localTime);
             appointmentRequestTime.setItems(availableTimes);
         }
-
-
 
     }
 
