@@ -161,6 +161,7 @@ public class User extends Undoable<User> implements Listenable {
 
     public static User clone(User user) {
         User newUser = new User();
+        newUser.uniqueId = user.uniqueId;
         newUser.nhi = user.nhi;
         newUser.dateOfBirth = user.dateOfBirth;
 
@@ -1261,6 +1262,7 @@ public class User extends Undoable<User> implements Listenable {
      * @param other other User object to convert this instance into.
      */
     private void changeInto(User other) {
+        this.uniqueId = other.uniqueId;
         this.nhi = other.nhi;
         this.dateOfBirth = other.dateOfBirth;
         this.deathDetails = other.deathDetails;
