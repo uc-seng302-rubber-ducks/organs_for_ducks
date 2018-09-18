@@ -81,6 +81,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
         setTextField(this,"#newUserNhiInput","ADE1987");
         setTextField(this,"#fNameInput","Dwayne");
         lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
+        clickOn("#userHealth");
         clickOn("#birthGenderComboBox");
         clickOn("Male");
         setTextField(this,"#heightInput","1.75");
@@ -191,6 +192,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
             clickOnButton(this, "#confirmButton");
             clickOn("#detailsTab");
             verifyThat("#pAddress", LabeledMatchers.hasText("76B Cambridge St\nKirkwood"));
+            clickOn("#detailsTab");
             verifyThat("#city", LabeledMatchers.hasText("Battlefield"));
             verifyThat("#pRegion", LabeledMatchers.hasText("Otago"));
             verifyThat("#country", LabeledMatchers.hasText("New Zealand"));
