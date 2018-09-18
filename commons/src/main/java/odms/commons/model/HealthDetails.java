@@ -36,6 +36,9 @@ public class HealthDetails {
         this.bloodTests = new ArrayList<>();
     }
 
+    public void addNewBloodTest(BloodTest bloodTest){
+        bloodTests.add(bloodTest);
+    }
 
     public double getHeight() {
         return height;
