@@ -35,7 +35,7 @@ public class DBHandler {
             "AND (hd.gender LIKE ? OR hd.gender IS NULL) " +
             "AND (a.fkContactId != (SELECT contactId FROM ContactDetails cd JOIN EmergencyContactDetails ecd ON cd.contactId = ecd.fkContactId WHERE ecd.fkUserNhi = nhi) OR a.fkContactId IS NULL) " +
             "LIMIT ? OFFSET ?";
-    private static final String SELECT_ONE_USER_INFO_STMT_FILTERED = "SELECT nhi, firstName, middleName, LastName, preferedName, timeCreated, lastModified, profilePicture, gender, birthGender, smoker, " +
+    private static final String SELECT_ONE_USER_INFO_STMT_FILTERED = "SELECT uniqueId, nhi, firstName, middleName, LastName, preferedName, timeCreated, lastModified, profilePicture, gender, birthGender, smoker, " +
             "alcoholConsumption, height, weight, dob, dod, bloodType " +
             "FROM `User` u " +
             "LEFT JOIN HealthDetails hd ON u.nhi = hd.fkUserNhi " +
@@ -95,9 +95,6 @@ public class DBHandler {
     private static final String UPDATE_USER_PROFILE_PHOTO_STMT = "UPDATE User SET profilePicture = ?, pictureFormat = ? WHERE nhi = ?";
     private static final String UPDATE_CLINICIAN_PROFILE_PHOTO_STMT = "UPDATE Clinician SET profilePicture = ?, pictureFormat = ? WHERE staffId = ?";
     private static final String SELECT_ONE_CLINICIAN = "SELECT * FROM Clinician LEFT JOIN Address ON staffId = fkStaffId WHERE staffId = ?";
-    private static final String SELECT_IF_USER_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM User WHERE nhi = ?)";
-    private static final String SELECT_IF_CLINICIAN_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM Clinician WHERE staffId = ?)";
-    private static final String SELECT_IF_ADMIN_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM Administrator WHERE userName = ?)";
     private static final String SELECT_AVAILABLE_ORGANS = "SELECT * FROM OrganDonating " +
             "JOIN DeathDetails ON OrganDonating.fkUserNhi = DeathDetails.fkUserNhi " +
             "JOIN Organ ON OrganDonating.fkOrgansId = organId " +
@@ -350,6 +347,7 @@ public class DBHandler {
         user.setMiddleName(resultSet.getString("middleName"));
         user.setLastName(resultSet.getString("lastName"));
         user.setPreferredFirstName(resultSet.getString("preferedName"));
+        user.setUniqueId(resultSet.getInt("uniqueId"));
         return user;
     }
 
@@ -939,13 +937,14 @@ public class DBHandler {
      * @throws SQLException exception thrown during the transaction
      */
     public void updateUser(Connection conn, String nhi, User user) throws SQLException {
-        User toReplace = getOneUser(conn, nhi);
-        if (toReplace != null) {
-            toReplace.setDeleted(true);
-        }
-        user.addChange(new Change("Saved"));
-        Collection<User> users = new ArrayList<>(Arrays.asList(toReplace, user));
-        saveUsers(users, conn);
+        //TODO remove deletion logic
+//        User toReplace = getOneUser(conn, nhi);
+//        if (toReplace != null) {
+//            toReplace.setDeleted(true);
+//        }
+//        user.addChange(new Change("Saved"));
+//        Collection<User> users = new ArrayList<>(Arrays.asList(toReplace, user));
+        saveUsers(Collections.singleton(user), conn);
     }
 
     /**
@@ -1150,6 +1149,8 @@ public class DBHandler {
     /**
      * queries the database as to whether an end-user* exists or not
      * * end-user meaning Admin, Clinician, or User
+     * functionality has been moved.
+     * @see DBUtils
      *
      * @param conn       connection to the target database
      * @param type       type of the end-user as defined above
@@ -1159,23 +1160,7 @@ public class DBHandler {
      * @throws SQLException exception thrown during the transaction
      */
     public boolean getExists(Connection conn, Type type, String identifier) throws SQLException {
-        String query = null;
-        if (type.equals(Administrator.class)) {
-            query = SELECT_IF_ADMIN_EXISTS_BOOL;
-        } else if (type.equals(Clinician.class)) {
-            query = SELECT_IF_CLINICIAN_EXISTS_BOOL;
-        } else if (type.equals(User.class)) {
-            query = SELECT_IF_USER_EXISTS_BOOL;
-        }
-
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, identifier);
-
-            try (ResultSet result = stmt.executeQuery()) {
-                result.next();
-                return result.getInt(1) == 1;
-            }
-        }
+        return DBUtils.getExists(conn, type, identifier);
     }
 
 
