@@ -58,6 +58,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     @Override
     public <T> void update(Collection<T> roles, Connection connection) throws SQLException {
         Collection<User> users = (Collection<User>) roles;
+        //TODO update this 17/9
         for (User user : users) {
             try (PreparedStatement stmt = connection.prepareStatement("SELECT nhi FROM User WHERE nhi = ?")) {
                 stmt.setString(1, user.getNhi());
@@ -83,7 +84,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
      * @param connection Connection to the target database
      */
     private void executeCreation(User user, Connection connection) throws SQLException {
-        connection.prepareStatement(START_TRANSACTION).execute();
+        connection.setAutoCommit(false);
         try {
             createUser(user, connection);
             createEmergencyContact(user.getNhi(), user, connection);
@@ -91,11 +92,13 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             createHealthDetails(user.getNhi(), user, connection);
             executeUpdate(user, connection);
             createDeathDetails(user, connection);
+            connection.commit();
         } catch (SQLException sqlEx) {
-            connection.prepareStatement(ROLLBACK).execute();
+            connection.rollback();
             throw sqlEx;
+        } finally {
+            connection.setAutoCommit(true);
         }
-        connection.prepareStatement(COMMIT).execute();
     }
 
     /**
@@ -238,18 +241,19 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
      * @param connection Connection to the target database
      */
     private void deleteRole(User user, Connection connection) throws SQLException {
-        connection.prepareStatement(START_TRANSACTION).execute();
-        try {
-            try (PreparedStatement stmt = connection.prepareStatement(DELETE_USER_STMT)) {
-                stmt.setString(1, user.getNhi());
-                stmt.executeUpdate();
-            }
+        connection.setAutoCommit(false);
+        try (PreparedStatement stmt = connection.prepareStatement(DELETE_USER_STMT)) {
+            stmt.setString(1, user.getNhi());
+            stmt.executeUpdate();
+            connection.commit();
+
         } catch (SQLException sqlEx) {
             Log.severe("A fatal error in deletion, cancelling operation", sqlEx);
-            connection.prepareStatement(ROLLBACK).execute();
+            connection.rollback();
             throw sqlEx;
+        } finally {
+            connection.setAutoCommit(true);
         }
-        connection.prepareStatement(COMMIT).execute();
     }
 
     /**
@@ -261,7 +265,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
      * @param connection Connection ot the target database
      */
     private void executeUpdate(User user, Connection connection) throws SQLException {
-        connection.prepareStatement(START_TRANSACTION).execute();
+        connection.setAutoCommit(false);
         try {
             updateUserDetails(user, connection);
             updateUserContactDetails(user, connection);
@@ -273,12 +277,14 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             updateUserDiseases(user, connection);
             updateMedications(user, connection);
             updateDeathDetails(user, connection);
+            connection.commit();
         } catch (SQLException sqlEx) {
             Log.severe("A fatal error in deletion, cancelling operation", sqlEx);
-            connection.prepareStatement(ROLLBACK).execute();
+            connection.rollback();
             throw sqlEx;
+        } finally {
+            connection.setAutoCommit(true);
         }
-        connection.prepareStatement(COMMIT).execute();
     }
 
     /**
