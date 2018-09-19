@@ -61,21 +61,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     @Override
     public <T> void update(Collection<T> roles, Connection connection) throws SQLException {
         Collection<User> users = (Collection<User>) roles;
-        //TODO update this 17/9
         for (User user : users) {
-//            try (PreparedStatement stmt = connection.prepareStatement("SELECT nhi FROM User WHERE nhi = ?")) {
-//                stmt.setString(1, user.getNhi());
-//                try (ResultSet queryResults = stmt.executeQuery()) {
-//                    if (!queryResults.next() && !user.isDeleted()) {
-//                        executeCreation(user, connection);
-//                    } else if (user.isDeleted()) {
-//                        deleteRole(user, connection);
-//                    } else {
-//                        executeUpdate(user, connection);
-//                    }
-//                })
-
-            // creating a new user and the specified nhi is already in use
             if (user.isDeleted()) {
                 deleteRole(user, connection);
                 return;
@@ -89,8 +75,9 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
 
     /**
      * Executes an update for each of items in the collection.
-     * Precondition: The object must be of a type User
+     * Precondition: The object must be of a type User, User's NHI cannot already be in use.
      * Post-conditions: An entry that represents the user is created and stored in the database.
+     * If an there is an existing user with the same unique id, it will be updated.
      *
      * @param user       User to create
      * @param connection Connection to the target database
@@ -106,7 +93,6 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             createDeathDetails(user, connection);
             connection.commit();
         } catch (SQLException sqlEx) {
-            Log.severe("panic", sqlEx);
             connection.rollback();
             throw sqlEx;
         } finally {

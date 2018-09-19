@@ -48,28 +48,4 @@ public class DBUtils {
             }
         }
     }
-
-    /**
-     * checks whether a given unique identifier (used on db only) exists on the database
-     *
-     * @param conn connection to the database to be queried
-     * @param type type of end-user to search for
-     * @param id   uniqueId field to search for
-     * @return true if the id can be found, false otherwise
-     * @throws SQLException if any errors occur during the operation
-     */
-    public static boolean getPrivateKeyExists(Connection conn, Type type, int id) throws SQLException {
-        if (!type.equals(User.class)) {
-            return false;
-        }
-
-        try (PreparedStatement stmt = conn.prepareStatement("SELECT EXISTS(SELECT 1 FROM User WHERE uniqueId = ?)")) {
-            stmt.setInt(1, id);
-
-            try (ResultSet result = stmt.executeQuery()) {
-                result.next();
-                return result.getInt(1) == 1;
-            }
-        }
-    }
 }

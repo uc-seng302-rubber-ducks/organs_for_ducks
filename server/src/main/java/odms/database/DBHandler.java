@@ -937,13 +937,7 @@ public class DBHandler {
      * @throws SQLException exception thrown during the transaction
      */
     public void updateUser(Connection conn, String nhi, User user) throws SQLException {
-        //TODO remove deletion logic
-//        User toReplace = getOneUser(conn, nhi);
-//        if (toReplace != null) {
-//            toReplace.setDeleted(true);
-//        }
-//        user.addChange(new Change("Saved"));
-//        Collection<User> users = new ArrayList<>(Arrays.asList(toReplace, user));
+        //method signature remains the same for consistency with older code
         saveUsers(Collections.singleton(user), conn);
     }
 
@@ -1465,17 +1459,19 @@ public class DBHandler {
      * @throws SQLException on a bad db connection
      */
     public void deleteAppointment(Appointment appointment, Connection connection) throws SQLException {
-        connection.prepareStatement(START_TRANSACTION).execute();
+        connection.setAutoCommit(false);
         try (PreparedStatement stmt = connection.prepareStatement(DELETE_APPOINTMENT_STMT)) {
             stmt.setInt(1, appointment.getAppointmentId());
             stmt.executeUpdate();
+            connection.commit();
 
         } catch (SQLException sqlEx) {
             Log.severe("A fatal error in deletion, cancelling operation", sqlEx);
-            connection.prepareStatement(ROLLBACK).execute();
+            connection.rollback();
             throw sqlEx;
+        } finally {
+            connection.setAutoCommit(true);
         }
-        connection.prepareStatement(COMMIT).execute();
     }
 
     /**
