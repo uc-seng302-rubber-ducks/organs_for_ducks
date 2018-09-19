@@ -251,7 +251,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
     @Test
     public void testTimeOfDeathCannotBeInFutureHighEdge() {
         LocalTime actualTime = LocalTime.now();
-        String inputTime = actualTime.plusMinutes(1).format(DateTimeFormatter.ofPattern("HH:mm"));
+        String inputTime = actualTime.plusMinutes(2).format(DateTimeFormatter.ofPattern("HH:mm"));
 
         loginAsClinician();
         clickOnButton(this, "#updateDeathDetailsButton");
@@ -266,7 +266,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
     @Test
     public void testTimeOfDeathCannotBeInFutureLowEdge() {
         LocalTime actualTime = LocalTime.now();
-        String inputTime = actualTime.minusMinutes(1).format(DateTimeFormatter.ofPattern("HH:mm"));
+        String inputTime = actualTime.minusMinutes(2).format(DateTimeFormatter.ofPattern("HH:mm"));
 
         loginAsClinician();
         clickOnButton(this, "#updateDeathDetailsButton");
