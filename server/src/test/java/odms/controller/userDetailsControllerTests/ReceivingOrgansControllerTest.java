@@ -1,11 +1,11 @@
 package odms.controller.userDetailsControllerTests;
 
-import odms.commons.database.DBHandler;
-import odms.commons.database.JDBCDriver;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 import odms.controller.user.details.ReceivingOrgansController;
+import odms.database.DBHandler;
+import odms.database.JDBCDriver;
 import odms.exception.ServerDBException;
 import odms.utils.DBManager;
 import org.junit.Assert;

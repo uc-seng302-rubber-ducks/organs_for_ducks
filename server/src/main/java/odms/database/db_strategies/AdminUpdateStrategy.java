@@ -1,4 +1,4 @@
-package odms.commons.database.db_strategies;
+package odms.database.db_strategies;
 
 import odms.commons.model.Administrator;
 import odms.commons.utils.Log;
@@ -155,7 +155,7 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
      * Preconditions: Must have an active connection to the database
      * Post-conditions: The admins hashed and salted password is updated within the database
      *
-     * @param admin Administrator object with an updated password
+     * @param admin      Administrator object with an updated password
      * @param connection Connection to the target database
      * @throws SQLException If there is an error updating the password, or the database connection is invalid
      */
