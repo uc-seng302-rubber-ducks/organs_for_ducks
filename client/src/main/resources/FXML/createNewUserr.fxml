@@ -5,7 +5,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import java.lang.*?>
-<AnchorPane prefHeight="508.0" prefWidth="694.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.NewUserController">
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="508.0" prefWidth="694.0" stylesheets="@../gui.css"
+            xmlns="http://javafx.com/javafx/8.0.121" fx:controller="odms.controller.gui.window.NewUserController">
    <children>
        <TabPane layoutY="46.0" prefHeight="421.0" prefWidth="711.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
@@ -163,7 +164,7 @@
                   </AnchorPane>
             </content>
           </Tab>
-            <Tab text="Contact Details">
+            <Tab fx:id="userContact" text="Contact Details">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="463.0" prefWidth="694.0">
                      <children>
@@ -175,7 +176,8 @@
                               <TextField fx:id="street" prefHeight="7.0" prefWidth="183.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                               <TextField fx:id="neighborhood" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                <TextField fx:id="city" GridPane.columnIndex="4" />
-                               <TextField fx:id="regionInput" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                               <TextField fx:id="regionInput" visible="false" GridPane.columnIndex="4"
+                                          GridPane.rowIndex="1"/>
                                <ComboBox fx:id="regionSelector" prefHeight="27.0" prefWidth="204.0" GridPane.columnIndex="4" GridPane.rowIndex="1" />
                                <TextField fx:id="zipCode" GridPane.columnIndex="4" GridPane.rowIndex="2" />
                                <ComboBox fx:id="countrySelector" onAction="#countrySelectorListener" prefHeight="27.0" prefWidth="207.0" GridPane.columnIndex="4" GridPane.rowIndex="3" />

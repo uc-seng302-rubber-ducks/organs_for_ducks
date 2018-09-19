@@ -4,7 +4,6 @@ import javafx.scene.Node;
 import javafx.scene.control.DatePicker;
 import odms.App;
 import odms.TestUtils.AppControllerMocker;
-import odms.TestUtils.CommonTestMethods;
 import odms.controller.AppController;
 import org.junit.After;
 import org.junit.Before;
@@ -25,7 +24,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        CommonTestMethods.runMethods();
+//        CommonTestMethods.runMethods();
     }
 
     @Before
@@ -181,6 +180,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
             setTextField(this, "#newUserNhiInput", "ADE1987");
             setTextField(this, "#fNameInput", "Dwayne");
             setDateValue(this, "#dobInput", LocalDate.now().minusYears(1));
+        clickOn("#userContact");
             setTextField(this, "#streetNumber", "76B");
             setTextField(this, "#street", "Cambridge St");
             setTextField(this, "#neighborhood", "Kirkwood");
@@ -192,7 +192,6 @@ public class CreateUserControllerGUITest extends ApplicationTest {
             clickOnButton(this, "#confirmButton");
             clickOn("#detailsTab");
             verifyThat("#pAddress", LabeledMatchers.hasText("76B Cambridge St\nKirkwood"));
-            clickOn("#detailsTab");
             verifyThat("#city", LabeledMatchers.hasText("Battlefield"));
             verifyThat("#pRegion", LabeledMatchers.hasText("Otago"));
             verifyThat("#country", LabeledMatchers.hasText("New Zealand"));
