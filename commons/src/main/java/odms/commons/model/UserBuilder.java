@@ -29,6 +29,11 @@ public class UserBuilder {
         secret = UserOverview.toUser(basedOn);
     }
 
+    public UserBuilder setUniqueId(int uniqueId) {
+        secret.setUniqueId(uniqueId);
+        return this;
+    }
+
     public UserBuilder setDateOfBirth(LocalDate dateOfBirth) {
         secret.setDateOfBirth(dateOfBirth);
         return this;

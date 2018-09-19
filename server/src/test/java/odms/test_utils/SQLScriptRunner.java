@@ -1,7 +1,7 @@
-package odms.TestUtils;
+package odms.test_utils;
 
-import odms.commons.database.JDBCDriver;
 import odms.commons.utils.Log;
+import odms.database.JDBCDriver;
 
 import java.beans.PropertyVetoException;
 import java.io.BufferedReader;
