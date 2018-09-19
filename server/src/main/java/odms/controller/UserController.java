@@ -49,7 +49,7 @@ public class UserController extends BaseController {
                                              @RequestParam("count") int count,
                                              @RequestParam(value = "name", required = false) String name,
                                              @RequestParam(value = "region", required = false) String region,
-                                             @RequestParam(value = "gender", required = false) String gender) {
+                                             @RequestParam(value = "gender", required = false, defaultValue = "All") String gender) {
         try (Connection connection = driver.getConnection()) {
             Collection<User> rawUsers = handler.getUsers(connection, count, startIndex, name, region, gender.equals("All") ? "" : gender);
             Log.info("Getting all user overviews...");
