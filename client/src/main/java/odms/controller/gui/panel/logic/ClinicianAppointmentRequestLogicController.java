@@ -1,6 +1,9 @@
 package odms.controller.gui.panel.logic;
 
-import javafx.collections.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
+import javafx.collections.SetChangeListener;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -11,10 +14,6 @@ import odms.commons.model.Appointment;
 import odms.commons.model.Clinician;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model.event.UpdateNotificationEvent;
 import odms.commons.utils.Log;
@@ -26,6 +25,9 @@ import odms.socket.ServerEventNotifier;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 
@@ -157,7 +159,7 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
     /**
      * takes the list of local date times converts them to local times and adds them to the bookedTimes
      */
-    private void refreshbookedTime(){
+    private void refreshBookedTime(){
         bookedTimes.clear();
         for(LocalDateTime dateTime: bookedDateTimes){
             bookedTimes.add(dateTime.toLocalTime());
@@ -173,7 +175,7 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
         AppointmentsBridge appointmentsbridge = appController.getAppointmentsBridge();
         bookedDateTimes.addListener((SetChangeListener<LocalDateTime>) c -> {
             availableTimes.clear();
-            refreshbookedTime();
+            refreshBookedTime();
             availableTimes.addAll(TIMES);
             availableTimes.removeAll(bookedTimes);
             Collections.sort(availableTimes);
