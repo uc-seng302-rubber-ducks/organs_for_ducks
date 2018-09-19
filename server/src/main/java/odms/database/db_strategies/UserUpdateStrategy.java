@@ -677,10 +677,14 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
 
         Timestamp sqlDeathMoment = null;
         LocalDateTime deathMoment = user.getDeathDetails().createMomentOfDeath(user.getDateOfDeath(), user.getTimeOfDeath());
-        if (deathMoment != null) {
-            sqlDeathMoment = java.sql.Timestamp.valueOf(deathMoment);
+        if (deathMoment == null) {
+            try (PreparedStatement removeDeathDetails = connection.prepareStatement("DELETE FROM DeathDetails WHERE fkUserNhi = ?")) {
+                removeDeathDetails.setString(1, user.getNhi());
+                removeDeathDetails.executeUpdate();
+            }
+            return;
         }
-
+        sqlDeathMoment = java.sql.Timestamp.valueOf(deathMoment);
 
         try (PreparedStatement createDeathDetails = connection.prepareStatement(UPDATE_DEATH_DETAILS)) {
             createDeathDetails.setTimestamp(1, sqlDeathMoment);

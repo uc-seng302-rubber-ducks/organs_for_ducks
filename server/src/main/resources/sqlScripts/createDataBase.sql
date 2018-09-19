@@ -283,9 +283,3 @@ CREATE TABLE PreferredClinician (
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
-
-CREATE TRIGGER removeZombies AFTER UPDATE ON DeathDetails
-  FOR EACH ROW
-  BEGIN
-    DELETE FROM DeathDetails WHERE DeathDetails.momentOfDeath IS NULL;
-  END;
