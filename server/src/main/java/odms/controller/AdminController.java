@@ -1,10 +1,10 @@
 package odms.controller;
 
-import odms.commons.database.DBHandler;
-import odms.commons.database.JDBCDriver;
 import odms.commons.model.Administrator;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.utils.Log;
+import odms.database.DBHandler;
+import odms.database.JDBCDriver;
 import odms.exception.NotFoundException;
 import odms.exception.ServerDBException;
 import odms.security.IsAdmin;
@@ -54,7 +54,7 @@ public class AdminController extends BaseController {
 
     @IsAdmin
     @RequestMapping(method = RequestMethod.POST, value = "/admins")
-    public ResponseEntity postAdministrator(@RequestBody Administrator newAdmin) throws SQLException {
+    public ResponseEntity postAdministrator(@RequestBody Administrator newAdmin) {
         try (Connection connection = driver.getConnection()) {
             handler.saveAdministrator(newAdmin, connection);
             socketHandler.broadcast(EventTypes.ADMIN_UPDATE, newAdmin.getUserName(), newAdmin.getUserName());
@@ -69,7 +69,7 @@ public class AdminController extends BaseController {
 
     @IsAdmin
     @RequestMapping(method = RequestMethod.GET, value = "/admins/{username}")
-    public Administrator getAdministrator(@PathVariable("username") String username) throws SQLException {
+    public Administrator getAdministrator(@PathVariable("username") String username) {
         try (Connection collection = driver.getConnection()) {
             Administrator result = handler.getOneAdministrator(collection, username);
             if (result != null) {
@@ -85,7 +85,7 @@ public class AdminController extends BaseController {
 
     @IsAdmin
     @RequestMapping(method = RequestMethod.PUT, value = "/admins/{username}")
-    public ResponseEntity putAdministrator(@PathVariable("username") String username, @RequestBody Administrator administrator) throws SQLException {
+    public ResponseEntity putAdministrator(@PathVariable("username") String username, @RequestBody Administrator administrator) {
         try (Connection connection = driver.getConnection()) {
             handler.updateAdministrator(connection, username, administrator);
             socketHandler.broadcast(EventTypes.ADMIN_UPDATE, username, administrator.getUserName());

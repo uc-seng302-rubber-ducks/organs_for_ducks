@@ -1,7 +1,7 @@
 package odms.controller;
 
-import odms.commons.database.DBHandler;
-import odms.commons.database.JDBCDriver;
+import odms.database.DBHandler;
+import odms.database.JDBCDriver;
 import odms.exception.ServerDBException;
 import odms.security.IsAdmin;
 import odms.utils.DBManager;
@@ -26,7 +26,7 @@ public class SQLFromAdminController extends BaseController {
     private final DBHandler handler;
 
     @Autowired
-    public SQLFromAdminController(DBManager manager) throws SQLException {
+    public SQLFromAdminController(DBManager manager) {
         super(manager);
         driver = super.getDriver();
         handler = super.getHandler();
