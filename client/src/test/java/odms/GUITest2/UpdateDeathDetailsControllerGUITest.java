@@ -274,7 +274,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         setTextField(this, "#updateDeathDetailsTimeTextField", inputTime);
         clickOnButton(this, "#confirmUpdateDeathDetailsButton");
 
-        Assert.assertEquals(testUser.getTimeOfDeath().toString(), actualTime.minusMinutes(1).format(DateTimeFormatter.ofPattern("HH:mm")));
+        Assert.assertEquals(testUser.getTimeOfDeath().toString(), actualTime.minusMinutes(2).format(DateTimeFormatter.ofPattern("HH:mm")));
     }
 
     @Test
