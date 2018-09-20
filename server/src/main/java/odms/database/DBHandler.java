@@ -1540,4 +1540,13 @@ public class DBHandler {
         }
     }
 
+    public BloodTest getBloodTest(Connection connection, String nhi, int id) {
+        //Todo impement me :)
+        return  null;
+    }
+
+    public Collection<BloodTest> getBloodTests(Connection connection, String nhi, LocalDate startDate, LocalDate endDate) {
+        //TODO implement me :)
+        return null;
+    }
 }
