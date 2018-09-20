@@ -3,6 +3,8 @@ package odms.commons.model.datamodel;
 import java.time.LocalDate;
 
 public class BloodTest {
+
+    private int bloodTestId;
     private double redBloodCellCount;
     private double whiteBloodCellCount;
     private double haemoglobinLevel;
@@ -43,6 +45,13 @@ public class BloodTest {
         this.requestedByClinician = requestedByClinician;
     }
 
+    public int getBloodTestId() {
+        return bloodTestId;
+    }
+
+    public void setBloodTestId(int bloodTestId) {
+        this.bloodTestId = bloodTestId;
+    }
 
     public String getRequestedByClinician() {
         return requestedByClinician;
