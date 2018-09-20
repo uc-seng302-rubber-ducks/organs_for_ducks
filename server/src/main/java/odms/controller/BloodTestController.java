@@ -11,6 +11,8 @@ import odms.exception.ServerDBException;
 import odms.socket.SocketHandler;
 import odms.utils.DBManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Connection;
@@ -68,7 +70,9 @@ public class BloodTestController extends BaseController {
     @RequestMapping(method = RequestMethod.GET, value = "/user/{nhi}/bloodTests")
     public Collection<BloodTest> getBloodTests(@PathVariable(value ="nhi") String nhi,
                                                @RequestParam(value = "startDate", required = false) String startDateS,
-                                               @RequestParam(value = "endDate", required = false) String endDateS) {
+                                               @RequestParam(value = "endDate", required = false) String endDateS,
+                                               @RequestParam(value = "count", required = false) int count,
+                                               @RequestParam(value = "startIndex", required = false) int startIndex) {
         LocalDate startDate;
         LocalDate endDate;
 
@@ -81,7 +85,7 @@ public class BloodTestController extends BaseController {
             throw new BadRequestException();
         }
         try (Connection connection = driver.getConnection()) {
-            return bloodTestHandler.getBloodTests(connection, nhi, startDate, endDate);
+            return bloodTestHandler.getBloodTests(connection, nhi, startDate, endDate, count, startIndex);
         } catch (SQLException e) {
             Log.severe("Could not get a blood tests", e);
             throw new ServerDBException(e);
@@ -97,10 +101,11 @@ public class BloodTestController extends BaseController {
      * @return the blood test
      */
     @RequestMapping(method = RequestMethod.POST, value = "/user/{nhi}/bloodTest")
-    public BloodTest postBloodTest(@PathVariable(value ="nhi") String nhi,
+    public ResponseEntity postBloodTest(@PathVariable(value ="nhi") String nhi,
                                    @RequestBody BloodTest bloodTest) {
         try (Connection connection = driver.getConnection()) {
-            return bloodTestHandler.postBloodTest(connection, bloodTest, nhi);
+            bloodTestHandler.postBloodTest(connection, bloodTest, nhi);
+            return new ResponseEntity(HttpStatus.CREATED);
         } catch (SQLException e) {
             Log.severe("Could not post a blood test", e);
             throw new ServerDBException(e);
@@ -116,11 +121,12 @@ public class BloodTestController extends BaseController {
      * @return the blood test
      */
     @RequestMapping(method = RequestMethod.PATCH, value = "/user/{nhi}/bloodTest/{id}")
-    public BloodTest patchBloodTest(@PathVariable(value ="nhi") String nhi,
+    public ResponseEntity patchBloodTest(@PathVariable(value ="nhi") String nhi,
                                     @PathVariable(value ="id") String id,
                                     @RequestBody BloodTest bloodTest) {
         try (Connection connection = driver.getConnection()) {
-            return bloodTestHandler.patchBloodTest(connection, nhi, id, bloodTest);
+            bloodTestHandler.patchBloodTest(connection, nhi, id, bloodTest);
+            return new ResponseEntity(HttpStatus.OK);
         } catch (SQLException e) {
             Log.severe("Could not patch a blood test", e);
             throw new ServerDBException(e);
@@ -135,10 +141,11 @@ public class BloodTestController extends BaseController {
      * @return the blood test
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "/user/{nhi}/bloodTest/{id}")
-    public BloodTest deleteBloodTest(@PathVariable(value ="nhi") String nhi,
+    public ResponseEntity deleteBloodTest(@PathVariable(value ="nhi") String nhi,
                                      @PathVariable(value = "id") String id) {
         try (Connection connection = driver.getConnection()) {
-            return bloodTestHandler.deleteBloodTest(connection, nhi, id);
+            bloodTestHandler.deleteBloodTest(connection, nhi, id);
+            return new ResponseEntity(HttpStatus.OK);
         } catch (SQLException e) {
             Log.severe("Could not patch a blood test", e);
             throw new ServerDBException(e);

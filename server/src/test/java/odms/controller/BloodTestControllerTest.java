@@ -42,7 +42,7 @@ public class BloodTestControllerTest {
         when(manager.getHandler()).thenReturn(handler);
         when(handler.getBloodTestHandler()).thenReturn(bloodTestHandler);
         when(manager.getDriver()).thenReturn(driver);
-        when(bloodTestHandler.getBloodTests(any(Connection.class), anyString(), any(LocalDate.class), any(LocalDate.class))).thenReturn(new ArrayList<>());
+        when(bloodTestHandler.getBloodTests(any(Connection.class), anyString(), any(LocalDate.class), any(LocalDate.class), count, startIndex)).thenReturn(new ArrayList<>());
         controller = new BloodTestController(manager, socketHandler);
         testBloodTest = new BloodTest();
     }
@@ -50,14 +50,14 @@ public class BloodTestControllerTest {
     @Test(expected = BadRequestException.class)
     public void incorrectEndDateShouldNotParse() throws SQLException {
         controller.getBloodTests("a","01/01/1999", "1999/01/01");
-        verify(bloodTestHandler, times(0)).getBloodTests(any(Connection.class), anyString(), any(LocalDate.class), any(LocalDate.class));
+        verify(bloodTestHandler, times(0)).getBloodTests(any(Connection.class), anyString(), any(LocalDate.class), any(LocalDate.class), count, startIndex);
     }
 
 
     @Test(expected = BadRequestException.class)
     public void incorrectStartDateShouldNotParse() throws SQLException {
         controller.getBloodTests("a","1999/01/01", "01/01/1999");
-        verify(bloodTestHandler, times(0)).getBloodTests(any(Connection.class), anyString(), any(LocalDate.class), any(LocalDate.class));
+        verify(bloodTestHandler, times(0)).getBloodTests(any(Connection.class), anyString(), any(LocalDate.class), any(LocalDate.class), count, startIndex);
     }
 
 
@@ -65,7 +65,7 @@ public class BloodTestControllerTest {
     public void correctDateShouldParse() throws SQLException {
         controller.getBloodTests("a","01/01/1999", "01/02/1999");
 
-        verify(bloodTestHandler, times(1)).getBloodTests(any(Connection.class), anyString(), any(LocalDate.class), any(LocalDate.class));
+        verify(bloodTestHandler, times(1)).getBloodTests(any(Connection.class), anyString(), any(LocalDate.class), any(LocalDate.class), count, startIndex);
     }
 
 }

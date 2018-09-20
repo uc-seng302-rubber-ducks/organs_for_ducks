@@ -31,7 +31,7 @@ public class BloodTestHandler {
      * @return ignore this
      * @throws SQLException If there is an error storing the blood test into the database or the connection is invalid
      */
-    public BloodTest postBloodTest(Connection connection, BloodTest bloodTest, String nhi) throws SQLException {
+    public void postBloodTest(Connection connection, BloodTest bloodTest, String nhi) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(CREATE_BLOOD_TEST_STMT)) {
             preparedStatement.setString(1, nhi);
             preparedStatement.setDouble(2, bloodTest.getRedBloodCellCount());
@@ -48,8 +48,6 @@ public class BloodTestHandler {
             preparedStatement.executeUpdate();
         }
 
-
-        return null; // TODO - remove this when the end point has been changed
     }
 
     /**
@@ -76,14 +74,13 @@ public class BloodTestHandler {
         }
     }
 
-    public BloodTest patchBloodTest(Connection connection, String nhi, String id, BloodTest bloodTest) {
+    public void patchBloodTest(Connection connection, String nhi, String id, BloodTest bloodTest) {
 
-        return null;
     }
 
-    public BloodTest deleteBloodTest(Connection connection, String nhi, String id) {
+    public void deleteBloodTest(Connection connection, String nhi, String id) {
         //TODO implement me :)
-        return null;
+
     }
 
     /**
@@ -141,10 +138,12 @@ public class BloodTestHandler {
      * @param nhi        Unique identifier of the user
      * @param startDate  The date that the query starts taking entries from
      * @param endDate    The date that the query finishes taking entries from
+     * @param count
+     * @param startIndex
      * @return           A collection of all the users blood tests between the start and end dates
      * @throws SQLException if the connection is invalid or there is an error retrieving entries from the database
      */
-    public Collection<BloodTest> getBloodTests(Connection connection, String nhi, LocalDate startDate, LocalDate endDate) throws SQLException {
+    public Collection<BloodTest> getBloodTests(Connection connection, String nhi, LocalDate startDate, LocalDate endDate, int count, int startIndex) throws SQLException {
         Collection<BloodTest> bloodTests = new ArrayList<>();
         try (PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_BLOOD_TESTS_FOR_USER_GRAPH)) {
             preparedStatement.setString(1, nhi);
