@@ -20,6 +20,7 @@ public class BloodTestHandler {
 
     private static final String SELECT_ONE_BLOOD_TEST = "SELECT * FROM BloodTests WHERE bloodTestId = ?";
     private static final String SELECT_ALL_BLOOD_TESTS_FOR_USER = "SELECT * FROM BloodTests WHERE fkUserNhi = ? LIMIT ? OFFSET ?";
+    private static final String SELECT_ALL_BLOOD_TESTS_FOR_USER_GRAPH = "SELECT * FROM BloodTests WHERE fkUserNhi = ? AND (resultsReceived BETWEEN ? AND ?)";
 
     /**
      * Saves and stores the given blood test within the database
@@ -133,9 +134,30 @@ public class BloodTestHandler {
         return bloodTests;
     }
 
-    public Collection<BloodTest> getBloodTests(Connection connection, String nhi, LocalDate startDate, LocalDate endDate) {
-        //TODO implement me :)
-        return null;
+    /**
+     * Retrieves all of the given users blood tests if the date the results were released is between the two given dates
+     *
+     * @param connection Connection to the target database
+     * @param nhi        Unique identifier of the user
+     * @param startDate  The date that the query starts taking entries from
+     * @param endDate    The date that the query finishes taking entries from
+     * @return           A collection of all the users blood tests between the start and end dates
+     * @throws SQLException if the connection is invalid or there is an error retrieving entries from the database
+     */
+    public Collection<BloodTest> getBloodTests(Connection connection, String nhi, LocalDate startDate, LocalDate endDate) throws SQLException {
+        Collection<BloodTest> bloodTests = new ArrayList<>();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_BLOOD_TESTS_FOR_USER_GRAPH)) {
+            preparedStatement.setString(1, nhi);
+            preparedStatement.setDate(2, Date.valueOf(startDate));
+            preparedStatement.setDate(3, Date.valueOf(endDate));
+            try (ResultSet results = preparedStatement.executeQuery()) {
+                while (results.next()) {
+                    bloodTests.add(decodeBloodTestFromResultSet(results));
+                }
+            }
+        }
+
+        return bloodTests;
     }
 
     /**
