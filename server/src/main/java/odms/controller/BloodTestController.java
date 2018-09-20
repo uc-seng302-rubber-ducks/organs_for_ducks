@@ -15,6 +15,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 
 @OdmsController
@@ -67,8 +68,10 @@ public class BloodTestController extends BaseController {
         LocalDate endDate;
 
         try{
-            startDate = LocalDate.parse(startDateS);
-            endDate = LocalDate.parse(endDateS);
+            DateTimeFormatter formatter =
+                    DateTimeFormatter.ofPattern("d/M/yyyy");
+            startDate = LocalDate.parse(startDateS, formatter);
+            endDate = LocalDate.parse(endDateS, formatter);
         } catch (DateTimeException e){
             throw new BadRequestException();
         }
