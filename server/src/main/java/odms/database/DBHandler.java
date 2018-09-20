@@ -1549,4 +1549,14 @@ public class DBHandler {
         //TODO implement me :)
         return null;
     }
+
+    public BloodTest postBloodTest(Connection connection, String nhi, BloodTest bloodTest) {
+        //TODO implement me :)
+        return null;
+    }
+
+    public BloodTest patchBloodTest(Connection connection, String nhi, String id, BloodTest bloodTest) {
+        //TODO implement me :)
+        return null;
+    }
 }
