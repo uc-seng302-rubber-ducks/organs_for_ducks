@@ -6,6 +6,8 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.Collection;
 
 public class BloodTestHandler {
 
@@ -14,7 +16,8 @@ public class BloodTestHandler {
             "meanCellHaematocrit, requestedDate, resultsReceived, requestedByClinician) " +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    public void postBloodTest(Connection connection, BloodTest bloodTest, String nhi) throws SQLException {
+
+    public BloodTest postBloodTest(Connection connection, BloodTest bloodTest, String nhi) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(CREATE_BLOOD_TEST_STMT)) {
             preparedStatement.setString(1, nhi);
             preparedStatement.setDouble(2, bloodTest.getRedBloodCellCount());
@@ -30,6 +33,29 @@ public class BloodTestHandler {
             preparedStatement.setString(12, bloodTest.getRequestedByClinician());
             preparedStatement.executeUpdate();
         }
+
+
+        return null; // TODO - remove this when the end point has been changed
+    }
+
+    public BloodTest patchBloodTest(Connection connection, String nhi, String id, BloodTest bloodTest) {
+        //TODO implement me :)
+        return null;
+    }
+
+    public BloodTest deleteBloodTest(Connection connection, String nhi, String id) {
+        //TODO implement me :)
+        return null;
+    }
+
+    public BloodTest getBloodTest(Connection connection, String nhi, int id) {
+        //Todo impement me :)
+        return null;
+    }
+
+    public Collection<BloodTest> getBloodTests(Connection connection, String nhi, LocalDate startDate, LocalDate endDate) {
+        //TODO implement me :)
+        return null;
     }
 
 }

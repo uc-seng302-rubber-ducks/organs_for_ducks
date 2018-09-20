@@ -1,6 +1,7 @@
 package odms.controller;
 
 import odms.commons.model.datamodel.BloodTest;
+import odms.database.BloodTestHandler;
 import odms.database.DBHandler;
 import odms.database.JDBCDriver;
 import odms.exception.BadRequestException;
@@ -26,6 +27,7 @@ public class BloodTestControllerTest {
     private JDBCDriver driver;
     private SocketHandler socketHandler;
     private BloodTestController controller;
+    private BloodTestHandler bloodTestHandler;
     private BloodTest testBloodTest;
 
     @Before
@@ -33,12 +35,14 @@ public class BloodTestControllerTest {
         connection = mock(Connection.class);
         manager = mock(DBManager.class);
         handler = mock(DBHandler.class);
+        bloodTestHandler = mock(BloodTestHandler.class);
         driver = mock(JDBCDriver.class);
         socketHandler = mock(SocketHandler.class);
         when(driver.getConnection()).thenReturn(connection);
         when(manager.getHandler()).thenReturn(handler);
+        when(handler.getBloodTestHandler()).thenReturn(bloodTestHandler);
         when(manager.getDriver()).thenReturn(driver);
-        when(handler.getBloodTests(any(Connection.class), anyString(),any(LocalDate.class), any(LocalDate.class))).thenReturn(new ArrayList<>());
+        when(bloodTestHandler.getBloodTests(any(Connection.class), anyString(), any(LocalDate.class), any(LocalDate.class))).thenReturn(new ArrayList<>());
         controller = new BloodTestController(manager, socketHandler);
         testBloodTest = new BloodTest();
     }
@@ -46,14 +50,14 @@ public class BloodTestControllerTest {
     @Test(expected = BadRequestException.class)
     public void incorrectEndDateShouldNotParse(){
         controller.getBloodTests("a","01/01/1999", "1999/01/01");
-        verify(handler,times(0)).getBloodTests(any(Connection.class), anyString(), any(LocalDate.class), any(LocalDate.class));
+        verify(bloodTestHandler, times(0)).getBloodTests(any(Connection.class), anyString(), any(LocalDate.class), any(LocalDate.class));
     }
 
 
     @Test(expected = BadRequestException.class)
     public void incorrectStartDateShouldNotParse(){
         controller.getBloodTests("a","1999/01/01", "01/01/1999");
-        verify(handler,times(0)).getBloodTests(any(Connection.class), anyString(), any(LocalDate.class), any(LocalDate.class));
+        verify(bloodTestHandler, times(0)).getBloodTests(any(Connection.class), anyString(), any(LocalDate.class), any(LocalDate.class));
     }
 
 
@@ -61,7 +65,7 @@ public class BloodTestControllerTest {
     public void correctDateShouldParse(){
         controller.getBloodTests("a","01/01/1999", "01/02/1999");
 
-        verify(handler,times(1)).getBloodTests(any(Connection.class), anyString(), any(LocalDate.class), any(LocalDate.class));
+        verify(bloodTestHandler, times(1)).getBloodTests(any(Connection.class), anyString(), any(LocalDate.class), any(LocalDate.class));
     }
 
 }

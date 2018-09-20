@@ -1540,28 +1540,13 @@ public class DBHandler {
         }
     }
 
-    public BloodTest getBloodTest(Connection connection, String nhi, int id) {
-        //Todo impement me :)
-        return  null;
+    /**
+     * Gets and returns the blood test handler to the blood test controller
+     *
+     * @return A BloodTestHandler
+     */
+    public BloodTestHandler getBloodTestHandler() {
+        return new BloodTestHandler();
     }
 
-    public Collection<BloodTest> getBloodTests(Connection connection, String nhi, LocalDate startDate, LocalDate endDate) {
-        //TODO implement me :)
-        return null;
-    }
-
-    public BloodTest postBloodTest(Connection connection, String nhi, BloodTest bloodTest) {
-        //TODO implement me :)
-        return null;
-    }
-
-    public BloodTest patchBloodTest(Connection connection, String nhi, String id, BloodTest bloodTest) {
-        //TODO implement me :)
-        return null;
-    }
-
-    public BloodTest deleteBloodTest(Connection connection, String nhi, String id) {
-        //TODO implement me :)
-        return null;
-    }
 }
