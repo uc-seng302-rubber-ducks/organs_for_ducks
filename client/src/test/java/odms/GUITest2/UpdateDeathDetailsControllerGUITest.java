@@ -160,7 +160,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         clickOn("#deathtab");
         setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now()); //Make sure date is not invalid
         //Doing multiple in one test to speed up tests
-        setTextField(this, "#updateDeathDetailsTimeTextField", "12:30pm");
+        setTextField(this, "#updateDeathDetailsTimeTextField", "12:30");
         clickOnButton(this, "#updateProfileButton");
         verifyThat("#updateDeathDetailsErrorLabel", LabeledMatchers.hasText(errorText));
 
@@ -241,7 +241,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         clickOn("#editDetailsUser");
         clickOn("#deathtab");
         clickOnButton(this, "#removeUpdateDeathDetailsButton");
-        clickOnButton(this, "#confirmUpdate");
+        clickOnButton(this, "#updateProfileButton");
 
         verifyThat("#DODValue", LabeledMatchers.hasText(""));
         verifyThat("#cityOfDeathValue", LabeledMatchers.hasText(""));
@@ -277,7 +277,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         clickOn("#deathtab");
         setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now());
         setTextField(this, "#updateDeathDetailsTimeTextField", inputTime);
-        clickOnButton(this, "#confirmUpdateDeathDetailsButton");
+        clickOn( "#updateProfileButton");
 
         verifyThat("#updateDeathDetailsErrorLabel", LabeledMatchers.hasText("The time of death cannot be in the future"));
 

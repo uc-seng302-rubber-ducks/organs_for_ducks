@@ -3,7 +3,6 @@ package odms.GUITest2;
 import javafx.scene.Node;
 import odms.App;
 import odms.TestUtils.AppControllerMocker;
-import odms.TestUtils.CommonTestMethods;
 import odms.bridge.UserBridge;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
@@ -34,7 +33,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        CommonTestMethods.runMethods();
+        //CommonTestMethods.runMethods();
     }
 
     @Before
@@ -80,7 +79,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         setTextField(this, "#preferredFNameTextField","i");
-
+        clickOnButton(this,"#undoUpdateButton");
         clickOnButton(this,"#undoUpdateButton");
         verifyThat("#preferredFNameTextField", TextInputControlMatchers.hasText("Frank"));
 
@@ -100,9 +99,10 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
         clickOn("#editDetailsUser");
         clickOn("#mNameInput");
         write("geoff");
+        clickOn("#healthDetailsTab");
         clickOn("#smokerCheckBox");
 
-        clickOn("#cancelButton");
+        clickOn("#UserCancelButton");
         clickOn("#yesButton");
 
         verifyThat("#smokerValue", LabeledMatchers.hasText("No"));
@@ -117,7 +117,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
         setTextField(this,"#mNameInput","geoff");
         clickOn("#healthDetailsTab");
         clickOn("#smokerCheckBox");
-        clickOnButton(this,"#confirmButton");
+        clickOnButton(this,"#updateProfileButton");
 
         verifyThat("#smokerValue", LabeledMatchers.hasText("Yes"));
         verifyThat("#mNameValue", LabeledMatchers.hasText("geoff"));
@@ -136,6 +136,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
         setTextField(this,"#ecPhone","1234");
 
         clickOnButton(this,"#undoUpdateButton");
+        clickOnButton(this,"#undoUpdateButton");
         sleep(1000);
         verifyThat("#ecPhone", TextInputControlMatchers.hasText("123"));
     }
@@ -144,20 +145,21 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
     public void MultipleChangesEqualUndos() {
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
-
+        clickOn("#healthDetailsTab");
 //    unable to check text in combo boxes as it is lazily created/populated
         clickOn("#genderIdComboBox");
         clickOn("Male");
 
-        clickOn("#heightInput");
-        write("1");
+        setTextField(this,"#heightInput", "0.01");
 
-        clickOn("#lNameInput");
-        write("qw");
+        clickOn("#userTab");
+        setTextField(this,"#lNameInput", "qw");
+
 
         clickOnButton(this,"#undoUpdateButton");
         clickOnButton(this,"#undoUpdateButton");
         clickOnButton(this,"#undoUpdateButton");
+        //clickOnButton(this,"#undoUpdateButton");
 
 
         verifyThat("#lNameInput", TextInputControlMatchers.hasText(""));
@@ -169,18 +171,19 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
         //check we can traverse the stack properly
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
+        setTextField(this,"#lNameInput","qw");
+        clickOn("#healthDetailsTab");
 
-        clickOn("#heightInput");
-        write("1");
+        setTextField(this,"#heightInput", "0.01");
 
-        clickOn("#lNameInput");
-        write("qw");
 
         clickOnButton(this,"#undoUpdateButton");
         clickOnButton(this,"#undoUpdateButton");
+        clickOnButton(this,"#undoUpdateButton");
 
-        clickOn("#lNameInput");
-        write("lasagna");
+        clickOn("#userTab");
+        setTextField(this,"#lNameInput","lasagna");
+
 
         verifyThat("#heightInput", TextInputControlMatchers.hasText("0.01"));
         verifyThat("#lNameInput", TextInputControlMatchers.hasText("lasagna"));
