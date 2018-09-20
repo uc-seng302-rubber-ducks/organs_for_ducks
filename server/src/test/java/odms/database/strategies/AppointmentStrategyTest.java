@@ -1,11 +1,11 @@
-package strategies;
+package odms.database.strategies;
 
-import odms.commons.database.DBHandler;
-import odms.commons.database.db_strategies.AppointmentUpdateStrategy;
 import odms.commons.model.Appointment;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
 import odms.commons.model._enum.UserType;
+import odms.database.DBHandler;
+import odms.database.db_strategies.AppointmentUpdateStrategy;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

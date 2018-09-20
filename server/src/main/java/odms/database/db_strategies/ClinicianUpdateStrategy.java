@@ -1,4 +1,4 @@
-package odms.commons.database.db_strategies;
+package odms.database.db_strategies;
 
 import odms.commons.model.Clinician;
 import odms.commons.utils.Log;
@@ -9,22 +9,19 @@ import java.util.Collection;
 
 public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
 
+    public static final String START_TRANSACTION = "START TRANSACTION";
+    public static final String ROLLBACK = "ROLLBACK";
+    public static final String COMMIT = "COMMIT";
+    public static final String ERROR_IN_CONNECTION_TO_DATABASE = "Error in connection to database";
     private static final String CREATE_CLINICIAN_STMT = "INSERT INTO Clinician (staffId, firstName, middleName, lastName, timeCreated, lastModified) VALUES (?, ?, ?, ?, ?, ?)";
     private static final String CREATE_STAFF_CONTACT_STMT = "INSERT INTO ContactDetails (fkStaffId, homePhone, email, cellPhone) VALUES (?, ?, ?, ?)";
     private static final String CREATE_ADDRESS_STMT = "INSERT INTO Address (fkContactId, fkStaffId, streetNumber, streetName, neighbourhood, city, region, country, zipCode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
     private static final String UPDATE_CLINICIAN_STMT = "UPDATE Clinician SET firstName = ?, middleName = ?, lastName = ?, lastModified = ?, profilePicture = NULL WHERE staffId = ?";
     private static final String UPDATE_CLINICIAN_ADDRESS = "UPDATE ContactDetails JOIN Address ON contactId = fkContactId " +
             "SET streetNumber = ?, streetName = ?, neighbourhood = ?, city = ?, region = ?, zipCode = ?, country = ? " +
             "WHERE ContactDetails.fkStaffId = ?";
     private static final String UPDATE_CLINICIAN_PSSWRD = "UPDATE PasswordDetails SET hash = ?, salt = ? WHERE fkStaffId = ?";
-
-
     private static final String DELETE_CLINICIAN_STMT = "DELETE FROM Clinician WHERE staffId = ?";
-    public static final String START_TRANSACTION = "START TRANSACTION";
-    public static final String ROLLBACK = "ROLLBACK";
-    public static final String COMMIT = "COMMIT";
-    public static final String ERROR_IN_CONNECTION_TO_DATABASE = "Error in connection to database";
 
     @Override
     public <T> void update(Collection<T> roles, Connection connection) throws SQLException {
@@ -99,7 +96,7 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
      * Precondition: The connection is not null and valid
      * Post-condition: The hashed password and salt is stored in the database.
      *
-     * @param clinician Clinician whose password will be stored
+     * @param clinician  Clinician whose password will be stored
      * @param connection Connection to the target database
      * @throws SQLException If there is an error in storing it into the database or the connection is invalid
      */
@@ -119,7 +116,7 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
      * Precondition: The connection is valid
      * Post-condition: The work address of the clinician and its associated ContactDetails entry will be saved to the database
      *
-     * @param clinician Clinician associated with the work address to be stored
+     * @param clinician  Clinician associated with the work address to be stored
      * @param connection Connection to the target database
      * @throws SQLException If there is an error in storing the details into the database or the connection is invalid
      */
@@ -153,7 +150,7 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
     /**
      * Retrieves the contact ID for the given clinician
      *
-     * @param clinician Clinician associated with the entry to be found
+     * @param clinician  Clinician associated with the entry to be found
      * @param connection Connection to the target database
      * @return The contact ID of the clinicians ContactDetails entry, otherwise -1 if it does not exist
      * @throws SQLException If there is an error in retrieving the contact id
@@ -241,7 +238,7 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
      * Preconditions: Must have an active connection to the database
      * Post-conditions: The clinicians hashed and salted password is updated within the database
      *
-     * @param clinician Clinician object with an updated password
+     * @param clinician  Clinician object with an updated password
      * @param connection Connection to the target database
      * @throws SQLException If there is an error updating the password, or the database connection is invalid
      */
