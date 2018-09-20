@@ -119,4 +119,22 @@ public class BloodTestController extends BaseController {
         }
     }
 
+    /**
+     * deletes a single blood test for a user
+     *
+     * @param nhi users nhi
+     * @param id the id of the blood test to patch
+     * @return the blood test
+     */
+    @RequestMapping(method = RequestMethod.DELETE, value = "/user/{nhi}/bloodTest/{id}")
+    public BloodTest deleteBloodTest(@PathVariable(value ="nhi") String nhi,
+                                    @PathVariable(value ="id") String id){
+        try(Connection connection = driver.getConnection() ){
+            return handler.deleteBloodTest(connection, nhi, id);
+        } catch (SQLException e) {
+            Log.severe("Could not patch a blood test", e);
+            throw new ServerDBException(e);
+        }
+    }
+
 }

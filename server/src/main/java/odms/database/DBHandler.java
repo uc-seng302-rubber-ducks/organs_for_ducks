@@ -1559,4 +1559,9 @@ public class DBHandler {
         //TODO implement me :)
         return null;
     }
+
+    public BloodTest deleteBloodTest(Connection connection, String nhi, String id) {
+        //TODO implement me :)
+        return null;
+    }
 }
