@@ -4,6 +4,7 @@ import odms.commons.model.datamodel.BloodTest;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class BloodTestHandler {
@@ -18,6 +19,7 @@ public class BloodTestHandler {
             "haematocrit = ?, meanCellHaematocrit = ?, resultsReceived = ?, requestedByClinician = ? WHERE bloodTestId = ?";
 
     private static final String SELECT_ONE_BLOOD_TEST = "SELECT * FROM BloodTests WHERE bloodTestId = ?";
+    private static final String SELECT_ALL_BLOOD_TESTS_FOR_USER = "SELECT * FROM BloodTests WHERE fkUserNhi = ? LIMIT ? OFFSET ?";
 
     /**
      * Saves and stores the given blood test within the database
@@ -103,6 +105,32 @@ public class BloodTestHandler {
             }
         }
         return bloodTest;
+    }
+
+    /**
+     * Gets all the blood tests between the start and count values for the given user nhi
+     *
+     * @param connection Connection to the target database
+     * @param nhi        Unique identifier of the user
+     * @param count      Row number that the query finishes taking entries from
+     * @param start      Row number that query starts taking entries from
+     * @return           A collection of all the users blood tests between the start and count indices
+     * @throws SQLException if the connection is invalid or there is an error retrieving entries from the database
+     */
+    public Collection<BloodTest> getAllBloodTests(Connection connection, String nhi, int count, int start) throws SQLException {
+        Collection<BloodTest> bloodTests = new ArrayList<>();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_BLOOD_TESTS_FOR_USER)) {
+            preparedStatement.setString(1, nhi);
+            preparedStatement.setInt(2, count);
+            preparedStatement.setInt(3, start);
+            try (ResultSet results = preparedStatement.executeQuery()) {
+                while (results.next()) {
+                    bloodTests.add(decodeBloodTestFromResultSet(results));
+                }
+            }
+        }
+
+        return bloodTests;
     }
 
     public Collection<BloodTest> getBloodTests(Connection connection, String nhi, LocalDate startDate, LocalDate endDate) {
