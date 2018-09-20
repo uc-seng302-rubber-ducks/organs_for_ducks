@@ -56,8 +56,8 @@ public class BloodTestController extends BaseController {
      * Filters by date are optional
      *
      * @param nhi users nhi
-     * @param startDateS date to start the results
-     * @param endDateS date to end the results
+     * @param startDateS date to start the results in format dd/MM/yyyy
+     * @param endDateS date to end the results in format dd/MM/yyyy
      * @return results found by the server
      */
     @RequestMapping(method = RequestMethod.GET, value = "/user/{nhi}/bloodTests")
