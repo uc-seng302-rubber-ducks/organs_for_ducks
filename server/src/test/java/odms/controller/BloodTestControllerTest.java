@@ -48,21 +48,21 @@ public class BloodTestControllerTest {
     }
 
     @Test(expected = BadRequestException.class)
-    public void incorrectEndDateShouldNotParse(){
+    public void incorrectEndDateShouldNotParse() throws SQLException {
         controller.getBloodTests("a","01/01/1999", "1999/01/01");
         verify(bloodTestHandler, times(0)).getBloodTests(any(Connection.class), anyString(), any(LocalDate.class), any(LocalDate.class));
     }
 
 
     @Test(expected = BadRequestException.class)
-    public void incorrectStartDateShouldNotParse(){
+    public void incorrectStartDateShouldNotParse() throws SQLException {
         controller.getBloodTests("a","1999/01/01", "01/01/1999");
         verify(bloodTestHandler, times(0)).getBloodTests(any(Connection.class), anyString(), any(LocalDate.class), any(LocalDate.class));
     }
 
 
     @Test
-    public void correctDateShouldParse(){
+    public void correctDateShouldParse() throws SQLException {
         controller.getBloodTests("a","01/01/1999", "01/02/1999");
 
         verify(bloodTestHandler, times(1)).getBloodTests(any(Connection.class), anyString(), any(LocalDate.class), any(LocalDate.class));
