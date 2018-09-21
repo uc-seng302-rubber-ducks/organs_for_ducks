@@ -12,7 +12,7 @@ import odms.commons.model.User;
 import odms.commons.model.datamodel.BloodTest;
 import odms.controller.gui.panel.logic.BloodTestsLogicController;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class BloodTestViewController {
@@ -35,11 +35,7 @@ public class BloodTestViewController {
     @FXML
     private TextField meanCellHaematocrit;
     @FXML
-    private TableColumn<BloodTest, LocalDateTime> dateRequestedColumn;
-    @FXML
-    private TableColumn<BloodTest, LocalDateTime> dateReceivedColumn;
-    @FXML
-    private TableColumn<BloodTest, String> requestedByColumn;
+    private TableColumn<BloodTest, LocalDate> dateRequestedColumn;
 
     private ObservableList<BloodTest> bloodTests = FXCollections.observableList(new ArrayList<>());
     private BloodTestsLogicController logicController = new BloodTestsLogicController(bloodTests);
@@ -51,49 +47,38 @@ public class BloodTestViewController {
         initBloodTestTableView();
     }
 
-    private void populateTables(){
+    private void populateTables() {
         SortedList<BloodTest> bloodTestSortedList = new SortedList<>(bloodTests);
     }
 
     @FXML
-    private void updateBloodTest(){
+    private void updateBloodTest() {
 
     }
 
     @FXML
-    private void deleteBloodTest(){
+    private void deleteBloodTest() {
 
     }
 
     @FXML
-    private void goToNextPage(){
+    private void goToNextPage() {
 
     }
 
     @FXML
-    private void  goToPreviousPage(){
+    private void goToPreviousPage() {
 
     }
 
     @FXML
-    private void addNewBloodTest(){
+    private void addNewBloodTest() {
 
     }
 
-    private void initBloodTestTableView(){
-        dateReceivedColumn.setCellValueFactory((new PropertyValueFactory<>("")));
+    private void initBloodTestTableView() {
         dateRequestedColumn.setCellValueFactory((new PropertyValueFactory<>("")));
-        requestedByColumn.setCellValueFactory(((new PropertyValueFactory<>(""))));
         bloodTestView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         populateTables();
-
-
     }
-
-
-
-
-
-
-
 }
