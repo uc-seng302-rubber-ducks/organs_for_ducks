@@ -21,6 +21,8 @@ import odms.controller.gui.panel.logic.ClinicianAppointmentRequestLogicControlle
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.socket.ServerEventNotifier;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -40,7 +42,7 @@ public class ClinicianAppointmentRequestViewController {
     private ComboBox<AppointmentCategory> appointmentRequestCategory;
 
     @FXML
-    private TextField appointmentRequestTime;
+    private ComboBox<LocalTime> appointmentRequestTime;
 
     @FXML
     private Label appointmentRequestStatus;
@@ -67,6 +69,7 @@ public class ClinicianAppointmentRequestViewController {
     private TableColumn<Appointment, String> clinicianAppointmentDateColumn = new TableColumn<>();
 
     private ObservableList<Appointment> availableAppointments = FXCollections.observableList(new ArrayList<>());
+    private ObservableList<LocalTime> availableTimes = FXCollections.observableList(new ArrayList<>());
     private ClinicianAppointmentRequestLogicController logicController;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm");
@@ -76,11 +79,25 @@ public class ClinicianAppointmentRequestViewController {
      */
     public void init(AppController appController, Clinician clinician) {
         availableAppointments.addListener((ListChangeListener<? super Appointment>) observable -> populateTable());
+        logicController = new ClinicianAppointmentRequestLogicController(availableAppointments, appController, clinician, availableTimes);
         appointmentRequestDescription.setTextFormatter(new TextFormatter<String>(change ->
                 change.getControlNewText().length() <= 255 ? change : null)); // limits user input to 255 characters
 
-        logicController = new ClinicianAppointmentRequestLogicController(availableAppointments, appController, clinician);
         initAppointmentTable();
+        logicController.refreshClinicianAvailableTimes(LocalDate.now());
+        populateClinicianTimes();
+        datePickerListener(appointmentRequestDate);
+    }
+
+    /**
+     * Changes the title bar to add/remove an asterisk when a change was detected on the date picker.
+     *
+     * @param dp The current date picker.
+     */
+    private void datePickerListener(DatePicker dp) {
+        dp.valueProperty().addListener((observable, oldValue, newValue) -> {
+                populateClinicianTimes();
+        });
     }
 
     /**
@@ -157,14 +174,14 @@ public class ClinicianAppointmentRequestViewController {
             appointmentRequestStatus.setText(appointment.getAppointmentStatus().toString());
             appointmentRequestCategory.setValue(appointment.getAppointmentCategory());
             appointmentRequestDate.setValue(appointment.getRequestedDate().toLocalDate());
-            appointmentRequestTime.setText(appointment.getRequestedDate().toLocalTime().toString());
+            appointmentRequestTime.setValue(appointment.getRequestedDate().toLocalTime());
             appointmentRequestDescription.setText(appointment.getRequestDescription());
         } else {
             appointmentRequestUserNhi.setText("");
             appointmentRequestStatus.setText("");
             appointmentRequestCategory.setValue(null);
             appointmentRequestDate.setValue(null);
-            appointmentRequestTime.clear();
+            appointmentRequestTime.setValue(null);
             appointmentRequestDescription.clear();
         }
     }
@@ -217,11 +234,17 @@ public class ClinicianAppointmentRequestViewController {
             AlertWindowFactory.generateInfoWindow("You must select an appointment to accept");
             return;
         }
-
         boolean valid = true;
-        if (!AttributeValidation.validateTimeString(appointmentRequestTime.getText())) {
-            appointmentRequestTime.setStyle("-fx-background-color: rgba(100%, 0%, 0%, 0.25); -fx-border-color: RED");
+
+        if (appointmentRequestTime.getSelectionModel().getSelectedItem() == null){
             valid = false;
+            AlertWindowFactory.generateInfoWindow("please pick a time");
+        } else {
+
+            if (!AttributeValidation.validateTimeString(appointmentRequestTime.getValue().toString())) {
+                appointmentRequestTime.setStyle("-fx-background-color: rgba(100%, 0%, 0%, 0.25); -fx-border-color: RED");
+                valid = false;
+            }
         }
 
         if (!AttributeValidation.validateDateOfAppointment(appointmentRequestDate.getValue())) {
@@ -234,13 +257,28 @@ public class ClinicianAppointmentRequestViewController {
         if (valid) {
             if (status == AppointmentStatus.PENDING) {
                 logicController.updateAppointment(selectedAppointment, appointmentRequestCategory.getValue(),
-                        appointmentRequestDate.getValue(), appointmentRequestTime.getText(), appointmentRequestDescription.getText(), true);
+                        appointmentRequestDate.getValue(), appointmentRequestTime.getValue().toString(), appointmentRequestDescription.getText(), true);
             } else if (status == AppointmentStatus.ACCEPTED || status == AppointmentStatus.ACCEPTED_SEEN) {
                 logicController.updateAppointment(selectedAppointment, appointmentRequestCategory.getValue(),
-                        appointmentRequestDate.getValue(), appointmentRequestTime.getText(), appointmentRequestDescription.getText(), false);
+                        appointmentRequestDate.getValue(), appointmentRequestTime.getValue().toString(), appointmentRequestDescription.getText(), false);
             } else {
                 AlertWindowFactory.generateInfoWindow("This appointment is no longer available");
             }
+        }
+
+
+    }
+
+    /**
+     * @see ClinicianAppointmentRequestLogicController refreshClinicianAvailableTimes
+     */
+    @FXML
+    private void populateClinicianTimes(){
+        if (appointmentRequestDate.getValue() != null) {
+            LocalTime localTime = getSelectedAppointment().getRequestedDate().toLocalTime();
+            logicController.refreshClinicianAvailableTimes(appointmentRequestDate.getValue());
+            availableTimes.add(localTime);
+            appointmentRequestTime.setItems(availableTimes);
         }
 
     }

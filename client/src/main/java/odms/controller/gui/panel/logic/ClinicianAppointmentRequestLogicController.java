@@ -1,11 +1,15 @@
 package odms.controller.gui.panel.logic;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
+import javafx.collections.SetChangeListener;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
+import odms.bridge.AppointmentsBridge;
 import odms.commons.model.Appointment;
 import odms.commons.model.Clinician;
 import odms.commons.model._enum.AppointmentCategory;
@@ -24,7 +28,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Optional;
+import java.util.*;
 
 
 public class ClinicianAppointmentRequestLogicController implements PropertyChangeListener {
@@ -34,12 +38,20 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
     private ObservableList<Appointment> availableAppointments;
     private AppController appController;
     private Clinician clinician;
+    private ObservableList<LocalTime> availableTimes;
+    private ObservableSet<LocalDateTime> bookedDateTimes;
+    private ObservableSet<LocalTime> bookedTimes;
+    private Set<LocalTime> TIMES = new HashSet<>(Arrays.asList(LocalTime.of(8,0),LocalTime.of(9,0),LocalTime.of(10,0),LocalTime.of(11,0),LocalTime.of(12,0),LocalTime.of(13,0),LocalTime.of(14,0),LocalTime.of(15,0),LocalTime.of(16,0),LocalTime.of(17,0)));
 
-    public ClinicianAppointmentRequestLogicController(ObservableList<Appointment> availableAppointment, AppController controller, Clinician clinician) {
+
+    public ClinicianAppointmentRequestLogicController(ObservableList<Appointment> availableAppointment, AppController controller, Clinician clinician, ObservableList<LocalTime> availableTimes) {
         this.availableAppointments = availableAppointment;
         this.appController = controller;
         this.clinician = clinician;
+        this.availableTimes = availableTimes;
+        this.bookedDateTimes = FXCollections.observableSet(new HashSet<LocalDateTime>());
         ServerEventNotifier.getInstance().addPropertyChangeListener(this);
+        this.bookedTimes = FXCollections.observableSet(new HashSet<LocalTime>());
     }
 
     /**
@@ -145,6 +157,33 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
     }
 
     /**
+     * takes the list of local date times converts them to local times and adds them to the bookedTimes
+     */
+    private void refreshBookedTime(){
+        bookedTimes.clear();
+        for(LocalDateTime dateTime: bookedDateTimes){
+            bookedTimes.add(dateTime.toLocalTime());
+        }
+    }
+
+
+    /**
+     * gets all the times the clinician is booked for the given date and add
+     * @param wantedDate the date for the appointment
+     */
+    public void refreshClinicianAvailableTimes(LocalDate wantedDate){
+        AppointmentsBridge appointmentsbridge = appController.getAppointmentsBridge();
+        bookedDateTimes.addListener((SetChangeListener<LocalDateTime>) c -> {
+            availableTimes.clear();
+            refreshBookedTime();
+            availableTimes.addAll(TIMES);
+            availableTimes.removeAll(bookedTimes);
+            Collections.sort(availableTimes);
+        });
+        appointmentsbridge.getClinicianAppointmentsTimes(clinician.getStaffId(), wantedDate.atStartOfDay().toString(),wantedDate.atStartOfDay().plusHours(24).toString(), appController.getToken(), bookedDateTimes);
+    }
+
+    /**
      * Updates / accepts the given appointment with the given values
      *
      * @param appointment Appointment to be updated
@@ -161,6 +200,7 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
         appointment.setAppointmentCategory(category);
         appointment.setRequestDescription(description);
         AppController.getInstance().getAppointmentsBridge().putAppointment(appointment, AppController.getInstance().getToken());
+
     }
 
     /**

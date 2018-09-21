@@ -3,38 +3,52 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FXML.BloodTestPopUP">
+<AnchorPane prefHeight="638.0" prefWidth="464.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.popup.view.NewBloodTestViewController">
    <children>
-      <Button layoutX="14.0" layoutY="361.0" mnemonicParsing="false" text="Cancel" />
-      <Button layoutX="441.0" layoutY="361.0" mnemonicParsing="false" text="Request Blood Test" />
-      <Label layoutX="14.0" layoutY="14.0" text="Request New Blood Test">
+      <Button fx:id="cancelBloodTest" layoutX="14.0" layoutY="601.0" mnemonicParsing="false" onAction="#cancel" text="Cancel" />
+      <Button fx:id="addBloodTest" layoutX="333.0" layoutY="601.0" mnemonicParsing="false" onAction="#addBloodTest" text="Add Blood Test" />
+      <Label layoutX="14.0" layoutY="14.0" text="Add New Blood Test">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>
       </Label>
-      <GridPane layoutX="27.0" layoutY="42.0" prefHeight="184.0" prefWidth="533.0">
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
+      <GridPane layoutX="47.0" layoutY="43.0" prefHeight="549.0" prefWidth="369.0">
          <children>
-            <DatePicker prefHeight="25.0" prefWidth="271.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <Label text="Clinician ID:" />
-            <TextField GridPane.columnIndex="1" />
-            <Label text="Requested Date:" GridPane.rowIndex="1" />
+            <Label text="Red Blood Cell Count:" GridPane.rowIndex="1" />
+            <Label text="White Blood Cell Count:" GridPane.rowIndex="2" />
+            <Label text="Heamoglobin Level:" GridPane.rowIndex="3" />
+            <Label text="Platelets:" GridPane.rowIndex="4" />
+            <Label text="Glucose Levels:" GridPane.rowIndex="5" />
+            <Label text="Mean Cell Volume:" GridPane.rowIndex="6" />
+            <Label text="Haematocrit:" GridPane.rowIndex="7" />
+            <Label text="Mean Cell Haematocrit:" GridPane.rowIndex="8" />
+            <TextField fx:id="redBloodCount" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="whiteBloodCount" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextField fx:id="heamoglobin" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <TextField fx:id="platelets" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <TextField fx:id="glucose" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <TextField fx:id="meanCellVolume" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <TextField fx:id="haematocrit" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            <TextField fx:id="meanCellHaematocrit" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+            <Label text="Test Date:" />
+            <DatePicker fx:id="testDate" prefHeight="25.0" prefWidth="271.0" GridPane.columnIndex="1" />
+            <Label fx:id="dateErrorLabel" text="please select a date" GridPane.columnIndex="1" GridPane.valignment="BOTTOM" />
          </children>
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         </rowConstraints>
       </GridPane>
-      <CheckBox layoutX="33.0" layoutY="241.0" mnemonicParsing="false" text="CheckBox" />
-      <CheckBox layoutX="33.0" layoutY="280.0" mnemonicParsing="false" text="CheckBox" />
-      <CheckBox layoutX="173.0" layoutY="241.0" mnemonicParsing="false" text="CheckBox" />
-      <CheckBox layoutX="173.0" layoutY="280.0" mnemonicParsing="false" text="CheckBox" />
-      <CheckBox layoutX="440.0" layoutY="280.0" mnemonicParsing="false" text="CheckBox" />
-      <CheckBox layoutX="440.0" layoutY="241.0" mnemonicParsing="false" text="CheckBox" />
-      <CheckBox layoutX="300.0" layoutY="280.0" mnemonicParsing="false" text="CheckBox" />
-      <CheckBox layoutX="300.0" layoutY="241.0" mnemonicParsing="false" text="CheckBox" />
    </children>
 </AnchorPane>

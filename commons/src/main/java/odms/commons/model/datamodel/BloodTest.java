@@ -14,7 +14,19 @@ public class BloodTest {
     private double meanCellVolume;
     private double haematocrit;
     private double meanCellHaematocrit;
-    private LocalDate requestedDate;
+    private LocalDate testDate;
+
+    public BloodTest(double redBloodCellCount, double whiteBloodCellCount, double haemoglobinLevel, double platelets, double glucoseLevels, double meanCellVolume, double haematocrit, double meanCellHaematocrit, LocalDate testDate) {
+        this.redBloodCellCount = redBloodCellCount;
+        this.whiteBloodCellCount = whiteBloodCellCount;
+        this.haemoglobinLevel = haemoglobinLevel;
+        this.platelets = platelets;
+        this.glucoseLevels = glucoseLevels;
+        this.meanCellVolume = meanCellVolume;
+        this.haematocrit = haematocrit;
+        this.meanCellHaematocrit = meanCellHaematocrit;
+        this.testDate = testDate;
+    }
 
     public BloodTest() {
         this.redBloodCellCount = 0.0;
@@ -25,19 +37,7 @@ public class BloodTest {
         this.meanCellVolume = 0.0;
         this.haematocrit = 0.0;
         this.meanCellHaematocrit = 0.0;
-        this.requestedDate = null;
-    }
-
-    public BloodTest(double redBloodCellCount, double whiteBloodCellCount, double haemoglobinLevel, double platelets, double glucoseLevels, double meanCellVolume, double haematocrit, double meanCellHaematocrit, LocalDate requestedDate) {
-        this.redBloodCellCount = redBloodCellCount;
-        this.whiteBloodCellCount = whiteBloodCellCount;
-        this.haemoglobinLevel = haemoglobinLevel;
-        this.platelets = platelets;
-        this.glucoseLevels = glucoseLevels;
-        this.meanCellVolume = meanCellVolume;
-        this.haematocrit = haematocrit;
-        this.meanCellHaematocrit = meanCellHaematocrit;
-        this.requestedDate = requestedDate;
+        this.testDate = null;
     }
 
     public int getBloodTestId() {
@@ -48,12 +48,12 @@ public class BloodTest {
         this.bloodTestId = bloodTestId;
     }
 
-    public LocalDate getRequestedDate() {
-        return requestedDate;
+    public LocalDate getTestDate() {
+        return testDate;
     }
 
-    public void setRequestedDate(LocalDate requestedDate) {
-        this.requestedDate = requestedDate;
+    public void setTestDate(LocalDate testDate) {
+        this.testDate = testDate;
     }
 
     public double getRedBloodCellCount() {
