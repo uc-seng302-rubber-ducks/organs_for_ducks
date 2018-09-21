@@ -20,6 +20,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -34,6 +36,7 @@ import static org.mockito.Mockito.*;
 public class ClinicianAppointmentControllerTest {
 
     private ObservableList<Appointment> appointments;
+    private ObservableList<LocalTime> availableTimes;
     private AppController controller = AppControllerMocker.getFullMock();
     private OkHttpClient client = mock(OkHttpClient.class);
     private Call call = mock(Call.class);
@@ -50,8 +53,11 @@ public class ClinicianAppointmentControllerTest {
         when(mockSession.getProperty(eq("server.token.header"))).thenReturn("x-auth-token");
 
         appointments = FXCollections.observableList(new ArrayList<>());
+        availableTimes = FXCollections.observableList(new ArrayList<>());
         Clinician testClinician = new Clinician("default", "0", "password");
-        clinicianAppointmentRequestLogicController = spy(new ClinicianAppointmentRequestLogicController(appointments, controller, testClinician));
+        clinicianAppointmentRequestLogicController = spy(new ClinicianAppointmentRequestLogicController(appointments, controller, testClinician, availableTimes));
+
+
         appointmentsBridge = spy(new AppointmentsBridge(client));
 
         when(controller.getToken()).thenReturn("token");

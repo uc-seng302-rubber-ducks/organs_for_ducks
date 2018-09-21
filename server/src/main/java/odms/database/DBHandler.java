@@ -115,6 +115,7 @@ public class DBHandler {
             "AND organName = ?";
     private static final String SELECT_DEATH_DETAILS_STMT = "SELECT * FROM DeathDetails WHERE fkUserNhi = ?";
     private static final String SELECT_BOOKED_APPOINTMENTS_DATETIME_STMT = "SELECT requestedTime FROM AppointmentDetails WHERE fkStaffId = ? AND fkStatusId = 2";
+    private static final String SELECT_AVAILABLE_APPOINTMENT_TIME_STMT = "SELECT requestedTime FROM AppointmentDetails WHERE  fkStaffId = ? AND requestedTime BETWEEN ? and ?";
     private static final String CREATE_APPOINTMENT_STMT = "INSERT INTO AppointmentDetails (fkUserNhi, fkStaffId, fkCategoryId, requestedTime, fkStatusId, description) VALUES (?,?,?,?,?,?)";
     private static final String SELECT_APPTMT_ID = "SELECT apptId FROM AppointmentDetails WHERE requestedTime = ? AND fkStatusId = ?";
     private static final String DELETE_APPOINTMENT_STMT = "DELETE FROM AppointmentDetails WHERE apptId = ?";
@@ -197,6 +198,9 @@ public class DBHandler {
     }
 
 
+
+
+
     /**
      * gets the info of a single administrator
      *
@@ -271,6 +275,7 @@ public class DBHandler {
 
         return fetchAppointmentStrategy.getAppointments(connection, id, count, start);
     }
+
 
 
     /**
@@ -1367,6 +1372,21 @@ public class DBHandler {
                 return resultSet.getInt("apptId");
             }
         }
+    }
+
+    public List<LocalDateTime> getBookedAppointmentDateTimes(Connection connection, String staffId, String startDateTime, String endDateTime) throws SQLException {
+        List<LocalDateTime> bookedAppointmnetDateTimes = new ArrayList<>();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SELECT_AVAILABLE_APPOINTMENT_TIME_STMT)) {
+            preparedStatement.setString(1, staffId);
+            preparedStatement.setString(2,startDateTime);
+            preparedStatement.setString(3,endDateTime);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet !=null && resultSet.next()) {
+                    bookedAppointmnetDateTimes.add(resultSet.getTimestamp("requestedTime").toLocalDateTime());
+                }
+            }
+        }
+        return bookedAppointmnetDateTimes;
     }
 
     /**
