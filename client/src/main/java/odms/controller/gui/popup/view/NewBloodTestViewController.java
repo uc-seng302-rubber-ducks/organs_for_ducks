@@ -124,7 +124,7 @@ public class NewBloodTestViewController {
             haematocritError.setVisible(true);
             invalidateNode(haematocrit);
             valid = false;
-        };
+        }
         if (AttributeValidation.validateDouble(meanCellHaematocrit.getText()) == -1){
             meanCellHaematocritError.setVisible(true);
             invalidateNode(meanCellHaematocrit);
