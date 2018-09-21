@@ -16,9 +16,8 @@ public class BloodTestHandler {
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private static final String SELECT_ONE_BLOOD_TEST = "SELECT * FROM BloodTestDetails WHERE bloodTestId = ?";
-    private static final String SELECT_ALL_BLOOD_TESTS_FOR_USER = "SELECT * FROM BloodTestDetails WHERE fkUserNhi = ? LIMIT ? OFFSET ?";
     private static final String DELETE_ONE_BLOOD_TEST = "DELETE FROM BloodTestDetails WHERE bloodTestId = ?";
-    private static final String SELECT_ALL_BLOOD_TESTS_FOR_USER_GRAPH = "SELECT * FROM BloodTestDetails WHERE fkUserNhi = ? AND (requestedDate BETWEEN ? AND ?) LIMIT ? OFFSET ?";
+    private static final String SELECT_ALL_BLOOD_TESTS_FOR_USER = "SELECT * FROM BloodTestDetails WHERE fkUserNhi = ? AND (requestedDate BETWEEN ? AND ?) LIMIT ? OFFSET ?";
 
     /**
      * Saves and stores the given blood test within the database
@@ -178,32 +177,6 @@ public class BloodTestHandler {
     }
 
     /**
-     * Gets all the blood tests between the start and count values for the given user nhi
-     *
-     * @param connection Connection to the target database
-     * @param nhi        Unique identifier of the user
-     * @param count      Row number that the query finishes taking entries from
-     * @param start      Row number that query starts taking entries from
-     * @return           A collection of all the users blood tests between the start and count indices
-     * @throws SQLException if the connection is invalid or there is an error retrieving entries from the database
-     */
-    public Collection<BloodTest> getAllBloodTests(Connection connection, String nhi, int count, int start) throws SQLException {
-        Collection<BloodTest> bloodTests = new ArrayList<>();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_BLOOD_TESTS_FOR_USER)) {
-            preparedStatement.setString(1, nhi);
-            preparedStatement.setInt(2, count);
-            preparedStatement.setInt(3, start);
-            try (ResultSet results = preparedStatement.executeQuery()) {
-                while (results.next()) {
-                    bloodTests.add(decodeBloodTestFromResultSet(results));
-                }
-            }
-        }
-
-        return bloodTests;
-    }
-
-    /**
      * Retrieves all of the given users blood tests if the date the results were released is between the two given dates
      *
      * @param connection Connection to the target database
@@ -217,7 +190,7 @@ public class BloodTestHandler {
      */
     public Collection<BloodTest> getBloodTests(Connection connection, String nhi, LocalDate startDate, LocalDate endDate, int count, int startIndex) throws SQLException {
         Collection<BloodTest> bloodTests = new ArrayList<>();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_BLOOD_TESTS_FOR_USER_GRAPH)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_BLOOD_TESTS_FOR_USER)) {
             preparedStatement.setString(1, nhi);
             preparedStatement.setDate(2, Date.valueOf(startDate));
             preparedStatement.setDate(3, Date.valueOf(endDate));
