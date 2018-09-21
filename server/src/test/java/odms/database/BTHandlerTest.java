@@ -41,7 +41,7 @@ public class BTHandlerTest {
         testBloodTest = new BloodTest();
         testBloodTest.setBloodTestId(1);
         testBloodTest.setRedBloodCellCount(0.0054);
-        testBloodTest.setRequestedDate(LocalDate.of(2018, 9, 15));
+        testBloodTest.setTestDate(LocalDate.of(2018, 9, 15));
     }
 
     @After
@@ -52,7 +52,7 @@ public class BTHandlerTest {
     @Test
     public void testCreateBloodTest() throws SQLException {
         BloodTest bloodTest = new BloodTest();
-        bloodTest.setRequestedDate(LocalDate.now().minusDays(5));
+        bloodTest.setTestDate(LocalDate.now().minusDays(5));
 
         bloodTestHandler.postBloodTest(connection, bloodTest, "ABC1234");
         verify(mockStmt, times(1)).executeUpdate();
@@ -72,7 +72,7 @@ public class BTHandlerTest {
         DBHandlerMocker.setBloodTestResultSet(mockResultSet);
         BloodTest bt = bloodTestHandler.getBloodTest(connection, "ABC1234", 1);
         verify(mockStmt, times(1)).executeQuery();
-        Assert.assertTrue(bt.getRequestedDate().equals(testBloodTest.getRequestedDate()));
+        Assert.assertTrue(bt.getTestDate().equals(testBloodTest.getTestDate()));
         Assert.assertTrue(bt.getBloodTestId() == testBloodTest.getBloodTestId());
         Assert.assertTrue(bt.getRedBloodCellCount() == testBloodTest.getRedBloodCellCount());
     }

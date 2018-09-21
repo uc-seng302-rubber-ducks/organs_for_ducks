@@ -38,7 +38,7 @@ public class BloodTestHandler {
             preparedStatement.setDouble(7, bloodTest.getMeanCellVolume());
             preparedStatement.setDouble(8, bloodTest.getHaematocrit());
             preparedStatement.setDouble(9, bloodTest.getMeanCellHaematocrit());
-            preparedStatement.setDate(10, Date.valueOf(bloodTest.getRequestedDate()));
+            preparedStatement.setDate(10, Date.valueOf(bloodTest.getTestDate()));
             preparedStatement.executeUpdate();
         }
 
@@ -101,9 +101,9 @@ public class BloodTestHandler {
                 values.add(bloodTest.getMeanCellHaematocrit());
             }
 
-            if (originalBloodTest.getRequestedDate() != bloodTest.getRequestedDate()) {
+            if (originalBloodTest.getTestDate() != bloodTest.getTestDate()) {
                 changes.add("requestedDate = ?");
-                date = bloodTest.getRequestedDate();
+                date = bloodTest.getTestDate();
             }
 
             if (changes.size() != 0) {
@@ -128,7 +128,7 @@ public class BloodTestHandler {
                     }
 
                     if (date != null) { // only adds the date if it exists
-                        preparedStatement.setDate(i + 1, Date.valueOf(bloodTest.getRequestedDate()));
+                        preparedStatement.setDate(i + 1, Date.valueOf(bloodTest.getTestDate()));
                     }
 
                     preparedStatement.executeUpdate();
@@ -223,7 +223,7 @@ public class BloodTestHandler {
         bloodTest.setMeanCellVolume(resultSet.getDouble("meanCellVolume"));
         bloodTest.setHaematocrit(resultSet.getDouble("haematocrit"));
         bloodTest.setMeanCellHaematocrit(resultSet.getDouble("meanCellHaematocrit"));
-        bloodTest.setRequestedDate(resultSet.getDate("requestedDate").toLocalDate());
+        bloodTest.setTestDate(resultSet.getDate("requestedDate").toLocalDate());
 
         return bloodTest;
     }
