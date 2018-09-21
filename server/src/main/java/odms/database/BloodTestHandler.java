@@ -18,7 +18,7 @@ public class BloodTestHandler {
     private static final String SELECT_ONE_BLOOD_TEST = "SELECT * FROM BloodTestDetails WHERE bloodTestId = ?";
     private static final String SELECT_ALL_BLOOD_TESTS_FOR_USER = "SELECT * FROM BloodTestDetails WHERE fkUserNhi = ? LIMIT ? OFFSET ?";
     private static final String DELETE_ONE_BLOOD_TEST = "DELETE FROM BloodTestDetails WHERE bloodTestId = ?";
-    private static final String SELECT_ALL_BLOOD_TESTS_FOR_USER_GRAPH = "SELECT * FROM BloodTestDetails WHERE fkUserNhi = ? AND (resultsReceived BETWEEN ? AND ?) LIMIT ? OFFSET ?";
+    private static final String SELECT_ALL_BLOOD_TESTS_FOR_USER_GRAPH = "SELECT * FROM BloodTestDetails WHERE fkUserNhi = ? AND (requestedDate BETWEEN ? AND ?) LIMIT ? OFFSET ?";
 
     /**
      * Saves and stores the given blood test within the database
@@ -57,82 +57,84 @@ public class BloodTestHandler {
     public void patchBloodTest(Connection connection, String nhi, int id, BloodTest bloodTest) throws SQLException {
         BloodTest originalBloodTest = getBloodTest(connection, nhi, id);
 
-        List<String> changes = new ArrayList<>();
-        List<Double> values = new ArrayList<>();
-        LocalDate date = null;
+        if (originalBloodTest != null) {
+            List<String> changes = new ArrayList<>();
+            List<Double> values = new ArrayList<>();
+            LocalDate date = null;
 
-        if (originalBloodTest.getRedBloodCellCount() != bloodTest.getRedBloodCellCount()) {
-            changes.add("redBloodCellCount = ?");
-            values.add(bloodTest.getRedBloodCellCount());
-        }
-
-        if (originalBloodTest.getWhiteBloodCellCount() != bloodTest.getWhiteBloodCellCount()) {
-            changes.add("whiteBloodCellCount = ?");
-            values.add(bloodTest.getWhiteBloodCellCount());
-        }
-
-        if (originalBloodTest.getHaemoglobinLevel() != bloodTest.getHaemoglobinLevel()) {
-            changes.add("haemoglobinLevel = ?");
-            values.add(bloodTest.getHaemoglobinLevel());
-        }
-
-        if (originalBloodTest.getPlatelets() != bloodTest.getPlatelets()) {
-            changes.add("platelets = ?");
-            values.add(bloodTest.getPlatelets());
-        }
-
-        if (originalBloodTest.getGlucoseLevels() != bloodTest.getGlucoseLevels()) {
-            changes.add("glucoseLevels = ?");
-            values.add(bloodTest.getGlucoseLevels());
-        }
-
-        if (originalBloodTest.getMeanCellVolume() != bloodTest.getMeanCellVolume()) {
-            changes.add("meanCellVolume = ?");
-            values.add(bloodTest.getMeanCellVolume());
-        }
-
-        if (originalBloodTest.getHaematocrit() != bloodTest.getHaematocrit()) {
-            changes.add("haematocrit = ?");
-            values.add(bloodTest.getHaematocrit());
-        }
-
-        if (originalBloodTest.getMeanCellHaematocrit() != bloodTest.getMeanCellHaematocrit()) {
-            changes.add("meanCellHaematocrit = ?");
-            values.add(bloodTest.getMeanCellHaematocrit());
-        }
-
-        if (originalBloodTest.getRequestedDate() != bloodTest.getRequestedDate()) {
-            changes.add("requestedDate = ?");
-            date = bloodTest.getRequestedDate();
-        }
-
-        if (changes.size() != 0) {
-
-            int size;
-            if (date != null) {
-                size = changes.size() - 1;
-            } else {
-                size = changes.size();
+            if (originalBloodTest.getRedBloodCellCount() != bloodTest.getRedBloodCellCount()) {
+                changes.add("redBloodCellCount = ?");
+                values.add(bloodTest.getRedBloodCellCount());
             }
 
-            String updateStatement = "UPDATE BloodTestDetails SET ";
-            updateStatement += String.join(", ", changes);
+            if (originalBloodTest.getWhiteBloodCellCount() != bloodTest.getWhiteBloodCellCount()) {
+                changes.add("whiteBloodCellCount = ?");
+                values.add(bloodTest.getWhiteBloodCellCount());
+            }
 
-            try (PreparedStatement preparedStatement = connection.prepareStatement(updateStatement)) {
+            if (originalBloodTest.getHaemoglobinLevel() != bloodTest.getHaemoglobinLevel()) {
+                changes.add("haemoglobinLevel = ?");
+                values.add(bloodTest.getHaemoglobinLevel());
+            }
 
-                int i = 0;
-                if (values.size() != 0) { // only adds the double values if they exist
-                    for (i = 0; i < size; i++) {
-                        preparedStatement.setDouble(i + 1, values.get(i));
+            if (originalBloodTest.getPlatelets() != bloodTest.getPlatelets()) {
+                changes.add("platelets = ?");
+                values.add(bloodTest.getPlatelets());
+            }
+
+            if (originalBloodTest.getGlucoseLevels() != bloodTest.getGlucoseLevels()) {
+                changes.add("glucoseLevels = ?");
+                values.add(bloodTest.getGlucoseLevels());
+            }
+
+            if (originalBloodTest.getMeanCellVolume() != bloodTest.getMeanCellVolume()) {
+                changes.add("meanCellVolume = ?");
+                values.add(bloodTest.getMeanCellVolume());
+            }
+
+            if (originalBloodTest.getHaematocrit() != bloodTest.getHaematocrit()) {
+                changes.add("haematocrit = ?");
+                values.add(bloodTest.getHaematocrit());
+            }
+
+            if (originalBloodTest.getMeanCellHaematocrit() != bloodTest.getMeanCellHaematocrit()) {
+                changes.add("meanCellHaematocrit = ?");
+                values.add(bloodTest.getMeanCellHaematocrit());
+            }
+
+            if (originalBloodTest.getRequestedDate() != bloodTest.getRequestedDate()) {
+                changes.add("requestedDate = ?");
+                date = bloodTest.getRequestedDate();
+            }
+
+            if (changes.size() != 0) {
+
+                int size;
+                if (date != null) {
+                    size = changes.size() - 1;
+                } else {
+                    size = changes.size();
+                }
+
+                String updateStatement = "UPDATE BloodTestDetails SET ";
+                updateStatement += String.join(", ", changes);
+
+                try (PreparedStatement preparedStatement = connection.prepareStatement(updateStatement)) {
+
+                    int i = 0;
+                    if (values.size() != 0) { // only adds the double values if they exist
+                        for (i = 0; i < size; i++) {
+                            preparedStatement.setDouble(i + 1, values.get(i));
+                        }
                     }
+
+                    if (date != null) { // only adds the date if it exists
+                        preparedStatement.setDate(i + 1, Date.valueOf(bloodTest.getRequestedDate()));
+                    }
+
+                    preparedStatement.executeUpdate();
+
                 }
-
-                if (date != null) { // only adds the date if it exists
-                    preparedStatement.setDate(i + 1, Date.valueOf(bloodTest.getRequestedDate()));
-                }
-
-                preparedStatement.executeUpdate();
-
             }
         }
     }

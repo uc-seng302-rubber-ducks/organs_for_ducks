@@ -1,6 +1,5 @@
 package odms.controller;
 
-import odms.commons.model.datamodel.BloodTest;
 import odms.database.BloodTestHandler;
 import odms.database.DBHandler;
 import odms.database.JDBCDriver;
@@ -28,7 +27,6 @@ public class BloodTestControllerTest {
     private SocketHandler socketHandler;
     private BloodTestController controller;
     private BloodTestHandler bloodTestHandler;
-    private BloodTest testBloodTest;
 
     @Before
     public void setUp() throws SQLException {
@@ -42,30 +40,28 @@ public class BloodTestControllerTest {
         when(manager.getHandler()).thenReturn(handler);
         when(handler.getBloodTestHandler()).thenReturn(bloodTestHandler);
         when(manager.getDriver()).thenReturn(driver);
-        when(bloodTestHandler.getBloodTests(any(Connection.class), anyString(), any(LocalDate.class), any(LocalDate.class), count, startIndex)).thenReturn(new ArrayList<>());
+        when(bloodTestHandler.getBloodTests(any(Connection.class), anyString(), any(LocalDate.class), any(LocalDate.class), anyInt(), anyInt())).thenReturn(new ArrayList<>());
         controller = new BloodTestController(manager, socketHandler);
-        testBloodTest = new BloodTest();
     }
 
     @Test(expected = BadRequestException.class)
     public void incorrectEndDateShouldNotParse() throws SQLException {
-        controller.getBloodTests("a","01/01/1999", "1999/01/01");
-        verify(bloodTestHandler, times(0)).getBloodTests(any(Connection.class), anyString(), any(LocalDate.class), any(LocalDate.class), count, startIndex);
+        controller.getBloodTests("a", "01/01/1999", "1999/01/01", 30, 0);
+        verify(bloodTestHandler, times(0)).getBloodTests(any(Connection.class), anyString(), any(LocalDate.class), any(LocalDate.class), anyInt(), anyInt());
     }
 
 
     @Test(expected = BadRequestException.class)
     public void incorrectStartDateShouldNotParse() throws SQLException {
-        controller.getBloodTests("a","1999/01/01", "01/01/1999");
-        verify(bloodTestHandler, times(0)).getBloodTests(any(Connection.class), anyString(), any(LocalDate.class), any(LocalDate.class), count, startIndex);
+        controller.getBloodTests("a", "1999/01/01", "01/01/1999", 30, 0);
+        verify(bloodTestHandler, times(0)).getBloodTests(any(Connection.class), anyString(), any(LocalDate.class), any(LocalDate.class), anyInt(), anyInt());
     }
 
 
     @Test
     public void correctDateShouldParse() throws SQLException {
-        controller.getBloodTests("a","01/01/1999", "01/02/1999");
-
-        verify(bloodTestHandler, times(1)).getBloodTests(any(Connection.class), anyString(), any(LocalDate.class), any(LocalDate.class), count, startIndex);
+        controller.getBloodTests("a", "01/01/1999", "01/02/1999", 30, 0);
+        verify(bloodTestHandler, times(1)).getBloodTests(any(Connection.class), anyString(), any(LocalDate.class), any(LocalDate.class), anyInt(), anyInt());
     }
 
 }
