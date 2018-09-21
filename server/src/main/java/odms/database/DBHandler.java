@@ -27,7 +27,7 @@ public class DBHandler {
      * SELECT_USER_ONE_TO_ONE_INFO_STMT is for getting all info that follows one-to-one relationship. eg: 1 user can only have 1 address.
      * the other SELECT_USER statements are for getting all info that follows one-to-many relationships. eg: 1 user can have many diseases.
      */
-    private static final String SELECT_USER_ONE_TO_ONE_INFO_STMT_FILTERED = "SELECT nhi " +
+    private static final String SELECT_USER_ONE_TO_ONE_INFO_STMT_FILTERED = "SELECT DISTINCT nhi " +
             "FROM User u LEFT JOIN Address a ON a.fkUserNhi = u.nhi " +
             "LEFT JOIN HealthDetails hd ON u.nhi = hd.fkUserNhi " +
             "WHERE (u.firstName LIKE ? OR u.lastName LIKE ?) " +
