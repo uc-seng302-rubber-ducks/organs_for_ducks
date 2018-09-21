@@ -117,12 +117,14 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         doubleClickOn(getCell("#searchTableView", 0, 0));
     }
 
-    //needs to change
-    @Test //@Ignore
+    //TODO Users can currently edit their own death details. JR Friday 21 @23:13
+    @Test @Ignore
     public void testUserCannotEditDeathDetails() {
         setTextField(this,"#userIDTextField", "ABC1244");
         clickOnButton(this,"#loginUButton");
-        //verifyThat("#updateDeathDetailsButton", Node::isDisabled);
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
+        verifyThat("#deathtab", Node::isDisabled);
     }
 
     @Test
