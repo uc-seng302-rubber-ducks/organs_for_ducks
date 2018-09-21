@@ -143,7 +143,8 @@ INSERT INTO AppointmentCategory(categoryId, category) VALUES
   (2, 'General check-up'),
   (3, 'Health advice'),
   (4, 'Prescription renewal'),
-  (5, 'Other');
+  (5, 'Other'),
+  (6, 'Personal');
 
 INSERT INTO AppointmentDetails(apptId, fkUserNhi, fkStaffId, fkCategoryId, requestedTime, fkStatusId, description) VALUES
   (1, 'DEF2314', '23', 4, '2018-01-10 16:15:01', 3, 'need stress relief due to SENG302'),

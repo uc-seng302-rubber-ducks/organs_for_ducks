@@ -10,8 +10,8 @@ import java.util.Collection;
 
 public class AppointmentUpdateStrategy extends AbstractUpdateStrategy {
 
-    private static final String CREATE_APPOINTMENT_STMT = "INSERT INTO AppointmentDetails (fkUserNhi, fkStaffId, fkCategoryId, requestedTime, fkStatusId, description) VALUES (?,?,?,?,?,?)";
-    private static final String UPDATE_APPOINTMENT_STMT = "UPDATE AppointmentDetails SET fkCategoryId = ?, requestedTime = ?, fkStatusId = ?, description = ? " +
+    private static final String CREATE_APPOINTMENT_STMT = "INSERT INTO AppointmentDetails (fkUserNhi, fkStaffId, fkCategoryId, requestedTime, fkStatusId, description, title) VALUES (?,?,?,?,?,?,?)";
+    private static final String UPDATE_APPOINTMENT_STMT = "UPDATE AppointmentDetails SET fkCategoryId = ?, requestedTime = ?, fkStatusId = ?, description = ?, title = ?" +
             "WHERE apptId = ?";
     /**
      * Updates a collection of recurring appointments
@@ -42,6 +42,7 @@ public class AppointmentUpdateStrategy extends AbstractUpdateStrategy {
             preparedStatement.setTimestamp(4, Timestamp.valueOf(appointment.getRequestedDate()));
             preparedStatement.setInt(5, appointment.getAppointmentStatus().getDbValue());
             preparedStatement.setString(6, appointment.getRequestDescription());
+            preparedStatement.setString(7, appointment.getTitle());
             preparedStatement.executeUpdate();
         }
     }
@@ -59,6 +60,7 @@ public class AppointmentUpdateStrategy extends AbstractUpdateStrategy {
             preparedStatement.setInt(3, appointment.getAppointmentStatus().getDbValue());
             preparedStatement.setString(4, appointment.getRequestDescription());
             preparedStatement.setInt(5, appointment.getAppointmentId());
+            preparedStatement.setString(6, appointment.getTitle());
             preparedStatement.executeUpdate();
         }
     }

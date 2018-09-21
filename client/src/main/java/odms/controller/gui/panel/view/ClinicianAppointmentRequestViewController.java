@@ -74,6 +74,8 @@ public class ClinicianAppointmentRequestViewController {
     private Toggle calendarViewToggle;
     @FXML
     private Toggle tableViewToggle;
+    @FXML
+    private Label appointmentDetailsNhiLabel;
 
 
     private ObservableList<Appointment> availableAppointments = FXCollections.observableList(new ArrayList<>());
@@ -137,13 +139,20 @@ public class ClinicianAppointmentRequestViewController {
      */
     private void displayAppointmentDetails(Appointment appointment) {
         if (appointment != null) {
-            appointmentRequestUserNhi.setText(appointment.getRequestingUserId());
+            if (appointment.getRequestingUserId() == null) {
+                appointmentDetailsNhiLabel.setText("Title: ");
+                appointmentRequestUserNhi.setText(appointment.getTitle());
+            } else {
+                appointmentDetailsNhiLabel.setText("NHI: ");
+                appointmentRequestUserNhi.setText(appointment.getRequestingUserId());
+            }
             appointmentRequestStatus.setText(appointment.getAppointmentStatus().toString());
             appointmentRequestCategory.setValue(appointment.getAppointmentCategory());
             appointmentRequestDate.setValue(appointment.getRequestedDate().toLocalDate());
             appointmentRequestTime.setText(appointment.getRequestedDate().toLocalTime().toString());
             appointmentRequestDescription.setText(appointment.getRequestDescription());
         } else {
+            appointmentDetailsNhiLabel.setText("NHI: ");
             appointmentRequestUserNhi.setText("");
             appointmentRequestStatus.setText("");
             appointmentRequestCategory.setValue(null);

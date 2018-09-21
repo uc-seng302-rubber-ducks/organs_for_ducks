@@ -257,6 +257,7 @@ CREATE TABLE AppointmentDetails (
   requestedTime DATETIME,
   fkStatusId    SMALLINT,
   description   VARCHAR(255),
+  title         VARCHAR(255),
   FOREIGN KEY (fkUserNhi) REFERENCES User (nhi)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
