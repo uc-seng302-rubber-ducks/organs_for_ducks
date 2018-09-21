@@ -12,12 +12,12 @@ public class BloodTestHandler {
 
     private static final String CREATE_BLOOD_TEST_STMT = "INSERT INTO BloodTestDetails (fkUserNhi, redBloodCellCount, " +
             "whiteBloodCellCount, haemoglobinLevel, platelets, glucoseLevels, meanCellVolume, haematocrit, " +
-            "meanCellHaematocrit, requestedDate) " +
+            "meanCellHaematocrit, testDate) " +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private static final String SELECT_ONE_BLOOD_TEST = "SELECT * FROM BloodTestDetails WHERE bloodTestId = ?";
     private static final String DELETE_ONE_BLOOD_TEST = "DELETE FROM BloodTestDetails WHERE bloodTestId = ?";
-    private static final String SELECT_ALL_BLOOD_TESTS_FOR_USER = "SELECT * FROM BloodTestDetails WHERE fkUserNhi = ? AND (requestedDate BETWEEN ? AND ?) LIMIT ? OFFSET ?";
+    private static final String SELECT_ALL_BLOOD_TESTS_FOR_USER = "SELECT * FROM BloodTestDetails WHERE fkUserNhi = ? AND (testDate BETWEEN ? AND ?) LIMIT ? OFFSET ?";
 
     /**
      * Saves and stores the given blood test within the database
@@ -102,7 +102,7 @@ public class BloodTestHandler {
             }
 
             if (originalBloodTest.getTestDate() != bloodTest.getTestDate()) {
-                changes.add("requestedDate = ?");
+                changes.add("testDate = ?");
                 date = bloodTest.getTestDate();
             }
 
@@ -223,7 +223,7 @@ public class BloodTestHandler {
         bloodTest.setMeanCellVolume(resultSet.getDouble("meanCellVolume"));
         bloodTest.setHaematocrit(resultSet.getDouble("haematocrit"));
         bloodTest.setMeanCellHaematocrit(resultSet.getDouble("meanCellHaematocrit"));
-        bloodTest.setTestDate(resultSet.getDate("requestedDate").toLocalDate());
+        bloodTest.setTestDate(resultSet.getDate("testDate").toLocalDate());
 
         return bloodTest;
     }

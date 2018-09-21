@@ -70,7 +70,7 @@ public class BloodTestControllerTest {
     }
 
     @Test(expected = ServerDBException.class)
-    public void testGetAllBloodTestsThrowsException() throws SQLException {
+    public void testGetAllBloodTestsThrowsExceptionIfNoConnection() throws SQLException {
         when(driver.getConnection()).thenThrow(new SQLException());
         controller.getBloodTests("ABC1234", "01/01/1999", "01/02/1999", 30, 0);
     }
@@ -82,7 +82,7 @@ public class BloodTestControllerTest {
     }
 
     @Test(expected = ServerDBException.class)
-    public void testGetSingleBloodTestThrowsException() throws SQLException {
+    public void testGetSingleBloodTestThrowsExceptionIfNoConnection() throws SQLException {
         when(driver.getConnection()).thenThrow(new SQLException());
         controller.getBloodTest("ABC1234", 1);
     }
@@ -94,7 +94,7 @@ public class BloodTestControllerTest {
     }
 
     @Test(expected = ServerDBException.class)
-    public void testPostBloodTestThrowsException() throws SQLException {
+    public void testPostBloodTestThrowsExceptionIfNoConnection() throws SQLException {
         when(driver.getConnection()).thenThrow(new SQLException());
         controller.postBloodTest("ABC1234", testBloodTest);
     }
@@ -106,7 +106,7 @@ public class BloodTestControllerTest {
     }
 
     @Test(expected = ServerDBException.class)
-    public void testDeleteBloodTestThrowsException() throws SQLException {
+    public void testDeleteBloodTestThrowsExceptionIfNoConnection() throws SQLException {
         when(driver.getConnection()).thenThrow(new SQLException());
         controller.deleteBloodTest("ABC1234", 1);
     }
@@ -118,7 +118,7 @@ public class BloodTestControllerTest {
     }
 
     @Test(expected = ServerDBException.class)
-    public void testPatchBloodTestThrowsException() throws SQLException {
+    public void testPatchBloodTestThrowsExceptionIfNoConnection() throws SQLException {
         when(driver.getConnection()).thenThrow(new SQLException());
         controller.patchBloodTest("ABC1234", 1, testBloodTest);
     }

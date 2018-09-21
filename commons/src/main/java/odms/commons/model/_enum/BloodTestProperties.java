@@ -8,7 +8,7 @@ public enum BloodTestProperties {
     GLUCOSE("Glucose", 5),
     HAEMATOCRIT("Haematocrit", 6),
     MEAN_CELL_VOLUME("Mean Cell Volume", 7),
-    MEAN_CELL_HAEMATOCRIT("meanCellHaematocrit", 8);
+    MEAN_CELL_HAEMATOCRIT("Mean Cell Haematocrit", 8);
 
     private final String name;
     private final int dbValue;

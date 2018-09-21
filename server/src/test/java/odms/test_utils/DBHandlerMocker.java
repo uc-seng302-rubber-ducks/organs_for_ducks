@@ -101,7 +101,7 @@ public class DBHandlerMocker {
         when(resultSet.getDouble("meanCellVolume")).thenReturn(80.5);       // fL
         when(resultSet.getDouble("haematocrit")).thenReturn(0.35);          // ratio
         when(resultSet.getDouble("meanCellHaematocrit")).thenReturn(25.5);  // pg
-        when(resultSet.getDate("requestedDate")).thenReturn(Date.valueOf(LocalDate.of(2018, 9, 15)));
+        when(resultSet.getDate("testDate")).thenReturn(Date.valueOf(LocalDate.of(2018, 9, 15)));
     }
 
 }

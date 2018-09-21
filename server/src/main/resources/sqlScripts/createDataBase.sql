@@ -286,17 +286,17 @@ CREATE TABLE PreferredClinician (
 );
 
 CREATE TABLE BloodTestDetails(
-  bloodTestId INT AUTO_INCREMENT PRIMARY KEY,
-  fkUserNhi VARCHAR(7),
-  redBloodCellCount DOUBLE,
+  bloodTestId         INT AUTO_INCREMENT PRIMARY KEY,
+  fkUserNhi           VARCHAR(7),
+  redBloodCellCount   DOUBLE,
   whiteBloodCellCount DOUBLE,
-  haemoglobinLevel DOUBLE,
-  platelets DOUBLE,
-  glucoseLevels DOUBLE,
-  meanCellVolume DOUBLE,
-  haematocrit DOUBLE,
+  haemoglobinLevel    DOUBLE,
+  platelets           DOUBLE,
+  glucoseLevels       DOUBLE,
+  meanCellVolume      DOUBLE,
+  haematocrit         DOUBLE,
   meanCellHaematocrit DOUBLE,
-  requestedDate DATE,
+  testDate            DATE,
   FOREIGN KEY (fkUserNhi) REFERENCES User (nhi)
   ON DELETE CASCADE
   ON UPDATE CASCADE
