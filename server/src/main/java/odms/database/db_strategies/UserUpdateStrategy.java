@@ -1,4 +1,4 @@
-package odms.commons.database.db_strategies;
+package odms.database.db_strategies;
 
 import odms.commons.model.Disease;
 import odms.commons.model.MedicalProcedure;
@@ -9,6 +9,7 @@ import odms.commons.model.datamodel.ExpiryReason;
 import odms.commons.model.datamodel.Medication;
 import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 import odms.commons.utils.Log;
+import odms.database.DBUtils;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -23,21 +24,23 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     public static final String ROLLBACK = "ROLLBACK";
     public static final String COMMIT = "COMMIT";
     //<editor-fold desc="constants">
-    private static final String CREATE_USER_STMT = "INSERT INTO User (nhi, firstName, middleName, lastName, preferedName, dob, dod, timeCreated, lastModified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    private static final String CREATE_USER_CONTACT_STMT = "INSERT INTO ContactDetails (fkUserNhi, homePhone, email, cellPhone) VALUES (?, ?, ?, ?)";
-    private static final String CREATE_ADDRESS_STMT = "INSERT INTO Address (fkContactId, streetNumber, streetName, neighbourhood, city, region, country, fkUserNhi) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    private static final String CREATE_HEALTH_DETAILS = "INSERT INTO HealthDetails (fkUserNhi, gender, birthGender, smoker, alcoholConsumption, height, weight, bloodType) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    private static final String CREATE_EMERGENCY_STMT = "INSERT INTO EmergencyContactDetails (fkContactId, contactName, contactRelationship, fkUserNhi) VALUES (?, ?, ?, ?)";
+    private static final String CREATE_USER_STMT = "INSERT INTO User (uniqueId, nhi, firstName, middleName, lastName, preferedName, dob, dod, timeCreated, lastModified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
+            "ON DUPLICATE KEY UPDATE uniqueId=VALUES(uniqueId), nhi = VALUES(nhi), firstName=VALUES(firstName), middleName = VALUES(middleName), lastName = VALUES(lastName), " +
+            "preferedName = VALUES(preferedName), dob = VALUES(dob), dod = VALUES(dod), timeCreated = VALUES(timeCreated), lastModified = VALUES(lastModified);";
+    private static final String CREATE_USER_CONTACT_STMT = "REPLACE INTO ContactDetails (fkUserNhi, homePhone, email, cellPhone) VALUES (?, ?, ?, ?)";
+    private static final String CREATE_ADDRESS_STMT = "REPLACE INTO Address (fkContactId, streetNumber, streetName, neighbourhood, city, region, country, fkUserNhi) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String CREATE_HEALTH_DETAILS = "REPLACE INTO HealthDetails (fkUserNhi, gender, birthGender, smoker, alcoholConsumption, height, weight, bloodType) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String CREATE_EMERGENCY_STMT = "REPLACE INTO EmergencyContactDetails (fkContactId, contactName, contactRelationship, fkUserNhi) VALUES (?, ?, ?, ?)";
     private static final String GET_LATEST_CONTACT_ENTRY = "SELECT MAX(contactId) AS contactId FROM ContactDetails WHERE fkUserNhi=?";
-    private static final String CREATE_NEW_MEDICATION = "INSERT INTO Medication (fkUserNhi, medicationName) VALUES (?, ?)";
-    private static final String CREATE_NEW_MEDICATION_TIME = "INSERT INTO MedicationDates (fkMedicationInstanceId, dateStartedTaking, dateStoppedTaking) VALUES (?, ?, ?)";
-    private static final String CREATE_NEW_PROCEDURE = "INSERT INTO MedicalProcedure (fkUserNhi, procedureName, procedureDescription, procedureDate) VALUES (?, ?, ?, ?)";
-    private static final String CREATE_CURRENT_DISEASE = "INSERT INTO CurrentDisease (fkUserNhi, diseaseName, diagnosisDate, isChronic) VALUES (?, ?, ?, ?)";
-    private static final String CREATE_PREVIOUS_DISEASE = "INSERT INTO PreviousDisease (fkUserNhi, diseaseName, diagnosisDate) VALUES (?, ?, ?)";
-    private static final String CREATE_AFFECTED_ORGAN = "INSERT INTO MedicalProcedureOrgan (fkOrgansId, fkProcedureId) VALUES (?, ?)";
-    private static final String CREATE_DONATING_ORGAN = "INSERT INTO OrganDonating (fkUserNhi, fkOrgansId) VALUES (?, ?)";
-    private static final String CREATE_RECEIVING_ORGAN = "INSERT INTO OrganAwaiting (fkUserNhi, fkOrgansId) VALUES (?, ?)";
-    private static final String CREATE_EXPIRY_DETAILS = "INSERT INTO OrganExpiryDetails(id, fkDonatingId, timeOfExpiry, reason, `name`) VALUES (?,?,?,?,?)";
+    private static final String CREATE_NEW_MEDICATION = "REPLACE INTO Medication (fkUserNhi, medicationName) VALUES (?, ?)";
+    private static final String CREATE_NEW_MEDICATION_TIME = "REPLACE INTO MedicationDates (fkMedicationInstanceId, dateStartedTaking, dateStoppedTaking) VALUES (?, ?, ?)";
+    private static final String CREATE_NEW_PROCEDURE = "REPLACE INTO MedicalProcedure (fkUserNhi, procedureName, procedureDescription, procedureDate) VALUES (?, ?, ?, ?)";
+    private static final String CREATE_CURRENT_DISEASE = "REPLACE INTO CurrentDisease (fkUserNhi, diseaseName, diagnosisDate, isChronic) VALUES (?, ?, ?, ?)";
+    private static final String CREATE_PREVIOUS_DISEASE = "REPLACE INTO PreviousDisease (fkUserNhi, diseaseName, diagnosisDate) VALUES (?, ?, ?)";
+    private static final String CREATE_AFFECTED_ORGAN = "REPLACE INTO MedicalProcedureOrgan (fkOrgansId, fkProcedureId) VALUES (?, ?)";
+    private static final String CREATE_DONATING_ORGAN = "REPLACE INTO OrganDonating (fkUserNhi, fkOrgansId) VALUES (?, ?)";
+    private static final String CREATE_RECEIVING_ORGAN = "REPLACE INTO OrganAwaiting (fkUserNhi, fkOrgansId) VALUES (?, ?)";
+    private static final String CREATE_EXPIRY_DETAILS = "REPLACE INTO OrganExpiryDetails(id, fkDonatingId, timeOfExpiry, reason, `name`) VALUES (?,?,?,?,?)";
     private static final String UPDATE_USER_STMT = "UPDATE User SET nhi = ?, firstName = ?, middleName = ?, lastName = ?, preferedName = ?, dob = ?, dod = ?, lastModified = ? WHERE nhi = ?";
     private static final String UPDATE_USER_HEALTH_STMT = "UPDATE HealthDetails SET gender = ?, birthGender = ?, smoker = ?, alcoholConsumption = ?, height = ?, weight = ?, bloodType = ? WHERE fkUserNhi = ?";
     private static final String UPDATE_USER_CONTACT_STMT = "UPDATE ContactDetails JOIN Address ON contactId = fkContactId " +
@@ -48,10 +51,10 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             "SET contactName = ?, contactRelationship = ?, homePhone = ?, cellPhone = ?, email = ?, streetNumber = ?, streetName = ?, neighbourhood = ?, city = ?, region = ?, zipCode = ?, country = ? " +
             "WHERE EmergencyContactDetails.fkUserNhi = ?";
     private static final String DELETE_USER_STMT = "DELETE FROM User WHERE nhi = ?";
-    private static final String CREATE_RECEIVING_ORGAN_DATE = "INSERT INTO OrganAwaitingDates (fkAwaitingId, dateRegistered, dateDeregistered) VALUES (?, ?, ?)";
+    private static final String CREATE_RECEIVING_ORGAN_DATE = "REPLACE INTO OrganAwaitingDates (fkAwaitingId, dateRegistered, dateDeregistered) VALUES (?, ?, ?)";
     private static final String GET_RECEIVER_ID = "SELECT awaitingId FROM OrganAwaiting WHERE fkUserNhi = ? AND fkOrgansId = ?";
     private static final String GET_DONATING_ID = "SELECT donatingId FROM OrganDonating WHERE fkUserNhi = ? AND fkOrgansId = ?";
-    private static final String CREATE_DEATH_DETAILS = "INSERT INTO DeathDetails (fkUserNhi, momentOfDeath, city, region, country) VALUES (?, ?, ?, ?, ?)";
+    private static final String CREATE_DEATH_DETAILS = "REPLACE INTO DeathDetails (fkUserNhi, momentOfDeath, city, region, country) VALUES (?, ?, ?, ?, ?)";
     private static final String UPDATE_DEATH_DETAILS = "UPDATE DeathDetails SET momentOfDeath = ?, city = ?, region = ?, country = ? WHERE fkUserNhi = ?";
     //</editor-fold>
 
@@ -59,43 +62,42 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     public <T> void update(Collection<T> roles, Connection connection) throws SQLException {
         Collection<User> users = (Collection<User>) roles;
         for (User user : users) {
-            try (PreparedStatement stmt = connection.prepareStatement("SELECT nhi FROM User WHERE nhi = ?")) {
-                stmt.setString(1, user.getNhi());
-                try (ResultSet queryResults = stmt.executeQuery()) {
-                    if (!queryResults.next() && !user.isDeleted()) {
-                        executeCreation(user, connection);
-                    } else if (user.isDeleted()) {
-                        deleteRole(user, connection);
-                    } else {
-                        executeUpdate(user, connection);
-                    }
-                }
+            if (user.isDeleted()) {
+                deleteRole(user, connection);
+                return;
             }
+            if (user.getUniqueId() == 0 && DBUtils.getExists(connection, User.class, user.getNhi())) {
+                throw new SQLException("specified NHI is in use");
+            }
+            executeCreation(user, connection);
         }
     }
 
     /**
      * Executes an update for each of items in the collection.
-     * Precondition: The object must be of a type User
+     * Precondition: The object must be of a type User, User's NHI cannot already be in use.
      * Post-conditions: An entry that represents the user is created and stored in the database.
+     * If an there is an existing user with the same unique id, it will be updated.
      *
      * @param user       User to create
      * @param connection Connection to the target database
      */
     private void executeCreation(User user, Connection connection) throws SQLException {
-        connection.prepareStatement(START_TRANSACTION).execute();
+        connection.setAutoCommit(false);
         try {
             createUser(user, connection);
             createEmergencyContact(user.getNhi(), user, connection);
             createContact(user.getNhi(), user.getContactDetails(), connection);
             createHealthDetails(user.getNhi(), user, connection);
-            executeUpdate(user, connection);
+            executeUpdate(user, connection, connection.getAutoCommit());
             createDeathDetails(user, connection);
+            connection.commit();
         } catch (SQLException sqlEx) {
-            connection.prepareStatement(ROLLBACK).execute();
+            connection.rollback();
             throw sqlEx;
+        } finally {
+            connection.setAutoCommit(true);
         }
-        connection.prepareStatement(COMMIT).execute();
     }
 
     /**
@@ -108,19 +110,20 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
      */
     private void createUser(User user, Connection connection) throws SQLException {
         try (PreparedStatement stmt = connection.prepareStatement(CREATE_USER_STMT)) {
-            stmt.setString(1, user.getNhi());
-            stmt.setString(2, user.getFirstName());
-            stmt.setString(3, user.getMiddleName());
-            stmt.setString(4, user.getLastName());
-            stmt.setString(5, user.getPreferredFirstName());
-            stmt.setDate(6, Date.valueOf(user.getDateOfBirth()));
+            stmt.setInt(1, user.getUniqueId());
+            stmt.setString(2, user.getNhi());
+            stmt.setString(3, user.getFirstName());
+            stmt.setString(4, user.getMiddleName());
+            stmt.setString(5, user.getLastName());
+            stmt.setString(6, user.getPreferredFirstName());
+            stmt.setDate(7, Date.valueOf(user.getDateOfBirth()));
             if (user.getDateOfDeath() != null) {
-                stmt.setDate(7, Date.valueOf(user.getDateOfDeath()));
+                stmt.setDate(8, Date.valueOf(user.getDateOfDeath()));
             } else {
-                stmt.setNull(7, Types.DATE);
+                stmt.setNull(8, Types.DATE);
             }
-            stmt.setTimestamp(8, Timestamp.valueOf(user.getTimeCreated()));
-            stmt.setTimestamp(9, Timestamp.valueOf(user.getLastModified()));
+            stmt.setTimestamp(9, Timestamp.valueOf(user.getTimeCreated()));
+            stmt.setTimestamp(10, Timestamp.valueOf(user.getLastModified()));
 
             stmt.executeUpdate();
         }
@@ -130,9 +133,9 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
      * Creates a contact object with for the given user using the CREATE_USER_CONTACT_STMT.
      * Must have an active connection to the database (created through connect())
      *
-     * @param userNhi    nhi of the user to associate the contact object with.
-     * @param contactDetails       user to create the associated contact for
-     * @param connection Connection to the target database
+     * @param userNhi        nhi of the user to associate the contact object with.
+     * @param contactDetails user to create the associated contact for
+     * @param connection     Connection to the target database
      * @throws SQLException if there is a problem with creating the contact
      */
     private void createContact(String userNhi, ContactDetails contactDetails, Connection connection) throws SQLException {
@@ -238,18 +241,19 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
      * @param connection Connection to the target database
      */
     private void deleteRole(User user, Connection connection) throws SQLException {
-        connection.prepareStatement(START_TRANSACTION).execute();
-        try {
-            try (PreparedStatement stmt = connection.prepareStatement(DELETE_USER_STMT)) {
-                stmt.setString(1, user.getNhi());
-                stmt.executeUpdate();
-            }
+        connection.setAutoCommit(false);
+        try (PreparedStatement stmt = connection.prepareStatement(DELETE_USER_STMT)) {
+            stmt.setString(1, user.getNhi());
+            stmt.executeUpdate();
+            connection.commit();
+
         } catch (SQLException sqlEx) {
             Log.severe("A fatal error in deletion, cancelling operation", sqlEx);
-            connection.prepareStatement(ROLLBACK).execute();
+            connection.rollback();
             throw sqlEx;
+        } finally {
+            connection.setAutoCommit(true);
         }
-        connection.prepareStatement(COMMIT).execute();
     }
 
     /**
@@ -260,8 +264,8 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
      * @param user       The user associated with the entry in the database
      * @param connection Connection ot the target database
      */
-    private void executeUpdate(User user, Connection connection) throws SQLException {
-        connection.prepareStatement(START_TRANSACTION).execute();
+    private void executeUpdate(User user, Connection connection, boolean autoCommit) throws SQLException {
+        connection.setAutoCommit(false);
         try {
             updateUserDetails(user, connection);
             updateUserContactDetails(user, connection);
@@ -273,12 +277,14 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             updateUserDiseases(user, connection);
             updateMedications(user, connection);
             updateDeathDetails(user, connection);
+            connection.commit();
         } catch (SQLException sqlEx) {
             Log.severe("A fatal error in deletion, cancelling operation", sqlEx);
-            connection.prepareStatement(ROLLBACK).execute();
+            connection.rollback();
             throw sqlEx;
+        } finally {
+            connection.setAutoCommit(autoCommit);
         }
-        connection.prepareStatement(COMMIT).execute();
     }
 
     /**
@@ -376,7 +382,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             deleteStatement.setString(1, user.getNhi());
             deleteStatement.execute();
         }
-        for (Map.Entry<Organs, ExpiryReason> organsExpiry: user.getDonorDetails().getOrganMap().entrySet()) {
+        for (Map.Entry<Organs, ExpiryReason> organsExpiry : user.getDonorDetails().getOrganMap().entrySet()) {
             if (organsExpiry.getValue() != null) {
                 int organDBValue = organsExpiry.getKey().getDbValue();
                 int donatingId = getDonatingId(user.getNhi(), organDBValue, connection);
@@ -403,9 +409,9 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
      * Retrieves the foreign key donating id referencing
      * the Organ Donating table
      *
-     * @param userNhi NHI of user
+     * @param userNhi      NHI of user
      * @param organDBValue the database value of organ
-     * @param connection Connection to the database
+     * @param connection   Connection to the database
      * @return The foreign key donating id referencing the Organ Donating table
      * @throws SQLException If there is an issue retrieving the contact id
      */
@@ -428,7 +434,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     /**
      * Retrieves the emergency contact foreign key to the contact details table
      *
-     * @param user User object to find the specific entry
+     * @param user       User object to find the specific entry
      * @param connection Connection to the database
      * @return The foreign key contact id referencing the ContactDetails table
      * @throws SQLException If there is an issue retrieving the contact id
@@ -589,8 +595,9 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
 
     /**
      * Creates a medical procedure in the database that is linked to the provided user nhi
-     * @param nhi user's nhi to associate the medical procedure with
-     * @param procedure procedure to create in the database
+     *
+     * @param nhi        user's nhi to associate the medical procedure with
+     * @param procedure  procedure to create in the database
      * @param connection a non null, active and valid connection to the database
      * @throws SQLException If there is an error with the database
      */
@@ -636,7 +643,8 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
 
     /**
      * Updates the database with the user's previous and current diseases
-     * @param user user for which to update the diseases in the database for
+     *
+     * @param user       user for which to update the diseases in the database for
      * @param connection A non null and active connection to the database
      * @throws SQLException if there is an error with the database
      */
@@ -660,7 +668,8 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
 
     /**
      * Updates the database with the users new death details
-     * @param user for which to update the death details for
+     *
+     * @param user       for which to update the death details for
      * @param connection A non null and active connection to the database
      * @throws SQLException if there is an error with the database
      */
@@ -668,12 +677,16 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
 
         Timestamp sqlDeathMoment = null;
         LocalDateTime deathMoment = user.getDeathDetails().createMomentOfDeath(user.getDateOfDeath(), user.getTimeOfDeath());
-        if (deathMoment != null) {
-            sqlDeathMoment = java.sql.Timestamp.valueOf(deathMoment);
+        if (deathMoment == null) {
+            try (PreparedStatement removeDeathDetails = connection.prepareStatement("DELETE FROM DeathDetails WHERE fkUserNhi = ?")) {
+                removeDeathDetails.setString(1, user.getNhi());
+                removeDeathDetails.executeUpdate();
+            }
+            return;
         }
+        sqlDeathMoment = java.sql.Timestamp.valueOf(deathMoment);
 
-
-        try (PreparedStatement createDeathDetails  = connection.prepareStatement(UPDATE_DEATH_DETAILS)) {
+        try (PreparedStatement createDeathDetails = connection.prepareStatement(UPDATE_DEATH_DETAILS)) {
             createDeathDetails.setTimestamp(1, sqlDeathMoment);
             createDeathDetails.setString(2, user.getDeathCity());
             createDeathDetails.setString(3, user.getDeathRegion());
@@ -686,8 +699,9 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
 
     /**
      * Creates a disease in the CurrentDisease table associated with the provided user nhi
-     * @param userNhi user to associate the disease with
-     * @param disease disease to insert into the database
+     *
+     * @param userNhi    user to associate the disease with
+     * @param disease    disease to insert into the database
      * @param connection an active and valid connection to the database
      * @throws SQLException if there is an error with the database
      */
@@ -704,8 +718,9 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
 
     /**
      * Creates a disease in the PastDisease table associated with the provided user nhi
-     * @param userNhi user to associate the disease with
-     * @param disease disease to insert into the database
+     *
+     * @param userNhi    user to associate the disease with
+     * @param disease    disease to insert into the database
      * @param connection an active and valid connection to the database
      * @throws SQLException if there is an error with the database
      */
@@ -721,9 +736,10 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
 
     /**
      * Deletes all entries associated with the user in a provided table. SHOULD NEVER BE EXPOSED TO USERS
-     * @param tableName table to delete from
-     * @param user user for which to delete all corresponding entries of the provided table for
-     *             e.g. providing table A and user ABC1234 will delete all the entries in table A associated with ABC1234
+     *
+     * @param tableName  table to delete from
+     * @param user       user for which to delete all corresponding entries of the provided table for
+     *                   e.g. providing table A and user ABC1234 will delete all the entries in table A associated with ABC1234
      * @param connection A non null and active connection to the database
      * @throws SQLException if there is an error with the database
      */
@@ -736,7 +752,8 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
 
     /**
      * Deletes and repopulates the medication entries for a user
-     * @param user user to repopulate the medication table for
+     *
+     * @param user       user to repopulate the medication table for
      * @param connection A non null and active connection to the database
      * @throws SQLException if there is an error with the database
      */
@@ -762,8 +779,9 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
 
     /**
      * Obtains the medication instance id of a given medication from the database. Only works if the medication already exists in the database
-     * @param userNhi the user associated with the medication searched for
-     * @param med the medication searched for that is already present in the database
+     *
+     * @param userNhi    the user associated with the medication searched for
+     * @param med        the medication searched for that is already present in the database
      * @param connection A non null and active connection to the database
      * @return the medication instance id of a medication associated with the provided user
      * @throws SQLException if there is an error with the database
@@ -782,9 +800,10 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
 
     /**
      * Creates the rows for all the medication times for an associated medication in MedicationDates
+     *
      * @param medicationInstanceId medication instance id of the medication stored in the database obtained through getMedicationInstanceId
-     * @param med medication to create times for
-     * @param connection A non null and active connection to the database
+     * @param med                  medication to create times for
+     * @param connection           A non null and active connection to the database
      * @throws SQLException if there is an error with the database
      */
     private void createMedicationTimeRows(int medicationInstanceId, Medication med, Connection connection) throws SQLException {
@@ -805,8 +824,9 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
 
     /**
      * Creates a medication entry in the database that is associated to the provided user
-     * @param userNhi the user to associate the medication with.
-     * @param med the medication to create in the database
+     *
+     * @param userNhi    the user to associate the medication with.
+     * @param med        the medication to create in the database
      * @param connection A non null and active connection to the database
      * @throws SQLException If there is an error in the database
      */
@@ -821,7 +841,8 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
 
     /**
      * Creates or updates a deathDetails entry in the deathDetails table
-     * @param user to update or create for
+     *
+     * @param user       to update or create for
      * @param connection A non null and active connection to the database
      * @throws SQLException If there is an error in the database
      */
@@ -835,7 +856,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             return;
         }
 
-        try (PreparedStatement createDeathDetails  = connection.prepareStatement(CREATE_DEATH_DETAILS)) {
+        try (PreparedStatement createDeathDetails = connection.prepareStatement(CREATE_DEATH_DETAILS)) {
 
             createDeathDetails.setString(1, user.getNhi());
             createDeathDetails.setTimestamp(2, sqlDeathMoment);

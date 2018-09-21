@@ -1,17 +1,18 @@
-package odms.commons.model;
+package odms.database;
 
-import odms.commons.database.DBHandler;
+import odms.commons.model.*;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
 import odms.commons.model._enum.Organs;
+import odms.commons.model._enum.UserType;
 import odms.commons.model.datamodel.Address;
 import odms.commons.model.datamodel.ComboBoxClinician;
 import odms.commons.model.datamodel.DeathDetails;
+import odms.test_utils.DBHandlerMocker;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import test_utils.DBHandlerMocker;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -99,7 +100,7 @@ public class DBHandlerTest {
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(11)).executeUpdate();
+        verify(mockStmt, times(18)).executeUpdate();
     }
 
     @Test
@@ -124,7 +125,7 @@ public class DBHandlerTest {
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(13)).executeUpdate();
+        verify(mockStmt, times(20)).executeUpdate();
     }
 
     @Test
@@ -137,7 +138,7 @@ public class DBHandlerTest {
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(15)).executeUpdate();
+        verify(mockStmt, times(22)).executeUpdate();
         verify(mockStmt, never()).setNull(3, Types.DATE);
         verify(mockStmt, times(2)).setInt(2, Organs.CONNECTIVE_TISSUE.getDbValue());
         verify(mockStmt, times(2)).setInt(2, Organs.CORNEA.getDbValue());
@@ -153,7 +154,7 @@ public class DBHandlerTest {
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(13)).executeUpdate();
+        verify(mockStmt, times(20)).executeUpdate();
         verify(mockResultSet, times(1)).getInt("procedureId");
         verify(mockStmt, times(2)).setString(2, procedure.getSummary());
         verify(mockStmt, times(1)).setInt(1, Organs.LUNG.getDbValue());
@@ -166,7 +167,7 @@ public class DBHandlerTest {
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(13)).executeUpdate();
+        verify(mockStmt, times(20)).executeUpdate();
         verify(mockResultSet, times(1)).getInt("medicationInstanceId");
         verify(mockStmt, times(2)).setString(2, "panadol");
         verify(mockStmt, times(1)).setNull(3, Types.TIMESTAMP);
@@ -247,8 +248,7 @@ public class DBHandlerTest {
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(11)).executeUpdate();
-
+        verify(mockStmt, times(19)).executeUpdate();
     }
 
     @Test
@@ -261,7 +261,7 @@ public class DBHandlerTest {
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(11)).executeUpdate();
+        verify(mockStmt, times(18)).executeUpdate();
     }
 
     @Test
@@ -323,6 +323,56 @@ public class DBHandlerTest {
     public void testPutPreferredBasicClinician() throws SQLException {
         dbHandler.putPreferredBasicClinician(connection, "ABC1234", "0");
         verify(mockStmt, times(1)).executeUpdate();
+    }
+
+    @Test
+    public void testGetAppointmentStatus() throws SQLException {
+        dbHandler.getAppointmentStatus(connection, 0);
+        verify(mockStmt, times(1)).executeQuery();
+    }
+
+    @Test
+    public void testCheckUserHasPendingAppointmentReturnsTrue() throws SQLException {
+        when(mockResultSet.getInt(1)).thenReturn(1);
+        boolean result = dbHandler.checkAppointmentStatusExists(connection, "ABC1234", AppointmentStatus.PENDING.getDbValue(), UserType.USER);
+        verify(mockStmt, times(1)).executeQuery();
+        Assert.assertTrue(result);
+    }
+
+    @Test
+    public void testCheckUserHasPendingAppointmentReturnsFalse() throws SQLException {
+        when(mockResultSet.getInt(1)).thenReturn(0);
+        boolean result = dbHandler.checkAppointmentStatusExists(connection, "ABC1234", AppointmentStatus.PENDING.getDbValue(), UserType.USER);
+        verify(mockStmt, times(1)).executeQuery();
+        Assert.assertFalse(result);
+    }
+
+    @Test(expected = SQLException.class)
+    public void testCheckUserHasAppointmentThrowsSQLException() throws SQLException {
+        when(mockStmt.executeQuery()).thenThrow(new SQLException());
+        dbHandler.checkAppointmentStatusExists(connection, "ABC1234", 20, UserType.USER);
+    }
+
+    @Test
+    public void testCheckClinicianHasPendingAppointmentReturnsTrue() throws SQLException {
+        when(mockResultSet.getInt(1)).thenReturn(1);
+        boolean result = dbHandler.checkAppointmentStatusExists(connection, "staff1", AppointmentStatus.PENDING.getDbValue(), UserType.CLINICIAN);
+        verify(mockStmt, times(1)).executeQuery();
+        Assert.assertTrue(result);
+    }
+
+    @Test
+    public void testCheckClinicianHasPendingAppointmentReturnsFalse() throws SQLException {
+        when(mockResultSet.getInt(1)).thenReturn(0);
+        boolean result = dbHandler.checkAppointmentStatusExists(connection, "staff1", AppointmentStatus.PENDING.getDbValue(), UserType.CLINICIAN);
+        verify(mockStmt, times(1)).executeQuery();
+        Assert.assertFalse(result);
+    }
+
+    @Test(expected = SQLException.class)
+    public void testCheckClinicianHasAppointmentThrowsSQLException() throws SQLException {
+        when(mockStmt.executeQuery()).thenThrow(new SQLException());
+        dbHandler.checkAppointmentStatusExists(connection, "ABC1234", 20, UserType.USER);
     }
 
 }
