@@ -25,6 +25,8 @@ public class CalendarWidget extends CalendarView {
         } else if (entry.getUserObject().getAppointmentCategory().equals(AppointmentCategory.OTHER)) {
             addEntryToCalendar(getOther(), entry);
             return true;
+        } else if (entry.getUserObject().getAppointmentCategory().equals(AppointmentCategory.PERSONAL)) {
+            addEntryToCalendar(getPersonalCalendar(), entry);
         }
         return false;
     }
@@ -53,6 +55,12 @@ public class CalendarWidget extends CalendarView {
 
     private Calendar getGeneralCheckUpCalendar() {
         return getCalendarSource().getCalendars().filtered(c -> c.getName().equals(AppointmentCategory.GENERAL_CHECK_UP.toString())).get(0);
+    }
+
+    private Calendar getPersonalCalendar() {
+        return getCalendarSources().filtered(cs ->
+                cs.getName().equals("Default")).get(0).getCalendars().filtered(c ->
+                c.getName().equals("Personal")).get(0);
     }
 
     private CalendarSource getCalendarSource() {

@@ -1,5 +1,7 @@
 package odms.controller.gui.panel.view;
 
+import com.calendarfx.model.Calendar;
+import com.calendarfx.model.Entry;
 import com.calendarfx.view.EntryViewBase;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -79,6 +81,8 @@ public class ClinicianAppointmentRequestViewController {
     @FXML
     private Label appointmentDetailsNhiLabel;
 
+    private CalendarWidget calendarView;
+
 
     private ObservableList<Appointment> availableAppointments = FXCollections.observableList(new ArrayList<>());
     private ClinicianAppointmentRequestLogicController logicController;
@@ -90,7 +94,10 @@ public class ClinicianAppointmentRequestViewController {
      * Initialises the panel
      */
     public void init(AppController appController, Clinician clinician) {
-        availableAppointments.addListener((ListChangeListener<? super Appointment>) observable -> populateTable());
+        availableAppointments.addListener((ListChangeListener<? super Appointment>) observable -> {
+            populateTable();
+            populateCalendar();
+        });
 
         logicController = new ClinicianAppointmentRequestLogicController(availableAppointments, appController, clinician);
         initAppointmentTable();
@@ -98,7 +105,7 @@ public class ClinicianAppointmentRequestViewController {
     }
 
     private void initCalendar() {
-        CalendarWidget calendarView = CalendarWidgetFactory.createCalendar();
+        calendarView = CalendarWidgetFactory.createCalendar();
         calendarViewPane.getChildren().add(calendarView);
         calendarView.getWeekPage().getDetailedWeekView().getWeekView().getWeekDayViews().forEach(wdc -> wdc.getChildrenUnmodifiable().forEach(node -> {
             if (node instanceof EntryViewBase) node.setOnMouseClicked(event -> {
@@ -112,6 +119,7 @@ public class ClinicianAppointmentRequestViewController {
         AnchorPane.setBottomAnchor(calendarView,0.0);
         AnchorPane.setLeftAnchor(calendarView, 0.0);
         AnchorPane.setRightAnchor(calendarView, 0.0);
+        populateCalendar();
     }
 
     /**
@@ -130,6 +138,30 @@ public class ClinicianAppointmentRequestViewController {
 
     private void populateTable() {
         clinicianAppointmentsRequestView.setItems(availableAppointments);
+    }
+
+    private void populateCalendar() {
+        if (calendarView != null) {
+            calendarView.getCalendarSources().forEach(cs -> cs.getCalendars().forEach(Calendar::clear));
+            for (Appointment appointment : availableAppointments) {
+                if (appointment.getAppointmentStatus().equals(AppointmentStatus.ACCEPTED) ||
+                        appointment.getAppointmentStatus().equals(AppointmentStatus.ACCEPTED_SEEN) ||
+                        appointment.getAppointmentStatus().equals(AppointmentStatus.PENDING) ||
+                        appointment.getAppointmentStatus().equals(AppointmentStatus.UPDATED)) {
+
+                    Entry<Appointment> entry = new Entry<>();
+                    if (appointment.getRequestingUserId() == null) {
+                        entry.setTitle(appointment.getTitle());
+                    } else {
+                        entry.setTitle(appointment.getRequestingUserId());
+                    }
+                    entry.setUserObject(appointment);
+                    entry.setInterval(appointment.getRequestedDate(), appointment.getRequestedDate().plusHours(1));
+                    calendarView.addEntry(entry);
+                }
+            }
+
+        }
     }
 
     /**

@@ -12,6 +12,7 @@ import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
+import odms.controller.gui.popup.utils.AlertWindowFactory;
 
 import java.time.*;
 import java.time.temporal.ChronoUnit;
@@ -107,7 +108,7 @@ public class CalendarWidgetFactory {
             entry.titleProperty().addListener(((observable, oldValue, newValue) -> entry.getUserObject().setRequestingUserId(newValue)));
             entry.startTimeProperty().addListener(((observable, oldValue, newValue) -> entry.getUserObject().setRequestedDate(LocalDateTime.of(entry.getStartDate(), entry.getStartTime()))));
             entry.startDateProperty().addListener((observable, oldValue, newValue) -> entry.getUserObject().setRequestedDate(LocalDateTime.of(entry.getStartDate(), entry.getStartTime())));
-            entry.setUserObject(new Appointment(entry.getTitle(), "0", AppointmentCategory.OTHER, entry.getStartAsLocalDateTime(), "", AppointmentStatus.ACCEPTED_SEEN));
+            entry.setUserObject(new Appointment(entry.getTitle(), AppController.getInstance().getUsername(), AppointmentCategory.PERSONAL, entry.getStartAsLocalDateTime(), "", AppointmentStatus.ACCEPTED_SEEN));
             Interval interval = new Interval(time.toLocalDateTime(), time.toLocalDateTime().plusHours(1));
             entry.setInterval(interval);
 
@@ -121,23 +122,24 @@ public class CalendarWidgetFactory {
         personal.addEventHandler(evt -> {
             if (evt.isEntryAdded()) {
                 AppController.getInstance().getAppointmentsBridge().postAppointment((Appointment) evt.getEntry().getUserObject());
-            }
-            if (evt.isEntryRemoved()) {
-
-            }
-
-            calendarView.getCalendarSources().forEach(cs -> cs.getCalendars().forEach(c -> {
-                Entry<Appointment> entry = (Entry<Appointment>) evt.getEntry();
-                for (List<Entry<?>> list : c.findEntries(entry.getStartDate(), entry.getEndDate(), entry.getZoneId()).values()) {
-                    list.remove(entry);
-                    for (Entry<?> e : list) {
-                        if (entry.intersects(e)) {
-                            entry.changeStartTime(((Appointment) evt.getOldUserObject()).getRequestedDate().toLocalTime(), true);
+            } else if (evt.isEntryRemoved()) {
+                AppController.getInstance().getAppointmentsBridge().deleteAppointment((Appointment) evt.getEntry().getUserObject());
+            } else {
+                calendarView.getCalendarSources().forEach(cs -> cs.getCalendars().forEach(c -> {
+                    Entry<Appointment> entry = (Entry<Appointment>) evt.getEntry();
+                    if (entry != null) {
+                        for (List<Entry<?>> list : c.findEntries(entry.getStartDate(), entry.getEndDate(), entry.getZoneId()).values()) {
+                            list.remove(entry);
+                            for (Entry<?> e : list) {
+                                if (entry.intersects(e) && !e.equals(entry)) {
+                                    entry.setInterval(evt.getOldInterval());
+                                    AlertWindowFactory.generateInfoWindow("You cannot move this there because it collides with another existing entry");
+                                }
+                            }
                         }
                     }
-                }
-            }));
-
+                }));
+            }
         });
 
         calendarView.setVirtualGrid(new VirtualGrid("hour-grid", "h-grid", ChronoUnit.HOURS, 1));
