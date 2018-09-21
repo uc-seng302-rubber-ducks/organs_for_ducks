@@ -64,7 +64,6 @@ public class UserController extends BaseController {
 
     }
 
-
     @RequestMapping(method = RequestMethod.POST, value = "/users")
     public ResponseEntity postUser(@RequestBody User newUser) {
         try (Connection connection = driver.getConnection()) {
@@ -107,7 +106,6 @@ public class UserController extends BaseController {
             throw new ServerDBException(ex);
         }
     }
-
 
     @RequestMapping(method = RequestMethod.PUT, value = "/users/{nhi}")
     public ResponseEntity putUser(@PathVariable("nhi") String nhi, @RequestBody User user) {
@@ -167,5 +165,4 @@ public class UserController extends BaseController {
         }
         return new ResponseEntity(HttpStatus.OK);
     }
-
 }
