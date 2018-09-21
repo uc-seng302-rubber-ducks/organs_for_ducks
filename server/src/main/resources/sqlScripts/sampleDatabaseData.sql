@@ -151,3 +151,8 @@ INSERT INTO AppointmentCategory(categoryId, category) VALUES
 INSERT INTO AppointmentDetails(apptId, fkUserNhi, fkStaffId, fkCategoryId, requestedTime, fkStatusId, description) VALUES
   (1, 'DEF2314', '23', 4, '2018-01-10 16:15:01', 3, 'need stress relief due to SENG302'),
   (2, 'DEF2314', '23', 2, '2018-01-11 16:15:01', 2, 'periodic check up');
+
+INSERT INTO BloodTestDetails (bloodTestId, fkUserNhi, redBloodCellCount, whiteBloodCellCount, haemoglobinLevel, platelets,
+                              glucoseLevels, meanCellVolume, haematocrit, meanCellHaematocrit, testDate) VALUES
+  (1, "ABC1234", 0.0054, 8.5, 120.5, 300.5, 4.8, 80.5, 0.35, 25.5, '2015-09-01'),
+  (2, "DEF2314", 0.0063, 7.7, 127.6, 354.4, 5.3, 78.5, 0.35, 25.5, '2017-01-09');

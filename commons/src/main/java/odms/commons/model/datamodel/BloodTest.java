@@ -48,6 +48,14 @@ public class BloodTest {
         this.highValues = new ArrayList<>();
     }
 
+    public int getBloodTestId() {
+        return bloodTestId;
+    }
+
+    public void setBloodTestId(int bloodTestId) {
+        this.bloodTestId = bloodTestId;
+    }
+
     public LocalDate getTestDate() {
         return testDate;
     }
@@ -118,14 +126,6 @@ public class BloodTest {
 
     public void setMeanCellHaematocrit(double meanCellHaematocrit) {
         this.meanCellHaematocrit = meanCellHaematocrit;
-    }
-
-    public int getBloodTestId() {
-        return bloodTestId;
-    }
-
-    public void setBloodTestId(int bloodTestId) {
-        this.bloodTestId = bloodTestId;
     }
 
     public List<Double> getLowValues() {

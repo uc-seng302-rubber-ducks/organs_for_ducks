@@ -127,6 +127,7 @@ public class DBHandler {
     private static final String INSERT_ELSE_UPDATE_PREFERRED_CLINICIAN = "INSERT INTO PreferredClinician (fkUserNhi, fkStaffId) " +
             "VALUES (?, ?) ON DUPLICATE KEY UPDATE fkUserNhi=?, fkStaffId=?";
 
+
     private AbstractUpdateStrategy updateStrategy;
     private AbstractFetchAppointmentStrategy fetchAppointmentStrategy;
 
@@ -1558,6 +1559,15 @@ public class DBHandler {
             statement.setString(4, staffId);
             statement.executeUpdate();
         }
+    }
+
+    /**
+     * Gets and returns the blood test handler to the blood test controller
+     *
+     * @return A BloodTestHandler
+     */
+    public BloodTestHandler getBloodTestHandler() {
+        return new BloodTestHandler();
     }
 
 }
