@@ -21,6 +21,7 @@ public class BloodTestHandler {
     private static final String SELECT_ONE_BLOOD_TEST = "SELECT * FROM BloodTests WHERE bloodTestId = ?";
     private static final String SELECT_ALL_BLOOD_TESTS_FOR_USER = "SELECT * FROM BloodTests WHERE fkUserNhi = ? LIMIT ? OFFSET ?";
     private static final String SELECT_ALL_BLOOD_TESTS_FOR_USER_GRAPH = "SELECT * FROM BloodTests WHERE fkUserNhi = ? AND (resultsReceived BETWEEN ? AND ?)";
+    private static final String DELETE_ONE_BLOOD_TEST = "DELETE FROM BloodTestDetails WHERE bloodTestId = ?";
 
     /**
      * Saves and stores the given blood test within the database
@@ -78,8 +79,19 @@ public class BloodTestHandler {
 
     }
 
-    public void deleteBloodTest(Connection connection, String nhi, String id) {
-        //TODO implement me :)
+    /**
+     * Deletes a given bloodtest
+     *
+     * @param connection connection to the database
+     * @param nhi nhi of the user
+     * @param id blood tests id
+     * @throws SQLException thrown on DB error
+     */
+    public void deleteBloodTest(Connection connection, String nhi, String id) throws SQLException {
+        try(PreparedStatement preparedStatement = connection.prepareStatement(DELETE_ONE_BLOOD_TEST)){
+            preparedStatement.setString(1,id);
+            preparedStatement.execute();
+        }
 
     }
 
