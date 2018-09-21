@@ -1,4 +1,4 @@
-package odms.commons.database.db_strategies;
+package odms.database.db_strategies;
 
 import odms.commons.model.Appointment;
 import odms.commons.model._enum.db.appointment.statements.AppointmentStatement;

@@ -15,6 +15,7 @@ import odms.commons.exception.ApiException;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
+import odms.commons.model._enum.UserType;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
@@ -115,6 +116,8 @@ public class LoginController {
             return;
         }
 
+        appController.getAppointmentsBridge().deleteCancelledAppointments(user.getNhi(), UserType.USER);
+
         FXMLLoader userLoader = new FXMLLoader(getClass().getResource(USER_VIEW_URL));
         Parent root;
         try {
@@ -166,6 +169,8 @@ public class LoginController {
         if (clinician == null || clinician.isDeleted()) {
             clinicianWarningLabel.setText("The Clinician does not exist");
         } else {
+            appController.getAppointmentsBridge().deleteCancelledAppointments(clinician.getStaffId(), UserType.CLINICIAN);
+
             FXMLLoader clinicianLoader = new FXMLLoader(
                     getClass().getResource(CLINICIAN_VIEW_URL));
             Parent root;

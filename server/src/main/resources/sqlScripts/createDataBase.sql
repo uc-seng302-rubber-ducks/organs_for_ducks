@@ -32,7 +32,8 @@ DROP TABLE IF EXISTS User;
 SET GLOBAL event_scheduler = TRUE ;
 
 CREATE TABLE User(
-  nhi            varchar(7) PRIMARY KEY ,
+  uniqueId       INT AUTO_INCREMENT PRIMARY KEY,
+  nhi            varchar(7) UNIQUE NOT NULL,
   firstName      VARCHAR(255),
   middleName     VARCHAR(255),
   lastName       VARCHAR(255),
@@ -80,7 +81,7 @@ CREATE TABLE  PreviousDisease(
 
 CREATE TABLE  CurrentDisease(
   diseaseName   VARCHAR(255) NOT NULL,
-  diagnosisDate DATETIME     not NULL,
+  diagnosisDate DATETIME     NOT NULL,
   fkUserNhi     VARCHAR(7)   NOT NULL,
   isChronic     BOOLEAN,
   PRIMARY KEY (diseaseName, diagnosisDate, fkUserNhi),
@@ -305,12 +306,6 @@ CREATE TABLE PreferredClinician (
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
-
-CREATE TRIGGER removeZombies AFTER UPDATE ON DeathDetails
-  FOR EACH ROW
-  BEGIN
-    DELETE FROM DeathDetails WHERE DeathDetails.momentOfDeath IS NULL;
-  END;
 
 CREATE EVENT qualifyOrgans
   ON SCHEDULE AT Current_timestamp + Interval 1 DAY

@@ -19,6 +19,7 @@ import org.joda.time.format.ISODateTimeFormat;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -398,6 +399,28 @@ public class JsonHandler extends DataHandler {
      */
     public Collection<Appointment> decodeAppointments(String bodyString) {
         return new Gson().fromJson(bodyString, new TypeToken<Collection<Appointment>>() {
+        }.getType());
+    }
+
+    /**
+     * Decodes raw json string into an appointment object
+     * @param bodyString raw json string
+     * @return an appointment object
+     */
+    public Appointment decodeOneAppointment(String bodyString) {
+        return new Gson().fromJson(bodyString, new TypeToken<Appointment>() {
+        }.getType());
+    }
+
+    /**
+     * Decodes raw json string into a collection of localDateTime objects
+     *
+     * @param bodyString raw json string
+     * @return a collection of LocalDateTimes
+     */
+    public Collection<LocalDateTime> decodeDateTimes(String bodyString) {
+        return new Gson().fromJson(bodyString, new TypeToken<Collection<LocalDateTime>>(){
+
         }.getType());
     }
 

@@ -1,13 +1,13 @@
 package odms.controller;
 
 
-import odms.commons.database.DBHandler;
-import odms.commons.database.JDBCDriver;
-import odms.commons.database.db_strategies.AppointmentUpdateStrategy;
 import odms.commons.model.Appointment;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
 import odms.commons.model._enum.UserType;
+import odms.database.DBHandler;
+import odms.database.JDBCDriver;
+import odms.database.db_strategies.AppointmentUpdateStrategy;
 import odms.exception.ServerDBException;
 import odms.socket.SocketHandler;
 import odms.utils.DBManager;
@@ -60,6 +60,46 @@ public class AppointmentControllerTests {
     }
 
     @Test
+    public void testCheckUserAppointmentStatusExistsReturnsTrue() throws SQLException {
+        when(handler.checkAppointmentStatusExists(connection, "ABC1234", 0, UserType.USER)).thenReturn(true);
+        boolean result = controller.userAppointmentStatusExists("ABC1234", 0);
+        Assert.assertTrue(result);
+    }
+
+    @Test
+    public void testCheckUserAppointmentStatusExistsReturnsFalse() throws SQLException {
+        when(handler.checkAppointmentStatusExists(connection, "ABC1234", 0, UserType.USER)).thenReturn(false);
+        boolean result = controller.clinicianAppointmentStatusExists("ABC1234", 0);
+        Assert.assertFalse(result);
+    }
+
+    @Test(expected = ServerDBException.class)
+    public void testCheckUserAppointmentStatusExistsThrowsException() throws SQLException {
+        when(driver.getConnection()).thenThrow(new SQLException());
+        controller.userAppointmentStatusExists("ABC1234", 0);
+    }
+
+    @Test
+    public void testCheckClinicianAppointmentStatusExistsReturnsTrue() throws SQLException {
+        when(handler.checkAppointmentStatusExists(connection, "staff1", 0, UserType.CLINICIAN)).thenReturn(true);
+        boolean result = controller.clinicianAppointmentStatusExists("staff1", 0);
+        Assert.assertTrue(result);
+    }
+
+    @Test
+    public void testCheckClinicianAppointmentStatusExistsReturnsFalse() throws SQLException {
+        when(handler.checkAppointmentStatusExists(connection, "staff1", 0, UserType.CLINICIAN)).thenReturn(false);
+        boolean result = controller.clinicianAppointmentStatusExists("staff1", 0);
+        Assert.assertFalse(result);
+    }
+
+    @Test(expected = ServerDBException.class)
+    public void testCheckClinicianAppointmentStatusExistsThrowsException() throws SQLException {
+        when(driver.getConnection()).thenThrow(new SQLException());
+        controller.clinicianAppointmentStatusExists("staff1", 0);
+    }
+
+    @Test
     public void postAppointmentShouldReturnAcceptedIfConnectionValid() {
         ResponseEntity res = controller.postAppointment(testAppointment);
         Assert.assertEquals(HttpStatus.ACCEPTED, res.getStatusCode());
@@ -69,6 +109,19 @@ public class AppointmentControllerTests {
     public void postAppointmentShouldThrowExceptionWhenNoConnection() throws SQLException {
         when(driver.getConnection()).thenThrow(new SQLException());
         controller.postAppointment(testAppointment);
+    }
+
+    @Test
+    public void patchAppointmentStatusShouldReturnAcceptedIfConnectionValid() throws SQLException {
+        when(handler.getAppointmentStatus(connection, 0)).thenReturn(2);
+        ResponseEntity res = controller.patchAppointmentStatus(7, 0);
+        Assert.assertEquals(HttpStatus.ACCEPTED, res.getStatusCode());
+    }
+
+    @Test(expected = ServerDBException.class)
+    public void patchAppointmentStatusShouldThrowExceptionWhenNoConnection() throws SQLException {
+        when(driver.getConnection()).thenThrow(new SQLException());
+        controller.patchAppointmentStatus(8, 0);
     }
 
     @Test
@@ -118,7 +171,44 @@ public class AppointmentControllerTests {
     }
 
     @Test
-    public void deleteAppointmentShouldReturnOKIfConnectionValid() throws SQLException {
+    public void getUnseenUserAppointmentShouldReturnAppointmentIfConnectionValid() throws SQLException {
+        when(handler.getUnseenAppointment(any(Connection.class), eq("ABC1234"))).thenReturn(testAppointment);
+        Appointment actual = controller.getUnseenUserAppointments( "ABC1234");
+        Assert.assertEquals(testAppointment, actual);
+    }
+
+    @Test(expected = ServerDBException.class)
+    public void getUnseenUserAppointmentShouldThrowExceptionWhenNoConnection() throws SQLException {
+        when(driver.getConnection()).thenThrow(new SQLException());
+        controller.getUnseenUserAppointments("ABC1234");
+    }
+
+    @Test
+    public void deleteUsersCancelledAppointmentsShouldReturnOKIfConnectionValid() throws SQLException {
+        ResponseEntity res = controller.deleteUsersCancelledAppointments("ABC1234");
+        Assert.assertEquals(HttpStatus.OK, res.getStatusCode());
+    }
+
+    @Test(expected = ServerDBException.class)
+    public void deleteUsersCancelledAppointmentShouldThrowExceptionWhenNoConnection() throws SQLException {
+        when(driver.getConnection()).thenThrow(new SQLException());
+        controller.deleteUsersCancelledAppointments("ABC1234");
+    }
+
+    @Test(expected = ServerDBException.class)
+    public void deleteCliniciansCancelledAppointmentShouldThrowExceptionWhenNoConnection() throws SQLException {
+        when(driver.getConnection()).thenThrow(new SQLException());
+        controller.deleteCliniciansCancelledAppointments("staff1");
+    }
+
+    @Test
+    public void deleteCliniciansCancelledAppointmentsShouldReturnOKIfConnectionValid() throws SQLException {
+        ResponseEntity res = controller.deleteCliniciansCancelledAppointments("staff1");
+        Assert.assertEquals(HttpStatus.OK, res.getStatusCode());
+    }
+
+    @Test
+    public void deleteAppointmentShouldReturnOKIfConnectionValid() {
         testAppointment.setAppointmentId(1);
         ResponseEntity res = controller.deleteAppointment(testAppointment);
         Assert.assertEquals(HttpStatus.OK, res.getStatusCode());
@@ -129,7 +219,6 @@ public class AppointmentControllerTests {
         when(driver.getConnection()).thenThrow(new SQLException());
         controller.deleteAppointment(testAppointment);
     }
-
 
     @Test
     public void validateRequestedAppointmentTimeShouldReturnFalseWhenDateTimeIsInPast() throws SQLException {
@@ -187,5 +276,100 @@ public class AppointmentControllerTests {
 
         boolean result = controller.validateRequestedAppointmentTime("",testDateTime2);
         Assert.assertEquals(true, result);
+    }
+
+    @Test
+    public void testCheckStatusUpdateAllowedReturnsTrueOnAcceptedSeen() throws SQLException {
+        int currentStatus = 2;
+        int newStatus = 7;
+        when(driver.getConnection()).thenReturn(connection);
+        when(handler.getAppointmentStatus(connection, 0)).thenReturn(currentStatus);
+
+        Assert.assertTrue(controller.checkStatusUpdateAllowed(0, newStatus));
+    }
+
+    @Test
+    public void testCheckStatusUpdateAllowedReturnsTrueOnRejectedSeen() throws SQLException {
+        int currentStatus = 3;
+        int newStatus = 8;
+        when(driver.getConnection()).thenReturn(connection);
+        when(handler.getAppointmentStatus(connection, 0)).thenReturn(currentStatus);
+
+        Assert.assertTrue(controller.checkStatusUpdateAllowed(0, newStatus));
+    }
+
+    @Test
+    public void testCheckStatusUpdateAllowedReturnsFalseWhenCurrentNotMatchNew1() throws SQLException {
+        int currentStatus = 2;
+        int newStatus = 8;
+        when(driver.getConnection()).thenReturn(connection);
+        when(handler.getAppointmentStatus(connection, 0)).thenReturn(currentStatus);
+
+        Assert.assertFalse(controller.checkStatusUpdateAllowed(0, newStatus));
+    }
+
+    @Test
+    public void testCheckStatusUpdateAllowedReturnsFalseWhenCurrentNotMatchNew2() throws SQLException {
+        int currentStatus = 3;
+        int newStatus = 7;
+        when(driver.getConnection()).thenReturn(connection);
+        when(handler.getAppointmentStatus(connection, 0)).thenReturn(currentStatus);
+
+        Assert.assertFalse(controller.checkStatusUpdateAllowed(0, newStatus));
+    }
+
+    @Test
+    public void testCheckStatusUpdateAllowedReturnsTrueOnCancelledByUser() {
+        int newStatus = AppointmentStatus.CANCELLED_BY_USER.getDbValue();
+        Assert.assertTrue(controller.checkStatusUpdateAllowed(0, newStatus));
+    }
+
+    @Test
+    public void testCheckStatusUpdateAllowedReturnsTrueOnCancelledByClinician() {
+        int newStatus = AppointmentStatus.CANCELLED_BY_CLINICIAN.getDbValue();
+        Assert.assertTrue(controller.checkStatusUpdateAllowed(0, newStatus));
+    }
+
+    @Test
+    public void testCheckStatusUpdateAllowedReturnsTrueOnCancelledByUserSeen() throws SQLException {
+        int currentStatus = AppointmentStatus.CANCELLED_BY_USER.getDbValue();
+        int newStatus = AppointmentStatus.CANCELLED_BY_USER_SEEN.getDbValue();
+
+        when(handler.getAppointmentStatus(connection, 0)).thenReturn(currentStatus);
+        Assert.assertTrue(controller.checkStatusUpdateAllowed(0, newStatus));
+    }
+
+    @Test
+    public void testCheckStatusUpdateAllowedReturnsFalseOnCancelledByUserSeen() throws SQLException {
+        int currentStatus = AppointmentStatus.PENDING.getDbValue();
+        int newStatus = AppointmentStatus.CANCELLED_BY_USER_SEEN.getDbValue();
+
+        when(handler.getAppointmentStatus(connection, 0)).thenReturn(currentStatus);
+        Assert.assertFalse(controller.checkStatusUpdateAllowed(0, newStatus));
+    }
+
+    @Test
+    public void testCheckStatusUpdateAllowedReturnsTrueOnCancelledByClinicianSeen() throws SQLException {
+        int currentStatus = AppointmentStatus.CANCELLED_BY_CLINICIAN.getDbValue();
+        int newStatus = AppointmentStatus.CANCELLED_BY_CLINICIAN_SEEN.getDbValue();
+
+        when(handler.getAppointmentStatus(connection, 0)).thenReturn(currentStatus);
+        Assert.assertTrue(controller.checkStatusUpdateAllowed(0, newStatus));
+    }
+
+    @Test
+    public void testCheckStatusUpdateAllowedReturnsFalseOnCancelledByClinicianSeen() throws SQLException {
+        int currentStatus = AppointmentStatus.PENDING.getDbValue();
+        int newStatus = AppointmentStatus.CANCELLED_BY_CLINICIAN_SEEN.getDbValue();
+
+        when(handler.getAppointmentStatus(connection, 0)).thenReturn(currentStatus);
+        Assert.assertFalse(controller.checkStatusUpdateAllowed(0, newStatus));
+    }
+
+    @Test(expected = ServerDBException.class)
+    public void testCheckStatusUpdateAllowedShouldThrowExceptionWhenNoConnection() throws SQLException {
+        int newStatus = AppointmentStatus.CANCELLED_BY_CLINICIAN_SEEN.getDbValue();
+        when(driver.getConnection()).thenThrow(new SQLException());
+        controller.checkStatusUpdateAllowed(0, newStatus);
     }
 }
