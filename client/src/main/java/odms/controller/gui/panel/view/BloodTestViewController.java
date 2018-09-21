@@ -2,10 +2,12 @@ package odms.controller.gui.panel.view;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import odms.commons.model._abstract.UserLauncher;
 import odms.commons.model.datamodel.BloodTest;
 import odms.controller.gui.panel.logic.BloodTestsLogicController;
@@ -42,6 +44,30 @@ public class BloodTestViewController {
     private ObservableList<BloodTest> bloodTests = FXCollections.observableList(new ArrayList<>());
     private BloodTestsLogicController logicController = new BloodTestsLogicController(bloodTests);
     private UserLauncher parent;
+
+    @FXML
+    public void init(UserLauncher parent) {
+        this.parent = parent;
+        initBloodTestTableView();
+    }
+
+    private void populateTables(){
+        SortedList<BloodTest> bloodTestSortedList = new SortedList<>(bloodTests);
+
+
+
+
+    }
+
+    private void initBloodTestTableView(){
+        dateReceivedColumn.setCellValueFactory((new PropertyValueFactory<>("")));
+        dateRequestedColumn.setCellValueFactory((new PropertyValueFactory<>("")));
+        requestedByColumn.setCellValueFactory(((new PropertyValueFactory<>(""))));
+        bloodTestView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        populateTables();
+
+
+    }
 
 
 
