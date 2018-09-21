@@ -659,7 +659,7 @@ public class UpdateUserController {
             invalidFirstName.setVisible(true);
         }
 
-        valid &= AttributeValidation.validateDateOfBirth(dob);
+        valid &= AttributeValidation.validateDateBeforeTomorrow(dob);
         if (!valid) {
             invalidDOB.setVisible(true);
         }

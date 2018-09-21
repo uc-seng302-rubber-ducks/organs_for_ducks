@@ -110,12 +110,12 @@ public class AttributeValidation {
      * checks that date of birth is before tomorrow's date if the
      * date of birth is not null.
      *
-     * @param birth date
+     * @param date date
      * @return true if date of death is
      * before the current date, false otherwise.
      */
-    public static boolean validateDateOfBirth(LocalDate birth) {
-        return birth != null && birth.isBefore(LocalDate.now().plusDays(1));
+    public static boolean validateDateBeforeTomorrow(LocalDate date) {
+        return date != null && date.isBefore(LocalDate.now().plusDays(1));
     }
 
     /**
