@@ -1,13 +1,13 @@
 package odms.controller;
 
-import odms.commons.database.DBHandler;
-import odms.commons.database.JDBCDriver;
-import odms.commons.database.db_strategies.AppointmentUpdateStrategy;
 import odms.commons.model.Appointment;
 import odms.commons.model._enum.AppointmentStatus;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.UserType;
 import odms.commons.utils.Log;
+import odms.database.DBHandler;
+import odms.database.JDBCDriver;
+import odms.database.db_strategies.AppointmentUpdateStrategy;
 import odms.exception.ServerDBException;
 import odms.security.IsClinician;
 import odms.socket.SocketHandler;
@@ -171,7 +171,7 @@ public class AppointmentController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/users/{nhi}/appointments/cancelled")
-    public ResponseEntity deleteUsersCancelledAppointments(@PathVariable(name = "nhi") String nhi) throws SQLException {
+    public ResponseEntity deleteUsersCancelledAppointments(@PathVariable(name = "nhi") String nhi) {
         try (Connection connection = driver.getConnection()) {
             AppointmentUpdateStrategy updateStrategy = handler.getAppointmentStrategy();
             updateStrategy.deleteCancelledAppointments(connection, nhi, UserType.USER);
@@ -188,7 +188,7 @@ public class AppointmentController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/clinicians/{staffId}/appointments/cancelled")
-    public ResponseEntity deleteCliniciansCancelledAppointments(@PathVariable(name = "staffId") String staffId) throws SQLException {
+    public ResponseEntity deleteCliniciansCancelledAppointments(@PathVariable(name = "staffId") String staffId) {
         try (Connection connection = driver.getConnection()) {
             AppointmentUpdateStrategy updateStrategy = handler.getAppointmentStrategy();
             updateStrategy.deleteCancelledAppointments(connection, staffId, UserType.CLINICIAN);

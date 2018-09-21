@@ -1,12 +1,12 @@
-package odms.commons.database;
+package odms.database;
 
-import odms.commons.database.db_strategies.*;
 import odms.commons.model.*;
 import odms.commons.model._enum.Organs;
 import odms.commons.model._enum.UserType;
 import odms.commons.model.datamodel.*;
 import odms.commons.utils.Log;
 import odms.commons.utils.PasswordManager;
+import odms.database.db_strategies.*;
 
 import java.io.InputStream;
 import java.lang.reflect.Type;
@@ -35,7 +35,7 @@ public class DBHandler {
             "AND (hd.gender LIKE ? OR hd.gender IS NULL) " +
             "AND (a.fkContactId != (SELECT contactId FROM ContactDetails cd JOIN EmergencyContactDetails ecd ON cd.contactId = ecd.fkContactId WHERE ecd.fkUserNhi = nhi) OR a.fkContactId IS NULL) " +
             "LIMIT ? OFFSET ?";
-    private static final String SELECT_ONE_USER_INFO_STMT_FILTERED = "SELECT nhi, firstName, middleName, LastName, preferedName, timeCreated, lastModified, profilePicture, gender, birthGender, smoker, " +
+    private static final String SELECT_ONE_USER_INFO_STMT_FILTERED = "SELECT uniqueId, nhi, firstName, middleName, LastName, preferedName, timeCreated, lastModified, profilePicture, gender, birthGender, smoker, " +
             "alcoholConsumption, height, weight, dob, dod, bloodType " +
             "FROM `User` u " +
             "LEFT JOIN HealthDetails hd ON u.nhi = hd.fkUserNhi " +
@@ -95,9 +95,6 @@ public class DBHandler {
     private static final String UPDATE_USER_PROFILE_PHOTO_STMT = "UPDATE User SET profilePicture = ?, pictureFormat = ? WHERE nhi = ?";
     private static final String UPDATE_CLINICIAN_PROFILE_PHOTO_STMT = "UPDATE Clinician SET profilePicture = ?, pictureFormat = ? WHERE staffId = ?";
     private static final String SELECT_ONE_CLINICIAN = "SELECT * FROM Clinician LEFT JOIN Address ON staffId = fkStaffId WHERE staffId = ?";
-    private static final String SELECT_IF_USER_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM User WHERE nhi = ?)";
-    private static final String SELECT_IF_CLINICIAN_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM Clinician WHERE staffId = ?)";
-    private static final String SELECT_IF_ADMIN_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM Administrator WHERE userName = ?)";
     private static final String SELECT_AVAILABLE_ORGANS = "SELECT * FROM OrganDonating " +
             "JOIN DeathDetails ON OrganDonating.fkUserNhi = DeathDetails.fkUserNhi " +
             "JOIN Organ ON OrganDonating.fkOrgansId = organId " +
@@ -117,7 +114,7 @@ public class DBHandler {
             "WHERE (nhi = ?) " +
             "AND organName = ?";
     private static final String SELECT_DEATH_DETAILS_STMT = "SELECT * FROM DeathDetails WHERE fkUserNhi = ?";
-    private static final String SELECT_BOOKED_APPOINTMENTS_DATETIME_STMT =  "SELECT requestedTime FROM AppointmentDetails WHERE fkStaffId = ? AND fkStatusId = 2";
+    private static final String SELECT_BOOKED_APPOINTMENTS_DATETIME_STMT = "SELECT requestedTime FROM AppointmentDetails WHERE fkStaffId = ? AND fkStatusId = 2";
     private static final String CREATE_APPOINTMENT_STMT = "INSERT INTO AppointmentDetails (fkUserNhi, fkStaffId, fkCategoryId, requestedTime, fkStatusId, description) VALUES (?,?,?,?,?,?)";
     private static final String SELECT_APPTMT_ID = "SELECT apptId FROM AppointmentDetails WHERE requestedTime = ? AND fkStatusId = ?";
     private static final String DELETE_APPOINTMENT_STMT = "DELETE FROM AppointmentDetails WHERE apptId = ?";
@@ -350,6 +347,7 @@ public class DBHandler {
         user.setMiddleName(resultSet.getString("middleName"));
         user.setLastName(resultSet.getString("lastName"));
         user.setPreferredFirstName(resultSet.getString("preferedName"));
+        user.setUniqueId(resultSet.getInt("uniqueId"));
         return user;
     }
 
@@ -606,7 +604,7 @@ public class DBHandler {
                         medicalProcedure = new MedicalProcedure(resultSet.getDate(2).toLocalDate(), resultSet.getString(1), resultSet.getString(3), null);
                         try {
                             medicalProcedure.addOrgan(Organs.valueOf(resultSet.getString(4)));
-                        } catch (NullPointerException e){
+                        } catch (NullPointerException e) {
                             // just needs to catch can move on as normal if this occurs
                         }
                         user.getMedicalProcedures().add(medicalProcedure);
@@ -683,8 +681,8 @@ public class DBHandler {
     /**
      * Gets a list of clinicians with only their id and names, from a specific region
      *
-     * @param connection  Connection to the target database
-     * @param region region the clinician resides in
+     * @param connection Connection to the target database
+     * @param region     region the clinician resides in
      * @return the Collection of clinicians
      * @throws SQLException if there are errors with the SQL statements
      */
@@ -939,13 +937,8 @@ public class DBHandler {
      * @throws SQLException exception thrown during the transaction
      */
     public void updateUser(Connection conn, String nhi, User user) throws SQLException {
-        User toReplace = getOneUser(conn, nhi);
-        if (toReplace != null) {
-            toReplace.setDeleted(true);
-        }
-        user.addChange(new Change("Saved"));
-        Collection<User> users = new ArrayList<>(Arrays.asList(toReplace, user));
-        saveUsers(users, conn);
+        //method signature remains the same for consistency with older code
+        saveUsers(Collections.singleton(user), conn);
     }
 
     /**
@@ -1084,9 +1077,9 @@ public class DBHandler {
     /**
      * Gets the user's profile photo on the database based on user's ID.
      *
-     * @param <T> generic for type of the user
-     * @param role user's role. e.g. Clinician.class
-     * @param roleId id of user
+     * @param <T>        generic for type of the user
+     * @param role       user's role. e.g. Clinician.class
+     * @param roleId     id of user
      * @param connection connection to the target database
      * @return Profile Picture of type ImageStream if such user exists or has a profile picture, null otherwise.
      * @throws SQLException exception thrown during the transaction
@@ -1150,6 +1143,8 @@ public class DBHandler {
     /**
      * queries the database as to whether an end-user* exists or not
      * * end-user meaning Admin, Clinician, or User
+     * functionality has been moved.
+     * @see DBUtils
      *
      * @param conn       connection to the target database
      * @param type       type of the end-user as defined above
@@ -1159,23 +1154,7 @@ public class DBHandler {
      * @throws SQLException exception thrown during the transaction
      */
     public boolean getExists(Connection conn, Type type, String identifier) throws SQLException {
-        String query = null;
-        if (type.equals(Administrator.class)) {
-            query = SELECT_IF_ADMIN_EXISTS_BOOL;
-        } else if (type.equals(Clinician.class)) {
-            query = SELECT_IF_CLINICIAN_EXISTS_BOOL;
-        } else if (type.equals(User.class)) {
-            query = SELECT_IF_USER_EXISTS_BOOL;
-        }
-
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, identifier);
-
-            try (ResultSet result = stmt.executeQuery()) {
-                result.next();
-                return result.getInt(1) == 1;
-            }
-        }
+        return DBUtils.getExists(conn, type, identifier);
     }
 
 
@@ -1392,15 +1371,16 @@ public class DBHandler {
 
     /**
      * Gets the number of appointments pending for a clinician
+     *
      * @param connection connection to the database
-     * @param staffId clinicians staff id
+     * @param staffId    clinicians staff id
      * @return number of pending appointments
      * @throws SQLException thrown on invalid SQL results
      */
     public int getPendingAppointmentsCount(Connection connection, String staffId) throws SQLException {
-        try(PreparedStatement preparedStatement = connection.prepareStatement("SELECT count(*) FROM AppointmentDetails JOIN AppointmentCategory ON fkCategoryId = categoryId WHERE fkStaffId = ? AND fkStatusId = 1")){
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT count(*) FROM AppointmentDetails JOIN AppointmentCategory ON fkCategoryId = categoryId WHERE fkStaffId = ? AND fkStatusId = 1")) {
             preparedStatement.setString(1, staffId);
-            try(ResultSet resultSet = preparedStatement.executeQuery()){
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 resultSet.next();
                 return resultSet.getInt(1);
             }
@@ -1412,7 +1392,7 @@ public class DBHandler {
      * gets all date and time of booked appointments of a clinician.
      *
      * @param connection Connection to the target database
-     * @param staffId of a clinician
+     * @param staffId    of a clinician
      * @return List of date and time of booked appointments.
      * @throws SQLException If the entry does not exist or the connection is invalid
      */
@@ -1463,7 +1443,7 @@ public class DBHandler {
      *
      * @param connection Connection to the target database
      * @param nhi        Nhi of the user to check appointments for
-     * @return           Appointment that the user has not seen but has been updated
+     * @return Appointment that the user has not seen but has been updated
      * @throws SQLException If the entry does not exist or the connection is invalid
      */
     public Appointment getUnseenAppointment(Connection connection, String nhi) throws SQLException {
@@ -1475,28 +1455,30 @@ public class DBHandler {
      * Deletes the appointment based on appointment Id.
      *
      * @param appointment that needs to be deleted.
-     * @param connection connection to the database
+     * @param connection  connection to the database
      * @throws SQLException on a bad db connection
      */
     public void deleteAppointment(Appointment appointment, Connection connection) throws SQLException {
-        connection.prepareStatement(START_TRANSACTION).execute();
+        connection.setAutoCommit(false);
         try (PreparedStatement stmt = connection.prepareStatement(DELETE_APPOINTMENT_STMT)) {
             stmt.setInt(1, appointment.getAppointmentId());
             stmt.executeUpdate();
+            connection.commit();
 
         } catch (SQLException sqlEx) {
             Log.severe("A fatal error in deletion, cancelling operation", sqlEx);
-            connection.prepareStatement(ROLLBACK).execute();
+            connection.rollback();
             throw sqlEx;
+        } finally {
+            connection.setAutoCommit(true);
         }
-        connection.prepareStatement(COMMIT).execute();
     }
 
     /**
      * Gets the status id of the appointment with the specified id
      *
      * @param connection connection to the database
-     * @param apptId Id of the appointment to update
+     * @param apptId     Id of the appointment to update
      * @return integer of the status id
      * @throws SQLException on a bad db connection
      */
@@ -1504,7 +1486,7 @@ public class DBHandler {
         Integer result;
         try (PreparedStatement preparedStatement = connection.prepareStatement(SELECT_APPOINTMENT_STATUS_STMT)) {
             preparedStatement.setInt(1, apptId);
-            try (ResultSet results= preparedStatement.executeQuery()) {
+            try (ResultSet results = preparedStatement.executeQuery()) {
                 results.next();
                 result = results.getInt(1);
             }
@@ -1515,8 +1497,8 @@ public class DBHandler {
     /**
      * Gets a list of clinicians with only their id and names, from a specific region
      *
-     * @param connection  Connection to the target database
-     * @param userNhi nhi of the user to ge the preferred clinician from
+     * @param connection Connection to the target database
+     * @param userNhi    nhi of the user to ge the preferred clinician from
      * @return the Collection of clinicians
      * @throws SQLException if there are errors with the SQL statements
      */
@@ -1544,8 +1526,8 @@ public class DBHandler {
      * Updates the preferred clinician of a user.
      *
      * @param connection Connection to the target database
-     * @param userNhi nhi of the user to ge the preferred clinician from
-     * @param staffId identifier for the preferred clinician
+     * @param userNhi    nhi of the user to ge the preferred clinician from
+     * @param staffId    identifier for the preferred clinician
      * @throws SQLException if there are errors with the SQL statements
      */
     public void putPreferredBasicClinician(Connection connection, String userNhi, String staffId) throws SQLException {
