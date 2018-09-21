@@ -106,7 +106,7 @@ public class DBHandler {
             "AND (organName LIKE ? OR organName IS NULL )" +
             "AND (DeathDetails.region LIKE ? OR DeathDetails.region IS NULL) " +
             "AND (OED.timeOfExpiry is NULL ) " +
-            "AND (D.isCurrentlyDisqulifed = 0 OR D.isCurrentlyDisqulifed is NULL ) " +
+            "AND (D.isCurrentlyDisqualified = 0 OR D.isCurrentlyDisqualified is NULL ) " +
             "LIMIT ? OFFSET ?";
     private static final String SELECT_AVAILABLE_ORGANS_BY_NHI = "SELECT * FROM OrganDonating " +
             "JOIN DeathDetails ON OrganDonating.fkUserNhi = DeathDetails.fkUserNhi " +

@@ -1,6 +1,5 @@
 package odms.controller.user.details;
 
-import odms.commons.database.DisqualifiedOrgansHandler;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.ExpiryReason;
@@ -9,6 +8,7 @@ import odms.commons.utils.Log;
 import odms.controller.BaseController;
 import odms.controller.OdmsController;
 import odms.database.DBHandler;
+import odms.database.DisqualifiedOrgansHandler;
 import odms.database.JDBCDriver;
 import odms.exception.ServerDBException;
 import odms.security.IsClinician;

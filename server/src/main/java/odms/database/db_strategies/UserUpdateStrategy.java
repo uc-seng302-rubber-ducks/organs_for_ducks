@@ -1,6 +1,5 @@
 package odms.database.db_strategies;
 
-import odms.commons.database.DisqualifiedOrgansHandler;
 import odms.commons.model.Disease;
 import odms.commons.model.MedicalProcedure;
 import odms.commons.model.User;
@@ -11,6 +10,7 @@ import odms.commons.model.datamodel.Medication;
 import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 import odms.commons.utils.Log;
 import odms.database.DBUtils;
+import odms.database.DisqualifiedOrgansHandler;
 
 import java.sql.*;
 import java.time.LocalDateTime;

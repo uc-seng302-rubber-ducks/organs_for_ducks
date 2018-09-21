@@ -1,4 +1,4 @@
-package odms.commons.database;
+package odms.database;
 
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.OrgansWithDisqualification;
