@@ -8,6 +8,7 @@ import com.google.gson.reflect.TypeToken;
 import odms.commons.model.*;
 import odms.commons.model._enum.Directory;
 import odms.commons.model.datamodel.AvailableOrganDetail;
+import odms.commons.model.datamodel.BloodTest;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.model.dto.LoginResponse;
 import okhttp3.Response;
@@ -408,6 +409,25 @@ public class JsonHandler extends DataHandler {
     public Appointment decodeOneAppointment(String bodyString) {
         return new Gson().fromJson(bodyString, new TypeToken<Appointment>() {
         }.getType());
+    }
+
+    /**
+     * decodes a raw json string of a bloodTest
+     * @param body response body as a string containing a single blood test
+     * @return the blood test
+     */
+    public BloodTest decodeBloodTest(String body) {
+        return new Gson().fromJson(body, new TypeToken<BloodTest>(){}.getType());
+    }
+
+    /**
+     * decodes a raw json string for a collection of blood tests
+     *
+     * @param body raw json body for the blood tests
+     * @return collection of the blood tests
+     */
+    public Collection<BloodTest> decodeBloodTests(String body) {
+        return new Gson().fromJson(body, new TypeToken<Collection<BloodTest>>(){}.getType());
     }
 }
 

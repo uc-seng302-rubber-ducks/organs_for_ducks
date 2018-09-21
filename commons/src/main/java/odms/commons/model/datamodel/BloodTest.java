@@ -1,6 +1,7 @@
 package odms.commons.model.datamodel;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class BloodTest {
 
@@ -133,9 +134,16 @@ public class BloodTest {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BloodTest bloodTest = (BloodTest) o;
+        return bloodTestId == bloodTest.bloodTestId;
+    }
 
-
-
-
-
+    @Override
+    public int hashCode() {
+        return Objects.hash(bloodTestId);
+    }
 }
