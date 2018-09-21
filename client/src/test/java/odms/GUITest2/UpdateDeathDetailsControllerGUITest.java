@@ -171,7 +171,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         loginAsClinician();
         clickOnButton(this, "#updateDeathDetailsButton");
         setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now());
-        setTextField(this, "#updateDeathDetailsTimeTextField", "02:45");
+        setTextField(this, "#updateDeathDetailsTimeTextField", LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
         setTextField(this, "#updateDeathDetailsCityTextField", "Atlantis");
         setTextField(this, "#updateDeathDetailsRegionTextField", "Atlantic");
         clickOnButton(this, "#confirmUpdateDeathDetailsButton");
