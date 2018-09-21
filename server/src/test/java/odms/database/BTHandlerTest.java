@@ -61,6 +61,8 @@ public class BTHandlerTest {
     @Test
     public void testPatchBloodTest() throws SQLException {
         DBHandlerMocker.setBloodTestResultSet(mockResultSet);
+        testBloodTest.setRedBloodCellCount(0.0063);
+
         bloodTestHandler.patchBloodTest(connection, "ABC1234", 1, testBloodTest);
         verify(mockStmt, times(1)).executeUpdate();
     }
@@ -82,6 +84,12 @@ public class BTHandlerTest {
 
         Assert.assertTrue(bTCollection.size() == 1);
         verify(mockStmt, times(1)).executeQuery();
+    }
+
+    @Test
+    public void testDeleteBloodTest() throws SQLException {
+        bloodTestHandler.deleteBloodTest(connection, "ABC1234", 1);
+        verify(mockStmt, times(1)).executeUpdate();
     }
 
 }

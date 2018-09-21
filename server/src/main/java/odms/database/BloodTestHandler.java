@@ -139,19 +139,18 @@ public class BloodTestHandler {
     }
 
     /**
-     * Deletes a given bloodtest
+     * Deletes the given blood test
      *
-     * @param connection connection to the database
-     * @param nhi nhi of the user
-     * @param id blood tests id
+     * @param connection Connection to the database
+     * @param nhi        Unique identifier of the user
+     * @param id         Blood tests unique identifier
      * @throws SQLException thrown on DB error
      */
     public void deleteBloodTest(Connection connection, String nhi, int id) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE_ONE_BLOOD_TEST)) {
             preparedStatement.setInt(1, id);
-            preparedStatement.execute();
+            preparedStatement.executeUpdate();
         }
-
     }
 
     /**
