@@ -148,7 +148,17 @@ public class CalendarWidgetFactory {
             c.setLookAheadDuration(Duration.ofDays(365));
             c.setLookBackDuration(Duration.ofDays(365));
         }));
-
+        setCalendarOnClick(calendarView);
         return calendarView;
+    }
+
+
+    /**
+     * disables double-click popover menu
+     *
+     * @param calendarView calendarview to modify
+     */
+    private static void setCalendarOnClick(CalendarWidget calendarView) {
+        calendarView.setEntryDetailsCallback(param -> null);
     }
 }

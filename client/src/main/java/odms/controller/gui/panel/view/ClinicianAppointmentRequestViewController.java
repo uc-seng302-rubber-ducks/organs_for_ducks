@@ -7,6 +7,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.SetChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -114,7 +115,6 @@ public class ClinicianAppointmentRequestViewController {
                 }
             });
         }));
-
         AnchorPane.setTopAnchor(calendarView,0.0);
         AnchorPane.setBottomAnchor(calendarView,0.0);
         AnchorPane.setLeftAnchor(calendarView, 0.0);
@@ -133,7 +133,7 @@ public class ClinicianAppointmentRequestViewController {
         clinicianAppointmentCategoryColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentCategory"));
         logicController.updateTable(0);
         populateTable();
-        setOnClickBehaviour();
+        setTableOnClickBehaviour();
     }
 
     private void populateTable() {
@@ -160,14 +160,21 @@ public class ClinicianAppointmentRequestViewController {
                     calendarView.addEntry(entry);
                 }
             }
-
+            calendarView.getSelections().addListener((SetChangeListener<Entry<?>>) change -> {
+                if (calendarView.getSelections().size() == 1 && change.getElementAdded() != null) {
+                    Appointment appointment = (Appointment) change.getElementAdded().getUserObject();
+                    displayAppointmentDetails(appointment);
+                } else {
+                    displayAppointmentDetails(null);
+                }
+            });
         }
     }
 
     /**
      * Binds a table view row to show all details for that appointment
      */
-    private void setOnClickBehaviour() {
+    private void setTableOnClickBehaviour() {
         clinicianAppointmentsRequestView.getSelectionModel().selectedItemProperty().addListener(a -> {
             Appointment selectedAppointment = clinicianAppointmentsRequestView.getSelectionModel().getSelectedItem();
             displayAppointmentDetails(selectedAppointment);
