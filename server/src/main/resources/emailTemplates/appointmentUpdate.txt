@@ -1,0 +1,13 @@
+Hello %s,
+
+
+Your appointment scheduled for %s,
+With %s, has been %s
+
+%s,
+
+
+Regards,
+
+
+%s
