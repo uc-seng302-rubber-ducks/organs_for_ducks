@@ -89,7 +89,7 @@ public class DBHandlerMocker {
      * Units are specified on the side
      *
      * @param resultSet mocked result set to return basic blood test details
-     * @throws SQLException
+     * @throws SQLException This shouldn't be thrown due to it being a mocked object.
      */
     public static void setBloodTestResultSet(ResultSet resultSet) throws SQLException {
         when(resultSet.getInt("bloodTestId")).thenReturn(1);
