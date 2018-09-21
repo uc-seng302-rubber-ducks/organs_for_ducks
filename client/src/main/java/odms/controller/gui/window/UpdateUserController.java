@@ -10,10 +10,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -157,10 +153,6 @@ public class UpdateUserController {
     @FXML
     private DatePicker dobInput;
     @FXML
-    private Button undoUpdateButton;
-    @FXML
-    private Button redoUpdateButton;
-    @FXML
     private ImageView profileImage;
     @FXML
     private DatePicker updateDeathDetailsDatePicker;
@@ -216,8 +208,6 @@ public class UpdateUserController {
         currentUser = User.clone(oldUser);
         this.appController = controller;
         setUserDetails(currentUser);
-        undoUpdateButton.setDisable(true);
-        redoUpdateButton.setDisable(true);
         updateDeathDetailsErrorLabel.setVisible(false);
         updateDeathDetailsOverrideWarningLabel.setVisible(false);
         undoMarker = currentUser.getUndoStack().size();
@@ -284,14 +274,6 @@ public class UpdateUserController {
 
         addCheckBoxListener(smokerCheckBox);
 
-        final KeyCombination shortcutZ = new KeyCodeCombination(
-                KeyCode.Z, KeyCombination.SHORTCUT_DOWN);
-
-        scene.addEventFilter(KeyEvent.KEY_RELEASED, e -> {
-            if (shortcutZ.match(e)) {
-                undo();
-            }
-        });
 
         stage.setOnCloseRequest(event -> {
             event.consume();
@@ -334,10 +316,6 @@ public class UpdateUserController {
      */
     private void update() {
         updateUndos();
-        if (!undoUpdateButton.isDisabled() && !stage.getTitle().endsWith("*")) {
-            stage.setTitle(stage.getTitle() + "*");
-        }
-
     }
 
     /**
@@ -762,10 +740,6 @@ public class UpdateUserController {
         }
 
         listen = true;
-
-        undoUpdateButton.setDisable(currentUser.getUndoStack().size() <= undoMarker);
-        redoUpdateButton.setDisable(currentUser.getRedoStack().isEmpty());
-
     }
 
     /**
@@ -1061,8 +1035,6 @@ public class UpdateUserController {
         if (changed) {
             currentUser.getRedoStack().clear();
         }
-        undoUpdateButton.setDisable(currentUser.getUndoStack().size() <= undoMarker);
-        redoUpdateButton.setDisable(currentUser.getRedoStack().isEmpty());
     }
 
 
@@ -1357,31 +1329,6 @@ public class UpdateUserController {
         return changed;
     }
 
-    /**
-     * Undoes a form change
-     */
-    @FXML
-    void undo() {
-        currentUser.undo();
-        undoUpdateButton.setDisable(currentUser.getUndoStack().size() <= undoMarker);
-        setUserDetails(currentUser);
-
-        if (undoUpdateButton.isDisabled()) {
-            stage.setTitle(stage.getTitle().substring(0, stage.getTitle().length() - 1));
-        }
-        Log.info("Undo executed for User NHI: " + currentUser.getNhi());
-    }
-
-    /**
-     * Redoes a form change
-     */
-    @FXML
-    void redo() {
-        currentUser.redo();
-        redoUpdateButton.setDisable(currentUser.getRedoStack().isEmpty());
-        setUserDetails(currentUser);
-        Log.info("Redo executed for User NHI: " + currentUser.getNhi());
-    }
 
     /**
      * Prompts the user with a warning alert if there are unsaved changes, otherwise cancels
@@ -1389,7 +1336,7 @@ public class UpdateUserController {
      */
     @FXML
     void goBack() {
-        if (!undoUpdateButton.isDisabled()) { // has changes
+        if (currentUser.getUndoStack().size() > undoMarker) { // has changes
             Alert alert = new Alert(Alert.AlertType.WARNING,
                     "You have unsaved changes, are you sure you want to cancel?",
                     ButtonType.YES, ButtonType.NO);
@@ -1407,7 +1354,6 @@ public class UpdateUserController {
                     userController.showUser(oldUser);
                     Log.info("User update Cancelled for User NHI: " + currentUser.getNhi());
                 } catch (NullPointerException ex) {
-                    //TODO causes npe if donor is new in this session
                     //the text fields etc. are all null
                     Log.severe("Error cancelling user update for User NHI: " + currentUser.getNhi(), ex);
                 }

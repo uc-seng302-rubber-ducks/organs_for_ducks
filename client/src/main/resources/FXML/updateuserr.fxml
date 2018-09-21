@@ -443,8 +443,6 @@
         </tabs>
       </TabPane>
       <Label layoutX="11.0" layoutY="10.0" styleClass="label-sub-title" text="Update User" />
-      <Button fx:id="redoUpdateButton" layoutX="630.0" layoutY="5.0" mnemonicParsing="false" onAction="#redo" text="Redo" />
-      <Button fx:id="undoUpdateButton" layoutX="569.0" layoutY="5.0" mnemonicParsing="false" onAction="#undo" text="Undo" />
       <Label fx:id="genericErrorLabel" layoutX="88.0" layoutY="449.0" styleClass="label-error" text="There is an error with one of the entered fields. Please double check your input" visible="false" />
       <Button fx:id="UserCancelButton" layoutX="15.0" layoutY="514.0" mnemonicParsing="false" onAction="#goBack" text="Cancel" />
       <Button fx:id="updateProfileButton" layoutX="577.0" layoutY="516.0" mnemonicParsing="false" onAction="#confirmUpdate" text="Update Profile" />
