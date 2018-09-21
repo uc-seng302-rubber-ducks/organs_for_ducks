@@ -182,12 +182,12 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now());
         setTextField(this, "#updateDeathDetailsTimeTextField", "02:45");
         setTextField(this, "#updateDeathDetailsCityTextField", "Atlantis");
-        setTextField(this, "#updateDeathDetailsRegionTextField", "Atlantic");
+        setComboBox(this, "#updateDeathDetailsRegionComboBox", "Northland");
         clickOnButton(this, "#updateProfileButton");
 
         verifyThat("#DODValue", LabeledMatchers.hasText(LocalDate.now().toString()));
         verifyThat("#cityOfDeathValue", LabeledMatchers.hasText("Atlantis"));
-        verifyThat("#regionOfDeathValue", LabeledMatchers.hasText("Atlantic"));
+        verifyThat("#regionOfDeathValue", LabeledMatchers.hasText("Northland"));
     }
 
     @Test @Ignore
@@ -233,14 +233,15 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         LocalDateTime testNow = LocalDateTime.now();
         testUser.setMomentOfDeath(testNow);
         testUser.setDeathCity("Atlantis");
-        testUser.setDeathRegion("Atlantic");
         testUser.setDeathCountry("Australia");
+        testUser.setDeathRegion("Atlantic");
 
         loginAsClinician();
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         clickOn("#deathtab");
         clickOnButton(this, "#removeUpdateDeathDetailsButton");
+        clickOnButton(this, "#confirmRemoveDeathDetailsButton");
         clickOnButton(this, "#updateProfileButton");
 
         verifyThat("#DODValue", LabeledMatchers.hasText(""));
