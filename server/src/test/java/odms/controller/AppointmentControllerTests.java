@@ -100,9 +100,10 @@ public class AppointmentControllerTests {
     }
 
     @Test
-    public void postAppointmentShouldReturnAcceptedIfConnectionValid() {
-        ResponseEntity res = controller.postAppointment(testAppointment);
-        Assert.assertEquals(HttpStatus.ACCEPTED, res.getStatusCode());
+    public void postAppointmentShouldReturnAcceptedIfConnectionValid() throws SQLException {
+        when(handler.getAppointmentId(connection, testAppointment)).thenReturn(1);
+        String res = controller.postAppointment(testAppointment);
+        Assert.assertEquals("1", res);
     }
 
     @Test(expected = ServerDBException.class)

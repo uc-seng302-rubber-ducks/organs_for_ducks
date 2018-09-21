@@ -14,7 +14,10 @@ import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 
-import java.time.*;
+import java.time.DayOfWeek;
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -23,6 +26,8 @@ import java.util.List;
  * the calendar.
  */
 public class CalendarWidgetFactory {
+
+    private static final String QUIET_MODE = "quiet";
 
     private CalendarWidgetFactory() {
     }
@@ -105,10 +110,11 @@ public class CalendarWidgetFactory {
             }
 
             Entry<Appointment> entry = new Entry<>("Untitled");
-            entry.titleProperty().addListener(((observable, oldValue, newValue) -> entry.getUserObject().setRequestingUserId(newValue)));
-            entry.startTimeProperty().addListener(((observable, oldValue, newValue) -> entry.getUserObject().setRequestedDate(LocalDateTime.of(entry.getStartDate(), entry.getStartTime()))));
-            entry.startDateProperty().addListener((observable, oldValue, newValue) -> entry.getUserObject().setRequestedDate(LocalDateTime.of(entry.getStartDate(), entry.getStartTime())));
-            entry.setUserObject(new Appointment(entry.getTitle(), AppController.getInstance().getUsername(), AppointmentCategory.PERSONAL, entry.getStartAsLocalDateTime(), "", AppointmentStatus.ACCEPTED_SEEN));
+            entry.titleProperty().addListener(((observable, oldValue, newValue) -> entry.getUserObject().setTitle(newValue)));
+            entry.intervalProperty().addListener((observable, oldValue, newValue) -> entry.getUserObject().setRequestedDate(entry.getInterval().getStartDateTime()));
+            Appointment appointment = new Appointment(null, AppController.getInstance().getUsername(), AppointmentCategory.PERSONAL, entry.getStartAsLocalDateTime(), "", AppointmentStatus.ACCEPTED_SEEN);
+            appointment.setTitle("Untitled");
+            entry.setUserObject(appointment);
             Interval interval = new Interval(time.toLocalDateTime(), time.toLocalDateTime().plusHours(1));
             entry.setInterval(interval);
 
@@ -121,15 +127,18 @@ public class CalendarWidgetFactory {
 
         personal.addEventHandler(evt -> {
             if (evt.isEntryAdded()) {
-                AppController.getInstance().getAppointmentsBridge().postAppointment((Appointment) evt.getEntry().getUserObject());
+                if (!evt.getEntry().getProperties().containsKey(QUIET_MODE)) {
+                    AppController.getInstance().getAppointmentsBridge().postAppointment((Appointment) evt.getEntry().getUserObject());
+                } else {
+                    evt.getEntry().getProperties().remove(QUIET_MODE);
+                }
             } else if (evt.isEntryRemoved()) {
                 AppController.getInstance().getAppointmentsBridge().deleteAppointment((Appointment) evt.getEntry().getUserObject());
             } else {
-                calendarView.getCalendarSources().forEach(cs -> cs.getCalendars().forEach(c -> {
-                    Entry<Appointment> entry = (Entry<Appointment>) evt.getEntry();
-                    if (entry != null) {
+                Entry<Appointment> entry = (Entry<Appointment>) evt.getEntry();
+                if (entry != null) {
+                    calendarView.getCalendarSources().forEach(cs -> cs.getCalendars().forEach(c -> {
                         for (List<Entry<?>> list : c.findEntries(entry.getStartDate(), entry.getEndDate(), entry.getZoneId()).values()) {
-                            list.remove(entry);
                             for (Entry<?> e : list) {
                                 if (entry.intersects(e) && !e.equals(entry)) {
                                     entry.setInterval(evt.getOldInterval());
@@ -137,8 +146,13 @@ public class CalendarWidgetFactory {
                                 }
                             }
                         }
+                    }));
+                    if (!entry.getProperties().containsKey(QUIET_MODE)) {
+                        System.out.println(entry.getStartDate() + " " + entry.getStartTime());
+                        System.out.println(entry.getUserObject().getRequestedDate());
+                        AppController.getInstance().getAppointmentsBridge().putAppointment(entry.getUserObject(), AppController.getInstance().getToken());
                     }
-                }));
+                }
             }
         });
 

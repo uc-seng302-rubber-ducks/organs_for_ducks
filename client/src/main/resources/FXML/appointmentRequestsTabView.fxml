@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.collections.*?>
-<?import javafx.scene.text.*?>
 <?import javafx.collections.FXCollections?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -23,11 +21,6 @@
                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                 </columnResizePolicy>
             </TableView>
-            <Label layoutX="36.0" layoutY="28.0" prefHeight="24.0" prefWidth="355.0" text="Appointments" AnchorPane.leftAnchor="36.0" AnchorPane.topAnchor="28.0">
-               <font>
-                  <Font name="System Bold" size="19.0" />
-               </font>
-            </Label>
              <HBox alignment="CENTER" layoutX="162.0" layoutY="690.0" prefHeight="25.0" prefWidth="492.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="162.0" AnchorPane.rightAnchor="149.0">
                  <children>
                      <Button fx:id="previousBtn" mnemonicParsing="false" onAction="#goToPreviousPage" text="&lt;&lt;" />
@@ -84,7 +77,8 @@
                   <Font name="System Bold" size="13.0" />
                </font>
             </Label>
-            <ComboBox fx:id="appointmentRequestTime" layoutX="130.0" layoutY="240.0" prefHeight="25.0" prefWidth="218.0" />
+             <ComboBox fx:id="appointmentRequestTime" layoutX="130.0" layoutY="240.0" prefHeight="25.0"
+                       prefWidth="218.0" AnchorPane.rightAnchor="49.0"/>
             <ToggleButton fx:id="calendarViewToggle" layoutX="60.0" layoutY="31.0" mnemonicParsing="false" onAction="#tableCalendarViewToggle" prefHeight="25.0" prefWidth="119.0" text="Calendar View" AnchorPane.rightAnchor="218.0" AnchorPane.topAnchor="31.0">
                <toggleGroup>
                   <ToggleGroup fx:id="calendarTableToggleGroup" />

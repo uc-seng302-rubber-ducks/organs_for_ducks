@@ -124,12 +124,14 @@ public class AppointmentController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/appointments")
-    public ResponseEntity postAppointment(@RequestBody Appointment newAppointment) {
+    @ResponseBody
+    public String postAppointment(@RequestBody Appointment newAppointment) {
+        String appointmentId = null;
         try (Connection connection = driver.getConnection()) {
             AppointmentUpdateStrategy appointmentStrategy = handler.getAppointmentStrategy();
             appointmentStrategy.postSingleAppointment(connection, newAppointment);
 
-            String appointmentId = Integer.toString(handler.getAppointmentId(connection, newAppointment));
+            appointmentId = Integer.toString(handler.getAppointmentId(connection, newAppointment));
             socketHandler.broadcast(EventTypes.APPOINTMENT_UPDATE, appointmentId, appointmentId);
 
         } catch (SQLException e) {
@@ -139,7 +141,7 @@ public class AppointmentController extends BaseController {
             Log.warning("Failed to broadcast update after posting an appointment", ex);
         }
 
-        return new ResponseEntity(HttpStatus.ACCEPTED);
+        return appointmentId;
     }
 
     @RequestMapping(method = RequestMethod.PATCH, value = "/appointments/{appointmentId}/status")
@@ -275,6 +277,7 @@ public class AppointmentController extends BaseController {
                                          @PathVariable(value = "appointmentId") Integer appointmentId,
                                          @RequestBody Appointment appointment) {
         try (Connection connection = driver.getConnection()) {
+            Log.info(appointment.getRequestedDate().toString());
             if (!validateRequestedAppointmentTime(staffId, appointment.getRequestedDate()) && !appointment.getAppointmentStatus().equals(AppointmentStatus.REJECTED) && !appointment.getAppointmentStatus().equals(AppointmentStatus.REJECTED_SEEN)) {
                 return new ResponseEntity(HttpStatus.BAD_REQUEST);
             }

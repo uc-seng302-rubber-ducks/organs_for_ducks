@@ -34,7 +34,9 @@ public class CalendarWidget extends CalendarView {
     private void addEntryToCalendar(Calendar calendar, Entry<Appointment> entry) {
         calendar.setReadOnly(false);
         calendar.addEntry(entry);
-        calendar.setReadOnly(true);
+        if (!calendar.equals(getPersonalCalendar())) {
+            calendar.setReadOnly(true);
+        }
     }
 
     private Calendar getOther() {

@@ -14,7 +14,6 @@ import okhttp3.*;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 public class AppointmentsBridge extends Bifrost {
     private static final String APPOINTMENTS = "/appointments";
@@ -164,6 +163,7 @@ public class AppointmentsBridge extends Bifrost {
                     return;
                 }
                 String bodyString = response.body().string();
+                System.out.println(bodyString);
                 Platform.runLater(() -> {
                     observableDateTimes.clear();
                     observableDateTimes.addAll(new JsonHandler().decodeDateTimes(bodyString));
@@ -237,8 +237,14 @@ public class AppointmentsBridge extends Bifrost {
 
             @Override
             public void onResponse(Call call, Response response) {
-                if (!response.isSuccessful()) {
-                    logAndNotify(response);
+                try {
+                    String resString = response.body().string();
+                    appointment.setAppointmentId(Integer.valueOf(resString.replaceAll("\"", "")));
+                    if (!response.isSuccessful()) {
+                        logAndNotify(response);
+                    }
+                } catch (IOException e) {
+                    alertUser(e.getMessage());
                 }
             }
         });
@@ -330,6 +336,7 @@ public class AppointmentsBridge extends Bifrost {
      */
     public void putAppointment(Appointment appointment, String token) {
         String url = String.format("%s/clinicians/%s%s/%d", ip, appointment.getRequestedClinicianId(), APPOINTMENTS, appointment.getAppointmentId());
+        System.out.println(appointment.getRequestedDate().toString());
         RequestBody body = RequestBody.create(json, new Gson().toJson(appointment));
         Request request = new Request.Builder().addHeader(tokenHeader, token).put(body).url(url).build();
         client.newCall(request).enqueue(new Callback() {
@@ -375,6 +382,7 @@ public class AppointmentsBridge extends Bifrost {
      */
     private void logAndNotify(Response response) {
         if (response.code() >= 400 && response.code() < 404) {
+            System.out.println(response.code());
             logResponse(response);
             alertUser("Oops! Something went wrong. Please check your inputs and try again.");
         } else {

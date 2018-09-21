@@ -15,7 +15,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
 import odms.commons.model.Appointment;
 import odms.commons.model.Clinician;
 import odms.commons.model._enum.AppointmentCategory;
@@ -26,9 +25,9 @@ import odms.controller.AppController;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
 import odms.controller.gui.panel.logic.ClinicianAppointmentRequestLogicController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
-import odms.socket.ServerEventNotifier;
 import odms.controller.gui.widget.CalendarWidget;
 import odms.controller.gui.widget.CalendarWidgetFactory;
+import odms.socket.ServerEventNotifier;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -104,7 +103,7 @@ public class ClinicianAppointmentRequestViewController {
      */
     public void init(AppController appController, Clinician clinician) {
         availableAppointments.addListener((ListChangeListener<? super Appointment>) observable -> {
-            populateTable();
+            populateTable(false);
             populateCalendar();
         });
         logicController = new ClinicianAppointmentRequestLogicController(availableAppointments, appController, clinician, availableTimes);
@@ -164,7 +163,7 @@ public class ClinicianAppointmentRequestViewController {
         clinicianAppointmentStatusColumn.setCellFactory(cell -> AppointmentTableCellFactory.generateAppointmentTableCell());
 
         logicController.updateTable(0);
-        populateTable();
+        populateTable(true);
         setTableOnClickBehaviour();
         clinicianAppointmentStatusColumn.setSortType(TableColumn.SortType.ASCENDING);
         clinicianAppointmentStatusColumn.setComparator(statusComparator);
@@ -174,11 +173,12 @@ public class ClinicianAppointmentRequestViewController {
      * Creates a sorted list to change the default ordering of the table view and then populates the table
      * with all of the clinicians appointments
      */
-    private void populateTable() {
+    private void populateTable(boolean listen) {
         SortedList<Appointment> sortedAppointments = new SortedList<>(availableAppointments);
         sortedAppointments.comparatorProperty().bind(clinicianAppointmentsRequestView.comparatorProperty());
         clinicianAppointmentsRequestView.setItems(availableAppointments);
-        Platform.runLater(() -> clinicianAppointmentsRequestView.getSortOrder().add(clinicianAppointmentStatusColumn));
+        if (listen)
+            Platform.runLater(() -> clinicianAppointmentsRequestView.getSortOrder().add(clinicianAppointmentStatusColumn));
     }
 
     private void populateCalendar() {
@@ -198,12 +198,16 @@ public class ClinicianAppointmentRequestViewController {
                     }
                     entry.setUserObject(appointment);
                     entry.setInterval(appointment.getRequestedDate(), appointment.getRequestedDate().plusHours(1));
+                    entry.titleProperty().addListener(((observable, oldValue, newValue) -> entry.getUserObject().setTitle(newValue)));
+                    entry.intervalProperty().addListener((observable, oldValue, newValue) -> entry.getUserObject().setRequestedDate(entry.getInterval().getStartDateTime()));
+                    entry.getProperties().put("quiet", true);
                     calendarView.addEntry(entry);
                 }
             }
             calendarView.getSelections().addListener((SetChangeListener<Entry<?>>) change -> {
                 if (calendarView.getSelections().size() == 1 && change.getElementAdded() != null) {
                     Appointment appointment = (Appointment) change.getElementAdded().getUserObject();
+                    populateClinicianTimes();
                     displayAppointmentDetails(appointment);
                 } else {
                     displayAppointmentDetails(null);
@@ -358,7 +362,7 @@ public class ClinicianAppointmentRequestViewController {
      */
     @FXML
     private void populateClinicianTimes(){
-        if (appointmentRequestDate.getValue() != null) {
+        if (appointmentRequestDate.getValue() != null && getSelectedAppointment() != null) {
             LocalTime localTime = getSelectedAppointment().getRequestedDate().toLocalTime();
             logicController.refreshClinicianAvailableTimes(appointmentRequestDate.getValue());
             availableTimes.add(localTime);
@@ -373,7 +377,15 @@ public class ClinicianAppointmentRequestViewController {
      * @return the currently selected appointment
      */
     private Appointment getSelectedAppointment() {
-        return clinicianAppointmentsRequestView.getSelectionModel().getSelectedItem();
+        if (clinicianAppointmentsRequestView.isVisible()) {
+            return clinicianAppointmentsRequestView.getSelectionModel().getSelectedItem();
+        } else {
+            if (calendarView.getSelections().iterator().hasNext()) {
+                return (Appointment) calendarView.getSelections().iterator().next().getUserObject();
+            } else {
+                return null;
+            }
+        }
     }
 
     /**
