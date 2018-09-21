@@ -18,7 +18,6 @@ import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 
@@ -507,13 +506,13 @@ public class NewUserController {
 
         LocalDate dob = dobInput.getValue();
 
-        valid &= AttributeValidation.validateDateOfBirth(dob);
+        valid &= AttributeValidation.validateDateBeforeTomorrow(dob);
         if (!valid) {
             invalidDOB.setVisible(true);
         }
 
         if (dob != null) {
-            valid &= AttributeValidation.validateDateOfBirth(dob); // checks if the dod is before tomorrow's date and that the dob is before the dod
+            valid &= AttributeValidation.validateDateBeforeTomorrow(dob); // checks if the dod is before tomorrow's date and that the dob is before the dod
             if (!valid) {
                 valid = false;
             }

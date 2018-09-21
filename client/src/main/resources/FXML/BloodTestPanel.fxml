@@ -23,7 +23,7 @@
             <Font name="System Bold" size="19.0" />
          </font>
       </Label>
-      <Button fx:id="requestNewBloodTest" layoutX="571.0" layoutY="33.0" mnemonicParsing="false" text="Request New Blood Test" />
+      <Button fx:id="requestNewBloodTest" layoutX="600.0" layoutY="33.0" mnemonicParsing="false" onAction="#addNewBloodTest" text="Add New Blood Test" />
       <GridPane layoutX="769.0" layoutY="99.0" prefHeight="549.0" prefWidth="369.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />

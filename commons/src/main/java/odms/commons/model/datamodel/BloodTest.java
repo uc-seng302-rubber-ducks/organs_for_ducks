@@ -1,6 +1,8 @@
 package odms.commons.model.datamodel;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class BloodTest {
@@ -15,6 +17,8 @@ public class BloodTest {
     private double haematocrit;
     private double meanCellHaematocrit;
     private LocalDate testDate;
+    private transient List<Double> lowValues;
+    private transient List<Double> highValues;
 
     public BloodTest(double redBloodCellCount, double whiteBloodCellCount, double haemoglobinLevel, double platelets, double glucoseLevels, double meanCellVolume, double haematocrit, double meanCellHaematocrit, LocalDate testDate) {
         this.redBloodCellCount = redBloodCellCount;
@@ -26,6 +30,8 @@ public class BloodTest {
         this.haematocrit = haematocrit;
         this.meanCellHaematocrit = meanCellHaematocrit;
         this.testDate = testDate;
+        this.lowValues = new ArrayList<>();
+        this.highValues = new ArrayList<>();
     }
 
     public BloodTest() {
@@ -38,6 +44,8 @@ public class BloodTest {
         this.haematocrit = 0.0;
         this.meanCellHaematocrit = 0.0;
         this.testDate = null;
+        this.lowValues = new ArrayList<>();
+        this.highValues = new ArrayList<>();
     }
 
     public int getBloodTestId() {
@@ -118,6 +126,22 @@ public class BloodTest {
 
     public void setMeanCellHaematocrit(double meanCellHaematocrit) {
         this.meanCellHaematocrit = meanCellHaematocrit;
+    }
+
+    public List<Double> getLowValues() {
+        return lowValues;
+    }
+
+    public void setLowValues(List<Double> lowValues) {
+        this.lowValues = lowValues;
+    }
+
+    public List<Double> getHighValues() {
+        return highValues;
+    }
+
+    public void setHighValues(List<Double> highValues) {
+        this.highValues = highValues;
     }
 
     @Override

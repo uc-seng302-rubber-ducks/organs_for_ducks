@@ -1,6 +1,7 @@
 package odms.controller.gui.popup.view;
 
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -36,13 +37,35 @@ public class NewBloodTestViewController {
     private Button cancelBloodTest;
     @FXML
     private Label dateErrorLabel;
+    @FXML
+    private Label redBloodCellError;
+    @FXML
+    private Label whiteBloodCellError;
+    @FXML
+    private Label heamoglobinError;
+    @FXML
+    private Label plateletsError;
+    @FXML
+    private Label glucoseError;
+    @FXML
+    private Label meanCellVolumeError;
+    @FXML
+    private Label haematocritError;
+    @FXML
+    private Label meanCellHaematocritError;
+
+
 
     private NewBloodTestLogicController logicController;
     private Boolean valid = true;
 
     public void init(User user, Stage stage){
         this.logicController = new NewBloodTestLogicController(user,stage);
-        dateErrorLabel.setVisible(false);
+        resetErrorLabels();
+
+
+
+
     }
 
     @FXML
@@ -52,36 +75,83 @@ public class NewBloodTestViewController {
 
     }
 
-    private Boolean validateField() {
-        Boolean valid = true;
-        AttributeValidation.validateDouble(redBloodCount.getText());
-        AttributeValidation.validateDouble(whiteBloodCount.getText());
-        AttributeValidation.validateDouble(heamoglobin.getText());
-        AttributeValidation.validateDouble(platelets.getText());
-        AttributeValidation.validateDouble(glucose.getText());
-        AttributeValidation.validateDouble(meanCellVolume.getText());
-        AttributeValidation.validateDouble(haematocrit.getText());
-        AttributeValidation.validateDouble(meanCellHaematocrit.getText());
+    private void resetErrorLabels(){
+        dateErrorLabel.setVisible(false);
+        redBloodCellError.setVisible(false);
+        whiteBloodCellError.setVisible(false);
+        heamoglobinError.setVisible(false);
+        plateletsError.setVisible(false);
+        glucoseError.setVisible(false);
+        meanCellVolumeError.setVisible(false);
+        haematocritError.setVisible(false);
+        meanCellHaematocritError.setVisible(false);
+    }
+
+    private boolean validateField() {
+        boolean valid = true;
+        if (AttributeValidation.validateDouble(redBloodCount.getText()) == -1) {
+            redBloodCellError.setVisible(true);
+            invalidateNode(redBloodCount);
+            valid = false;
+        }
+        if (AttributeValidation.validateDouble(whiteBloodCount.getText()) == -1){
+            whiteBloodCellError.setVisible(true);
+            invalidateNode(whiteBloodCount);
+            valid = false;
+
+        }
+        if (AttributeValidation.validateDouble(heamoglobin.getText()) == -1) {
+            heamoglobinError.setVisible(true);
+            invalidateNode(heamoglobin);
+            valid = false;
+        }
+        if (AttributeValidation.validateDouble(platelets.getText()) == -1) {
+            plateletsError.setVisible(true);
+            invalidateNode(platelets);
+            valid = false;
+        }
+        if (AttributeValidation.validateDouble(glucose.getText()) == -1) {
+            glucoseError.setVisible(true);
+            invalidateNode(glucose);
+            valid = false;
+        }
+        if (AttributeValidation.validateDouble(meanCellVolume.getText()) == -1) {
+            meanCellVolumeError.setVisible(true);
+            invalidateNode(meanCellVolume);
+            valid = false;
+        }
+        if (AttributeValidation.validateDouble(haematocrit.getText()) == -1) {
+            haematocritError.setVisible(true);
+            invalidateNode(haematocrit);
+            valid = false;
+        }
+        if (AttributeValidation.validateDouble(meanCellHaematocrit.getText()) == -1){
+            meanCellHaematocritError.setVisible(true);
+            invalidateNode(meanCellHaematocrit);
+            valid = false;
+        }
+        if(!AttributeValidation.validateDateBeforeTomorrow(testDate.getValue())){
+            dateErrorLabel.setVisible(true);
+            invalidateNode(testDate);
+            valid = false;
+        }
         return valid;
 
     }
 
     @FXML
     private void addBloodTest() {
-        dateErrorLabel.setVisible(false);
+        resetErrorLabels();
         testDate.getStyleClass().remove("invalid");
-
-        if (testDate.getValue() != null){
+        if (validateField()) {
             logicController.addBloodTest(testDate.getValue(), redBloodCount.getText(),whiteBloodCount.getText(),
                     heamoglobin.getText(), platelets.getText(),glucose.getText(),meanCellVolume.getText(),
                     haematocrit.getText(),meanCellHaematocrit.getText());
-        } else {
-            dateErrorLabel.setVisible(true);
-
-            testDate.getStyleClass().add("invalid");
-
         }
+    }
 
+    private void invalidateNode(Node node) {
+        node.getStyleClass().add("invalid");
     }
 
 

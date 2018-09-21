@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" fx:controller="odms.controller.gui.window.UserController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.UserController">
     <children>
       <AnchorPane prefHeight="675.0" prefWidth="894.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -99,12 +99,17 @@
                       </Tab>
                       <Tab text="Appointments">
                           <content>
-                              <fx:include fx:id="appointmentTabPage" source="userAppointmentView.fxml"/>
+                              <fx:include fx:id="appointmentTabPage" source="userAppointmentView.fxml" />
                           </content>
                       </Tab>
+                  <Tab text="Blood Test">
+                    <content>
+                        <fx:include fx:id="bloodTestTabPage" source="BloodTestPanel.fxml" />
+                    </content>
+                  </Tab>
                   </tabs>
               </TabPane>
-              <AnchorPane fx:id="StatusBar" AnchorPane.bottomAnchor="-5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="814.0" AnchorPane.topAnchor="649.0">
+              <AnchorPane fx:id="StatusBar" layoutY="770.0" prefHeight="35.0" prefWidth="386.0" AnchorPane.bottomAnchor="-5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="814.0" AnchorPane.topAnchor="770.0">
                   <children>
                       <fx:include fx:id="statusBarPage" source="statusBar.fxml" />
                   </children>
