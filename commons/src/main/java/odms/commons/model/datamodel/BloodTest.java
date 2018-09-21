@@ -1,8 +1,10 @@
 package odms.commons.model.datamodel;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class BloodTest {
+    private int bloodTestId;
     private double redBloodCellCount;
     private double whiteBloodCellCount;
     private double haemoglobinLevel;
@@ -132,6 +134,14 @@ public class BloodTest {
         this.meanCellHaematocrit = meanCellHaematocrit;
     }
 
+    public int getBloodTestId() {
+        return bloodTestId;
+    }
+
+    public void setBloodTestId(int bloodTestId) {
+        this.bloodTestId = bloodTestId;
+    }
+
     @Override
     public String toString() {
         return "BloodTest{" +
@@ -146,9 +156,17 @@ public class BloodTest {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BloodTest bloodTest = (BloodTest) o;
+        return bloodTestId == bloodTest.bloodTestId;
+    }
 
+    @Override
+    public int hashCode() {
 
-
-
-
+        return Objects.hash(bloodTestId);
+    }
 }
