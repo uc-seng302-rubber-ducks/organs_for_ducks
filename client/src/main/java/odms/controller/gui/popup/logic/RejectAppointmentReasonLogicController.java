@@ -3,6 +3,7 @@ package odms.controller.gui.popup.logic;
 import odms.bridge.AppointmentsBridge;
 import odms.commons.model.Appointment;
 import odms.commons.model._enum.AppointmentStatus;
+import odms.controller.AppController;
 
 public class RejectAppointmentReasonLogicController {
     /**
@@ -15,6 +16,6 @@ public class RejectAppointmentReasonLogicController {
     public void rejectAppointment(Appointment appointment, String rejectionReason, AppointmentsBridge appointmentsBridge) {
         appointment.setAppointmentStatus(AppointmentStatus.REJECTED);
         appointment.setRejectionReason(rejectionReason);
-        appointmentsBridge.putAppointment(appointment);
+        appointmentsBridge.putAppointment(appointment, AppController.getInstance().getToken());
     }
 }

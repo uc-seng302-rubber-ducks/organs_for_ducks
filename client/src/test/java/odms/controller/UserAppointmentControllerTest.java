@@ -142,4 +142,16 @@ public class UserAppointmentControllerTest {
         assertTrue(appointments.size() == 1);
         verify(controller, times(0)).getAppointmentsBridge();
     }
+
+    @Test
+    public void testAttemptToCancelWithWrongAppointmentStatus() {
+        Appointment testAppointment = new Appointment();
+        appointments.add(testAppointment);
+        doNothing().when(userAppointmentLogicController).alertUser(anyString());
+
+        userAppointmentLogicController.cancelAppointment(testAppointment);
+
+        assertTrue(appointments.size() == 1);
+        verify(controller, times(0)).getAppointmentsBridge();
+    }
 }

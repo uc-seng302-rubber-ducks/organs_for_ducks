@@ -1,7 +1,7 @@
 package odms.controller;
 
-import odms.commons.database.DBHandler;
-import odms.commons.database.JDBCDriver;
+import odms.database.DBHandler;
+import odms.database.JDBCDriver;
 import odms.utils.DBManager;
 import org.springframework.web.bind.annotation.RestController;
 

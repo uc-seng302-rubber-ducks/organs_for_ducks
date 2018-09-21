@@ -1,10 +1,12 @@
 package odms.controller;
 
+import odms.TestUtils.AppControllerMocker;
 import odms.bridge.AppointmentsBridge;
 import odms.commons.model.Appointment;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
 import odms.controller.gui.popup.logic.RejectAppointmentReasonLogicController;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,12 +23,21 @@ public class RejectionAppointmentReasonLogicControllerTest {
     @Before
     public void setUp() {
         appointment = new Appointment("ABC1234", "0", AppointmentCategory.GENERAL_CHECK_UP, LocalDateTime.of(2018, 5, 20, 15, 30), "Halp", AppointmentStatus.PENDING);
-        doNothing().when(appointmentsBridge).putAppointment(any(Appointment.class));
+        AppController appController = AppControllerMocker.getFullMock();
+        when(appController.getToken()).thenReturn("token");
+
+        doNothing().when(appointmentsBridge).putAppointment(any(Appointment.class), anyString());
+        AppController.setInstance(appController);
+    }
+
+    @After
+    public void tearDown() {
+        AppController.setInstance(null);
     }
 
     @Test
     public void rejectAppointmentTest() {
         controller.rejectAppointment(appointment, "he ded", appointmentsBridge);
-        verify(appointmentsBridge, atLeastOnce()).putAppointment(any(Appointment.class));
+        verify(appointmentsBridge, atLeastOnce()).putAppointment(any(Appointment.class), anyString());
     }
 }
