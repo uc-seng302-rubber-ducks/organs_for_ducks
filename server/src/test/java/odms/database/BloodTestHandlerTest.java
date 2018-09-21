@@ -18,7 +18,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-public class BTHandlerTest {
+public class BloodTestHandlerTest {
 
     private Connection connection;
     private PreparedStatement mockStmt;

@@ -134,7 +134,7 @@ public class BloodTestController extends BaseController {
     }
 
     /**
-     * deletes a single blood test for a user
+     * Deletes a single blood test for a user
      *
      * @param nhi users nhi
      * @param id the id of the blood test to patch
