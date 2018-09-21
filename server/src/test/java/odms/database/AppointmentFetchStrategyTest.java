@@ -1,13 +1,13 @@
-package odms.commons.database;
+package odms.database;
 
 import odms.commons.model.Appointment;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
 import odms.commons.model._enum.UserType;
 import odms.commons.model._enum.db.appointment.statements.AppointmentStatement;
+import odms.test_utils.DBHandlerMocker;
 import org.junit.Before;
 import org.junit.Test;
-import test_utils.DBHandlerMocker;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -68,7 +68,7 @@ public class AppointmentFetchStrategyTest {
     }
 
     private void checkAppointment(Appointment appointment) {
-        assertEquals((Integer)0, appointment.getAppointmentId());
+        assertEquals((Integer) 0, appointment.getAppointmentId());
         assertEquals(LocalDateTime.of(2018, 12, 10, 15, 3), appointment.getRequestedDate());
         assertEquals("ABC1234", appointment.getRequestingUserId());
         assertEquals("0", appointment.getRequestedClinicianId());

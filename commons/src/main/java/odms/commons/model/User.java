@@ -26,6 +26,8 @@ public class User extends Undoable<User> implements Listenable {
 
     //<editor-fold desc="properties">
     @Expose
+    private int uniqueId; //identifier used in the database
+    @Expose
     private String nhi;
     @Expose
     private String name;
@@ -75,14 +77,10 @@ public class User extends Undoable<User> implements Listenable {
     private List<Disease> pastDiseases;
     @Expose
     private List<Disease> currentDiseases;
-
     @Expose
     private transient String profilePhotoFilePath;
     private transient List<Change> changes;
     private transient PropertyChangeSupport pcs;
-    //</editor-fold>
-
-
     /**
      * Constructor for a User
      *
@@ -123,8 +121,6 @@ public class User extends Undoable<User> implements Listenable {
         contact.setAttachedUser(this);
         this.profilePhotoFilePath = "";
     }
-
-
     /**
      * empty constructor to allow an empty user to be created for the gui
      */
@@ -161,9 +157,11 @@ public class User extends Undoable<User> implements Listenable {
         contact.setAttachedUser(this);
         this.profilePhotoFilePath = "";
     }
+    //</editor-fold>
 
     public static User clone(User user) {
         User newUser = new User();
+        newUser.uniqueId = user.uniqueId;
         newUser.nhi = user.nhi;
         newUser.dateOfBirth = user.dateOfBirth;
 
@@ -275,6 +273,14 @@ public class User extends Undoable<User> implements Listenable {
         newUser.setUndoStack((Stack<Memento<User>>) user.getUndoStack().clone());
         newUser.setRedoStack((Stack<Memento<User>>) user.getRedoStack().clone());
         return newUser;
+    }
+
+    public int getUniqueId() {
+        return uniqueId;
+    }
+
+    public void setUniqueId(int uniqueId) {
+        this.uniqueId = uniqueId;
     }
 
     public DeathDetails getDeathDetails() {
@@ -1280,6 +1286,7 @@ public class User extends Undoable<User> implements Listenable {
      * @param other other User object to convert this instance into.
      */
     private void changeInto(User other) {
+        this.uniqueId = other.uniqueId;
         this.nhi = other.nhi;
         this.dateOfBirth = other.dateOfBirth;
         this.deathDetails = other.deathDetails;

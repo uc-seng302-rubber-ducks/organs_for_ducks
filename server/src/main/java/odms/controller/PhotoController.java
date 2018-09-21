@@ -1,11 +1,11 @@
 package odms.controller;
 
-import odms.commons.database.DBHandler;
-import odms.commons.database.JDBCDriver;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.utils.Log;
+import odms.database.DBHandler;
+import odms.database.JDBCDriver;
 import odms.exception.ServerDBException;
 import odms.security.IsClinician;
 import odms.socket.SocketHandler;
