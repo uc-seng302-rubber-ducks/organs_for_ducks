@@ -109,6 +109,20 @@ public class AppointmentController extends BaseController {
     }
 
 
+    @IsClinician
+    @RequestMapping(method = RequestMethod.GET, value = "/clinicians/{staffId}/appointmentsTimes")
+    public Collection<LocalDateTime> getClinicianAppointmentsTimes(@PathVariable(name = "staffId") String staffid,
+                                                                  @RequestParam(name = "startDateTime") String startDate,
+                                                                  @RequestParam(name = "endDateTime") String endDate
+                                                                  ){
+        try (Connection connection = driver.getConnection()) {
+            return handler.getBookedAppointmentDateTimes(connection, staffid,startDate,endDate);
+        } catch (SQLException e) {
+            Log.severe("Got bad response from DB. SQL error code: " + e.getErrorCode(), e);
+            throw new ServerDBException(e);
+        }
+    }
+
     @RequestMapping(method = RequestMethod.POST, value = "/appointments")
     public ResponseEntity postAppointment(@RequestBody Appointment newAppointment) {
         try (Connection connection = driver.getConnection()) {
