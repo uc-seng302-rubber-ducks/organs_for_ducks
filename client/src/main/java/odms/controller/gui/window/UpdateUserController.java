@@ -32,6 +32,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -1002,8 +1003,12 @@ public class UpdateUserController {
     private boolean updateDeathDetails() {
         boolean changed = false;
         LocalDate dateOfDeath = updateDeathDetailsDatePicker.getValue();
-        LocalTime timeOfDeath = LocalTime.parse(updateDeathDetailsTimeTextField.getText());
-        currentUser.setMomentOfDeath(currentUser.getDeathDetails().createMomentOfDeath(dateOfDeath, timeOfDeath));
+        try {
+            LocalTime timeOfDeath = LocalTime.parse(updateDeathDetailsTimeTextField.getText());
+            currentUser.setMomentOfDeath(currentUser.getDeathDetails().createMomentOfDeath(dateOfDeath, timeOfDeath));
+        } catch (DateTimeParseException e) {
+            Log.severe("There is an incorrect time format in the death details time field", e);
+        }
 
         currentUser.setDeathCity(updateDeathDetailsCityTextField.getText());
         if (isNewZealand) {

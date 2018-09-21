@@ -753,7 +753,6 @@ public class NewUserController {
         if (!AttributeValidation.checkRequiredStringName(fName)) {
             String error;
             if (fName.isEmpty()) {
-                System.out.println("empty");
                 error = "The first name cannot be empty";
             } else {
                 error = "Only alphanumeric characters are allowed";
