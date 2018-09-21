@@ -40,7 +40,6 @@ public class BTHandlerTest {
     public void testCreateBloodTest() throws SQLException {
         BloodTest testBloodTest = new BloodTest();
         testBloodTest.setRequestedDate(LocalDate.now().minusDays(5));
-        testBloodTest.setResultsRecived(LocalDate.now().minusDays(1));
 
         bloodTestHandler.postBloodTest(connection, testBloodTest, "ABC1234");
         verify(mockStmt, times(1)).executeUpdate();

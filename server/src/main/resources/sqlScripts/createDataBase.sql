@@ -297,8 +297,6 @@ CREATE TABLE BloodTestDetails(
   haematocrit DOUBLE,
   meanCellHaematocrit DOUBLE,
   requestedDate DATE,
-  resultsReceived DATE,
-  requestedByClinician VARCHAR(255),
   FOREIGN KEY (fkUserNhi) REFERENCES User (nhi)
   ON DELETE CASCADE
   ON UPDATE CASCADE

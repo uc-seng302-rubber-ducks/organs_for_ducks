@@ -122,8 +122,8 @@ public class BloodTestController extends BaseController {
      */
     @RequestMapping(method = RequestMethod.PATCH, value = "/user/{nhi}/bloodTest/{id}")
     public ResponseEntity patchBloodTest(@PathVariable(value ="nhi") String nhi,
-                                    @PathVariable(value ="id") String id,
-                                    @RequestBody BloodTest bloodTest) {
+                                         @PathVariable(value = "id") int id,
+                                         @RequestBody BloodTest bloodTest) {
         try (Connection connection = driver.getConnection()) {
             bloodTestHandler.patchBloodTest(connection, nhi, id, bloodTest);
             return new ResponseEntity(HttpStatus.OK);
@@ -142,7 +142,7 @@ public class BloodTestController extends BaseController {
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "/user/{nhi}/bloodTest/{id}")
     public ResponseEntity deleteBloodTest(@PathVariable(value ="nhi") String nhi,
-                                     @PathVariable(value = "id") String id) {
+                                          @PathVariable(value = "id") int id) {
         try (Connection connection = driver.getConnection()) {
             bloodTestHandler.deleteBloodTest(connection, nhi, id);
             return new ResponseEntity(HttpStatus.OK);

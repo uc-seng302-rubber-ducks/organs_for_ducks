@@ -6,22 +6,19 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class BloodTestHandler {
 
-    private static final String CREATE_BLOOD_TEST_STMT = "INSERT INTO BloodTests (fkUserNhi, redBloodCellCount, " +
+    private static final String CREATE_BLOOD_TEST_STMT = "INSERT INTO BloodTestDetails (fkUserNhi, redBloodCellCount, " +
             "whiteBloodCellCount, haemoglobinLevel, platelets, glucoseLevels, meanCellVolume, haematocrit, " +
-            "meanCellHaematocrit, requestedDate, resultsReceived, requestedByClinician) " +
+            "meanCellHaematocrit, requestedDate) " +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    private static final String UPDATE_BLOOD_TEST_STMT = "UPDATE BloodTests SET redBloodCellCount = ?, " +
-            "whiteBloodCellCount = ?, haemoglobinLevel = ?, platelets = ?, glucoseLevels = ?, meanCellVolume = ?, " +
-            "haematocrit = ?, meanCellHaematocrit = ?, resultsReceived = ?, requestedByClinician = ? WHERE bloodTestId = ?";
-
-    private static final String SELECT_ONE_BLOOD_TEST = "SELECT * FROM BloodTests WHERE bloodTestId = ?";
-    private static final String SELECT_ALL_BLOOD_TESTS_FOR_USER = "SELECT * FROM BloodTests WHERE fkUserNhi = ? LIMIT ? OFFSET ?";
-    private static final String SELECT_ALL_BLOOD_TESTS_FOR_USER_GRAPH = "SELECT * FROM BloodTests WHERE fkUserNhi = ? AND (resultsReceived BETWEEN ? AND ?)";
+    private static final String SELECT_ONE_BLOOD_TEST = "SELECT * FROM BloodTestDetails WHERE bloodTestId = ?";
+    private static final String SELECT_ALL_BLOOD_TESTS_FOR_USER = "SELECT * FROM BloodTestDetails WHERE fkUserNhi = ? LIMIT ? OFFSET ?";
     private static final String DELETE_ONE_BLOOD_TEST = "DELETE FROM BloodTestDetails WHERE bloodTestId = ?";
+    private static final String SELECT_ALL_BLOOD_TESTS_FOR_USER_GRAPH = "SELECT * FROM BloodTestDetails WHERE fkUserNhi = ? AND (resultsReceived BETWEEN ? AND ?) LIMIT ? OFFSET ?";
 
     /**
      * Saves and stores the given blood test within the database
@@ -29,7 +26,6 @@ public class BloodTestHandler {
      * @param connection Connection to the target database
      * @param bloodTest  The blood test to be saved
      * @param nhi        The unique identifier of the user
-     * @return ignore this
      * @throws SQLException If there is an error storing the blood test into the database or the connection is invalid
      */
     public void postBloodTest(Connection connection, BloodTest bloodTest, String nhi) throws SQLException {
@@ -44,39 +40,101 @@ public class BloodTestHandler {
             preparedStatement.setDouble(8, bloodTest.getHaematocrit());
             preparedStatement.setDouble(9, bloodTest.getMeanCellHaematocrit());
             preparedStatement.setDate(10, Date.valueOf(bloodTest.getRequestedDate()));
-            preparedStatement.setDate(11, Date.valueOf(bloodTest.getResultsRecived()));
-            preparedStatement.setString(12, bloodTest.getRequestedByClinician());
             preparedStatement.executeUpdate();
         }
 
     }
 
     /**
-     * Updates a blood test that is already within the database
+     * Updates only the values of a blood test that have changed
      *
      * @param connection Connection to the target database
+     * @param nhi        The unique identifier of the user
+     * @param id         The unique identifier of the blood test
      * @param bloodTest  The given blood test to be updated
      * @throws SQLException If there is an error updating the blood test or the connection is invalid
      */
-    public void putBloodTest(Connection connection, String nhi, BloodTest bloodTest) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_BLOOD_TEST_STMT)) {
-            preparedStatement.setDouble(1, bloodTest.getRedBloodCellCount());
-            preparedStatement.setDouble(2, bloodTest.getWhiteBloodCellCount());
-            preparedStatement.setDouble(3, bloodTest.getHaemoglobinLevel());
-            preparedStatement.setDouble(4, bloodTest.getPlatelets());
-            preparedStatement.setDouble(5, bloodTest.getGlucoseLevels());
-            preparedStatement.setDouble(6, bloodTest.getMeanCellVolume());
-            preparedStatement.setDouble(7, bloodTest.getHaematocrit());
-            preparedStatement.setDouble(8, bloodTest.getMeanCellHaematocrit());
-            preparedStatement.setDate(9, Date.valueOf(bloodTest.getResultsRecived()));
-            preparedStatement.setString(10, bloodTest.getRequestedByClinician());
-            preparedStatement.setInt(11, bloodTest.getBloodTestId());
-            preparedStatement.executeUpdate();
+    public void patchBloodTest(Connection connection, String nhi, int id, BloodTest bloodTest) throws SQLException {
+        BloodTest originalBloodTest = getBloodTest(connection, nhi, id);
+
+        List<String> changes = new ArrayList<>();
+        List<Double> values = new ArrayList<>();
+        LocalDate date = null;
+
+        if (originalBloodTest.getRedBloodCellCount() != bloodTest.getRedBloodCellCount()) {
+            changes.add("redBloodCellCount = ?");
+            values.add(bloodTest.getRedBloodCellCount());
         }
-    }
 
-    public void patchBloodTest(Connection connection, String nhi, String id, BloodTest bloodTest) {
+        if (originalBloodTest.getWhiteBloodCellCount() != bloodTest.getWhiteBloodCellCount()) {
+            changes.add("whiteBloodCellCount = ?");
+            values.add(bloodTest.getWhiteBloodCellCount());
+        }
 
+        if (originalBloodTest.getHaemoglobinLevel() != bloodTest.getHaemoglobinLevel()) {
+            changes.add("haemoglobinLevel = ?");
+            values.add(bloodTest.getHaemoglobinLevel());
+        }
+
+        if (originalBloodTest.getPlatelets() != bloodTest.getPlatelets()) {
+            changes.add("platelets = ?");
+            values.add(bloodTest.getPlatelets());
+        }
+
+        if (originalBloodTest.getGlucoseLevels() != bloodTest.getGlucoseLevels()) {
+            changes.add("glucoseLevels = ?");
+            values.add(bloodTest.getGlucoseLevels());
+        }
+
+        if (originalBloodTest.getMeanCellVolume() != bloodTest.getMeanCellVolume()) {
+            changes.add("meanCellVolume = ?");
+            values.add(bloodTest.getMeanCellVolume());
+        }
+
+        if (originalBloodTest.getHaematocrit() != bloodTest.getHaematocrit()) {
+            changes.add("haematocrit = ?");
+            values.add(bloodTest.getHaematocrit());
+        }
+
+        if (originalBloodTest.getMeanCellHaematocrit() != bloodTest.getMeanCellHaematocrit()) {
+            changes.add("meanCellHaematocrit = ?");
+            values.add(bloodTest.getMeanCellHaematocrit());
+        }
+
+        if (originalBloodTest.getRequestedDate() != bloodTest.getRequestedDate()) {
+            changes.add("requestedDate = ?");
+            date = bloodTest.getRequestedDate();
+        }
+
+        if (changes.size() != 0) {
+
+            int size;
+            if (date != null) {
+                size = changes.size() - 1;
+            } else {
+                size = changes.size();
+            }
+
+            String updateStatement = "UPDATE BloodTestDetails SET ";
+            updateStatement += String.join(", ", changes);
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(updateStatement)) {
+
+                int i = 0;
+                if (values.size() != 0) { // only adds the double values if they exist
+                    for (i = 0; i < size; i++) {
+                        preparedStatement.setDouble(i + 1, values.get(i));
+                    }
+                }
+
+                if (date != null) { // only adds the date if it exists
+                    preparedStatement.setDate(i + 1, Date.valueOf(bloodTest.getRequestedDate()));
+                }
+
+                preparedStatement.executeUpdate();
+
+            }
+        }
     }
 
     /**
@@ -87,9 +145,9 @@ public class BloodTestHandler {
      * @param id blood tests id
      * @throws SQLException thrown on DB error
      */
-    public void deleteBloodTest(Connection connection, String nhi, String id) throws SQLException {
-        try(PreparedStatement preparedStatement = connection.prepareStatement(DELETE_ONE_BLOOD_TEST)){
-            preparedStatement.setString(1,id);
+    public void deleteBloodTest(Connection connection, String nhi, int id) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE_ONE_BLOOD_TEST)) {
+            preparedStatement.setInt(1, id);
             preparedStatement.execute();
         }
 
@@ -150,8 +208,8 @@ public class BloodTestHandler {
      * @param nhi        Unique identifier of the user
      * @param startDate  The date that the query starts taking entries from
      * @param endDate    The date that the query finishes taking entries from
-     * @param count
-     * @param startIndex
+     * @param count      Row number that the query finishes taking entries from
+     * @param startIndex Row number that query starts taking entries from
      * @return           A collection of all the users blood tests between the start and end dates
      * @throws SQLException if the connection is invalid or there is an error retrieving entries from the database
      */
@@ -161,6 +219,8 @@ public class BloodTestHandler {
             preparedStatement.setString(1, nhi);
             preparedStatement.setDate(2, Date.valueOf(startDate));
             preparedStatement.setDate(3, Date.valueOf(endDate));
+            preparedStatement.setInt(4, count);
+            preparedStatement.setInt(5, startIndex);
             try (ResultSet results = preparedStatement.executeQuery()) {
                 while (results.next()) {
                     bloodTests.add(decodeBloodTestFromResultSet(results));
@@ -190,8 +250,6 @@ public class BloodTestHandler {
         bloodTest.setHaematocrit(resultSet.getDouble("haematocrit"));
         bloodTest.setMeanCellHaematocrit(resultSet.getDouble("meanCellHaematocrit"));
         bloodTest.setRequestedDate(resultSet.getDate("requestedDate").toLocalDate());
-        bloodTest.setResultsRecived(resultSet.getDate("resultsReceived").toLocalDate());
-        bloodTest.setRequestedByClinician(resultSet.getString("requestedByClinician"));
 
         return bloodTest;
     }
