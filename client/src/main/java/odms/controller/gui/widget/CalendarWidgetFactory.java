@@ -2,11 +2,20 @@ package odms.controller.gui.widget;
 
 import com.calendarfx.model.Calendar;
 import com.calendarfx.model.CalendarSource;
-import javafx.application.Platform;
+import com.calendarfx.model.Entry;
+import com.calendarfx.model.Interval;
+import com.calendarfx.view.AllDayView;
+import com.calendarfx.view.DateControl;
+import com.calendarfx.view.VirtualGrid;
+import odms.commons.model.Appointment;
 import odms.commons.model._enum.AppointmentCategory;
+import odms.commons.model._enum.AppointmentStatus;
 import odms.commons.utils.Log;
+import odms.controller.AppController;
 
-import java.time.LocalTime;
+import java.time.*;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 /**
  * class that holds the configurations of
@@ -29,7 +38,10 @@ public class CalendarWidgetFactory {
         calendarView.setFooter(null);
         calendarView.setShowAddCalendarButton(false);
 
-        CalendarSource appointmentCategories = new CalendarSource("Appointment Categories");
+        Calendar personal = calendarView.getCalendarSources().get(0).getCalendars().get(0);
+        personal.setName("Personal");
+
+        CalendarSource appointmentCategories = new CalendarSource("Appointments");
 
         Calendar bloodTestCalendar = new Calendar(AppointmentCategory.BLOOD_TEST.toString());
         bloodTestCalendar.setStyle(Calendar.Style.STYLE1);
@@ -76,10 +88,63 @@ public class CalendarWidgetFactory {
 
         appointmentCategories.getCalendars().forEach(c -> c.setReadOnly(true));
 
-        System.out.println(calendarView.getCalendarSources() + " " + appointmentCategories);
+        calendarView.setEntryFactory(param -> {
+            DateControl control = param.getDateControl();
 
-        calendarView.getCalendarSources().get(0).getCalendars().forEach(c -> c.addEventHandler(evt -> {
-            Platform.runLater(() -> calendarView.getCalendarSources().get(0).getCalendars().forEach(Calendar::clear));
+            VirtualGrid grid = control.getVirtualGrid();
+            ZonedDateTime time = param.getZonedDateTime();
+            DayOfWeek firstDayOfWeek = calendarView.getFirstDayOfWeek();
+            ZonedDateTime lowerTime = grid.adjustTime(time, false, firstDayOfWeek);
+            ZonedDateTime upperTime = grid.adjustTime(time, true, firstDayOfWeek);
+
+            if (Duration.between(time, lowerTime).abs().minus(Duration.between(time, upperTime).abs()).isNegative()) {
+                time = lowerTime;
+            } else {
+                time = upperTime;
+            }
+
+            Entry<Appointment> entry = new Entry<>("Untitled");
+            entry.titleProperty().addListener(((observable, oldValue, newValue) -> entry.getUserObject().setRequestingUserId(newValue)));
+            entry.startTimeProperty().addListener(((observable, oldValue, newValue) -> entry.getUserObject().setRequestedDate(LocalDateTime.of(entry.getStartDate(), entry.getStartTime()))));
+            entry.startDateProperty().addListener((observable, oldValue, newValue) -> entry.getUserObject().setRequestedDate(LocalDateTime.of(entry.getStartDate(), entry.getStartTime())));
+            entry.setUserObject(new Appointment(entry.getTitle(), "0", AppointmentCategory.OTHER, entry.getStartAsLocalDateTime(), "", AppointmentStatus.ACCEPTED_SEEN));
+            Interval interval = new Interval(time.toLocalDateTime(), time.toLocalDateTime().plusHours(1));
+            entry.setInterval(interval);
+
+            if (control instanceof AllDayView) {
+                entry.setFullDay(true);
+            }
+
+            return entry;
+        });
+
+        personal.addEventHandler(evt -> {
+            if (evt.isEntryAdded()) {
+                AppController.getInstance().getAppointmentsBridge().postAppointment((Appointment) evt.getEntry().getUserObject());
+            }
+            if (evt.isEntryRemoved()) {
+
+            }
+
+            calendarView.getCalendarSources().forEach(cs -> cs.getCalendars().forEach(c -> {
+                Entry<Appointment> entry = (Entry<Appointment>) evt.getEntry();
+                for (List<Entry<?>> list : c.findEntries(entry.getStartDate(), entry.getEndDate(), entry.getZoneId()).values()) {
+                    list.remove(entry);
+                    for (Entry<?> e : list) {
+                        if (entry.intersects(e)) {
+                            entry.changeStartTime(((Appointment) evt.getOldUserObject()).getRequestedDate().toLocalTime(), true);
+                        }
+                    }
+                }
+            }));
+
+        });
+
+        calendarView.setVirtualGrid(new VirtualGrid("hour-grid", "h-grid", ChronoUnit.HOURS, 1));
+
+        calendarView.getCalendarSources().forEach(cs -> cs.getCalendars().forEach(c -> {
+            c.setLookAheadDuration(Duration.ofDays(365));
+            c.setLookBackDuration(Duration.ofDays(365));
         }));
 
         return calendarView;

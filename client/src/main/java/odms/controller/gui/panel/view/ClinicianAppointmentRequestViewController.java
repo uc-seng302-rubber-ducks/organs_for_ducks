@@ -1,5 +1,6 @@
 package odms.controller.gui.panel.view;
 
+import com.calendarfx.view.EntryViewBase;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -10,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import odms.commons.model.Appointment;
@@ -98,6 +100,14 @@ public class ClinicianAppointmentRequestViewController {
     private void initCalendar() {
         CalendarWidget calendarView = CalendarWidgetFactory.createCalendar();
         calendarViewPane.getChildren().add(calendarView);
+        calendarView.getWeekPage().getDetailedWeekView().getWeekView().getWeekDayViews().forEach(wdc -> wdc.getChildrenUnmodifiable().forEach(node -> {
+            if (node instanceof EntryViewBase) node.setOnMouseClicked(event -> {
+                if (event.getButton().equals(MouseButton.PRIMARY) && ((EntryViewBase) node).getEntry().getUserObject() != null) {
+                    displayAppointmentDetails((Appointment) ((EntryViewBase) node).getEntry().getUserObject());
+                }
+            });
+        }));
+
         AnchorPane.setTopAnchor(calendarView,0.0);
         AnchorPane.setBottomAnchor(calendarView,0.0);
         AnchorPane.setLeftAnchor(calendarView, 0.0);
