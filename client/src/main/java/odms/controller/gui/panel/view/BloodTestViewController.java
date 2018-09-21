@@ -8,7 +8,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import odms.commons.model._abstract.UserLauncher;
+import odms.commons.model.User;
 import odms.commons.model.datamodel.BloodTest;
 import odms.controller.gui.panel.logic.BloodTestsLogicController;
 
@@ -43,19 +43,40 @@ public class BloodTestViewController {
 
     private ObservableList<BloodTest> bloodTests = FXCollections.observableList(new ArrayList<>());
     private BloodTestsLogicController logicController = new BloodTestsLogicController(bloodTests);
-    private UserLauncher parent;
+    private User user;
 
     @FXML
-    public void init(UserLauncher parent) {
-        this.parent = parent;
+    public void init(User user) {
+        this.user = user;
         initBloodTestTableView();
     }
 
     private void populateTables(){
         SortedList<BloodTest> bloodTestSortedList = new SortedList<>(bloodTests);
+    }
 
+    @FXML
+    private void updateBloodTest(){
 
+    }
 
+    @FXML
+    private void deleteBloodTest(){
+
+    }
+
+    @FXML
+    private void goToNextPage(){
+
+    }
+
+    @FXML
+    private void  goToPreviousPage(){
+
+    }
+
+    @FXML
+    private void addNewBloodTest(){
 
     }
 
