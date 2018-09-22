@@ -3,6 +3,8 @@ package odms.controller.gui.popup.logic;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import odms.commons.model.User;
+import odms.commons.model._enum.Organs;
+import odms.commons.model.datamodel.OrgansWithDisqualification;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 
 import java.time.LocalDate;
@@ -32,17 +34,23 @@ public class DisqualifyOrganReasonLogicController {
      * @param eligibleDate date which user is eligible to donate the organ again
      * @param description reason for disqualifying the organ
      */
-    public void confirm(LocalDate eligibleDate, String description) {
+    public void confirm(Organs disqualifiedOrgan, LocalDate eligibleDate, String description, String  staffId) {
         String message = "";
         if(!validateEligibleOrganDate(eligibleDate)){
             message = "Invalid date entered!";
         }
 
         if (description.isEmpty()) {
-            message += "A description must be provided.\n";
+            message += "A description must be provided!\n";
         }
 
         if (message.isEmpty()) {
+            OrgansWithDisqualification organsWithDisqualification = new OrgansWithDisqualification(disqualifiedOrgan, description, LocalDate.now(), staffId);
+            organsWithDisqualification.setEligibleDate(eligibleDate);
+            organsWithDisqualification.setCurrentlyDisqualified(true);
+            user.getDonorDetails().addDisqualification(organsWithDisqualification);
+            user.getDonorDetails().removeOrgan(disqualifiedOrgan);
+
             stage.close();
         } else {
             alertUser(message);

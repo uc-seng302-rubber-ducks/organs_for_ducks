@@ -475,6 +475,15 @@ public class DonationTabPageController {
      * eligible date for users to re-donate organ
      */
     public void launchDisqualifyOrganReason() {
+        Organs organ = null;
+        if(!currentOrgans.getSelectionModel().getSelectedItems().isEmpty()){
+            organ = currentOrgans.getSelectionModel().getSelectedItems().get(0);
+        }
+
+        if(!canDonate.getSelectionModel().getSelectedItems().isEmpty()){
+            organ = canDonate.getSelectionModel().getSelectedItems().get(0);
+        }
+
         FXMLLoader disqualifyOrganReasonLoader = new FXMLLoader(getClass().getResource("/FXML/disqualifyOrganReason.fxml"));
         Parent root;
 
@@ -482,7 +491,7 @@ public class DonationTabPageController {
             root = disqualifyOrganReasonLoader.load();
             DisqualifyOrganReasonViewController disqualifyOrganReasonViewController = disqualifyOrganReasonLoader.getController();
             Stage disqualifyOrganReasonStage = new Stage();
-            disqualifyOrganReasonViewController.init(currentUser, disqualifyOrganReasonStage);
+            disqualifyOrganReasonViewController.init(organ, currentUser, disqualifyOrganReasonStage, application.getUsername());
             disqualifyOrganReasonStage.setScene(new Scene(root));
             disqualifyOrganReasonStage.showAndWait();
             Log.info("Successfully launched the disqualify Organ Reason pop-up window for user: " + currentUser.getNhi());
