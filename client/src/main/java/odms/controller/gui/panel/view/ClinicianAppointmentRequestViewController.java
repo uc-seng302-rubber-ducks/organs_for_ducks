@@ -30,7 +30,6 @@ import odms.controller.gui.widget.CalendarWidget;
 import odms.controller.gui.widget.CalendarWidgetFactory;
 import odms.socket.ServerEventNotifier;
 import utils.Converter;
-import utils.NodeConverter;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -431,10 +430,13 @@ public class ClinicianAppointmentRequestViewController implements Converter {
         }
     }
 
+    /**
+     * @see Converter
+     */
     @Override
     public void startEdit() {
         if (appointmentRequestUserNhi instanceof Label) {
-            TextField temp = NodeConverter.generateTextField();
+            TextField temp = new TextField();
             temp.setText(((Label) appointmentRequestUserNhi).getText());
             temp.setPrefWidth(218.0);
             temp.setPrefHeight(15.0);
@@ -445,6 +447,9 @@ public class ClinicianAppointmentRequestViewController implements Converter {
         }
     }
 
+    /**
+     * @see Converter
+     */
     @Override
     public void stopEdit() {
         if (appointmentRequestUserNhi instanceof TextField) {
@@ -458,6 +463,9 @@ public class ClinicianAppointmentRequestViewController implements Converter {
         }
     }
 
+    /**
+     * @return The selected appointment property of this window
+     */
     public ObjectProperty<Appointment> selectedAppointmentProperty() {
         if (selectedAppointment == null) {
             selectedAppointment = new SimpleObjectProperty<>(null);
@@ -465,6 +473,9 @@ public class ClinicianAppointmentRequestViewController implements Converter {
         return selectedAppointment;
     }
 
+    /**
+     * @param selectedAppointment Appointment to set the selected appointment property to
+     */
     public void setSelectedAppointment(Appointment selectedAppointment) {
         selectedAppointmentProperty().set(selectedAppointment);
     }

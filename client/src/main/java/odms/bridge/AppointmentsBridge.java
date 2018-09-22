@@ -334,7 +334,6 @@ public class AppointmentsBridge extends Bifrost {
      */
     public void putAppointment(Appointment appointment, String token) {
         String url = String.format("%s/clinicians/%s%s/%d", ip, appointment.getRequestedClinicianId(), APPOINTMENTS, appointment.getAppointmentId());
-        System.out.println(appointment.getRequestedDate().toString());
         RequestBody body = RequestBody.create(json, new Gson().toJson(appointment));
         Request request = new Request.Builder().addHeader(tokenHeader, token).put(body).url(url).build();
         client.newCall(request).enqueue(new Callback() {
@@ -380,7 +379,6 @@ public class AppointmentsBridge extends Bifrost {
      */
     private void logAndNotify(Response response) {
         if (response.code() >= 400 && response.code() < 404) {
-            System.out.println(response.code());
             logResponse(response);
             alertUser("Oops! Something went wrong. Please check your inputs and try again.");
         } else {

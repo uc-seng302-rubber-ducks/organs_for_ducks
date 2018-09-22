@@ -29,6 +29,9 @@ public class CalendarWidgetFactory {
      */
     private static final String QUIET_MODE = "quiet";
 
+    private static final int START_TIME = 8;
+    private static final int END_TIME = 18;
+
     private CalendarWidgetFactory() {
     }
 
@@ -145,8 +148,8 @@ public class CalendarWidgetFactory {
         calendarView.setShowSearchField(false);
         calendarView.setShowSearchResultsTray(false);
         calendarView.setShowPrintButton(false);
-        calendarView.endTimeProperty().setValue(LocalTime.of(18, 0));
-        calendarView.startTimeProperty().setValue(LocalTime.of(8, 0));
+        calendarView.endTimeProperty().setValue(LocalTime.of(END_TIME, 0));
+        calendarView.startTimeProperty().setValue(LocalTime.of(START_TIME, 0));
     }
 
     /**
