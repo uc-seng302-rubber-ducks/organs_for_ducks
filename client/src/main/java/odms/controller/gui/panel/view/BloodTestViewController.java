@@ -55,7 +55,7 @@ public class BloodTestViewController {
             populateTable();
         });
         this.user = user;
-        logicController = new BloodTestsLogicController(bloodTests, user);
+        logicController = new BloodTestsLogicController(bloodTests, this.user);
         initBloodTestTableView();
     }
 
@@ -85,8 +85,8 @@ public class BloodTestViewController {
 
     @FXML
     private void deleteBloodTest() {
-        if (bloodTestView.getSelectionModel().getSelectedItem() != null) {
-            logicController.deleteBloodTest(bloodTestView.getSelectionModel().getSelectedItem());
+        if (bloodTestTableView.getSelectionModel().getSelectedItem() != null) {
+            logicController.deleteBloodTest(bloodTestTableView.getSelectionModel().getSelectedItem());
         } else {
             AlertWindowFactory.generateInfoWindow("You must select an blood test to delete");
         }
