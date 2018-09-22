@@ -148,12 +148,12 @@
        </AnchorPane>
       <AnchorPane fx:id="bloodTestGraphViewPane" layoutY="13.0" prefHeight="685.0" prefWidth="786.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="414.0" AnchorPane.topAnchor="50.0">
          <children>
-            <LineChart layoutX="8.0" layoutY="14.0" prefHeight="656.0" prefWidth="767.0" title="Property over the past Time Range" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="14.0">
+            <LineChart fx:id="bloodTestGraph" layoutX="8.0" layoutY="14.0" prefHeight="656.0" prefWidth="767.0" title="Property over the past Time Range" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="14.0">
               <xAxis>
-                <CategoryAxis label="Time range" side="BOTTOM" />
+                <CategoryAxis fx:id="timeRangeAxis" label="Time range" side="BOTTOM" />
               </xAxis>
               <yAxis>
-                <NumberAxis label="Property (unit)" side="LEFT" />
+                <NumberAxis fx:id="bloodTestPropertyAxis" label="Property (unit)" side="LEFT" />
               </yAxis>
             </LineChart>
          </children></AnchorPane>
@@ -186,7 +186,7 @@
               </rowConstraints>
                <children>
                   <Label text="Filter Time Range:" GridPane.rowIndex="1" />
-                   <ComboBox prefHeight="25.0" prefWidth="183.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                   <ComboBox fx:id="timeRangeFilterOption" prefHeight="25.0" prefWidth="183.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                        <items>
                            <FXCollections fx:factory="observableArrayList">
                                <String fx:value="Day" />
@@ -216,7 +216,7 @@
                   </Label>
                </children>
             </GridPane>
-            <Button layoutX="268.0" layoutY="600.0" mnemonicParsing="false" text="Repopulate Graph" />
+            <Button layoutX="268.0" layoutY="600.0" mnemonicParsing="false" onAction="#updateGraph" text="Repopulate Graph" />
          </children></AnchorPane>
    </children>
 </AnchorPane>

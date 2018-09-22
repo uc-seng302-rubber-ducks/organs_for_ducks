@@ -4,6 +4,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
@@ -67,11 +70,19 @@ public class BloodTestViewController {
     private Label bloodTestMCHaematocritLabel;
 
     @FXML
-    private ToggleGroup bloodTestTableGraphToggleGroup;
-    @FXML
     private Toggle bloodTestTableToggle;
     @FXML
     private Toggle bloodTestGraphToggle;
+
+    @FXML
+    private ComboBox<String> timeRangeFilterOption;
+
+    @FXML
+    private LineChart<Double, LocalDate> bloodTestGraph;
+    @FXML
+    private CategoryAxis timeRangeAxis;
+    @FXML
+    private NumberAxis bloodTestPropertyAxis;
 
     @FXML
     private AnchorPane bloodTestTableViewPane;
@@ -92,6 +103,7 @@ public class BloodTestViewController {
     private TableColumn<BloodTest, List<BloodTestProperties>> highPropertyValuesColumn;
 
     private ObservableList<BloodTest> bloodTests = FXCollections.observableList(new ArrayList<>());
+    private ObservableList<BloodTest> graphBloodTests = FXCollections.observableList(new ArrayList<>());
     private BloodTestsLogicController logicController;
     private boolean fromClinician;
 
@@ -107,11 +119,15 @@ public class BloodTestViewController {
             populateTable();
         });
 
+        graphBloodTests.addListener((ListChangeListener<? super BloodTest>) observable -> {
+            populateGraph();
+        });
+
         if (fromClinician) {
             showFields();
         }
 
-        logicController = new BloodTestsLogicController(bloodTests, user);
+        logicController = new BloodTestsLogicController(bloodTests, graphBloodTests, user);
         initBloodTestTableView();
     }
 
@@ -259,6 +275,59 @@ public class BloodTestViewController {
             bloodTestGraphViewPane.setVisible(true);
             bloodTestDetailsPane.setVisible(false);
             bloodTestTableViewPane.setVisible(false);
+        }
+    }
+
+    /**
+     * Updates the graph
+     */
+    @FXML
+    private void updateGraph() {
+        changeLabels();
+        logicController.updateGraph(timeRangeFilterOption.getValue());
+        populateGraph();
+    }
+
+    /**
+     * Populates the graph with blood test properties specified by the filters
+     */
+    private void populateGraph() {
+
+    }
+
+    /**
+     * Changes the graph title and axis' depending on the filter options
+     */
+    private void changeLabels() {
+        switch (timeRangeFilterOption.getValue()) {
+            case "Day":
+                bloodTestTitle.setText("Property over the past Day");
+                timeRangeAxis.setLabel("Time in hours");
+
+                break;
+
+            case "Week":
+                bloodTestTitle.setText("Property over the past Week");
+                timeRangeAxis.setLabel("Time in days");
+                break;
+
+            case "Fortnight":
+                bloodTestTitle.setText("Property over the past Fortnight");
+                timeRangeAxis.setLabel("Time in days");
+                break;
+
+            case "Month":
+                bloodTestTitle.setText("Property over the past Month");
+                timeRangeAxis.setLabel("Time in weeks");
+                break;
+
+            case "Year":
+                bloodTestTitle.setText("Property over the past Year");
+                timeRangeAxis.setLabel("Time in months");
+                break;
+
+            default:
+                break;
         }
     }
 
