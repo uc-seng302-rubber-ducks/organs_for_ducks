@@ -20,9 +20,9 @@ import java.util.Collection;
 @Component
 public class Scheduler {
 
-    public static final String EMAIL_FROM = "organsforducks@gmail.com";
     private JDBCDriver driver;
     private DBHandler handler;
+
 
     @Autowired
     public Scheduler(DBManager dbManager) {
@@ -30,15 +30,21 @@ public class Scheduler {
         this.handler = dbManager.getHandler();
     }
 
-    @Scheduled(cron="0 8 * * * * ")
+
+    /**
+     * Runs this function on schedule at * am every morning.
+     * note: spring boot uses six field cron instead of 5 field
+     * so we have second, minute, hour, day-of-month, month, day-of-year, year with year being optional
+     * for more info visit https://www.baeldung.com/cron-expressions
+     */
+    @Scheduled(cron="0 0 8 * * * ")
     public void sendEmailsDaily(){
-        System.out.println("running");
         Collection<AppointmentWithPeople> appointmentWithPeopleTomorrow = new ArrayList<>();
         Collection<AppointmentWithPeople> appointmentWithPeopleNextWeek = new ArrayList<>();
         String emailString = "Hello %s\n\nJust a reminder you have an appointment scheduled for %s,\n With %s %s,\n\n\nRegards,\n\n%s";
         try (Connection connection = driver.getConnection()) {
-            appointmentWithPeopleTomorrow = handler.getAppontmentsForDate(connection, LocalDate.now().plusDays(1));
-            appointmentWithPeopleNextWeek = handler.getAppontmentsForDate(connection, LocalDate.now().plusDays(7));
+            appointmentWithPeopleTomorrow = handler.getAppointmentsForDate(connection, LocalDate.now().plusDays(1));
+            appointmentWithPeopleNextWeek = handler.getAppointmentsForDate(connection, LocalDate.now().plusDays(7));
 
         } catch (SQLException e){
             Log.severe("Unable to get appointments date", e);
@@ -48,7 +54,7 @@ public class Scheduler {
         });
         for(AppointmentWithPeople appointment : appointmentWithPeopleTomorrow){
             if(!appointment.getUser().getEmail().equals("") || appointment.getUser().getEmail() != null){
-                mailHandler.sendMail(EMAIL_FROM, appointment.getUser().getEmail(),
+                mailHandler.sendMail(appointment.getUser().getEmail(),
                         String.format("Appointment for: %s", appointment.getAppointmentTime().toString().replace("T", " ")),
                         String.format(emailString, appointment.getUser().getFullName(), appointment.getAppointmentTime().toString().replace("T", " "), appointment.getClinician().getFirstName(),appointment.getClinician().getLastName(),appointment.getClinician().getFirstName()));
 
@@ -57,7 +63,7 @@ public class Scheduler {
 
         for(AppointmentWithPeople appointment : appointmentWithPeopleNextWeek){
             if(!appointment.getUser().getEmail().equals("") || appointment.getUser().getEmail() != null){
-                mailHandler.sendMail(EMAIL_FROM, appointment.getUser().getEmail(),
+                mailHandler.sendMail( appointment.getUser().getEmail(),
                         String.format("Appointment for: %s", appointment.getAppointmentTime().toString().replace("T", " ")),
                         String.format(emailString, appointment.getUser().getFullName(), appointment.getAppointmentTime().toString().replace("T", " "), appointment.getClinician().getFirstName(),appointment.getClinician().getLastName(),appointment.getClinician().getFirstName()));
 

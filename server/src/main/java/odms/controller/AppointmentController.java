@@ -4,10 +4,12 @@ import odms.commons.model.Appointment;
 import odms.commons.model._enum.AppointmentStatus;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.UserType;
+import odms.commons.model.dto.AppointmentWithPeople;
 import odms.commons.utils.Log;
 import odms.database.DBHandler;
 import odms.database.JDBCDriver;
 import odms.database.db_strategies.AppointmentUpdateStrategy;
+import odms.email.Mailer;
 import odms.exception.ServerDBException;
 import odms.security.IsClinician;
 import odms.socket.SocketHandler;
@@ -103,7 +105,7 @@ public class AppointmentController extends BaseController {
         try (Connection connection = driver.getConnection()) {
             return handler.getPendingAppointmentsCount(connection, staffId);
         } catch (SQLException e) {
-            Log.severe("Got bad response from DB. SQL error code: " + e.getErrorCode(), e);
+            Log.severe(BAD_DB_RESPONSE + e.getErrorCode(), e);
             throw new ServerDBException(e);
         }
     }
@@ -118,7 +120,7 @@ public class AppointmentController extends BaseController {
         try (Connection connection = driver.getConnection()) {
             return handler.getBookedAppointmentDateTimes(connection, staffid,startDate,endDate);
         } catch (SQLException e) {
-            Log.severe("Got bad response from DB. SQL error code: " + e.getErrorCode(), e);
+            Log.severe(BAD_DB_RESPONSE + e.getErrorCode(), e);
             throw new ServerDBException(e);
         }
     }
@@ -155,6 +157,9 @@ public class AppointmentController extends BaseController {
 
                 String idString = Integer.toString(appointmentId);
                 socketHandler.broadcast(EventTypes.APPOINTMENT_UPDATE, idString, idString);
+                Mailer mailer = new Mailer();
+                AppointmentWithPeople appointment = handler.getAppointmentWithPeople(connection, appointmentId);
+                mailer.sendAppointmentUpdate(statusId, appointment);
             } else {
                 Log.warning("A user tried to update an appointment status that they are not allowed to.");
             }

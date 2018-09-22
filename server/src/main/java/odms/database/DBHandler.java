@@ -128,7 +128,7 @@ public class DBHandler {
             "WHERE fkUserNhi = ?";
     private static final String INSERT_ELSE_UPDATE_PREFERRED_CLINICIAN = "INSERT INTO PreferredClinician (fkUserNhi, fkStaffId) " +
             "VALUES (?, ?) ON DUPLICATE KEY UPDATE fkUserNhi=?, fkStaffId=?";
-    public static final String GET_APPOINTMENTS_ON_DATE = "SELECT fkStaffId, fkUserNhi, requestedTime FROM AppointmentDetails WHERE DATE(requestedTime) = ? ";
+    public static final String GET_APPOINTMENTS_ON_DATE = "SELECT fkStaffId, fkUserNhi, requestedTime FROM AppointmentDetails WHERE apptId = ? ";
 
     private AbstractUpdateStrategy updateStrategy;
     private AbstractFetchAppointmentStrategy fetchAppointmentStrategy;
@@ -1563,8 +1563,15 @@ public class DBHandler {
         }
     }
 
-
-    public Collection<AppointmentWithPeople> getAppontmentsForDate(Connection connection, LocalDate requestedDate) throws SQLException {
+    /**
+     * Gets the appointments scheduled for the given date
+     *
+     * @param connection connection to the database
+     * @param requestedDate Date to get appointments for
+     * @return collection of the appointments
+     * @throws SQLException sql db has gone wrong
+     */
+    public Collection<AppointmentWithPeople> getAppointmentsForDate(Connection connection, LocalDate requestedDate) throws SQLException {
         List<AppointmentWithPeople> results = new ArrayList<>();
         try(PreparedStatement preparedStatement  = connection.prepareStatement(GET_APPOINTMENTS_ON_DATE)){
             preparedStatement.setDate(1, Date.valueOf(requestedDate));
@@ -1585,6 +1592,37 @@ public class DBHandler {
 
         }
         return results;
+    }
+
+    /**
+     * Gets the appointments scheduled for the given date
+     *
+     * @param connection connection to the database
+     * @param appointmentId appointment to get
+     * @return collection of the appointments
+     * @throws SQLException sql db has gone wrong
+     */
+    public AppointmentWithPeople getAppointmentWithPeople(Connection connection, int appointmentId) throws SQLException {
+
+        try(PreparedStatement preparedStatement  = connection.prepareStatement(GET_APPOINTMENTS_ON_DATE)){
+            preparedStatement.setInt(1, appointmentId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if(resultSet.next()){ //should only ever be a single result in the set
+                    String nhi = resultSet.getString("fkUserNhi");
+                    String id = resultSet.getString("fkStaffId");
+                    LocalDateTime appointmentTime = resultSet.getTimestamp("requestedTime").toLocalDateTime();
+                    User user = getOneUser(connection, nhi);
+                    Clinician clinician = getOneClinician(connection, id);
+                    AppointmentWithPeople appointment = new AppointmentWithPeople();
+                    appointment.setUser(user);
+                    appointment.setClinician(clinician);
+                    appointment.setAppointmentTime(appointmentTime);
+                    return appointment;
+                }
+            }
+
+        }
+        return null;
     }
 
 }

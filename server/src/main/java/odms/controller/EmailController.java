@@ -19,6 +19,6 @@ public class EmailController extends BaseController {
         mailHandler.setMailSender(new JavaMailSenderImpl() {
         });
         String emailString = "Hello %s\n\nYour appointment scheduled for %s,\n With %s, has been %s\n%s,\n\n\nRegards,\n\n%s";
-        mailHandler.sendMail("organsforducks@gmail.com", "", "Hello","Quack");
+        mailHandler.sendMail("",  "Hello","Quack");
     }
 }
