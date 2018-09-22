@@ -131,6 +131,21 @@ public class AttributeValidation {
     }
 
     /**
+     * checks that Eligible Organ Date is after
+     * today's date. Eligible date is optional field.
+     *
+     * @param eligibleDate appointment date
+     * @return true if appointment date is
+     * after the current date, false otherwise.
+     */
+    public static boolean validateEligibleOrganDate(LocalDate eligibleDate) {
+        if (eligibleDate == null){
+            return true;
+        }
+        return eligibleDate.isAfter(LocalDate.now());
+    }
+
+    /**
      * Gets the enum value of BloodTypes by iterating through the string literals
      * and matching them to the given blood type.
      *

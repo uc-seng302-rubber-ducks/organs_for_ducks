@@ -23,6 +23,7 @@ import odms.commons.utils.OrganListCellFactory;
 import odms.commons.utils.ProgressTask;
 import odms.controller.AppController;
 import odms.controller.gui.panel.view.OrganExpiryViewController;
+import odms.controller.gui.popup.view.DisqualifyOrganReasonViewController;
 import odms.controller.gui.widget.ProgressBarTableCellFactory;
 import odms.controller.gui.window.UserController;
 
@@ -466,6 +467,28 @@ public class DonationTabPageController {
 
     @FXML
     void changeDisqualificationStatus() {
+        launchDisqualifyOrganReason();
+    }
 
+    /**
+     * Launches the pop-up to enter reason for disqualifying organ and
+     * eligible date for users to re-donate organ
+     */
+    public void launchDisqualifyOrganReason() {
+        FXMLLoader disqualifyOrganReasonLoader = new FXMLLoader(getClass().getResource("/FXML/disqualifyOrganReason.fxml"));
+        Parent root;
+
+        try {
+            root = disqualifyOrganReasonLoader.load();
+            DisqualifyOrganReasonViewController disqualifyOrganReasonViewController = disqualifyOrganReasonLoader.getController();
+            Stage disqualifyOrganReasonStage = new Stage();
+            disqualifyOrganReasonViewController.init(currentUser, disqualifyOrganReasonStage);
+            disqualifyOrganReasonStage.setScene(new Scene(root));
+            disqualifyOrganReasonStage.showAndWait();
+            Log.info("Successfully launched the disqualify Organ Reason pop-up window for user: " + currentUser.getNhi());
+
+        } catch (IOException e) {
+            Log.severe("Failed to load disqualify Organ Reason pop-up window for user: " + currentUser.getNhi(), e);
+        }
     }
 }
