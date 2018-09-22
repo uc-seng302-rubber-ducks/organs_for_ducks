@@ -19,6 +19,13 @@ import java.util.List;
 public class BloodTestViewController {
 
     @FXML
+    private Button requestNewBloodTest;
+    @FXML
+    private Button updateBloodTest;
+    @FXML
+    private Button deleteBloodTest;
+
+    @FXML
     private DatePicker bloodTestDatePicker;
     @FXML
     private TextField redBloodCount;
@@ -81,8 +88,30 @@ public class BloodTestViewController {
             populateTable();
         });
 
+        if (fromClinician) {
+            showFields();
+        }
+
         logicController = new BloodTestsLogicController(bloodTests, user);
         initBloodTestTableView();
+    }
+
+    /**
+     * Makes the extra fields visible to the clinicians so blood tests can be created, updated and deleted.
+     */
+    private void showFields() {
+        requestNewBloodTest.setVisible(true);
+        updateBloodTest.setVisible(true);
+        deleteBloodTest.setVisible(true);
+        bloodTestDatePicker.setVisible(true);
+        redBloodCount.setVisible(true);
+        whiteBloodCount.setVisible(true);
+        heamoglobin.setVisible(true);
+        platelets.setVisible(true);
+        glucose.setVisible(true);
+        haematocrit.setVisible(true);
+        meanCellVolume.setVisible(true);
+        meanCellHaematocrit.setVisible(true);
     }
 
     /**
