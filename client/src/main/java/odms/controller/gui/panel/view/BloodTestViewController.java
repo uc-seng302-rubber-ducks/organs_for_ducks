@@ -9,11 +9,13 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import odms.commons.model.User;
+import odms.commons.model._enum.BloodTestProperties;
 import odms.commons.model.datamodel.BloodTest;
 import odms.controller.gui.panel.logic.BloodTestsLogicController;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 public class BloodTestViewController {
     @FXML
@@ -35,7 +37,12 @@ public class BloodTestViewController {
     @FXML
     private TextField meanCellHaematocrit;
     @FXML
-    private TableColumn<BloodTest, LocalDate> dateRequestedColumn;
+    private TableColumn<BloodTest, LocalDate> testDateColumn;
+    @FXML
+    private TableColumn<BloodTest, List<BloodTestProperties>> lowPropertyValuesColumn;
+    @FXML
+    private TableColumn<BloodTest, List<BloodTestProperties>> highPropertyValuesColumn;
+
 
     private ObservableList<BloodTest> bloodTests = FXCollections.observableList(new ArrayList<>());
     private BloodTestsLogicController logicController = new BloodTestsLogicController(bloodTests);
@@ -77,8 +84,9 @@ public class BloodTestViewController {
     }
 
     private void initBloodTestTableView() {
-        dateRequestedColumn.setCellValueFactory((new PropertyValueFactory<>("")));
-        bloodTestView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        testDateColumn.setCellValueFactory(new PropertyValueFactory<>("testDate"));
+        lowPropertyValuesColumn.setCellValueFactory(new PropertyValueFactory<>("lowValues"));
+        highPropertyValuesColumn.setCellValueFactory(new PropertyValueFactory<>("highValues"));
         populateTables();
     }
 }
