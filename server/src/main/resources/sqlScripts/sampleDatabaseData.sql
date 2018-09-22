@@ -153,6 +153,7 @@ INSERT INTO AppointmentDetails(apptId, fkUserNhi, fkStaffId, fkCategoryId, reque
   (2, 'DEF2314', '23', 2, '2018-01-11 16:15:01', 2, 'periodic check up');
 
 INSERT INTO BloodTestDetails (bloodTestId, fkUserNhi, redBloodCellCount, whiteBloodCellCount, haemoglobinLevel, platelets,
-                              glucoseLevels, meanCellVolume, haematocrit, meanCellHaematocrit, testDate) VALUES
-  (1, "ABC1234", 0.0054, 8.5, 120.5, 300.5, 4.8, 80.5, 0.35, 25.5, '2015-09-01'),
-  (2, "DEF2314", 0.0063, 7.7, 127.6, 354.4, 5.3, 78.5, 0.35, 25.5, '2017-01-09');
+                              glucoseLevels, haematocrit, meanCellVolume, meanCellHaematocrit, testDate) VALUES
+  (1, 'ABC1234', 0.0054, 8.5, 120.5, 300.5, 4.8, 0.35, 80.5, 25.5, '2015-09-01'),
+  (2, 'DEF2314', 0.0063, 7.7, 127.6, 354.4, 5.3, 0.35, 78.5, 25.5, '2017-01-09'),
+  (3, 'XYZ1234', 0.0050, 10.0, 143.0, 470.6, 11.2, 0.24, 76.0, 24.0, '2017-03-03');
