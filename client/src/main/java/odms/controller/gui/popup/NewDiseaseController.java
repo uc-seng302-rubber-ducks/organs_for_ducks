@@ -175,7 +175,7 @@ public class NewDiseaseController {
                 editableDisease.setIsCured(isCured);
                 editableDisease.setIsChronic(isChronic);
             } else {
-
+                currentUser.addCurrentDisease(editableDisease);
                 editableDisease.setName(diseaseName);
                 editableDisease.setDiagnosisDate(diagnosisDate);
                 editableDisease.setIsCured(isCured);
@@ -183,7 +183,7 @@ public class NewDiseaseController {
 
             }
 
-            //Refresh the view
+
             userController.refreshDiseases();
             closeNewDiseaseWindow();
             Log.info("Successfully added new disease: " + diseaseName + " for User NHI: " + currentUser.getNhi());

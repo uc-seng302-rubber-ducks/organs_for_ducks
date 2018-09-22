@@ -264,7 +264,7 @@ public class DiseasesTabPageController {
             NewDiseaseController newDiseaseController = addDiseaseLoader.getController();
             Stage stage = new Stage();
             Disease disease = new Disease("", false, false, LocalDate.now());
-            currentUser.addCurrentDisease(disease);
+            //currentUser.addCurrentDisease(disease);
             newDiseaseController.init(currentUser, application, stage, disease, parent);
             stage.setScene(new Scene(root));
             stage.show();
