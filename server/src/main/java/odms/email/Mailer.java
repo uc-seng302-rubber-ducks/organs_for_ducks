@@ -94,10 +94,10 @@ public class Mailer {
             default:
                 message = "";
         }
-        Log.info("Sending" + message + " " + statusId);
         if (message.isEmpty()) {
             return;
         }
+        Log.info("Sending\n" + message);
         String subject = "Appointment With " + appointment.getClinician().getFirstName() + " " + appointment.getClinician().getLastName();
         mailHandler.sendMail(appointment.getUser().getEmail(), subject, message);
     }
