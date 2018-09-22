@@ -139,10 +139,7 @@ public class AttributeValidation {
      * after the current date, false otherwise.
      */
     public static boolean validateEligibleOrganDate(LocalDate eligibleDate) {
-        if (eligibleDate == null){
-            return true;
-        }
-        return eligibleDate.isAfter(LocalDate.now());
+        return eligibleDate == null || eligibleDate.isAfter(LocalDate.now());
     }
 
     /**
@@ -235,4 +232,6 @@ public class AttributeValidation {
     public static boolean validateTimeString(String time) {
         return time.matches("(([01][0-9])|(2[0-3])):([0-5][0-9])");
     }
+
+//    public static boolean validateDateString() //BOI
 }

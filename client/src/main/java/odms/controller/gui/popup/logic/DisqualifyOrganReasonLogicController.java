@@ -5,11 +5,10 @@ import javafx.stage.Stage;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.OrgansWithDisqualification;
+import odms.commons.utils.AttributeValidation;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 
 import java.time.LocalDate;
-
-import static odms.commons.utils.AttributeValidation.validateEligibleOrganDate;
 
 public class DisqualifyOrganReasonLogicController {
 
@@ -35,27 +34,26 @@ public class DisqualifyOrganReasonLogicController {
      * @param description reason for disqualifying the organ
      */
     public void confirm(Organs disqualifiedOrgan, LocalDate eligibleDate, String description, String  staffId) {
-        String message = "";
-        if(!validateEligibleOrganDate(eligibleDate)){
-            message = "Invalid date entered!";
-        }
 
-        if (description.isEmpty()) {
-            message += "A description must be provided!\n";
-        }
+        OrgansWithDisqualification organsWithDisqualification = new OrgansWithDisqualification(disqualifiedOrgan, description, LocalDate.now(), staffId);
+        organsWithDisqualification.setEligibleDate(eligibleDate);
+        organsWithDisqualification.setCurrentlyDisqualified(true);
+        user.getDonorDetails().addDisqualification(organsWithDisqualification);
 
-        if (message.isEmpty()) {
-            OrgansWithDisqualification organsWithDisqualification = new OrgansWithDisqualification(disqualifiedOrgan, description, LocalDate.now(), staffId);
-            organsWithDisqualification.setEligibleDate(eligibleDate);
-            organsWithDisqualification.setCurrentlyDisqualified(true);
-            user.getDonorDetails().addDisqualification(organsWithDisqualification);
-            user.getDonorDetails().removeOrgan(disqualifiedOrgan);
+        stage.close();
+    }
 
-            stage.close();
-        } else {
-            alertUser(message);
-        }
+    public boolean validateEligibleOrganDate(LocalDate date) {
+        return AttributeValidation.validateEligibleOrganDate(date);
+    }
 
+    /**
+     * Validates a description string for disqualified organs
+     * @param description of the disqualified organ
+     * @return true if the description is empty, true otherwise
+     */
+    public boolean validateDescription(String description) {
+        return !description.isEmpty();
     }
 
     /**
