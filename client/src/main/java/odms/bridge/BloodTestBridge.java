@@ -111,7 +111,8 @@ public class BloodTestBridge extends Bifrost {
     }
 
     /**
-     * Checks that the given value is above or equal to the lower bound of that property
+     * Checks that the given value is above or equal to the lower bound of that property.
+     * Ignores values at 0.0 as these are considered as if they were not tested.
      *
      * @param btProperty     Blood test property containing the lower bound value
      * @param bloodTestValue Current value of a blood test
@@ -119,7 +120,9 @@ public class BloodTestBridge extends Bifrost {
      */
     private void checkLower(BloodTestProperties btProperty, double bloodTestValue, List<BloodTestProperties> lowValues) {
         if (!AttributeValidation.checkAboveLowerBound(btProperty.getLowerBound(), bloodTestValue)) {
-            lowValues.add(btProperty);
+            if (bloodTestValue != 0.0) {
+                lowValues.add(btProperty);
+            }
         }
     }
 
