@@ -21,7 +21,7 @@ public class BloodTestBridge extends Bifrost {
 
     private static final String USER = "user/";
 
-    BloodTestBridge(OkHttpClient client) {
+    public BloodTestBridge(OkHttpClient client) {
         super(client);
     }
 

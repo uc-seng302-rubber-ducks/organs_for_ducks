@@ -1,6 +1,7 @@
 package odms.controller.gui.panel.view;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
@@ -44,12 +45,15 @@ public class BloodTestViewController {
 
 
     private ObservableList<BloodTest> bloodTests = FXCollections.observableList(new ArrayList<>());
-    private BloodTestsLogicController logicController = new BloodTestsLogicController(bloodTests);
-    private User user;
+    private BloodTestsLogicController logicController;
 
     @FXML
     public void init(User user) {
-        this.user = user;
+        bloodTests.addListener((ListChangeListener<? super BloodTest>) observable -> {
+            populateTable();
+        });
+
+        logicController = new BloodTestsLogicController(bloodTests, user);
         initBloodTestTableView();
     }
 
@@ -60,6 +64,14 @@ public class BloodTestViewController {
         testDateColumn.setCellValueFactory(new PropertyValueFactory<>("testDate"));
         lowPropertyValuesColumn.setCellValueFactory(new PropertyValueFactory<>("lowValues"));
         highPropertyValuesColumn.setCellValueFactory(new PropertyValueFactory<>("highValues"));
+        logicController.updateTableView(0);
+        populateTable();
+    }
+
+    /**
+     * Populates the table view with blood tests retrieved from the database
+     */
+    private void populateTable() {
         bloodTestTableView.setItems(bloodTests);
     }
 
