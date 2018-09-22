@@ -106,7 +106,7 @@ public class CalendarWidgetFactory {
             } else if (evt.getOldInterval() != null && !evt.getOldInterval().equals(evt.getEntry().getInterval())) { // Only put if the times has changed
                 Entry<Appointment> entry = (Entry<Appointment>) evt.getEntry();
                 if (entry != null) {
-                    checkNoCollisions(calendarView, entry, evt);
+                    checkNoClashes(calendarView, entry, evt);
                     if (!entry.getProperties().containsKey(QUIET_MODE)) {
                         AppController.getInstance().getAppointmentsBridge().putAppointment(entry.getUserObject(), AppController.getInstance().getToken());
                     }
@@ -123,13 +123,13 @@ public class CalendarWidgetFactory {
      * @param entry        entry to check
      * @param evt          The Calendar event that triggered the call
      */
-    private static void checkNoCollisions(CalendarWidget calendarView, Entry entry, CalendarEvent evt) {
+    private static void checkNoClashes(CalendarWidget calendarView, Entry entry, CalendarEvent evt) {
         calendarView.getCalendarSources().forEach(cs -> cs.getCalendars().forEach(c -> {
             for (List<Entry<?>> list : c.findEntries(entry.getStartDate(), entry.getEndDate(), entry.getZoneId()).values()) {
                 for (Entry<?> e : list) {
                     if (entry.intersects(e) && !e.equals(entry)) {
                         entry.setInterval(evt.getOldInterval());
-                        AlertWindowFactory.generateInfoWindow("You cannot move this there because it collides with another existing entry");
+                        AlertWindowFactory.generateInfoWindow("You cannot move this there because it clashes with another existing entry");
                     }
                 }
             }
