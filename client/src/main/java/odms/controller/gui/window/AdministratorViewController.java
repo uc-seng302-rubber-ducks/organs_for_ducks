@@ -189,7 +189,6 @@ public class AdministratorViewController implements PropertyChangeListener, User
         ServerEventNotifier.getInstance().addPropertyChangeListener(this);
 
         userBridge.getUsers(userStartIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), genderComboBox.getValue(), appController.getToken());
-        clinicianBridge.getClinicians(clinicianStartIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), appController.getToken());
 
         adminUndoButton.setDisable(true);
         adminRedoButton.setDisable(true);
