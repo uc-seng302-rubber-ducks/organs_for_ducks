@@ -1,9 +1,6 @@
 package odms.controller.gui.widget;
 
-import com.calendarfx.model.Calendar;
-import com.calendarfx.model.CalendarSource;
-import com.calendarfx.model.Entry;
-import com.calendarfx.model.Interval;
+import com.calendarfx.model.*;
 import com.calendarfx.view.AllDayView;
 import com.calendarfx.view.DateControl;
 import com.calendarfx.view.VirtualGrid;
@@ -27,6 +24,9 @@ import java.util.List;
  */
 public class CalendarWidgetFactory {
 
+    /**
+     * Quiet mode to determine if the entry should cause an update call to the server or not
+     */
     private static final String QUIET_MODE = "quiet";
 
     private CalendarWidgetFactory() {
@@ -67,9 +67,78 @@ public class CalendarWidgetFactory {
         appointmentCategories.getCalendars().addAll(bloodTestCalendar, generalCheckUpCalendar, healthAdviceCalendar, prescriptionCalendar, otherCalendar);
         calendarView.getCalendarSources().add(appointmentCategories);
         calendarView.setRequestedTime(LocalTime.now());
-        calendarView.setStartTime(LocalTime.of(8, 0));
-        calendarView.setEndTime(LocalTime.of(18, 0)); //6pm
 
+        hideButtons(calendarView);
+
+        startCalendarTimer(calendarView);
+
+        appointmentCategories.getCalendars().forEach(c -> c.setReadOnly(true));
+
+        setCalendarEntryFactory(calendarView);
+
+        setPersonalEventHandler(personal, calendarView);
+
+
+        // This sets the virtual grid to have a spacing of one hour to snap the entries per hour.
+        calendarView.setVirtualGrid(new VirtualGrid("hour-grid", "h-grid", ChronoUnit.HOURS, 1));
+
+        calendarView.getCalendarSources().forEach(cs -> cs.getCalendars().forEach(c -> {
+            c.setLookAheadDuration(Duration.ofDays(365));
+            c.setLookBackDuration(Duration.ofDays(365));
+        }));
+        setCalendarOnClick(calendarView);
+        return calendarView;
+    }
+
+    private static void setPersonalEventHandler(Calendar personal, CalendarWidget calendarView) {
+        personal.addEventHandler(evt -> {
+            if (evt.isEntryAdded()) {
+                if (!evt.getEntry().getProperties().containsKey(QUIET_MODE)) {
+                    AppController.getInstance().getAppointmentsBridge().postAppointment((Appointment) evt.getEntry().getUserObject());
+                } else {
+                    evt.getEntry().getProperties().remove(QUIET_MODE);
+                }
+            } else if (evt.isEntryRemoved()) {
+                AppController.getInstance().getAppointmentsBridge().deleteAppointment((Appointment) evt.getEntry().getUserObject());
+            } else if (evt.getOldInterval() != null && !evt.getOldInterval().equals(evt.getEntry().getInterval())) { // Only put if the times has changed
+                Entry<Appointment> entry = (Entry<Appointment>) evt.getEntry();
+                if (entry != null) {
+                    checkNoCollisions(calendarView, entry, evt);
+                    if (!entry.getProperties().containsKey(QUIET_MODE)) {
+                        AppController.getInstance().getAppointmentsBridge().putAppointment(entry.getUserObject(), AppController.getInstance().getToken());
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * Checks that the entry provided does not clash with any of the entries in the given calendar widget
+     * Resets it to the
+     *
+     * @param calendarView calendarview to check the entry against
+     * @param entry        entry to check
+     * @param evt          The Calendar event that triggered the call
+     */
+    private static void checkNoCollisions(CalendarWidget calendarView, Entry entry, CalendarEvent evt) {
+        calendarView.getCalendarSources().forEach(cs -> cs.getCalendars().forEach(c -> {
+            for (List<Entry<?>> list : c.findEntries(entry.getStartDate(), entry.getEndDate(), entry.getZoneId()).values()) {
+                for (Entry<?> e : list) {
+                    if (entry.intersects(e) && !e.equals(entry)) {
+                        entry.setInterval(evt.getOldInterval());
+                        AlertWindowFactory.generateInfoWindow("You cannot move this there because it collides with another existing entry");
+                    }
+                }
+            }
+        }));
+    }
+
+    /**
+     * Hides buttons from the user to prevent the breaking of things
+     *
+     * @param calendarView calendar view to hide buttons of
+     */
+    private static void hideButtons(CalendarWidget calendarView) {
         calendarView.showWeekPage();
         calendarView.setShowAddCalendarButton(false);
         calendarView.setShowPrintButton(false);
@@ -78,6 +147,14 @@ public class CalendarWidgetFactory {
         calendarView.setShowPrintButton(false);
         calendarView.endTimeProperty().setValue(LocalTime.of(18, 0));
         calendarView.startTimeProperty().setValue(LocalTime.of(8, 0));
+    }
+
+    /**
+     * Starts a new thread which updates the current time of the calendar
+     *
+     * @param calendarView calendar view to update
+     */
+    private static void startCalendarTimer(CalendarWidget calendarView) {
         Thread thread = new Thread(() -> {
             while (true) {
                 try {
@@ -91,9 +168,24 @@ public class CalendarWidgetFactory {
         });
         thread.setDaemon(true);
         thread.start();
+    }
 
-        appointmentCategories.getCalendars().forEach(c -> c.setReadOnly(true));
 
+    /**
+     * disables double-click popover menu
+     *
+     * @param calendarView calendarview to modify
+     */
+    private static void setCalendarOnClick(CalendarWidget calendarView) {
+        calendarView.setEntryDetailsCallback(param -> null);
+    }
+
+    /**
+     * Sets the entry factory of the given calendar widget to be in line with what we want, which is an entry holding an appointment
+     *
+     * @param calendarView calendarview to set entry factory of
+     */
+    private static void setCalendarEntryFactory(CalendarWidget calendarView) {
         calendarView.setEntryFactory(param -> {
             DateControl control = param.getDateControl();
 
@@ -124,53 +216,5 @@ public class CalendarWidgetFactory {
 
             return entry;
         });
-
-        personal.addEventHandler(evt -> {
-            if (evt.isEntryAdded()) {
-                if (!evt.getEntry().getProperties().containsKey(QUIET_MODE)) {
-                    AppController.getInstance().getAppointmentsBridge().postAppointment((Appointment) evt.getEntry().getUserObject());
-                } else {
-                    evt.getEntry().getProperties().remove(QUIET_MODE);
-                }
-            } else if (evt.isEntryRemoved()) {
-                AppController.getInstance().getAppointmentsBridge().deleteAppointment((Appointment) evt.getEntry().getUserObject());
-            } else if (evt.getOldInterval() != null && !evt.getOldInterval().equals(evt.getEntry().getInterval())) { // Only put if the times has changed
-                Entry<Appointment> entry = (Entry<Appointment>) evt.getEntry();
-                if (entry != null) {
-                    calendarView.getCalendarSources().forEach(cs -> cs.getCalendars().forEach(c -> {
-                        for (List<Entry<?>> list : c.findEntries(entry.getStartDate(), entry.getEndDate(), entry.getZoneId()).values()) {
-                            for (Entry<?> e : list) {
-                                if (entry.intersects(e) && !e.equals(entry)) {
-                                    entry.setInterval(evt.getOldInterval());
-                                    AlertWindowFactory.generateInfoWindow("You cannot move this there because it collides with another existing entry");
-                                }
-                            }
-                        }
-                    }));
-                    if (!entry.getProperties().containsKey(QUIET_MODE)) {
-                        AppController.getInstance().getAppointmentsBridge().putAppointment(entry.getUserObject(), AppController.getInstance().getToken());
-                    }
-                }
-            }
-        });
-
-        calendarView.setVirtualGrid(new VirtualGrid("hour-grid", "h-grid", ChronoUnit.HOURS, 1));
-
-        calendarView.getCalendarSources().forEach(cs -> cs.getCalendars().forEach(c -> {
-            c.setLookAheadDuration(Duration.ofDays(365));
-            c.setLookBackDuration(Duration.ofDays(365));
-        }));
-        setCalendarOnClick(calendarView);
-        return calendarView;
-    }
-
-
-    /**
-     * disables double-click popover menu
-     *
-     * @param calendarView calendarview to modify
-     */
-    private static void setCalendarOnClick(CalendarWidget calendarView) {
-        calendarView.setEntryDetailsCallback(param -> null);
     }
 }
