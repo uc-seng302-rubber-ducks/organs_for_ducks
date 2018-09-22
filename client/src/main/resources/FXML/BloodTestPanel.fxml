@@ -5,7 +5,7 @@
 <?import javafx.scene.text.Font?>
 <AnchorPane prefHeight="735.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.panel.view.BloodTestViewController">
    <children>
-      <TableView fx:id="bloodTestView" layoutX="48.0" layoutY="66.0" prefHeight="610.0" prefWidth="701.0">
+       <TableView fx:id="bloodTestTableView" layoutX="48.0" layoutY="66.0" prefHeight="610.0" prefWidth="701.0">
         <columns>
             <TableColumn fx:id="testDateColumn" prefWidth="140.0" text="Date Requested"/>
             <TableColumn fx:id="lowPropertyValuesColumn" prefWidth="125.0" text="Properties Below Normal"/>

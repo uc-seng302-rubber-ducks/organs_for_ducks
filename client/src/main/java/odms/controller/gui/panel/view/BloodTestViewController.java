@@ -2,7 +2,6 @@ package odms.controller.gui.panel.view;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -19,7 +18,7 @@ import java.util.List;
 
 public class BloodTestViewController {
     @FXML
-    private TableView<BloodTest> bloodTestView;
+    private TableView<BloodTest> bloodTestTableView;
     @FXML
     private TextField redBloodCount;
     @FXML
@@ -54,8 +53,14 @@ public class BloodTestViewController {
         initBloodTestTableView();
     }
 
-    private void populateTables() {
-        SortedList<BloodTest> bloodTestSortedList = new SortedList<>(bloodTests);
+    /**
+     * Initializes the table view of blood tests for the specified user
+     */
+    private void initBloodTestTableView() {
+        testDateColumn.setCellValueFactory(new PropertyValueFactory<>("testDate"));
+        lowPropertyValuesColumn.setCellValueFactory(new PropertyValueFactory<>("lowValues"));
+        highPropertyValuesColumn.setCellValueFactory(new PropertyValueFactory<>("highValues"));
+        bloodTestTableView.setItems(bloodTests);
     }
 
     @FXML
@@ -83,10 +88,5 @@ public class BloodTestViewController {
 
     }
 
-    private void initBloodTestTableView() {
-        testDateColumn.setCellValueFactory(new PropertyValueFactory<>("testDate"));
-        lowPropertyValuesColumn.setCellValueFactory(new PropertyValueFactory<>("lowValues"));
-        highPropertyValuesColumn.setCellValueFactory(new PropertyValueFactory<>("highValues"));
-        populateTables();
-    }
+
 }
