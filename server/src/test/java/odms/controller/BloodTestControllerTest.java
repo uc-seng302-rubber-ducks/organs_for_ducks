@@ -53,26 +53,26 @@ public class BloodTestControllerTest {
 
     @Test(expected = BadRequestException.class)
     public void incorrectEndDateShouldNotParse() throws SQLException {
-        controller.getBloodTests("a", "01/01/1999", "1999/01/01", 30, 0);
+        controller.getBloodTests("a", "1999-01-01", "01-01-1999", 30, 0);
         verify(bloodTestHandler, times(0)).getBloodTests(any(Connection.class), anyString(), any(LocalDate.class), any(LocalDate.class), anyInt(), anyInt());
     }
 
     @Test(expected = BadRequestException.class)
     public void incorrectStartDateShouldNotParse() throws SQLException {
-        controller.getBloodTests("a", "1999/01/01", "01/01/1999", 30, 0);
+        controller.getBloodTests("a", "01-01-1999", "1999-01-01", 30, 0);
         verify(bloodTestHandler, times(0)).getBloodTests(any(Connection.class), anyString(), any(LocalDate.class), any(LocalDate.class), anyInt(), anyInt());
     }
 
     @Test
     public void correctDateShouldParse() throws SQLException {
-        controller.getBloodTests("a", "01/01/1999", "01/02/1999", 30, 0);
+        controller.getBloodTests("a", "1999-01-01", "1999-02-01", 30, 0);
         verify(bloodTestHandler, times(1)).getBloodTests(any(Connection.class), anyString(), any(LocalDate.class), any(LocalDate.class), anyInt(), anyInt());
     }
 
     @Test(expected = ServerDBException.class)
     public void testGetAllBloodTestsThrowsExceptionIfNoConnection() throws SQLException {
         when(driver.getConnection()).thenThrow(new SQLException());
-        controller.getBloodTests("ABC1234", "01/01/1999", "01/02/1999", 30, 0);
+        controller.getBloodTests("ABC1234", "1999-01-01", "1999-01-01", 30, 0);
     }
 
     @Test
