@@ -11,6 +11,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import odms.commons.model.User;
 import odms.commons.model.datamodel.BloodTest;
 import odms.controller.gui.panel.logic.BloodTestsLogicController;
+import odms.controller.gui.popup.utils.AlertWindowFactory;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -38,12 +39,13 @@ public class BloodTestViewController {
     private TableColumn<BloodTest, LocalDate> dateRequestedColumn;
 
     private ObservableList<BloodTest> bloodTests = FXCollections.observableList(new ArrayList<>());
-    private BloodTestsLogicController logicController = new BloodTestsLogicController(bloodTests);
+    private BloodTestsLogicController logicController;
     private User user;
 
     @FXML
     public void init(User user) {
         this.user = user;
+        logicController = new BloodTestsLogicController(bloodTests, user);
         initBloodTestTableView();
     }
 
@@ -53,27 +55,34 @@ public class BloodTestViewController {
 
     @FXML
     private void updateBloodTest() {
+        logicController.updateBloodTest();
 
     }
 
     @FXML
     private void deleteBloodTest() {
-
+        if (bloodTestView.getSelectionModel().getSelectedItem() != null) {
+            logicController.deleteBloodTest(bloodTestView.getSelectionModel().getSelectedItem());
+        } else {
+            AlertWindowFactory.generateInfoWindow("You must select an blood test to delete");
+        }
     }
 
     @FXML
     private void goToNextPage() {
+        logicController.gotoNextPage();
 
     }
 
     @FXML
     private void goToPreviousPage() {
+        logicController.goToPreviousPage();
 
     }
 
     @FXML
     private void addNewBloodTest() {
-
+        logicController.addNewBloodTest();
     }
 
     private void initBloodTestTableView() {
