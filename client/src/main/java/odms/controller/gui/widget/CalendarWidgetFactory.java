@@ -134,7 +134,7 @@ public class CalendarWidgetFactory {
                 }
             } else if (evt.isEntryRemoved()) {
                 AppController.getInstance().getAppointmentsBridge().deleteAppointment((Appointment) evt.getEntry().getUserObject());
-            } else {
+            } else if (evt.getOldInterval() != null && !evt.getOldInterval().equals(evt.getEntry().getInterval())) { // Only put if the times has changed
                 Entry<Appointment> entry = (Entry<Appointment>) evt.getEntry();
                 if (entry != null) {
                     calendarView.getCalendarSources().forEach(cs -> cs.getCalendars().forEach(c -> {
@@ -148,8 +148,6 @@ public class CalendarWidgetFactory {
                         }
                     }));
                     if (!entry.getProperties().containsKey(QUIET_MODE)) {
-                        System.out.println(entry.getStartDate() + " " + entry.getStartTime());
-                        System.out.println(entry.getUserObject().getRequestedDate());
                         AppController.getInstance().getAppointmentsBridge().putAppointment(entry.getUserObject(), AppController.getInstance().getToken());
                     }
                 }

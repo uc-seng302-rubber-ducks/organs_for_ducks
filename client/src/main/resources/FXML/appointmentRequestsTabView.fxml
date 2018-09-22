@@ -29,7 +29,9 @@
              </HBox>
          </children>
       </AnchorPane>
-      <AnchorPane layoutX="803.0" layoutY="14.0" prefHeight="720.0" prefWidth="396.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="803.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+       <AnchorPane fx:id="formPane" layoutX="803.0" layoutY="14.0" prefHeight="720.0" prefWidth="396.0"
+                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="803.0" AnchorPane.rightAnchor="0.0"
+                   AnchorPane.topAnchor="0.0">
          <children>
              <Button fx:id="rejectAppointmentButton"  layoutX="5.0" layoutY="696.0"
                      mnemonicParsing="false"

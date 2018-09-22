@@ -277,7 +277,7 @@ public class AppointmentController extends BaseController {
                                          @PathVariable(value = "appointmentId") Integer appointmentId,
                                          @RequestBody Appointment appointment) {
         try (Connection connection = driver.getConnection()) {
-            Log.info(appointment.getRequestedDate().toString());
+            Log.info(appointment.getTitle());
             if (!validateRequestedAppointmentTime(staffId, appointment.getRequestedDate()) && !appointment.getAppointmentStatus().equals(AppointmentStatus.REJECTED) && !appointment.getAppointmentStatus().equals(AppointmentStatus.REJECTED_SEEN)) {
                 return new ResponseEntity(HttpStatus.BAD_REQUEST);
             }
