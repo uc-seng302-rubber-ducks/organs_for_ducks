@@ -179,8 +179,18 @@ public class DonationTabPageController {
             }
                 }
         );
+        initDisqualifiedOrgans();
+        showOrHideExpiryTable();
+
+
+    }
+
+    /**
+     * Sets up the table view for the disqualified organs and the listener on the observable list of disqualified organs
+     */
+    private void initDisqualifiedOrgans() {
         userDisqualifiedOrgansTable.setItems(organsWithDisqualifications);
-        organsWithDisqualifications.addAll(user.getDonorDetails().getDisqualifiedOrgans());
+        organsWithDisqualifications.addAll(currentUser.getDonorDetails().getDisqualifiedOrgans());
         organsWithDisqualifications.addListener((ListChangeListener<? super OrgansWithDisqualification>) a ->{
             if (listenFlag) {
                 currentUser.saveStateForUndo();
@@ -189,9 +199,6 @@ public class DonationTabPageController {
                 currentUser.getDonorDetails().getDisqualifiedOrgans().addAll(organsWithDisqualifications);
             }
         });
-        showOrHideExpiryTable();
-
-
     }
 
     /**
@@ -333,6 +340,9 @@ public class DonationTabPageController {
         ArrayList<Organs> leftOverOrgans = new ArrayList<>();
         Collections.addAll(leftOverOrgans, Organs.values());
         leftOverOrgans.removeAll(donating);
+        for (OrgansWithDisqualification organ : currentUser.getDonorDetails().getDisqualifiedOrgans()) {
+            leftOverOrgans.remove(organ.getOrganType());
+        }
         canDonate.setItems(FXCollections.observableList(leftOverOrgans));
     }
 
@@ -514,6 +524,7 @@ public class DonationTabPageController {
             disqualifyOrganReasonViewController.init(organ, currentUser, disqualifyOrganReasonStage, application.getUsername(), organsWithDisqualifications);
             disqualifyOrganReasonStage.setScene(new Scene(root));
             disqualifyOrganReasonStage.showAndWait();
+            refreshCurrentlyDonating();
             Log.info("Successfully launched the disqualify Organ Reason pop-up window for user: " + currentUser.getNhi());
 
         } catch (IOException e) {

@@ -42,6 +42,7 @@ public class DisqualifyOrganReasonLogicController {
         organsWithDisqualification.setEligibleDate(eligibleDate);
         organsWithDisqualification.setCurrentlyDisqualified(true);
         disqualifications.add(organsWithDisqualification);
+        user.getDonorDetails().getOrgans().remove(organsWithDisqualification.getOrganType());
 
         stage.close();
     }
