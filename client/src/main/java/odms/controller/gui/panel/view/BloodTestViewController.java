@@ -4,9 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import odms.commons.model.User;
 import odms.commons.model._enum.BloodTestProperties;
@@ -19,8 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BloodTestViewController {
+
     @FXML
-    private TableView<BloodTest> bloodTestTableView;
+    private DatePicker bloodTestDatePicker;
     @FXML
     private TextField redBloodCount;
     @FXML
@@ -28,7 +27,7 @@ public class BloodTestViewController {
     @FXML
     private TextField heamoglobin;
     @FXML
-    private  TextField platelets;
+    private TextField platelets;
     @FXML
     private TextField glucose;
     @FXML
@@ -37,6 +36,28 @@ public class BloodTestViewController {
     private TextField haematocrit;
     @FXML
     private TextField meanCellHaematocrit;
+
+    @FXML
+    private Label bloodTestDateLabel;
+    @FXML
+    private Label bloodTestRCCountLabel;
+    @FXML
+    private Label bloodTestWCCountLabel;
+    @FXML
+    private Label bloodTestHeamoglobinLabel;
+    @FXML
+    private Label bloodTestPlateletsLabel;
+    @FXML
+    private Label bloodTestGlucoseLabel;
+    @FXML
+    private Label bloodTestMCVolumeLabel;
+    @FXML
+    private Label bloodTestHaematocritLabel;
+    @FXML
+    private Label bloodTestMCHaematocritLabel;
+
+    @FXML
+    private TableView<BloodTest> bloodTestTableView;
     @FXML
     private TableColumn<BloodTest, LocalDate> testDateColumn;
     @FXML
@@ -44,16 +65,18 @@ public class BloodTestViewController {
     @FXML
     private TableColumn<BloodTest, List<BloodTestProperties>> highPropertyValuesColumn;
 
-
     private ObservableList<BloodTest> bloodTests = FXCollections.observableList(new ArrayList<>());
     private BloodTestsLogicController logicController;
+    private boolean fromClinician;
 
     /**
      * Initializes the blood test tab on the given users profile
      *
      * @param user The current user
      */
-    public void init(User user) {
+    public void init(User user, boolean fromClinician) {
+        this.fromClinician = fromClinician;
+
         bloodTests.addListener((ListChangeListener<? super BloodTest>) observable -> {
             populateTable();
         });
@@ -71,6 +94,7 @@ public class BloodTestViewController {
         highPropertyValuesColumn.setCellValueFactory(new PropertyValueFactory<>("highValues"));
         logicController.updateTableView(0);
         populateTable();
+        setClickOnBehaviour();
     }
 
     /**
@@ -78,6 +102,79 @@ public class BloodTestViewController {
      */
     private void populateTable() {
         bloodTestTableView.setItems(bloodTests);
+    }
+
+    /**
+     * Binds the table view row selection to show all details for the selected blood test
+     */
+    private void setClickOnBehaviour() {
+        bloodTestTableView.getSelectionModel().selectedItemProperty().addListener(a -> {
+            BloodTest selectedBloodTest = bloodTestTableView.getSelectionModel().getSelectedItem();
+
+            if (selectedBloodTest != null) {
+                displayBloodTestDetails(selectedBloodTest);
+            } else {
+                clearDetails();
+            }
+        });
+    }
+
+    /**
+     * Displays the given blood test in more detail
+     * The details are displayed as labels for users and text fields for clinicians/admins
+     *
+     * @param selectedBloodTest The selected blood test to be displayed in more detail
+     */
+    private void displayBloodTestDetails(BloodTest selectedBloodTest) {
+        if (fromClinician) {
+            bloodTestDatePicker.setValue(selectedBloodTest.getTestDate());
+            redBloodCount.setText(Double.toString(selectedBloodTest.getRedBloodCellCount()));
+            whiteBloodCount.setText(Double.toString(selectedBloodTest.getWhiteBloodCellCount()));
+            heamoglobin.setText(Double.toString(selectedBloodTest.getHaemoglobinLevel()));
+            platelets.setText(Double.toString(selectedBloodTest.getPlatelets()));
+            glucose.setText(Double.toString(selectedBloodTest.getGlucoseLevels()));
+            haematocrit.setText(Double.toString(selectedBloodTest.getHaematocrit()));
+            meanCellVolume.setText(Double.toString(selectedBloodTest.getMeanCellVolume()));
+            meanCellHaematocrit.setText(Double.toString(selectedBloodTest.getMeanCellHaematocrit()));
+
+        } else {
+            bloodTestDateLabel.setText(selectedBloodTest.getTestDate().toString());
+            bloodTestRCCountLabel.setText(Double.toString(selectedBloodTest.getRedBloodCellCount()));
+            bloodTestWCCountLabel.setText(Double.toString(selectedBloodTest.getWhiteBloodCellCount()));
+            bloodTestHeamoglobinLabel.setText(Double.toString(selectedBloodTest.getHaemoglobinLevel()));
+            bloodTestPlateletsLabel.setText(Double.toString(selectedBloodTest.getPlatelets()));
+            bloodTestGlucoseLabel.setText(Double.toString(selectedBloodTest.getGlucoseLevels()));
+            bloodTestMCVolumeLabel.setText(Double.toString(selectedBloodTest.getMeanCellVolume()));
+            bloodTestHaematocritLabel.setText(Double.toString(selectedBloodTest.getHaematocrit()));
+            bloodTestMCHaematocritLabel.setText(Double.toString(selectedBloodTest.getMeanCellHaematocrit()));
+        }
+    }
+
+    /**
+     * Clears the labels and text fields when no blood test is selected
+     */
+    private void clearDetails() {
+        if (fromClinician) {
+            bloodTestDatePicker.setValue(null);
+            redBloodCount.setText("");
+            whiteBloodCount.setText("");
+            heamoglobin.setText("");
+            platelets.setText("");
+            glucose.setText("");
+            haematocrit.setText("");
+            meanCellVolume.setText("");
+            meanCellHaematocrit.setText("");
+        } else {
+            bloodTestDateLabel.setText("");
+            bloodTestRCCountLabel.setText("");
+            bloodTestWCCountLabel.setText("");
+            bloodTestHeamoglobinLabel.setText("");
+            bloodTestPlateletsLabel.setText("");
+            bloodTestGlucoseLabel.setText("");
+            bloodTestMCVolumeLabel.setText("");
+            bloodTestHaematocritLabel.setText("");
+            bloodTestMCHaematocritLabel.setText("");
+        }
     }
 
     @FXML
