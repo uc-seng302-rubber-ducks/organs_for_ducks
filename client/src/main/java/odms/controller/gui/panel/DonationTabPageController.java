@@ -99,6 +99,7 @@ public class DonationTabPageController {
     private UserController parent;
     private ObservableList<OrgansWithExpiry> organsWithExpiries = FXCollections.observableList(new ArrayList<>());
     private ObservableList<OrgansWithDisqualification> organsWithDisqualifications = FXCollections.observableList(new ArrayList<>());
+    private boolean listenFlag = true;
 
     /**
      * Initializes the columns of the currently donating table
@@ -178,7 +179,16 @@ public class DonationTabPageController {
             }
                 }
         );
-
+        userDisqualifiedOrgansTable.setItems(organsWithDisqualifications);
+        organsWithDisqualifications.addAll(user.getDonorDetails().getDisqualifiedOrgans());
+        organsWithDisqualifications.addListener((ListChangeListener<? super OrgansWithDisqualification>) a ->{
+            if (listenFlag) {
+                currentUser.saveStateForUndo();
+                this.parent.updateUndoRedoButtons();
+                currentUser.getDonorDetails().getDisqualifiedOrgans().clear();
+                currentUser.getDonorDetails().getDisqualifiedOrgans().addAll(organsWithDisqualifications);
+            }
+        });
         showOrHideExpiryTable();
 
 
@@ -352,6 +362,16 @@ public class DonationTabPageController {
     }
 
     /**
+     * Forces the observable list to refresh itself based on the users disqualified organs list.
+     */
+    public void refreshDisqualifiedOrgans() {
+        listenFlag = false;
+        organsWithDisqualifications.clear();
+        organsWithDisqualifications.setAll(currentUser.getDonorDetails().getDisqualifiedOrgans());
+        listenFlag = true;
+    }
+
+    /**
      * Moves selected organ from not donating to currently donating
      */
     @FXML
@@ -474,7 +494,7 @@ public class DonationTabPageController {
      * Launches the pop-up to enter reason for disqualifying organ and
      * eligible date for users to re-donate organ
      */
-    public void launchDisqualifyOrganReason() {
+    private void launchDisqualifyOrganReason() {
         Organs organ = null;
         if(!currentOrgans.getSelectionModel().getSelectedItems().isEmpty()){
             organ = currentOrgans.getSelectionModel().getSelectedItems().get(0);
@@ -491,7 +511,7 @@ public class DonationTabPageController {
             root = disqualifyOrganReasonLoader.load();
             DisqualifyOrganReasonViewController disqualifyOrganReasonViewController = disqualifyOrganReasonLoader.getController();
             Stage disqualifyOrganReasonStage = new Stage();
-            disqualifyOrganReasonViewController.init(organ, currentUser, disqualifyOrganReasonStage, application.getUsername());
+            disqualifyOrganReasonViewController.init(organ, currentUser, disqualifyOrganReasonStage, application.getUsername(), organsWithDisqualifications);
             disqualifyOrganReasonStage.setScene(new Scene(root));
             disqualifyOrganReasonStage.showAndWait();
             Log.info("Successfully launched the disqualify Organ Reason pop-up window for user: " + currentUser.getNhi());

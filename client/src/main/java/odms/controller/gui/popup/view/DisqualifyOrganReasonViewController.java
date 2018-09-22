@@ -1,5 +1,6 @@
 package odms.controller.gui.popup.view;
 
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -8,6 +9,7 @@ import javafx.scene.control.TextFormatter;
 import javafx.stage.Stage;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
+import odms.commons.model.datamodel.OrgansWithDisqualification;
 import odms.controller.gui.popup.logic.DisqualifyOrganReasonLogicController;
 
 public class DisqualifyOrganReasonViewController {
@@ -35,10 +37,10 @@ public class DisqualifyOrganReasonViewController {
      * @param user          Current user
      * @param stage         The applications stage.
      */
-    public void init(Organs disqualifiedOrgan, User user, Stage stage, String staffId) {
+    public void init(Organs disqualifiedOrgan, User user, Stage stage, String staffId, ObservableList<OrgansWithDisqualification> disqualifiedOrgans) {
         this.disqualifiedOrgan = disqualifiedOrgan;
         this.staffId = staffId;
-        this.logicController = new DisqualifyOrganReasonLogicController(user, stage);
+        this.logicController = new DisqualifyOrganReasonLogicController(user, stage, disqualifiedOrgans);
 
         disqualifyOrganDescriptionInput.setTextFormatter(new TextFormatter<String>(change ->
                 change.getControlNewText().length() <= 255 ? change : null)); // limits user input to 255 characters
