@@ -293,8 +293,8 @@ CREATE TABLE BloodTestDetails(
   haemoglobinLevel    DOUBLE,
   platelets           DOUBLE,
   glucoseLevels       DOUBLE,
-  meanCellVolume      DOUBLE,
   haematocrit         DOUBLE,
+  meanCellVolume      DOUBLE,
   meanCellHaematocrit DOUBLE,
   testDate            DATE,
   FOREIGN KEY (fkUserNhi) REFERENCES User (nhi)

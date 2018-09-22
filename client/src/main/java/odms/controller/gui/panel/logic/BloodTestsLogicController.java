@@ -11,11 +11,18 @@ import odms.commons.utils.Log;
 import odms.controller.gui.popup.view.NewBloodTestViewController;
 
 import java.io.IOException;
+import odms.controller.AppController;
+
+import java.time.LocalDate;
 
 public class BloodTestsLogicController {
+
     private ObservableList<BloodTest> bloodTests;
     private User user;
-    
+
+
+    private static final int ROWS_PER_PAGE = 30;
+    private int startingIndex = 0;
 
 
     /**
@@ -25,6 +32,7 @@ public class BloodTestsLogicController {
      */
     public BloodTestsLogicController(ObservableList<BloodTest> bloodTests, User user) {
         this.bloodTests = bloodTests;
+        this.user = user;
         this.user = user;
     }
 
@@ -54,7 +62,13 @@ public class BloodTestsLogicController {
 
     public void updateBloodTest() {
 
+    }
 
+    public void updateTableView(int start) {
+        bloodTests.clear();
+        String startDate = LocalDate.now().minusYears(1).toString();
+        String endDate = LocalDate.now().toString();
+        AppController.getInstance().getBloodTestBridge().getBloodTests(user.getNhi(), startDate, endDate, ROWS_PER_PAGE, start, bloodTests);
     }
 
     public void gotoNextPage() {
