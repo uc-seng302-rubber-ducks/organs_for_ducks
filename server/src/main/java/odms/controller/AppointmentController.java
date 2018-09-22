@@ -29,6 +29,7 @@ import java.util.List;
 @OdmsController
 public class AppointmentController extends BaseController {
 
+    private Mailer mailer;
     private DBHandler handler;
     private JDBCDriver driver;
     private SocketHandler socketHandler;
@@ -40,6 +41,7 @@ public class AppointmentController extends BaseController {
         handler = super.getHandler();
         driver = super.getDriver();
         this.socketHandler = socketHandler;
+        this.mailer = new Mailer();
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/appointments/exists")
@@ -157,7 +159,6 @@ public class AppointmentController extends BaseController {
 
                 String idString = Integer.toString(appointmentId);
                 socketHandler.broadcast(EventTypes.APPOINTMENT_UPDATE, idString, idString);
-                Mailer mailer = new Mailer();
                 AppointmentWithPeople appointment = handler.getAppointmentWithPeople(connection, appointmentId);
                 mailer.sendAppointmentUpdate(statusId, appointment);
             } else {
@@ -287,7 +288,6 @@ public class AppointmentController extends BaseController {
             AppointmentUpdateStrategy appointmentStrategy = handler.getAppointmentStrategy();
             appointmentStrategy.putSingleAppointment(connection, appointment);
             socketHandler.broadcast(EventTypes.APPOINTMENT_UPDATE, Integer.toString(appointmentId), Integer.toString(appointmentId));
-            Mailer mailer = new Mailer();
             AppointmentWithPeople appointmentwithPeople = handler.getAppointmentWithPeople(connection, appointmentId);
 
             mailer.sendAppointmentUpdate(appointment.getAppointmentStatus().getDbValue(), appointmentwithPeople);
@@ -342,5 +342,9 @@ public class AppointmentController extends BaseController {
         }
 
         return true;
+    }
+
+    public void setMailer(Mailer mailer) {
+        this.mailer = mailer;
     }
 }

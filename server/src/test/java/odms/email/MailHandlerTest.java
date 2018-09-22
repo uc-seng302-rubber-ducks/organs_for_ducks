@@ -9,7 +9,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class MailHandlerTests {
+public class MailHandlerTest {
 
     private MailHandler testMailHandler;
     private MailSender mockMailSender;

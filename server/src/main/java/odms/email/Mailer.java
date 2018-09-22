@@ -85,12 +85,6 @@ public class Mailer {
                         appointment.getClinician().getFirstName(),
                         appointment.getClinician().getLastName());
                 break;
-            case 1:
-            case 4:
-            case 7:
-            case 8:
-            case 9:
-            case 10:
             default:
                 message = "";
         }
