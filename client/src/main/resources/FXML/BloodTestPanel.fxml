@@ -36,8 +36,8 @@
                    </font>
                </Label>
                <Button fx:id="requestNewBloodTest" layoutX="626.0" layoutY="17.0" mnemonicParsing="false"
-                       onAction="#addNewBloodTest" text="Add New Blood Test" AnchorPane.rightAnchor="11.0"
-                       AnchorPane.topAnchor="17.0"/>
+                       onAction="#addNewBloodTest" text="Add New Blood Test" visible="false"
+                       AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="17.0"/>
            </children>
        </AnchorPane>
        <AnchorPane layoutX="800.0" prefHeight="735.0" prefWidth="407.0" AnchorPane.bottomAnchor="0.0"
@@ -61,24 +61,36 @@
                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                    </rowConstraints>
                    <children>
+                       <DatePicker fx:id="bloodTestDatePicker" visible="false" GridPane.columnIndex="1"/>
                        <Label text="Red Blood Cell Count:" GridPane.rowIndex="1"/>
                        <Label text="White Blood Cell Count:" GridPane.rowIndex="2"/>
                        <Label text="Heamoglobin Level:" GridPane.rowIndex="3"/>
                        <Label text="Platelets:" GridPane.rowIndex="4"/>
                        <Label text="Glucose Levels:" GridPane.rowIndex="5"/>
-                       <Label text="Mean Cell Volume:" GridPane.rowIndex="6"/>
-                       <Label text="Haematocrit:" GridPane.rowIndex="7"/>
+                       <Label text="Mean Cell Volume:" GridPane.rowIndex="7"/>
+                       <Label text="Haematocrit:" GridPane.rowIndex="6"/>
                        <Label text="Mean Cell Haematocrit:" GridPane.rowIndex="8"/>
-                       <TextField fx:id="redBloodCount" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-                       <TextField fx:id="whiteBloodCount" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-                       <TextField fx:id="heamoglobin" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-                       <TextField fx:id="platelets" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
-                       <TextField fx:id="glucose" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
-                       <TextField fx:id="meanCellVolume" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
-                       <TextField fx:id="haematocrit" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
-                       <TextField fx:id="meanCellHaematocrit" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
+                       <TextField fx:id="redBloodCount" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                       <TextField fx:id="whiteBloodCount" visible="false" GridPane.columnIndex="1"
+                                  GridPane.rowIndex="2"/>
+                       <TextField fx:id="heamoglobin" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                       <TextField fx:id="platelets" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                       <TextField fx:id="glucose" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+                       <TextField fx:id="haematocrit" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+                       <TextField fx:id="meanCellVolume" visible="false" GridPane.columnIndex="1"
+                                  GridPane.rowIndex="7"/>
+                       <TextField fx:id="meanCellHaematocrit" visible="false" GridPane.columnIndex="1"
+                                  GridPane.rowIndex="8"/>
                        <Label text="Date Of Blood Test:"/>
-                       <DatePicker fx:id="bloodTestDatePicker" GridPane.columnIndex="1"/>
+                       <Label fx:id="bloodTestDateLabel" GridPane.columnIndex="1"/>
+                       <Label fx:id="bloodTestRCCountLabel" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                       <Label fx:id="bloodTestWCCountLabel" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                       <Label fx:id="bloodTestHeamoglobinLabel" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                       <Label fx:id="bloodTestPlateletsLabel" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                       <Label fx:id="bloodTestGlucoseLabel" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+                       <Label fx:id="bloodTestMCVolumeLabel" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+                       <Label fx:id="bloodTestHaematocritLabel" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+                       <Label fx:id="bloodTestMCHaematocritLabel" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
                    </children>
                </GridPane>
                <Label layoutX="8.0" layoutY="59.0" text="Blood Test Details">
@@ -87,9 +99,9 @@
                    </font>
                </Label>
                <Button fx:id="deleteBloodTest" layoutX="8.0" layoutY="660.0" mnemonicParsing="false"
-                       text="Delete Blood test" AnchorPane.bottomAnchor="50.0"/>
+                       text="Delete Blood test" visible="false" AnchorPane.bottomAnchor="50.0"/>
                <Button fx:id="updateBloodTest" layoutX="242.0" layoutY="660.0" mnemonicParsing="false"
-                       text="Update Blood Test" AnchorPane.bottomAnchor="50.0"/>
+                       text="Update Blood Test" visible="false" AnchorPane.bottomAnchor="50.0"/>
            </children>
        </AnchorPane>
    </children>
