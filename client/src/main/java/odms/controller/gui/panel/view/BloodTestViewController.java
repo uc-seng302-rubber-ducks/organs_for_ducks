@@ -157,26 +157,45 @@ public class BloodTestViewController {
     private void displayBloodTestDetails(BloodTest selectedBloodTest) {
         if (fromClinician) {
             bloodTestDatePicker.setValue(selectedBloodTest.getTestDate());
-            redBloodCount.setText(Double.toString(selectedBloodTest.getRedBloodCellCount()));
-            whiteBloodCount.setText(Double.toString(selectedBloodTest.getWhiteBloodCellCount()));
-            heamoglobin.setText(Double.toString(selectedBloodTest.getHaemoglobinLevel()));
-            platelets.setText(Double.toString(selectedBloodTest.getPlatelets()));
-            glucose.setText(Double.toString(selectedBloodTest.getGlucoseLevels()));
-            haematocrit.setText(Double.toString(selectedBloodTest.getHaematocrit()));
-            meanCellVolume.setText(Double.toString(selectedBloodTest.getMeanCellVolume()));
-            meanCellHaematocrit.setText(Double.toString(selectedBloodTest.getMeanCellHaematocrit()));
+            redBloodCount.setText(getString(selectedBloodTest.getRedBloodCellCount()));
+            whiteBloodCount.setText(getString(selectedBloodTest.getWhiteBloodCellCount()));
+            heamoglobin.setText(getString(selectedBloodTest.getHaemoglobinLevel()));
+            platelets.setText(getString(selectedBloodTest.getPlatelets()));
+            glucose.setText(getString(selectedBloodTest.getGlucoseLevels()));
+            haematocrit.setText(getString(selectedBloodTest.getHaematocrit()));
+            meanCellVolume.setText(getString(selectedBloodTest.getMeanCellVolume()));
+            meanCellHaematocrit.setText(getString(selectedBloodTest.getMeanCellHaematocrit()));
 
         } else {
             bloodTestDateLabel.setText(selectedBloodTest.getTestDate().toString());
-            bloodTestRCCountLabel.setText(Double.toString(selectedBloodTest.getRedBloodCellCount()));
-            bloodTestWCCountLabel.setText(Double.toString(selectedBloodTest.getWhiteBloodCellCount()));
-            bloodTestHeamoglobinLabel.setText(Double.toString(selectedBloodTest.getHaemoglobinLevel()));
-            bloodTestPlateletsLabel.setText(Double.toString(selectedBloodTest.getPlatelets()));
-            bloodTestGlucoseLabel.setText(Double.toString(selectedBloodTest.getGlucoseLevels()));
-            bloodTestMCVolumeLabel.setText(Double.toString(selectedBloodTest.getMeanCellVolume()));
-            bloodTestHaematocritLabel.setText(Double.toString(selectedBloodTest.getHaematocrit()));
-            bloodTestMCHaematocritLabel.setText(Double.toString(selectedBloodTest.getMeanCellHaematocrit()));
+            bloodTestRCCountLabel.setText(getString(selectedBloodTest.getRedBloodCellCount()));
+            bloodTestWCCountLabel.setText(getString(selectedBloodTest.getWhiteBloodCellCount()));
+            bloodTestHeamoglobinLabel.setText(getString(selectedBloodTest.getHaemoglobinLevel()));
+            bloodTestPlateletsLabel.setText(getString(selectedBloodTest.getPlatelets()));
+            bloodTestGlucoseLabel.setText(getString(selectedBloodTest.getGlucoseLevels()));
+            bloodTestMCVolumeLabel.setText(getString(selectedBloodTest.getMeanCellVolume()));
+            bloodTestHaematocritLabel.setText(getString(selectedBloodTest.getHaematocrit()));
+            bloodTestMCHaematocritLabel.setText(getString(selectedBloodTest.getMeanCellHaematocrit()));
         }
+    }
+
+    /**
+     * Used to find the appropriate string to set the text field to.
+     * If the given value is 0.0, the text field is set to the empty string.
+     *
+     * @param value The value of a blood test property
+     * @return The given value as a string if not 0.0, otherwise an empty string
+     */
+    private String getString(double value) {
+        if (value == 0.0) {
+            if (fromClinician) {
+                return "";
+            } else {
+                return "This property was not tested";
+            }
+        }
+
+        return Double.toString(value);
     }
 
     /**
