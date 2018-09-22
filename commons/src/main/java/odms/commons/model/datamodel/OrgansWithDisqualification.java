@@ -14,6 +14,7 @@ public class OrgansWithDisqualification {
     private LocalDate disqualificationDate;
     private LocalDate eligibleDate;
     private String staffId;
+    private boolean isCurrentlyDisqualified = true;
 
     public OrgansWithDisqualification(Organs organType, String reason, LocalDate disqualificationDate, String staffId) {
         this.organType = organType;
@@ -68,6 +69,14 @@ public class OrgansWithDisqualification {
 
     public void setStaffId(String staffId) {
         this.staffId = staffId;
+    }
+
+    public boolean isCurrentlyDisqualified() {
+        return isCurrentlyDisqualified;
+    }
+
+    public void setCurrentlyDisqualified(boolean currentlyDisqualified) {
+        isCurrentlyDisqualified = currentlyDisqualified;
     }
 
     @Override

@@ -14,6 +14,7 @@ public class DisqualifiedOrgansHandler {
 
     private static final String SELECT_DISQUALIFIED_STATEMENT = "SELECT * FROM DisqualifiedOrgans WHERE fkUserNhi = ? AND isCurrentlyDisqualified = 1";
     private static final String CREATE_DISQUALIFIED_STATEMENT = "INSERT INTO DisqualifiedOrgans (fkUserNhi, description, fkOrgan, fkStaffId, dateDisqualified, dateEligible, isCurrentlyDisqualified) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    private static final String UPDATE_DISQUALIFIED_STATEMENT = "UPDATE DisqualifiedOrgans SET description = ?, dateEligible = ?, isCurrentlyDisqualified = ? WHERE disqualifiedId = ?";
     private static final String DELETE_DISQUALIFIED_STATEMENT = "DELETE FROM DisqualifiedOrgans WHERE disqualifiedId = ?";
 
     /**
@@ -64,27 +65,45 @@ public class DisqualifiedOrgansHandler {
         String staffId = resultSet.getString("fkStaffId");
         LocalDate dateDisqualified = resultSet.getDate("dateDisqualified").toLocalDate();
         LocalDate dateEligible = resultSet.getDate("dateEligible").toLocalDate();
+        boolean isCurrentlyDisqualified = resultSet.getBoolean("isCurrentlyDisqualified");
+
 
         OrgansWithDisqualification disqualifiedOrgan = new OrgansWithDisqualification(organ, reason, dateDisqualified, staffId);
         disqualifiedOrgan.setDisqualifiedId(disqualifiedId);
         disqualifiedOrgan.setEligibleDate(dateEligible);
+        disqualifiedOrgan.setCurrentlyDisqualified(isCurrentlyDisqualified);
 
         return disqualifiedOrgan;
     }
 
     public void postDisqualifiedOrgan(Connection connection, Collection<OrgansWithDisqualification> disqualifications, String nhi) throws SQLException {
         for (OrgansWithDisqualification disqualification : disqualifications) {
-            try (PreparedStatement preparedStatement = connection.prepareStatement(CREATE_DISQUALIFIED_STATEMENT)) {
-                preparedStatement.setString(1, nhi);
-                preparedStatement.setString(2, disqualification.getReason());
-                preparedStatement.setInt(3, disqualification.getOrganType().getDbValue());
-                preparedStatement.setString(4, disqualification.getStaffId());
-                preparedStatement.setDate(5, Date.valueOf(disqualification.getDate()));
-                preparedStatement.setDate(6, Date.valueOf(disqualification.getEligibleDate()));
-                preparedStatement.setBoolean(7, true);
-                // todo: do we actually need a boolean flag saying the organ is disqualified?
+            if (disqualification.getDisqualifiedId() == null) { //If an organ does not have an Id then it does not exist in the database, so create it.
+                try (PreparedStatement preparedStatement = connection.prepareStatement(CREATE_DISQUALIFIED_STATEMENT)) {
+                    preparedStatement.setString(1, nhi);
+                    preparedStatement.setString(2, disqualification.getReason());
+                    preparedStatement.setInt(3, disqualification.getOrganType().getDbValue());
+                    preparedStatement.setString(4, disqualification.getStaffId());
+                    preparedStatement.setDate(5, Date.valueOf(disqualification.getDate()));
+                    preparedStatement.setDate(6, Date.valueOf(disqualification.getEligibleDate()));
+                    preparedStatement.setBoolean(7, true);
 
-                preparedStatement.executeUpdate();
+                    preparedStatement.executeUpdate();
+                }
+            }
+        }
+    }
+
+    public void updateDisqualifiedOrgan(Connection connection, Collection<OrgansWithDisqualification> disqualifications) throws SQLException {
+        for (OrgansWithDisqualification disqualification : disqualifications) {
+            if (disqualification.getDisqualifiedId() != null) { //If an organ has an Id then it exists in the database, so update it.
+                try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_DISQUALIFIED_STATEMENT)) {
+                    preparedStatement.setString(1, disqualification.getReason());
+                    preparedStatement.setDate(2, Date.valueOf(disqualification.getEligibleDate()));
+                    preparedStatement.setInt(3, disqualification.getDisqualifiedId());
+
+                    preparedStatement.executeUpdate();
+                }
             }
         }
     }
@@ -96,16 +115,18 @@ public class DisqualifiedOrgansHandler {
      * @throws SQLException if there is an issue with the request to or response from to the database
      */
     public void deleteDisqualifiedOrgan(Connection connection, Collection<OrgansWithDisqualification> disqualifications) throws SQLException {
-        connection.setAutoCommit(false);
+        connection.setAutoCommit(false); //These commits will maybe have to be removed as they are now nested within other ones like them.
         try {
             for (OrgansWithDisqualification organ : disqualifications) {
-                try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE_DISQUALIFIED_STATEMENT)) {
-                    Integer id = organ.getDisqualifiedId();
-                    if (id == null) {
-                        Log.warning("A database deletion was attempted on a disqualified organ without an id");
-                    } else {
-                        preparedStatement.setInt(1, id);
-                        connection.commit();
+                if (!organ.isCurrentlyDisqualified()) { //Organs no longer disqualified will be deleted
+                    try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE_DISQUALIFIED_STATEMENT)) {
+                        Integer id = organ.getDisqualifiedId();
+                        if (id == null) {
+                            Log.warning("A database deletion was attempted on a disqualified organ without an id");
+                        } else {
+                            preparedStatement.setInt(1, id);
+                            connection.commit();
+                        }
                     }
                 }
             }

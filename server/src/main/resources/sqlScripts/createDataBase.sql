@@ -283,7 +283,7 @@ CREATE TABLE DisqualifiedOrgans(
   fkOrgan                 SMALLINT,
   fkStaffId               VARCHAR(255),
   dateDisqualified        DATE,
-  dateEligable            DATE,
+  dateEligible            DATE,
   isCurrentlyDisqualified BOOL,
   FOREIGN KEY (fkUserNhi) REFERENCES User(nhi)
     ON DELETE CASCADE

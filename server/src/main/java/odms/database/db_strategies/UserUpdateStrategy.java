@@ -4,20 +4,15 @@ import odms.commons.model.Disease;
 import odms.commons.model.MedicalProcedure;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
-import odms.commons.model.datamodel.ContactDetails;
-import odms.commons.model.datamodel.ExpiryReason;
-import odms.commons.model.datamodel.Medication;
-import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
+import odms.commons.model.datamodel.*;
 import odms.commons.utils.Log;
 import odms.database.DBUtils;
 import odms.database.DisqualifiedOrgansHandler;
 
 import java.sql.*;
+import java.sql.Date;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class UserUpdateStrategy extends AbstractUpdateStrategy {
 
@@ -299,7 +294,10 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     private void updateDisqualifiedOrgans(User user, Connection connection) throws SQLException {
         DisqualifiedOrgansHandler disqualifiedOrgansHandler = new DisqualifiedOrgansHandler();
         deleteFieldsOfUser("DisqualifiedOrgans", user.getNhi(), connection);
-        disqualifiedOrgansHandler.postDisqualifiedOrgan(connection, user.getDonorDetails().getDisqualifiedOrgans(), user.getNhi());
+        List<OrgansWithDisqualification> organs = new ArrayList<>(user.getDonorDetails().getDisqualifiedOrgans());
+        disqualifiedOrgansHandler.postDisqualifiedOrgan(connection, organs, user.getNhi());
+        disqualifiedOrgansHandler.updateDisqualifiedOrgan(connection, organs);
+        disqualifiedOrgansHandler.deleteDisqualifiedOrgan(connection, organs);
     }
 
     /**
