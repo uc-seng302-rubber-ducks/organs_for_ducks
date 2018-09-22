@@ -127,7 +127,7 @@ public class AppointmentUpdateStrategy extends AbstractUpdateStrategy {
             preparedStatement.setString(4, appointment.getRequestDescription());
             preparedStatement.setInt(6, appointment.getAppointmentId());
             preparedStatement.setString(5, appointment.getTitle());
-            System.out.println(preparedStatement.executeUpdate());
+            preparedStatement.executeUpdate();
         }
     }
 }

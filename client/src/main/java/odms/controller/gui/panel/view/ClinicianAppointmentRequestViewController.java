@@ -105,6 +105,11 @@ public class ClinicianAppointmentRequestViewController implements Converter {
     private Entry<Appointment> selectedEntry;
     private ObjectProperty<Appointment> selectedAppointment;
 
+    private static final double TITLE_CONTROL_FORM_PREF_WIDTH = 218.0;
+    private static final double TITLE_CONTROL_PREF_HEIGHT = 15.0;
+    private static final double TITLE_CONTROL_TOP_ANCHOR = 109.0;
+    private static final double TITLE_CONTROL_RIGHT_ANCHOR = 49;
+
     /**
      * Initialises the panel
      */
@@ -198,14 +203,8 @@ public class ClinicianAppointmentRequestViewController implements Converter {
 
                     Entry<Appointment> entry = new Entry<>();
                     if (appointment.getRequestingUserId() == null) {
-                        if (appointment.getAppointmentId() == 4154) {
-                            System.out.println("New: " + appointment.getTitle());
-                        }
                         entry.setTitle(appointment.getTitle());
                     } else {
-                        if (appointment.getAppointmentId() == 4154) {
-                            System.out.println(appointment.getTitle());
-                        }
                         entry.setTitle(appointment.getRequestingUserId());
                     }
                     entry.setUserObject(appointment);
@@ -438,12 +437,12 @@ public class ClinicianAppointmentRequestViewController implements Converter {
         if (appointmentRequestUserNhi instanceof Label) {
             TextField temp = new TextField();
             temp.setText(((Label) appointmentRequestUserNhi).getText());
-            temp.setPrefWidth(218.0);
-            temp.setPrefHeight(15.0);
+            temp.setPrefWidth(TITLE_CONTROL_FORM_PREF_WIDTH);
+            temp.setPrefHeight(TITLE_CONTROL_PREF_HEIGHT);
             formPane.getChildren().replaceAll(node -> node.equals(appointmentRequestUserNhi) ? temp : node);
             appointmentRequestUserNhi = temp;
-            AnchorPane.setTopAnchor(appointmentRequestUserNhi, 109.0);
-            AnchorPane.setRightAnchor(appointmentRequestUserNhi, 49.0);
+            AnchorPane.setTopAnchor(appointmentRequestUserNhi, TITLE_CONTROL_TOP_ANCHOR);
+            AnchorPane.setRightAnchor(appointmentRequestUserNhi, TITLE_CONTROL_RIGHT_ANCHOR);
         }
     }
 
@@ -454,12 +453,12 @@ public class ClinicianAppointmentRequestViewController implements Converter {
     public void stopEdit() {
         if (appointmentRequestUserNhi instanceof TextField) {
             Label temp = new Label(((TextField) appointmentRequestUserNhi).getText());
-            temp.setPrefWidth(218.0);
-            temp.setPrefHeight(15.0);
+            temp.setPrefWidth(TITLE_CONTROL_FORM_PREF_WIDTH);
+            temp.setPrefHeight(TITLE_CONTROL_PREF_HEIGHT);
             formPane.getChildren().replaceAll(node -> node.equals(appointmentRequestUserNhi) ? temp : node);
             appointmentRequestUserNhi = temp;
-            AnchorPane.setTopAnchor(appointmentRequestUserNhi, 109.0);
-            AnchorPane.setRightAnchor(appointmentRequestUserNhi, 49.0);
+            AnchorPane.setTopAnchor(appointmentRequestUserNhi, TITLE_CONTROL_TOP_ANCHOR);
+            AnchorPane.setRightAnchor(appointmentRequestUserNhi, TITLE_CONTROL_RIGHT_ANCHOR);
         }
     }
 
