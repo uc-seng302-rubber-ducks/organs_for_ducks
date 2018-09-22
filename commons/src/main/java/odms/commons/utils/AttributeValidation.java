@@ -220,4 +220,26 @@ public class AttributeValidation {
     public static boolean validateTimeString(String time) {
         return time.matches("(([01][0-9])|(2[0-3])):([0-5][0-9])");
     }
+
+    /**
+     * Checks if the given value is greater than or equal to the given lower bound
+     *
+     * @param lowerBound Lower bound of a blood test property
+     * @param value Blood test property value
+     * @return true if the given value is greater than or equal to the lower bound, false otherwise
+     */
+    public static boolean checkAboveLowerBound(double lowerBound, double value) {
+        return value >= lowerBound;
+    }
+
+    /**
+     * Checks if the given value is less than or equal to the upper bound
+     *
+     * @param upperBound Higher bound of a blood test property
+     * @param value Blood test property value
+     * @return true if the given value is less than or equal to the upper bound, false otherwise
+     */
+    public static boolean checkBelowUpperBound(double upperBound, double value) {
+        return value <= upperBound;
+    }
 }
