@@ -47,15 +47,18 @@ public class BloodTestViewController {
 
     private ObservableList<BloodTest> bloodTests = FXCollections.observableList(new ArrayList<>());
     private BloodTestsLogicController logicController;
-    private User user;
 
-    @FXML
+    /**
+     * Initializes the blood test tab on the given users profile
+     *
+     * @param user The current user
+     */
     public void init(User user) {
         bloodTests.addListener((ListChangeListener<? super BloodTest>) observable -> {
             populateTable();
         });
-        this.user = user;
-        logicController = new BloodTestsLogicController(bloodTests, this.user);
+
+        logicController = new BloodTestsLogicController(bloodTests, user);
         initBloodTestTableView();
     }
 

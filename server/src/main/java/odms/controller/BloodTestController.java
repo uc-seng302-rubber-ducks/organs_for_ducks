@@ -78,10 +78,11 @@ public class BloodTestController extends BaseController {
 
         try {
             DateTimeFormatter formatter =
-                    DateTimeFormatter.ofPattern("d/M/yyyy");
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd");
             startDate = LocalDate.parse(startDateS, formatter);
             endDate = LocalDate.parse(endDateS, formatter);
         } catch (DateTimeException e) {
+            Log.severe("Could not parse date for blood test " + startDateS + " " + endDateS, e);
             throw new BadRequestException();
         }
         try (Connection connection = driver.getConnection()) {

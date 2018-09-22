@@ -8,22 +8,18 @@ import javafx.stage.Stage;
 import odms.commons.model.User;
 import odms.commons.model.datamodel.BloodTest;
 import odms.commons.utils.Log;
+import odms.controller.AppController;
 import odms.controller.gui.popup.view.NewBloodTestViewController;
 
 import java.io.IOException;
-import odms.controller.AppController;
-
 import java.time.LocalDate;
 
 public class BloodTestsLogicController {
 
     private ObservableList<BloodTest> bloodTests;
-    private User user;
-
-
     private static final int ROWS_PER_PAGE = 30;
     private int startingIndex = 0;
-
+    private User user;
 
     /**
      * Constructor to create a new logical instance of the controller
@@ -33,9 +29,7 @@ public class BloodTestsLogicController {
     public BloodTestsLogicController(ObservableList<BloodTest> bloodTests, User user) {
         this.bloodTests = bloodTests;
         this.user = user;
-        this.user = user;
     }
-
 
     public void addNewBloodTest() {
         FXMLLoader newBloodTestLoader = new FXMLLoader(getClass().getResource("/FXML/BloodTestPopUP.fxml"));
@@ -64,9 +58,14 @@ public class BloodTestsLogicController {
 
     }
 
+    /**
+     * Calls the database to get updated blood test entries
+     *
+     * @param start The entry number for the database that the table will start from
+     */
     public void updateTableView(int start) {
         bloodTests.clear();
-        String startDate = LocalDate.now().minusYears(1).toString();
+        String startDate = LocalDate.now().minusYears(100).toString();
         String endDate = LocalDate.now().toString();
         AppController.getInstance().getBloodTestBridge().getBloodTests(user.getNhi(), startDate, endDate, ROWS_PER_PAGE, start, bloodTests);
     }

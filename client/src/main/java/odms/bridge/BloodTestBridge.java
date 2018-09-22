@@ -96,7 +96,6 @@ public class BloodTestBridge extends Bifrost {
             if (response.isSuccessful()) {
                 String bodyString = response.body().string();
                 Collection<BloodTest> bloodTests = handler.decodeBloodTests(bodyString);
-
                 for (BloodTest bt : bloodTests) {
                     checkBounds(bt);
                 }
