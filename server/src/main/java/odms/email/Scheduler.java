@@ -55,8 +55,8 @@ public class Scheduler {
         for(AppointmentWithPeople appointment : appointmentWithPeopleTomorrow){
             if(!appointment.getUser().getEmail().equals("") || appointment.getUser().getEmail() != null){
                 mailHandler.sendMail(appointment.getUser().getEmail(),
-                        String.format("Appointment for: %s", appointment.getAppointmentTime().toString().replace("T", " ")),
-                        String.format(emailString, appointment.getUser().getFullName(), appointment.getAppointmentTime().toString().replace("T", " "), appointment.getClinician().getFirstName(),appointment.getClinician().getLastName(),appointment.getClinician().getFirstName()));
+                        String.format("Appointment for: %s",appointment.getAppointmentDateTimeString()),
+                        String.format(emailString, appointment.getUser().getFullName(), appointment.getAppointmentDateTimeString(), appointment.getClinician().getFirstName(),appointment.getClinician().getLastName(),appointment.getClinician().getFirstName()));
 
             }
         }
@@ -64,8 +64,8 @@ public class Scheduler {
         for(AppointmentWithPeople appointment : appointmentWithPeopleNextWeek){
             if(!appointment.getUser().getEmail().equals("") || appointment.getUser().getEmail() != null){
                 mailHandler.sendMail( appointment.getUser().getEmail(),
-                        String.format("Appointment for: %s", appointment.getAppointmentTime().toString().replace("T", " ")),
-                        String.format(emailString, appointment.getUser().getFullName(), appointment.getAppointmentTime().toString().replace("T", " "), appointment.getClinician().getFirstName(),appointment.getClinician().getLastName(),appointment.getClinician().getFirstName()));
+                        String.format("Appointment for: %s", appointment.getAppointmentDateTimeString()),
+                        String.format(emailString, appointment.getUser().getFullName(), appointment.getAppointmentDateTimeString(), appointment.getClinician().getFirstName(),appointment.getClinician().getLastName(),appointment.getClinician().getFirstName()));
 
             }
         }

@@ -1,6 +1,7 @@
 package odms.email;
 
 import odms.commons.model.dto.AppointmentWithPeople;
+import odms.commons.utils.Log;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import static java.lang.String.format;
@@ -47,7 +48,6 @@ public class Mailer {
             return;
         }
         switch (statusId) {
-            case 7:
             case 2:
                 message = format(ACCEPTED_MESSAGE,
                         appointment.getUser().getFullName(),
@@ -58,7 +58,6 @@ public class Mailer {
                         appointment.getClinician().getFirstName(),
                         appointment.getClinician().getLastName());
                 break;
-            case 8:
             case 3:
                 message = format(REJECTED_MESSAGE,
                         appointment.getUser().getFullName(),
@@ -68,7 +67,6 @@ public class Mailer {
                         appointment.getClinician().getFirstName(),
                         appointment.getClinician().getLastName());
                 break;
-            case 10:
             case 5:
                 message = format(CANCELLED_BY_CLINICIAN_MESSAGE,
                         appointment.getUser().getFullName(),
@@ -83,17 +81,20 @@ public class Mailer {
                         appointment.getUser().getFullName(),
                         appointment.getClinician().getFirstName(),
                         appointment.getClinician().getLastName(),
-                        appointment.getAppointmentTime().toString(),
+                        appointment.getAppointmentDateTimeString(),
                         appointment.getClinician().getFirstName(),
                         appointment.getClinician().getLastName());
                 break;
             case 1:
             case 4:
+            case 7:
+            case 8:
             case 9:
+            case 10:
             default:
                 message = "";
         }
-        System.out.println("Sending" + message + " " + statusId);
+        Log.info("Sending" + message + " " + statusId);
         if (message.isEmpty()) {
             return;
         }

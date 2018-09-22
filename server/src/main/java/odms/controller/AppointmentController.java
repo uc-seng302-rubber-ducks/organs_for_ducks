@@ -287,6 +287,10 @@ public class AppointmentController extends BaseController {
             AppointmentUpdateStrategy appointmentStrategy = handler.getAppointmentStrategy();
             appointmentStrategy.putSingleAppointment(connection, appointment);
             socketHandler.broadcast(EventTypes.APPOINTMENT_UPDATE, Integer.toString(appointmentId), Integer.toString(appointmentId));
+            Mailer mailer = new Mailer();
+            AppointmentWithPeople appointmentwithPeople = handler.getAppointmentWithPeople(connection, appointmentId);
+
+            mailer.sendAppointmentUpdate(appointment.getAppointmentStatus().getDbValue(), appointmentwithPeople);
 
         } catch (SQLException s) {
             Log.severe("Cannot send updated appointment to database", s);

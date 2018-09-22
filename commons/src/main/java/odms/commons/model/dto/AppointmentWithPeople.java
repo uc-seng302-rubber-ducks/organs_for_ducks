@@ -36,4 +36,8 @@ public class AppointmentWithPeople {
     public void setAppointmentTime(LocalDateTime appointmentTime) {
         this.appointmentTime = appointmentTime;
     }
+
+    public String getAppointmentDateTimeString(){
+        return appointmentTime.toLocalTime().toString().replaceAll("T", " ");
+    }
 }
