@@ -62,14 +62,6 @@
                    </rowConstraints>
                    <children>
                        <DatePicker fx:id="bloodTestDatePicker" visible="false" GridPane.columnIndex="1"/>
-                       <Label text="Red Blood Cell Count:" GridPane.rowIndex="1"/>
-                       <Label text="White Blood Cell Count:" GridPane.rowIndex="2"/>
-                       <Label text="Heamoglobin Level:" GridPane.rowIndex="3"/>
-                       <Label text="Platelets:" GridPane.rowIndex="4"/>
-                       <Label text="Glucose Levels:" GridPane.rowIndex="5"/>
-                       <Label text="Mean Cell Volume:" GridPane.rowIndex="7"/>
-                       <Label text="Haematocrit:" GridPane.rowIndex="6"/>
-                       <Label text="Mean Cell Haematocrit:" GridPane.rowIndex="8"/>
                        <TextField fx:id="redBloodCount" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
                        <TextField fx:id="whiteBloodCount" visible="false" GridPane.columnIndex="1"
                                   GridPane.rowIndex="2"/>
@@ -91,6 +83,62 @@
                        <Label fx:id="bloodTestMCVolumeLabel" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
                        <Label fx:id="bloodTestHaematocritLabel" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
                        <Label fx:id="bloodTestMCHaematocritLabel" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
+                       <VBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="172.0" GridPane.rowIndex="1">
+                           <children>
+                               <Label/>
+                               <Label text="Red Blood Cell Count:"/>
+                               <Label text="(x10^9 cells /Litre)"/>
+                           </children>
+                       </VBox>
+                       <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="2">
+                           <children>
+                               <Label/>
+                               <Label text="White Blood Cell Count:"/>
+                               <Label text="(x10^9 cells /Litre)"/>
+                           </children>
+                       </VBox>
+                       <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="3">
+                           <children>
+                               <Label/>
+                               <Label text="Heamoglobin Level:"/>
+                               <Label text="(grams/Litre)"/>
+                           </children>
+                       </VBox>
+                       <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="4">
+                           <children>
+                               <Label/>
+                               <Label text="Platelets:"/>
+                               <Label text="(x10^9 platelets /Litre)"/>
+                           </children>
+                       </VBox>
+                       <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="5">
+                           <children>
+                               <Label/>
+                               <Label text="Glucose Levels:"/>
+                               <Label text="(mmol/Litre)"/>
+                           </children>
+                       </VBox>
+                       <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="7">
+                           <children>
+                               <Label/>
+                               <Label text="Mean Cell Volume:"/>
+                               <Label text="(femtolitre)"/>
+                           </children>
+                       </VBox>
+                       <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="8">
+                           <children>
+                               <Label/>
+                               <Label text="Mean Cell Haematocrit:"/>
+                               <Label text="(picogram)"/>
+                           </children>
+                       </VBox>
+                       <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="6">
+                           <children>
+                               <Label/>
+                               <Label text="Haematocrit:"/>
+                               <Label text="(ratio)"/>
+                           </children>
+                       </VBox>
                    </children>
                </GridPane>
                <Label layoutX="8.0" layoutY="59.0" text="Blood Test Details">
