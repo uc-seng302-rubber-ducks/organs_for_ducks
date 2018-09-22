@@ -186,7 +186,7 @@
               </rowConstraints>
                <children>
                   <Label text="Filter Time Range:" GridPane.rowIndex="1" />
-                   <ComboBox prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                   <ComboBox prefHeight="25.0" prefWidth="183.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                        <items>
                            <FXCollections fx:factory="observableArrayList">
                                <String fx:value="Day" />
@@ -216,6 +216,7 @@
                   </Label>
                </children>
             </GridPane>
+            <Button layoutX="268.0" layoutY="600.0" mnemonicParsing="false" text="Repopulate Graph" />
          </children></AnchorPane>
    </children>
 </AnchorPane>
