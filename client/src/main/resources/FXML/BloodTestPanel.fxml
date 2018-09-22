@@ -5,159 +5,153 @@
 <?import javafx.scene.text.Font?>
 <AnchorPane prefHeight="735.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.panel.view.BloodTestViewController">
    <children>
-       <AnchorPane prefHeight="735.0" prefWidth="786.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                   AnchorPane.rightAnchor="414.0" AnchorPane.topAnchor="0.0">
-           <children>
-               <TableView fx:id="bloodTestTableView" layoutX="23.0" layoutY="55.0" prefHeight="631.0" prefWidth="752.0"
-                          AnchorPane.bottomAnchor="49.0" AnchorPane.leftAnchor="23.0" AnchorPane.rightAnchor="11.0"
-                          AnchorPane.topAnchor="55.0">
-                   <columns>
-                       <TableColumn fx:id="testDateColumn" prefWidth="151.0" text="Date Requested"/>
-                       <TableColumn fx:id="lowPropertyValuesColumn" prefWidth="294.0" text="Properties Below Normal"/>
-                       <TableColumn fx:id="highPropertyValuesColumn" prefWidth="305.0" text="Properties Above Normal"/>
-                   </columns>
-                   <columnResizePolicy>
-                       <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-                   </columnResizePolicy>
-               </TableView>
-               <HBox alignment="CENTER" layoutX="22.0" layoutY="699.0" prefHeight="25.0" prefWidth="752.0"
-                     AnchorPane.bottomAnchor="11.0" AnchorPane.leftAnchor="22.0" AnchorPane.rightAnchor="11.0">
-                   <children>
-                       <Button layoutX="322.0" layoutY="465.0" mnemonicParsing="false" onAction="#goToPreviousPage"
-                               text="&lt;&lt;"/>
-                       <Button layoutX="362.0" layoutY="465.0" mnemonicParsing="false" onAction="#goToNextPage"
-                               text="&gt;&gt;"/>
-                   </children>
-               </HBox>
-               <Label layoutX="24.0" layoutY="17.0" prefHeight="24.0" prefWidth="355.0" text="Blood Tests"
-                      AnchorPane.leftAnchor="24.0" AnchorPane.topAnchor="17.0">
+      <AnchorPane prefHeight="50.0" prefWidth="786.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="414.0" AnchorPane.topAnchor="0.0">
+         <children>
+               <Button fx:id="requestNewBloodTest" layoutX="648.0" layoutY="13.0" mnemonicParsing="false" onAction="#addNewBloodTest" text="Add New Blood Test" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="13.0" />
+               <Label layoutX="25.0" layoutY="11.0" prefHeight="24.0" prefWidth="355.0" text="Blood Tests" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="11.0">
                    <font>
-                       <Font name="System Bold" size="19.0"/>
+                       <Font name="System Bold" size="19.0" />
                    </font>
                </Label>
-               <Button fx:id="requestNewBloodTest" layoutX="626.0" layoutY="17.0" mnemonicParsing="false"
-                       onAction="#addNewBloodTest" text="Add New Blood Test" visible="false"
-                       AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="17.0"/>
+         </children>
+      </AnchorPane>
+       <AnchorPane fx:id="bloodTestTableViewPane" prefHeight="685.0" prefWidth="786.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="414.0" AnchorPane.topAnchor="50.0">
+           <children>
+               <TableView fx:id="bloodTestTableView" layoutX="23.0" layoutY="6.0" prefHeight="630.0" prefWidth="752.0" AnchorPane.bottomAnchor="49.0" AnchorPane.leftAnchor="23.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="6.0">
+                   <columns>
+                       <TableColumn fx:id="testDateColumn" prefWidth="151.0" text="Date Requested" />
+                       <TableColumn fx:id="lowPropertyValuesColumn" prefWidth="294.0" text="Properties Below Normal" />
+                       <TableColumn fx:id="highPropertyValuesColumn" prefWidth="305.0" text="Properties Above Normal" />
+                   </columns>
+                   <columnResizePolicy>
+                       <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                   </columnResizePolicy>
+               </TableView>
+               <HBox alignment="CENTER" layoutX="22.0" layoutY="699.0" prefHeight="25.0" prefWidth="752.0" AnchorPane.bottomAnchor="11.0" AnchorPane.leftAnchor="22.0" AnchorPane.rightAnchor="11.0">
+                   <children>
+                       <Button layoutX="322.0" layoutY="465.0" mnemonicParsing="false" onAction="#goToPreviousPage" text="&lt;&lt;" />
+                       <Button layoutX="362.0" layoutY="465.0" mnemonicParsing="false" onAction="#goToNextPage" text="&gt;&gt;" />
+                   </children>
+               </HBox>
            </children>
        </AnchorPane>
-       <AnchorPane layoutX="800.0" prefHeight="735.0" prefWidth="407.0" AnchorPane.bottomAnchor="0.0"
-                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+       <AnchorPane fx:id="bloodTestDetailsPane" layoutX="800.0" layoutY="50.0" prefHeight="685.0" prefWidth="407.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
            <children>
-               <GridPane layoutX="10.0" layoutY="75.0" prefHeight="549.0" prefWidth="369.0"
-                         AnchorPane.bottomAnchor="111.0" AnchorPane.topAnchor="75.0">
+               <GridPane layoutX="10.0" layoutY="26.0" prefHeight="549.0" prefWidth="369.0">
                    <columnConstraints>
-                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="178.0"/>
-                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="206.0" minWidth="10.0" prefWidth="42.0"/>
-                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="206.0" minWidth="10.0" prefWidth="150.0"/>
+                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="178.0" />
+                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="206.0" minWidth="10.0" prefWidth="42.0" />
+                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="206.0" minWidth="10.0" prefWidth="150.0" />
                    </columnConstraints>
                    <rowConstraints>
-                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                    </rowConstraints>
                    <children>
-                       <DatePicker fx:id="bloodTestDatePicker" visible="false" GridPane.columnIndex="1"
-                                   GridPane.columnSpan="2"/>
-                       <TextField fx:id="redBloodCount" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2"
-                                  GridPane.rowIndex="1"/>
-                       <TextField fx:id="whiteBloodCount" visible="false" GridPane.columnIndex="1"
-                                  GridPane.columnSpan="2" GridPane.rowIndex="2"/>
-                       <TextField fx:id="heamoglobin" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2"
-                                  GridPane.rowIndex="3"/>
-                       <TextField fx:id="platelets" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2"
-                                  GridPane.rowIndex="4"/>
-                       <TextField fx:id="glucose" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2"
-                                  GridPane.rowIndex="5"/>
-                       <TextField fx:id="haematocrit" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2"
-                                  GridPane.rowIndex="6"/>
-                       <TextField fx:id="meanCellVolume" visible="false" GridPane.columnIndex="1"
-                                  GridPane.columnSpan="2" GridPane.rowIndex="7"/>
-                       <TextField fx:id="meanCellHaematocrit" visible="false" GridPane.columnIndex="1"
-                                  GridPane.columnSpan="2" GridPane.rowIndex="8"/>
-                       <Label text="Date Of Blood Test:"/>
-                       <Label fx:id="bloodTestDateLabel" GridPane.columnIndex="2"/>
-                       <Label fx:id="bloodTestRCCountLabel" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
-                       <Label fx:id="bloodTestWCCountLabel" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
-                       <Label fx:id="bloodTestHeamoglobinLabel" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
-                       <Label fx:id="bloodTestPlateletsLabel" GridPane.columnIndex="2" GridPane.rowIndex="4"/>
-                       <Label fx:id="bloodTestGlucoseLabel" GridPane.columnIndex="2" GridPane.rowIndex="5"/>
-                       <Label fx:id="bloodTestMCVolumeLabel" GridPane.columnIndex="2" GridPane.rowIndex="7"/>
-                       <Label fx:id="bloodTestHaematocritLabel" GridPane.columnIndex="2" GridPane.rowIndex="6"/>
-                       <Label fx:id="bloodTestMCHaematocritLabel" GridPane.columnIndex="2" GridPane.rowIndex="8"/>
+                       <DatePicker fx:id="bloodTestDatePicker" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2" />
+                       <TextField fx:id="redBloodCount" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                       <TextField fx:id="whiteBloodCount" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                       <TextField fx:id="heamoglobin" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                       <TextField fx:id="platelets" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                       <TextField fx:id="glucose" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5" />
+                       <TextField fx:id="haematocrit" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="6" />
+                       <TextField fx:id="meanCellVolume" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="7" />
+                       <TextField fx:id="meanCellHaematocrit" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="8" />
+                       <Label text="Date Of Blood Test:" />
+                       <Label fx:id="bloodTestDateLabel" GridPane.columnIndex="2" />
+                       <Label fx:id="bloodTestRCCountLabel" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                       <Label fx:id="bloodTestWCCountLabel" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                       <Label fx:id="bloodTestHeamoglobinLabel" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                       <Label fx:id="bloodTestPlateletsLabel" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                       <Label fx:id="bloodTestGlucoseLabel" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                       <Label fx:id="bloodTestMCVolumeLabel" GridPane.columnIndex="2" GridPane.rowIndex="7" />
+                       <Label fx:id="bloodTestHaematocritLabel" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+                       <Label fx:id="bloodTestMCHaematocritLabel" GridPane.columnIndex="2" GridPane.rowIndex="8" />
                        <VBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="172.0" GridPane.rowIndex="1">
                            <children>
-                               <Label/>
-                               <Label text="Red Blood Cell Count:"/>
-                               <Label text="(x10^9 cells /Litre)"/>
+                               <Label />
+                               <Label text="Red Blood Cell Count:" />
+                               <Label text="(x10^9 cells /Litre)" />
                            </children>
                        </VBox>
                        <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="2">
                            <children>
-                               <Label/>
-                               <Label text="White Blood Cell Count:"/>
-                               <Label text="(x10^9 cells /Litre)"/>
+                               <Label />
+                               <Label text="White Blood Cell Count:" />
+                               <Label text="(x10^9 cells /Litre)" />
                            </children>
                        </VBox>
                        <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="3">
                            <children>
-                               <Label/>
-                               <Label text="Heamoglobin Level:"/>
-                               <Label text="(grams/Litre)"/>
+                               <Label />
+                               <Label text="Heamoglobin Level:" />
+                               <Label text="(grams/Litre)" />
                            </children>
                        </VBox>
                        <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="4">
                            <children>
-                               <Label/>
-                               <Label text="Platelets:"/>
-                               <Label text="(x10^9 platelets /Litre)"/>
+                               <Label />
+                               <Label text="Platelets:" />
+                               <Label text="(x10^9 platelets /Litre)" />
                            </children>
                        </VBox>
                        <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="5">
                            <children>
-                               <Label/>
-                               <Label text="Glucose Levels:"/>
-                               <Label text="(mmol/Litre)"/>
+                               <Label />
+                               <Label text="Glucose Levels:" />
+                               <Label text="(mmol/Litre)" />
                            </children>
                        </VBox>
                        <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="7">
                            <children>
-                               <Label/>
-                               <Label text="Mean Cell Volume:"/>
-                               <Label text="(femtolitre)"/>
+                               <Label />
+                               <Label text="Mean Cell Volume:" />
+                               <Label text="(femtolitre)" />
                            </children>
                        </VBox>
                        <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="8">
                            <children>
-                               <Label/>
-                               <Label text="Mean Cell Haematocrit:"/>
-                               <Label text="(picogram)"/>
+                               <Label />
+                               <Label text="Mean Cell Haematocrit:" />
+                               <Label text="(picogram)" />
                            </children>
                        </VBox>
                        <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="6">
                            <children>
-                               <Label/>
-                               <Label text="Haematocrit:"/>
-                               <Label text="(ratio)"/>
+                               <Label />
+                               <Label text="Haematocrit:" />
+                               <Label text="(ratio)" />
                            </children>
                        </VBox>
                    </children>
                </GridPane>
-               <Label layoutX="8.0" layoutY="59.0" text="Blood Test Details">
+               <Label layoutX="10.0" layoutY="8.0" text="Blood Test Details">
                    <font>
-                       <Font name="System Bold" size="14.0"/>
+                       <Font name="System Bold" size="14.0" />
                    </font>
                </Label>
-               <Button fx:id="deleteBloodTest" layoutX="8.0" layoutY="660.0" mnemonicParsing="false"
-                       text="Delete Blood test" visible="false" AnchorPane.bottomAnchor="50.0"/>
-               <Button fx:id="updateBloodTest" layoutX="242.0" layoutY="660.0" mnemonicParsing="false"
-                       text="Update Blood Test" visible="false" AnchorPane.bottomAnchor="50.0"/>
+               <Button fx:id="deleteBloodTest" layoutX="10.0" layoutY="613.0" mnemonicParsing="false" text="Delete Blood test" />
+               <Button fx:id="updateBloodTest" layoutX="264.0" layoutY="613.0" mnemonicParsing="false" text="Update Blood Test" />
            </children>
        </AnchorPane>
+      <AnchorPane fx:id="bloodTestGraphViewPane" layoutY="13.0" prefHeight="685.0" prefWidth="786.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="414.0" AnchorPane.topAnchor="50.0" />
+      <AnchorPane layoutX="800.0" prefHeight="50.0" prefWidth="406.0" AnchorPane.leftAnchor="794.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <ToggleButton layoutX="230.0" layoutY="13.0" mnemonicParsing="false" selected="true" text="Table View" AnchorPane.rightAnchor="102.0" AnchorPane.topAnchor="13.0">
+               <toggleGroup>
+                  <ToggleGroup fx:id="tableGraphBloodTestView" />
+               </toggleGroup>
+            </ToggleButton>
+            <ToggleButton layoutX="303.0" layoutY="13.0" mnemonicParsing="false" text="Graph View" toggleGroup="$tableGraphBloodTestView" AnchorPane.rightAnchor="26.0" AnchorPane.topAnchor="13.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="bloodTestGraphFilterPane" layoutX="800.0" layoutY="50.0" prefHeight="685.0" prefWidth="407.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0" />
    </children>
 </AnchorPane>
