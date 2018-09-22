@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
@@ -8,14 +11,14 @@
       <AnchorPane prefHeight="50.0" prefWidth="786.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="414.0" AnchorPane.topAnchor="0.0">
          <children>
                <Button fx:id="requestNewBloodTest" layoutX="648.0" layoutY="13.0" mnemonicParsing="false" onAction="#addNewBloodTest" text="Add New Blood Test" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="13.0" />
-               <Label layoutX="25.0" layoutY="11.0" prefHeight="24.0" prefWidth="355.0" text="Blood Tests" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="11.0">
+               <Label layoutX="25.0" layoutY="11.0" prefHeight="24.0" prefWidth="355.0" text="Blood Test Statistics" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="11.0">
                    <font>
                        <Font name="System Bold" size="19.0" />
                    </font>
                </Label>
          </children>
       </AnchorPane>
-       <AnchorPane fx:id="bloodTestTableViewPane" prefHeight="685.0" prefWidth="786.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="414.0" AnchorPane.topAnchor="50.0">
+       <AnchorPane fx:id="bloodTestTableViewPane" prefHeight="685.0" prefWidth="786.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="414.0" AnchorPane.topAnchor="50.0">
            <children>
                <TableView fx:id="bloodTestTableView" layoutX="23.0" layoutY="6.0" prefHeight="630.0" prefWidth="752.0" AnchorPane.bottomAnchor="49.0" AnchorPane.leftAnchor="23.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="6.0">
                    <columns>
@@ -35,7 +38,7 @@
                </HBox>
            </children>
        </AnchorPane>
-       <AnchorPane fx:id="bloodTestDetailsPane" layoutX="800.0" layoutY="50.0" prefHeight="685.0" prefWidth="407.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
+       <AnchorPane fx:id="bloodTestDetailsPane" layoutX="800.0" layoutY="50.0" prefHeight="685.0" prefWidth="407.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
            <children>
                <GridPane layoutX="10.0" layoutY="26.0" prefHeight="549.0" prefWidth="369.0">
                    <columnConstraints>
@@ -141,7 +144,17 @@
                <Button fx:id="updateBloodTest" layoutX="264.0" layoutY="613.0" mnemonicParsing="false" text="Update Blood Test" />
            </children>
        </AnchorPane>
-      <AnchorPane fx:id="bloodTestGraphViewPane" layoutY="13.0" prefHeight="685.0" prefWidth="786.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="414.0" AnchorPane.topAnchor="50.0" />
+      <AnchorPane fx:id="bloodTestGraphViewPane" layoutY="13.0" prefHeight="685.0" prefWidth="786.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="414.0" AnchorPane.topAnchor="50.0">
+         <children>
+            <LineChart layoutX="8.0" layoutY="14.0" prefHeight="656.0" prefWidth="767.0" title="Property over the past Time Range" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="14.0">
+              <xAxis>
+                <CategoryAxis label="Time range" side="BOTTOM" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis label="Property (unit)" side="LEFT" />
+              </yAxis>
+            </LineChart>
+         </children></AnchorPane>
       <AnchorPane layoutX="800.0" prefHeight="50.0" prefWidth="406.0" AnchorPane.leftAnchor="794.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <ToggleButton layoutX="230.0" layoutY="13.0" mnemonicParsing="false" selected="true" text="Table View" AnchorPane.rightAnchor="102.0" AnchorPane.topAnchor="13.0">
@@ -152,6 +165,13 @@
             <ToggleButton layoutX="303.0" layoutY="13.0" mnemonicParsing="false" text="Graph View" toggleGroup="$tableGraphBloodTestView" AnchorPane.rightAnchor="26.0" AnchorPane.topAnchor="13.0" />
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="bloodTestGraphFilterPane" layoutX="800.0" layoutY="50.0" prefHeight="685.0" prefWidth="407.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0" />
+      <AnchorPane fx:id="bloodTestGraphFilterPane" layoutX="800.0" layoutY="50.0" prefHeight="685.0" prefWidth="407.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
+         <children>
+            <Label layoutX="17.0" layoutY="16.0" text="Filter Options">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+         </children></AnchorPane>
    </children>
 </AnchorPane>
