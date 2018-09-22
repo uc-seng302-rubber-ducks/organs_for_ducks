@@ -6,6 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import odms.commons.model.User;
 import odms.commons.model._enum.BloodTestProperties;
 import odms.commons.model.datamodel.BloodTest;
@@ -45,6 +46,8 @@ public class BloodTestViewController {
     private TextField meanCellHaematocrit;
 
     @FXML
+    private Label bloodTestTitle;
+    @FXML
     private Label bloodTestDateLabel;
     @FXML
     private Label bloodTestRCCountLabel;
@@ -62,6 +65,22 @@ public class BloodTestViewController {
     private Label bloodTestHaematocritLabel;
     @FXML
     private Label bloodTestMCHaematocritLabel;
+
+    @FXML
+    private ToggleGroup bloodTestTableGraphToggleGroup;
+    @FXML
+    private Toggle bloodTestTableToggle;
+    @FXML
+    private Toggle bloodTestGraphToggle;
+
+    @FXML
+    private AnchorPane bloodTestTableViewPane;
+    @FXML
+    private AnchorPane bloodTestDetailsPane;
+    @FXML
+    private AnchorPane bloodTestGraphViewPane;
+    @FXML
+    private AnchorPane bloodTestGraphFilterPane;
 
     @FXML
     private TableView<BloodTest> bloodTestTableView;
@@ -222,6 +241,24 @@ public class BloodTestViewController {
             bloodTestMCVolumeLabel.setText("");
             bloodTestHaematocritLabel.setText("");
             bloodTestMCHaematocritLabel.setText("");
+        }
+    }
+
+    @FXML
+    private void bloodTestTableGraphToggle() {
+        if (bloodTestTableToggle.isSelected()) {
+            bloodTestTitle.setText("Blood Test Entries");
+            bloodTestGraphFilterPane.setVisible(false);
+            bloodTestGraphViewPane.setVisible(false);
+            bloodTestDetailsPane.setVisible(true);
+            bloodTestTableViewPane.setVisible(true);
+
+        } else if (bloodTestGraphToggle.isSelected()) {
+            bloodTestTitle.setText("Blood Test Statistics");
+            bloodTestGraphFilterPane.setVisible(true);
+            bloodTestGraphViewPane.setVisible(true);
+            bloodTestDetailsPane.setVisible(false);
+            bloodTestTableViewPane.setVisible(false);
         }
     }
 
