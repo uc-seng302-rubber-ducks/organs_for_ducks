@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
@@ -78,7 +79,7 @@ public class BloodTestViewController {
     private ComboBox<String> timeRangeFilterOption;
 
     @FXML
-    private LineChart<Double, LocalDate> bloodTestGraph;
+    private LineChart<String, Double> bloodTestGraph;
     @FXML
     private CategoryAxis timeRangeAxis;
     @FXML
@@ -292,8 +293,24 @@ public class BloodTestViewController {
      * Populates the graph with blood test properties specified by the filters
      */
     private void populateGraph() {
-
+        bloodTestGraph.getData().removeAll(bloodTestGraph.getData());
+        createGraphSeries();
     }
+
+    /**
+     * Creates a series containing the specified property and the time frame to populate the graph
+     */
+    private void createGraphSeries() {
+        XYChart.Series<String, Double> series = new XYChart.Series<>();
+        XYChart.Data<String, Double> data;
+        for (BloodTest bloodTest : graphBloodTests) {
+            data = new XYChart.Data<>(bloodTest.getTestDate().toString(), bloodTest.getRedBloodCellCount());
+            series.getData().add(data);
+        }
+
+        bloodTestGraph.getData().add(series);
+    }
+
 
     /**
      * Changes the graph title and axis' depending on the filter options
