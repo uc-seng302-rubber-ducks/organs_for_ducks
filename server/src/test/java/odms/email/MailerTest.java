@@ -40,7 +40,7 @@ public class MailerTest {
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         testMailer.sendAppointmentUpdate(AppointmentStatus.ACCEPTED.getDbValue(), appointment);
         verify(mailHandler).sendMail(anyString(), anyString(), captor.capture());
-        Assert.assertTrue(captor.getValue().contains("Has been Accepted"));
+        Assert.assertTrue(captor.getValue().toLowerCase().contains("has been accepted"));
 
     }
 
@@ -49,7 +49,7 @@ public class MailerTest {
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         testMailer.sendAppointmentUpdate(AppointmentStatus.UPDATED.getDbValue(), appointment);
         verify(mailHandler).sendMail(anyString(), anyString(), captor.capture());
-        Assert.assertTrue(captor.getValue().contains("Updated"));
+        Assert.assertTrue(captor.getValue().toLowerCase().contains("updated"));
 
     }
 
@@ -58,7 +58,7 @@ public class MailerTest {
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         testMailer.sendAppointmentUpdate(AppointmentStatus.REJECTED.getDbValue(), appointment);
         verify(mailHandler).sendMail(anyString(), anyString(), captor.capture());
-        Assert.assertTrue(captor.getValue().contains("not been accepted"));
+        Assert.assertTrue(captor.getValue().toLowerCase().contains("not been accepted"));
 
     }
 
@@ -67,7 +67,7 @@ public class MailerTest {
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         testMailer.sendAppointmentUpdate(AppointmentStatus.CANCELLED_BY_CLINICIAN.getDbValue(), appointment);
         verify(mailHandler).sendMail(anyString(), anyString(), captor.capture());
-        Assert.assertTrue(captor.getValue().contains("cancelled"));
+        Assert.assertTrue(captor.getValue().toLowerCase().contains("cancelled"));
 
     }
 
