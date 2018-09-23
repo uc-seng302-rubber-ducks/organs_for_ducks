@@ -83,7 +83,6 @@ public class BloodTestViewController {
 
     @FXML
     private ComboBox<String> timeRangeFilterOption;
-    private final int WEEKS_IN_A_MONTH = 4;
     @FXML
     private CheckBox rBCCheckBox;
     @FXML
@@ -98,6 +97,8 @@ public class BloodTestViewController {
     private CheckBox haematocritCheckBox;
     @FXML
     private CheckBox mCVCheckBox;
+    @FXML
+    private CheckBox mCHCheckBox;
 
     @FXML
     private LineChart<String, Double> bloodTestGraph;
@@ -126,8 +127,6 @@ public class BloodTestViewController {
     private ObservableList<BloodTest> graphBloodTests = FXCollections.observableList(new ArrayList<>());
     private ObservableList<String> timeRangeCategory = FXCollections.observableList(new ArrayList<>());
     private BloodTestsLogicController logicController;
-    @FXML
-    private CheckBox mCHCheckBox;
     private boolean fromClinician;
 
     /**
@@ -192,6 +191,7 @@ public class BloodTestViewController {
     private void initGraphView() {
         timeRangeAxis.setAutoRanging(false);
         timeRangeAxis.setCategories(timeRangeCategory);
+        bloodTestGraph.setLegendVisible(false);
     }
 
     /**
@@ -319,6 +319,7 @@ public class BloodTestViewController {
      */
     @FXML
     private void updateGraph() {
+        changeLabels();
         logicController.updateGraph(timeRangeFilterOption.getValue());
         populateGraph();
     }
@@ -332,6 +333,10 @@ public class BloodTestViewController {
         if (rBCCheckBox.isSelected()) {
             createGraphSeries(BloodTestProperties.RBC);
         }
+
+        if (wBCCheckBox.isSelected()) {
+            createGraphSeries(BloodTestProperties.WBC);
+        } // TODO: add the rest of the properties
     }
 
     /**
@@ -354,7 +359,7 @@ public class BloodTestViewController {
      * @param property  The blood test property to be displayed on the chart series
      */
     private void addAppropriateProperty(BloodTest bloodTest, XYChart.Series<String, Double> series, BloodTestProperties property) {
-        String date = changeValuesBasedOnTimeRange(bloodTest);
+        String date = logicController.changeValuesBasedOnTimeRange(bloodTest, timeRangeFilterOption.getValue());
         double value = 0.0;
 
         if (property == BloodTestProperties.RBC) {
@@ -362,7 +367,7 @@ public class BloodTestViewController {
 
         } else if (property == BloodTestProperties.WBC) {
             value = bloodTest.getWhiteBloodCellCount();
-        }
+        } // TODO: add the rest of the properties
 
         XYChart.Data<String, Double> data = new XYChart.Data<>(date, value);
         series.getData().add(data);
@@ -370,55 +375,52 @@ public class BloodTestViewController {
 
     /**
      * Changes the graph title and axis' depending on the filter options
-     *
-     * @param bloodTest The current blood test to gather data from
-     * @return The date of the blood test as a string corresponding to the format of the selected time range
      */
-    private String changeValuesBasedOnTimeRange(BloodTest bloodTest) {
+    private void changeLabels() {
         Collection<String> timeRange;
-        String testDate = "";
         switch (timeRangeFilterOption.getValue()) {
-            case "Day":
-                bloodTestGraph.setTitle("Property over the current Day");
-                timeRangeAxis.setLabel("Time in hours");
-                break;
-
             case "Week":
-                bloodTestGraph.setTitle("Property over the current Week");
-                timeRangeAxis.setLabel("Time in days");
-                testDate = bloodTest.getTestDate().getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
+                bloodTestGraph.setTitle("Results Over the Current Week");
+                timeRangeAxis.setLabel("Time in Days");
+                timeRangeAxis.setTickLabelRotation(0);
                 timeRange = Stream.of(DayOfWeek.values()).map(dayOfWeek -> dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.ENGLISH)).collect(Collectors.toList());
                 changeTimeRange(timeRange);
                 break;
 
             case "Fortnight":
-                bloodTestGraph.setTitle("Property over the current Fortnight");
-                timeRangeAxis.setLabel("Time in days");
-                break;
-
-            case "Month":
-                timeRangeAxis.setVisible(false);
-                bloodTestGraph.setTitle("Property over the past Month");
-                timeRangeAxis.setLabel("Time in weeks");
+                bloodTestGraph.setTitle("Results Over the Current Fortnight");
+                timeRangeAxis.setLabel("Time in Days");
+                timeRangeAxis.setTickLabelRotation(-45);
                 timeRange = new ArrayList<>();
-                LocalDate date = bloodTest.getTestDate();
                 LocalDate now = LocalDate.now();
 
-                for (int i = WEEKS_IN_A_MONTH - 1; i >= 0; i -= 1) {
-                    timeRange.add(now.minusWeeks(i).toString());
-
-                    if (now.minusWeeks(i).compareTo(date) <= 0 && date.compareTo(now.minusWeeks(i)) < 0) {
-                        testDate = now.minusWeeks(i).toString();
-                    }
+                int daysInAFortnight = 14;
+                for (int i = daysInAFortnight - 1; i >= 0; i -= 1) {
+                    timeRange.add(now.minusDays(i).toString());
                 }
 
                 changeTimeRange(timeRange);
                 break;
 
+            case "Month":
+                timeRangeAxis.setVisible(false);
+                bloodTestGraph.setTitle("Results Over the Past Month");
+                timeRangeAxis.setLabel("Time in Days");
+                timeRangeAxis.setTickLabelRotation(-45);
+                timeRange = new ArrayList<>();
+                LocalDate currentDate = LocalDate.now();
+
+                int daysInAMonth = 30;
+                for (int i = daysInAMonth - 1; i >= 0; i -= 1) {
+                    timeRange.add(currentDate.minusDays(i).toString());
+                }
+                changeTimeRange(timeRange);
+                break;
+
             case "Year":
-                bloodTestGraph.setTitle("Property over the current Year");
+                bloodTestGraph.setTitle("Results Over the Current Year");
                 timeRangeAxis.setLabel("Time in months");
-                testDate = bloodTest.getTestDate().getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
+                timeRangeAxis.setTickLabelRotation(0);
                 timeRange = Stream.of(Month.values()).map(month -> month.getDisplayName(TextStyle.SHORT, Locale.ENGLISH)).collect(Collectors.toList());
                 changeTimeRange(timeRange);
                 break;
@@ -426,8 +428,6 @@ public class BloodTestViewController {
             default:
                 break;
         }
-
-        return testDate;
     }
 
     /**

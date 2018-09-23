@@ -13,6 +13,8 @@ import odms.controller.gui.popup.view.NewBloodTestViewController;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
 public class BloodTestsLogicController {
 
@@ -80,18 +82,6 @@ public class BloodTestsLogicController {
     }
 
     /**
-     * Calls the database to retrieve blood test entries with the filter options to populate the graph
-     *
-     * @param timeRange The time range to display blood test results from on the graph
-     */
-    public void updateGraph(String timeRange) {
-        graphBloodTests.clear();
-        String startDate = findStartDate(timeRange);
-        String endDate = LocalDate.now().toString();
-        AppController.getInstance().getBloodTestBridge().getBloodTests(user.getNhi(), startDate, endDate, RESULTS_ON_GRAPH, 0, graphBloodTests);
-    }
-
-    /**
      * Finds the appropriate start date from the time range
      *
      * @param timeRange The time range to filter the graph by
@@ -99,7 +89,6 @@ public class BloodTestsLogicController {
      */
     private String findStartDate(String timeRange) {
         String startDate = "";
-
         switch (timeRange) {
             case "Day":
                 startDate = LocalDate.now().minusDays(1).toString();
@@ -124,7 +113,52 @@ public class BloodTestsLogicController {
             default:
                 break;
         }
-
         return startDate;
+    }
+
+    /**
+     * Calls the database to retrieve blood test entries with the filter options to populate the graph
+     *
+     * @param timeRange The time range to display blood test results from on the graph
+     */
+    public void updateGraph(String timeRange) {
+        graphBloodTests.clear();
+        String startDate = findStartDate(timeRange);
+        String endDate = LocalDate.now().toString();
+        AppController.getInstance().getBloodTestBridge().getBloodTests(user.getNhi(), startDate, endDate, RESULTS_ON_GRAPH, 0, graphBloodTests);
+    }
+
+    /**
+     * Gets the date value of the given blood test as a String depending on the selected time range.
+     * Week and year options are returned with the english word value for the days and months,
+     * whereas month and fortnight options are returned with dates.
+     *
+     * @param bloodTest The current blood test to gather data from
+     * @param timeRange The selected time frame for the graph
+     * @return The date of the blood test as a string corresponding to the format of the selected time range
+     */
+    public String changeValuesBasedOnTimeRange(BloodTest bloodTest, String timeRange) {
+        String testDate = "";
+        switch (timeRange) {
+            case "Week":
+                testDate = bloodTest.getTestDate().getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
+                break;
+
+            case "Fortnight":
+                testDate = bloodTest.getTestDate().toString();
+                break;
+
+            case "Month":
+                testDate = bloodTest.getTestDate().toString();
+                break;
+
+            case "Year":
+                testDate = bloodTest.getTestDate().getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
+                break;
+
+            default:
+                break;
+        }
+        return testDate;
     }
 }

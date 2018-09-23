@@ -205,7 +205,6 @@
                    <ComboBox fx:id="timeRangeFilterOption" prefHeight="25.0" prefWidth="183.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                        <items>
                            <FXCollections fx:factory="observableArrayList">
-                               <String fx:value="Day" />
                                <String fx:value="Week" />
                                <String fx:value="Fortnight" />
                                <String fx:value="Month" />
