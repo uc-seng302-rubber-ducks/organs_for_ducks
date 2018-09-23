@@ -127,7 +127,7 @@ public class DonationTabPageController {
         expiryReasonColumn.setCellValueFactory(new PropertyValueFactory<>("reason"));
         manualExpiryTimeColumn.setCellValueFactory(new PropertyValueFactory<>("expiryTime"));
         organExpiryColumn.setCellValueFactory(new PropertyValueFactory<>("progressTask"));
-        expiryStaffIdColumn.setCellValueFactory(new PropertyValueFactory<>("ID"));
+        expiryStaffIdColumn.setCellValueFactory(new PropertyValueFactory<>("staffID"));
         currentlyDonating.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         currentlyDonating.setVisible(false);
         currentlyDonating.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -152,7 +152,9 @@ public class DonationTabPageController {
                 canDonate.getSelectionModel().clearSelection();
                 organQualificationStatusChangerButton.setDisable(false);
             } else {
-                userDisqualifiedOrgansTable.getSelectionModel().clearSelection();
+                if(!userDisqualifiedOrgansTable.getSelectionModel().isEmpty()) {
+                    userDisqualifiedOrgansTable.getSelectionModel().clearSelection();
+                }
                 organQualificationStatusChangerButton.setDisable(true);
             }
         });
@@ -161,7 +163,9 @@ public class DonationTabPageController {
             if(canDonate.getSelectionModel().getSelectedItems().isEmpty()){
                 organQualificationStatusChangerButton.setDisable(true);
             } else {
-                userDisqualifiedOrgansTable.getSelectionModel().clearSelection();
+                if(!userDisqualifiedOrgansTable.getSelectionModel().isEmpty()) {
+                    userDisqualifiedOrgansTable.getSelectionModel().clearSelection();
+                }
                 currentOrgans.getSelectionModel().clearSelection();
                 organQualificationStatusChangerButton.setDisable(false);
             }
@@ -176,9 +180,13 @@ public class DonationTabPageController {
         userDisqualifiedOrgansTable.setVisible(false);
 
         userDisqualifiedOrgansTable.getSelectionModel().selectedItemProperty().addListener(a ->{
-            canDonate.getSelectionModel().clearSelection();
-            currentOrgans.getSelectionModel().clearSelection();
-            if(userDisqualifiedOrgansTable.getSelectionModel().getSelectedItem() == null) {
+            if(!canDonate.getSelectionModel().isEmpty()) {
+                canDonate.getSelectionModel().clearSelection();
+            }
+            if(!currentOrgans.getSelectionModel().isEmpty()) {
+                currentOrgans.getSelectionModel().clearSelection();
+            }
+            if(userDisqualifiedOrgansTable.getSelectionModel().isEmpty()) {
                 organQualificationStatusChangerButton.setDisable(true);
                 updateDisqualifiedOrgan.setDisable(true);
             } else {
