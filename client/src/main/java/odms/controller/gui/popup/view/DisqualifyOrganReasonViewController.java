@@ -38,12 +38,19 @@ public class DisqualifyOrganReasonViewController {
      * @param stage         The applications stage.
      */
     public void init(Organs disqualifiedOrgan, User user, Stage stage, String staffId, ObservableList<OrgansWithDisqualification> disqualifiedOrgans) {
+        stage.setResizable(false);
         this.disqualifiedOrgan = disqualifiedOrgan;
         this.staffId = staffId;
         this.logicController = new DisqualifyOrganReasonLogicController(user, stage, disqualifiedOrgans);
 
         disqualifyOrganDescriptionInput.setTextFormatter(new TextFormatter<String>(change ->
                 change.getControlNewText().length() <= 255 ? change : null)); // limits user input to 255 characters
+
+    }
+
+    public void updateMode(OrgansWithDisqualification organsWithDisqualification){
+        eligibleDateInput.setValue(organsWithDisqualification.getEligibleDate());
+        disqualifyOrganDescriptionInput.setText(organsWithDisqualification.getReason());
     }
 
 
@@ -72,7 +79,7 @@ public class DisqualifyOrganReasonViewController {
      */
     private boolean validateDescription() {
         if (!logicController.validateDescription(disqualifyOrganDescriptionInput.getText())) {
-            descriptionErrorLabel.setText("A description must be provided");
+            descriptionErrorLabel.setText("Invalid description.");
             return false;
         } else {
             descriptionErrorLabel.setText("");

@@ -1,13 +1,11 @@
 package odms.controller.gui.popup.logic;
 
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.stage.Stage;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.OrgansWithDisqualification;
 import odms.commons.utils.AttributeValidation;
-import odms.controller.gui.popup.utils.AlertWindowFactory;
 
 import java.time.LocalDate;
 
@@ -31,18 +29,30 @@ public class DisqualifyOrganReasonLogicController {
 
     /**
      * Confirms the disqualification of an organ
-     * and updates the database.
      *
      * @param eligibleDate date which user is eligible to donate the organ again
      * @param description reason for disqualifying the organ
      */
     public void confirm(Organs disqualifiedOrgan, LocalDate eligibleDate, String description, String  staffId) {
+        Boolean updateMode = false;
 
         OrgansWithDisqualification organsWithDisqualification = new OrgansWithDisqualification(disqualifiedOrgan, description, LocalDate.now(), staffId);
         organsWithDisqualification.setEligibleDate(eligibleDate);
         organsWithDisqualification.setCurrentlyDisqualified(true);
-        disqualifications.add(organsWithDisqualification);
-        user.getDonorDetails().getOrgans().remove(organsWithDisqualification.getOrganType());
+        for (int i = 0; i < disqualifications.size(); i++) {
+            if (disqualifications.get(i).getOrganType().equals(disqualifiedOrgan)) {
+                disqualifications.remove(i);
+                disqualifications.add(i, organsWithDisqualification);
+                updateMode = true; //we know that its update if disqualifiedOrgan already exist in the disqualified Organ table.
+                break;
+            }
+        }
+
+        if(!updateMode) {
+            disqualifications.add(organsWithDisqualification);
+            user.getDonorDetails().getOrgans().remove(organsWithDisqualification.getOrganType());
+
+        }
 
         stage.close();
     }
@@ -57,16 +67,7 @@ public class DisqualifyOrganReasonLogicController {
      * @return true if the description is empty, true otherwise
      */
     public boolean validateDescription(String description) {
-        return !description.isEmpty();
-    }
-
-    /**
-     * Alerts user with a alert window containing the given message
-     *
-     * @param message message to display to the user.
-     */
-    private void alertUser(String message) {
-        Platform.runLater(() -> AlertWindowFactory.generateError(message));
+        return AttributeValidation.checkRequiredString(description);
     }
 
 
