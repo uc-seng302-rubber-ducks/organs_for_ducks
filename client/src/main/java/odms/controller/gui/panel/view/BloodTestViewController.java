@@ -17,9 +17,14 @@ import odms.commons.model.datamodel.BloodTest;
 import odms.controller.gui.panel.logic.BloodTestsLogicController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class BloodTestViewController {
 
@@ -105,6 +110,7 @@ public class BloodTestViewController {
 
     private ObservableList<BloodTest> bloodTests = FXCollections.observableList(new ArrayList<>());
     private ObservableList<BloodTest> graphBloodTests = FXCollections.observableList(new ArrayList<>());
+    private ObservableList<String> timeRangeCategory = FXCollections.observableList(new ArrayList<>());
     private BloodTestsLogicController logicController;
     private boolean fromClinician;
 
@@ -130,6 +136,7 @@ public class BloodTestViewController {
 
         logicController = new BloodTestsLogicController(bloodTests, graphBloodTests, user);
         initBloodTestTableView();
+        initGraphView();
     }
 
     /**
@@ -151,7 +158,7 @@ public class BloodTestViewController {
     }
 
     /**
-     * Initializes the table view of blood tests for the specified user
+     * Initializes the table view of blood tests for the current user
      */
     private void initBloodTestTableView() {
         testDateColumn.setCellValueFactory(new PropertyValueFactory<>("testDate"));
@@ -160,6 +167,15 @@ public class BloodTestViewController {
         logicController.updateTableView(0);
         populateTable();
         setClickOnBehaviour();
+    }
+
+    /**
+     * Initializes the graph view of blood tests for the current user
+     */
+    private void initGraphView() {
+        timeRangeAxis.setAutoRanging(false);
+        //timeRangeAxis.setCategories();
+        //changeTimeRange(1, 7, 1);
     }
 
     /**
@@ -286,7 +302,7 @@ public class BloodTestViewController {
     private void updateGraph() {
         changeLabels();
         logicController.updateGraph(timeRangeFilterOption.getValue());
-        populateGraph();
+        //populateGraph();
     }
 
     /**
@@ -304,7 +320,8 @@ public class BloodTestViewController {
         XYChart.Series<String, Double> series = new XYChart.Series<>();
         XYChart.Data<String, Double> data;
         for (BloodTest bloodTest : graphBloodTests) {
-            data = new XYChart.Data<>(bloodTest.getTestDate().toString(), bloodTest.getRedBloodCellCount());
+            //data = new XYChart.Data<>(bloodTest.getTestDate().getDayOfWeek().getValue(), bloodTest.getRedBloodCellCount());
+            data = new XYChart.Data<>(bloodTest.getTestDate().getDayOfWeek().name(), bloodTest.getRedBloodCellCount());
             series.getData().add(data);
         }
 
@@ -316,36 +333,46 @@ public class BloodTestViewController {
      * Changes the graph title and axis' depending on the filter options
      */
     private void changeLabels() {
+        Collection<String> timeRange;
         switch (timeRangeFilterOption.getValue()) {
             case "Day":
-                bloodTestTitle.setText("Property over the past Day");
+                bloodTestTitle.setText("Property over the current Day");
                 timeRangeAxis.setLabel("Time in hours");
-
                 break;
 
             case "Week":
-                bloodTestTitle.setText("Property over the past Week");
+                bloodTestTitle.setText("Property over the current Week");
                 timeRangeAxis.setLabel("Time in days");
+                timeRange = Stream.of(DayOfWeek.values()).map(DayOfWeek::name).collect(Collectors.toList());
+                changeTimeRange(timeRange);
                 break;
 
             case "Fortnight":
-                bloodTestTitle.setText("Property over the past Fortnight");
+                bloodTestTitle.setText("Property over the current Fortnight");
                 timeRangeAxis.setLabel("Time in days");
                 break;
 
             case "Month":
-                bloodTestTitle.setText("Property over the past Month");
+                bloodTestTitle.setText("Property over the current Month");
                 timeRangeAxis.setLabel("Time in weeks");
                 break;
 
             case "Year":
-                bloodTestTitle.setText("Property over the past Year");
+                bloodTestTitle.setText("Property over the current Year");
                 timeRangeAxis.setLabel("Time in months");
+                timeRange = Stream.of(Month.values()).map(Month::name).collect(Collectors.toList());
+                changeTimeRange(timeRange);
                 break;
 
             default:
                 break;
         }
+    }
+
+
+    private void changeTimeRange(Collection<String> categories) {
+        timeRangeCategory.clear();
+        timeRangeCategory.addAll(categories);
     }
 
     @FXML
