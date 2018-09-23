@@ -10,6 +10,22 @@
 <?import java.lang.*?>
 <AnchorPane prefHeight="735.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.panel.view.BloodTestViewController">
    <children>
+       <AnchorPane layoutX="800.0" prefHeight="50.0" prefWidth="406.0" AnchorPane.leftAnchor="794.0"
+                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+           <children>
+               <ToggleButton fx:id="bloodTestTableToggle" layoutX="197.0" layoutY="13.0" mnemonicParsing="false"
+                             onAction="#bloodTestTableGraphToggle" selected="true" text="Table View"
+                             AnchorPane.rightAnchor="119.0" AnchorPane.topAnchor="13.0">
+                   <toggleGroup>
+                       <ToggleGroup fx:id="bloodTestTableGraphToggleGroup"/>
+                   </toggleGroup>
+               </ToggleButton>
+               <ToggleButton fx:id="bloodTestGraphToggle" layoutX="303.0" layoutY="13.0" mnemonicParsing="false"
+                             onAction="#bloodTestTableGraphToggle" text="Graph View"
+                             toggleGroup="$bloodTestTableGraphToggleGroup" AnchorPane.rightAnchor="26.0"
+                             AnchorPane.topAnchor="13.0"/>
+           </children>
+       </AnchorPane>
       <AnchorPane prefHeight="50.0" prefWidth="786.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="414.0" AnchorPane.topAnchor="0.0">
          <children>
                <Button fx:id="requestNewBloodTest" layoutX="648.0" layoutY="13.0" mnemonicParsing="false" onAction="#addNewBloodTest" text="Add New Blood Test" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="13.0" />
@@ -154,8 +170,8 @@
                        text="Update Blood Test" AnchorPane.bottomAnchor="47.0" AnchorPane.rightAnchor="28.0"/>
            </children>
        </AnchorPane>
-       <AnchorPane fx:id="bloodTestGraphViewPane" layoutY="13.0" prefHeight="685.0" prefWidth="786.0" visible="false"
-                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="414.0"
+       <AnchorPane fx:id="bloodTestGraphViewPane" layoutY="13.0" prefHeight="685.0" prefWidth="886.0" visible="false"
+                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="314.0"
                    AnchorPane.topAnchor="50.0">
          <children>
             <LineChart fx:id="bloodTestGraph" layoutX="8.0" layoutY="14.0" prefHeight="656.0" prefWidth="767.0" title="Property over the past Time Range" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="14.0">
@@ -167,42 +183,26 @@
               </yAxis>
             </LineChart>
          </children></AnchorPane>
-      <AnchorPane layoutX="800.0" prefHeight="50.0" prefWidth="406.0" AnchorPane.leftAnchor="794.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+       <AnchorPane fx:id="bloodTestGraphFilterPane" layoutX="886.0" layoutY="50.0" prefHeight="685.0" prefWidth="313.0"
+                   visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="886.0"
+                   AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="50.0">
          <children>
-             <ToggleButton fx:id="bloodTestTableToggle" layoutX="197.0" layoutY="13.0" mnemonicParsing="false"
-                           onAction="#bloodTestTableGraphToggle" selected="true" text="Table View"
-                           AnchorPane.rightAnchor="119.0" AnchorPane.topAnchor="13.0">
-               <toggleGroup>
-                  <ToggleGroup fx:id="bloodTestTableGraphToggleGroup" />
-               </toggleGroup>
-            </ToggleButton>
-            <ToggleButton fx:id="bloodTestGraphToggle" layoutX="303.0" layoutY="13.0" mnemonicParsing="false" onAction="#bloodTestTableGraphToggle" text="Graph View" toggleGroup="$bloodTestTableGraphToggleGroup" AnchorPane.rightAnchor="26.0" AnchorPane.topAnchor="13.0" />
-         </children>
-      </AnchorPane>
-       <AnchorPane fx:id="bloodTestGraphFilterPane" layoutX="800.0" layoutY="50.0" prefHeight="685.0" prefWidth="407.0"
-                   visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                   AnchorPane.topAnchor="50.0">
-         <children>
-             <GridPane layoutX="26.0" layoutY="63.0" prefHeight="378.0" prefWidth="355.0"
-                       AnchorPane.bottomAnchor="244.0" AnchorPane.leftAnchor="26.0" AnchorPane.rightAnchor="26.0"
-                       AnchorPane.topAnchor="63.0">
+             <GridPane layoutX="73.0" layoutY="57.0" prefHeight="388.0" prefWidth="227.0" AnchorPane.rightAnchor="13.0"
+                       AnchorPane.topAnchor="57.0">
               <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
               <rowConstraints>
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="64.0" minHeight="10.0" prefHeight="64.0" vgrow="SOMETIMES"/>
+                  <RowConstraints maxHeight="44.0" minHeight="10.0" prefHeight="24.0" vgrow="SOMETIMES"/>
+                  <RowConstraints maxHeight="96.0" minHeight="10.0" prefHeight="32.0" vgrow="SOMETIMES"/>
+                  <RowConstraints maxHeight="96.0" minHeight="10.0" prefHeight="22.0" vgrow="SOMETIMES"/>
+                  <RowConstraints maxHeight="135.0" minHeight="10.0" prefHeight="29.0" vgrow="SOMETIMES"/>
+                  <RowConstraints maxHeight="299.0" minHeight="10.0" prefHeight="217.0" vgrow="SOMETIMES"/>
               </rowConstraints>
                <children>
                   <Label text="Filter Time Range:" GridPane.rowIndex="1" />
-                   <ComboBox fx:id="timeRangeFilterOption" prefHeight="25.0" prefWidth="183.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                   <ComboBox fx:id="timeRangeFilterOption" prefHeight="25.0" prefWidth="217.0" GridPane.rowIndex="2">
                        <items>
                            <FXCollections fx:factory="observableArrayList">
                                <String fx:value="Week" />
@@ -215,31 +215,16 @@
                            <String fx:value="Week" />
                        </value>
                    </ComboBox>
-                   <Label text="Filter Blood Test Properties:" GridPane.columnSpan="2" GridPane.rowIndex="3"/>
-                   <CheckBox fx:id="rBCCheckBox" mnemonicParsing="false" text="Red Blood Cell Count"
-                             GridPane.rowIndex="4"/>
-                   <CheckBox fx:id="wBCCheckBox" mnemonicParsing="false" text="White Blood Cell Count"
-                             GridPane.columnIndex="1" GridPane.rowIndex="4"/>
-                   <CheckBox fx:id="haemoglobinCheckBox" mnemonicParsing="false" text="Haemoglobin Levels"
-                             GridPane.rowIndex="5"/>
-                   <CheckBox fx:id="plateletCheckBox" mnemonicParsing="false" text="Platelet Levels"
-                             GridPane.columnIndex="1" GridPane.rowIndex="5"/>
-                   <CheckBox fx:id="glucoseCheckBox" mnemonicParsing="false" text="Glucose Levels"
-                             GridPane.rowIndex="6"/>
-                   <CheckBox fx:id="haematocritCheckBox" mnemonicParsing="false" text="Haematocrit Levels"
-                             GridPane.columnIndex="1" GridPane.rowIndex="6"/>
-                   <CheckBox fx:id="mCVCheckBox" mnemonicParsing="false" text="Mean Cell Volume" GridPane.rowIndex="7"/>
-                   <CheckBox fx:id="mCHCheckBox" mnemonicParsing="false" text="Mean Cell Haematocrit"
-                             GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+                   <Label text="Filter Blood Test Properties:" GridPane.columnSpan="2" GridPane.rowIndex="4"/>
                   <Label text="Filter Options">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </Label>
+                   <ListView fx:id="bloodTestPropertyListView" prefHeight="215.0" prefWidth="227.0"
+                             GridPane.rowIndex="5"/>
                </children>
             </GridPane>
-             <Button layoutX="244.0" layoutY="601.0" mnemonicParsing="false" onAction="#updateGraph"
-                     text="Repopulate Graph" AnchorPane.bottomAnchor="59.0" AnchorPane.rightAnchor="26.0"/>
          </children></AnchorPane>
    </children>
 </AnchorPane>

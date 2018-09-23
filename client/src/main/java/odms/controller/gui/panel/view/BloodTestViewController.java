@@ -15,6 +15,7 @@ import odms.commons.model._enum.BloodTestProperties;
 import odms.commons.model.datamodel.BloodTest;
 import odms.controller.gui.panel.logic.BloodTestsLogicController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
+import odms.controller.gui.widget.TextStringCheckBox;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -81,6 +82,8 @@ public class BloodTestViewController {
     @FXML
     private Toggle bloodTestGraphToggle;
 
+    @FXML
+    private ListView<TextStringCheckBox> bloodTestPropertyListView;
     @FXML
     private ComboBox<String> timeRangeFilterOption;
     @FXML
@@ -192,6 +195,48 @@ public class BloodTestViewController {
         timeRangeAxis.setAutoRanging(false);
         timeRangeAxis.setCategories(timeRangeCategory);
         bloodTestGraph.setLegendVisible(false);
+
+//        for (BloodTestProperties btp : BloodTestProperties.values()) {
+//            bloodTestPropertyListView.getItems().add(btp.toString());
+//        }
+
+//        bloodTestPropertyListView.getItems().add(rBCCheckBox);
+//        bloodTestPropertyListView.getItems().add(wBCCheckBox);
+//
+//        bloodTestPropertyListView.setCellFactory(CheckBoxListCell.forListView(new Callback<CheckBox, ObservableValue<Boolean>>() {
+//            @Override
+//            public ObservableValue<Boolean> call(CheckBox param) {
+//                BooleanProperty ob = new SimpleBooleanProperty();
+//                ob.addListener((obs, wasSelected, isNowSelected) -> {
+//                    if (isNowSelected) {
+//                        System.out.println("selected");
+//                    }
+//                });
+//                return null;
+//            }
+//        }));
+
+//        bloodTestPropertyListView.setCellFactory(CheckBoxListCell.forListView(new Callback<String, ObservableValue<Boolean>>() {
+//            @Override
+//            public ObservableValue<Boolean> call(String item) {
+//                BooleanProperty observable = new SimpleBooleanProperty();
+//                observable.addListener((obs, wasSelected, isNowSelected) -> {
+//                     if (isNowSelected) {
+//                         updateGraph();
+//                     }
+//                });
+//                return observable;
+//            }
+//        }));
+
+        ObservableList<TextStringCheckBox> bloodTestProperties = FXCollections.observableList(new ArrayList<>());
+        for (BloodTestProperties btp : BloodTestProperties.values()) {
+            bloodTestProperties.add(new TextStringCheckBox(btp.toString()));
+        }
+
+        bloodTestPropertyListView.setItems(bloodTestProperties);
+//
+//        ObservableList<TextStringCheckBox> dfj = bloodTestPropertyListView.getItems();
     }
 
     /**
@@ -304,6 +349,7 @@ public class BloodTestViewController {
             bloodTestGraphViewPane.setVisible(false);
             bloodTestDetailsPane.setVisible(true);
             bloodTestTableViewPane.setVisible(true);
+            requestNewBloodTest.setVisible(true);
 
         } else if (bloodTestGraphToggle.isSelected()) {
             bloodTestTitle.setText("Blood Test Statistics");
@@ -311,13 +357,14 @@ public class BloodTestViewController {
             bloodTestGraphViewPane.setVisible(true);
             bloodTestDetailsPane.setVisible(false);
             bloodTestTableViewPane.setVisible(false);
+            requestNewBloodTest.setVisible(false);
         }
     }
 
     /**
      * Updates the graph
+     * TODO : use this when listeners are added
      */
-    @FXML
     private void updateGraph() {
         changeLabels();
         logicController.updateGraph(timeRangeFilterOption.getValue());
