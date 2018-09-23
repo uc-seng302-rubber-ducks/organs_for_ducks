@@ -5,6 +5,9 @@ import odms.commons.model.User;
 
 import java.time.LocalDateTime;
 
+/**
+ * joins an appointment with a user and clinician
+ */
 public class AppointmentWithPeople {
     User user;
     Clinician clinician;

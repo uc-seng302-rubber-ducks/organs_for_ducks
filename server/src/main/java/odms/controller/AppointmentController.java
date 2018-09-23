@@ -36,12 +36,12 @@ public class AppointmentController extends BaseController {
     private static final String BAD_DB_RESPONSE = "Got bad response from DB. SQL error code: ";
 
     @Autowired
-    public AppointmentController(DBManager manager, SocketHandler socketHandler) {
+    public AppointmentController(DBManager manager, SocketHandler socketHandler, Mailer mailer) {
         super(manager);
         handler = super.getHandler();
         driver = super.getDriver();
         this.socketHandler = socketHandler;
-        this.mailer = new Mailer();
+        this.mailer = mailer;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/appointments/exists")
