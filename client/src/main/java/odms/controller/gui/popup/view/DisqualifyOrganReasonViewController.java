@@ -87,6 +87,10 @@ public class DisqualifyOrganReasonViewController {
         }
     }
 
+    /**
+     * validates and processes input from the pop up
+     * when user has selected confirm to disqualify an organ.
+     */
     @FXML
     public void disqualifyOrganConfirm() {
         //This is the best way I can think of editing the labels without the logic controller knowing about them, but keeping the least amount of logic in the view-controller

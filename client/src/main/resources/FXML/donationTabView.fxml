@@ -38,6 +38,7 @@
       <Button fx:id="toggleDisqualificationExpiryButton" layoutX="714.0" layoutY="14.0" mnemonicParsing="false" onAction="#toggleDisqualificationExpiry" text="Button" />
       <Label fx:id="disqualifiedOrgansTableLabel" layoutX="594.0" layoutY="66.0" text="Disqualified Organs" />
         <Button fx:id="organQualificationStatusChangerButton" disable="true" layoutX="245.0" layoutY="14.0" mnemonicParsing="false" onAction="#changeDisqualificationStatus" text="Disqulify Organ" />
-      <Button fx:id="updateDisqualifiedOrgan" disable="true" layoutX="845.0" layoutY="536.0" mnemonicParsing="false" onAction="#updateDisqualifiedOrgan" text="Update" />
+      <Button fx:id="updateDisqualifiedOrgan" disable="true" layoutX="909.0" layoutY="536.0" mnemonicParsing="false" onAction="#updateDisqualifiedOrgan" text="Update" />
+      <Button fx:id="deleteDisqualifiedOrgans" layoutX="785.0" layoutY="536.0" mnemonicParsing="false" onAction="#removeDisqualifiedOrgans" text="Delete" />
     </children>
 </AnchorPane>

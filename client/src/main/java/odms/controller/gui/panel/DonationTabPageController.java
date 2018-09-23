@@ -97,6 +97,9 @@ public class DonationTabPageController {
     @FXML
     private Button updateDisqualifiedOrgan;
 
+    @FXML
+    private Button deleteDisqualifiedOrgans;
+
     private User currentUser;
     private AppController application;
     private UserController parent;
@@ -174,7 +177,7 @@ public class DonationTabPageController {
         disqualifiedOrganColumn.setCellValueFactory(new PropertyValueFactory<>("organType"));
         disqualifiedReasonColumn.setCellValueFactory(new PropertyValueFactory<>("reason"));
         disqualifiedDateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
-        disqualifiedStaffIdColumn.setCellValueFactory(new PropertyValueFactory<>("staffID"));
+        disqualifiedStaffIdColumn.setCellValueFactory(new PropertyValueFactory<>("staffId"));
 
         userDisqualifiedOrgansTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         userDisqualifiedOrgansTable.setVisible(false);
@@ -189,10 +192,11 @@ public class DonationTabPageController {
             if(userDisqualifiedOrgansTable.getSelectionModel().isEmpty()) {
                 organQualificationStatusChangerButton.setDisable(true);
                 updateDisqualifiedOrgan.setDisable(true);
+                deleteDisqualifiedOrgans.setDisable(true);
             } else {
                 organQualificationStatusChangerButton.setDisable(true);
                 updateDisqualifiedOrgan.setDisable(false);
-
+                deleteDisqualifiedOrgans.setDisable(false);
             }
         });
         initDisqualifiedOrgans();
@@ -255,11 +259,13 @@ public class DonationTabPageController {
             donatingOrgansTableLabel.setText("Currently Donating");
             organQualificationStatusChangerButton.setVisible(false);
             updateDisqualifiedOrgan.setVisible(false);
+            deleteDisqualifiedOrgans.setVisible(false);
         } else {
             toggleDisqualificationExpiryButton.setText("Show organ expiry details");
             donatingOrgansTableLabel.setText("Disqualified Organs");
             organQualificationStatusChangerButton.setVisible(true);
             updateDisqualifiedOrgan.setVisible(true);
+            deleteDisqualifiedOrgans.setVisible(true);
         }
 
         currentlyDonating.setVisible(goToExpiryMode);
@@ -513,19 +519,41 @@ public class DonationTabPageController {
         }
     }
 
+    /**
+     * launches disqualify organ pop up in update mode
+     */
     @FXML
-    void updateDisqualifiedOrgan(){
+    private void updateDisqualifiedOrgan(){
         launchDisqualifyOrganReason(true);
     }
 
+    /**
+     * launches disqualify organ pop up in non-update mode
+     */
     @FXML
-    void changeDisqualificationStatus() {
+    private void changeDisqualificationStatus() {
         launchDisqualifyOrganReason(false);
     }
 
     /**
+     * remove disqualified organ from disqualified table and
+     * add that organ back to donatable table.
+     */
+    @FXML
+    private void removeDisqualifiedOrgans() {
+        OrgansWithDisqualification organsWithDisqualification = userDisqualifiedOrgansTable.getSelectionModel().getSelectedItem();
+        organsWithDisqualifications.remove(organsWithDisqualification);
+        refreshCurrentlyDonating();
+    }
+
+    /**
      * Launches the pop-up to enter reason for disqualifying organ and
-     * eligible date for users to re-donate organ
+     * eligible date for users to re-donate organ.
+     * The pop-up is used for both disqualifying an organ and updating
+     * an organ that is already disqualified.
+     *
+     * @param isUpdate true if this pop up is used for
+     *                 updating disqualified organs, false otherwise.
      */
     private void launchDisqualifyOrganReason(Boolean isUpdate) {
         Organs organ = null;

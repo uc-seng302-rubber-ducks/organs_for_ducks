@@ -57,6 +57,15 @@ public class DisqualifyOrganReasonLogicController {
         stage.close();
     }
 
+    /**
+     * checks that Eligible Organ Date is after
+     * today's date. Eligible date is optional field.
+     *
+     * @param date date to allow organs to be eligible for
+     *                     donation again
+     * @return true if appointment date is
+     * after the current date, false otherwise.
+     */
     public boolean validateEligibleOrganDate(LocalDate date) {
         return AttributeValidation.validateEligibleOrganDate(date);
     }
