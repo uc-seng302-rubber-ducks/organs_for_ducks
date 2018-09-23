@@ -1,24 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="338.0" prefWidth="363.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.popup.view.DisqualifyOrganReasonViewController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="475.0" prefWidth="370.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.popup.view.DisqualifyOrganReasonViewController">
     <children>
-        <GridPane layoutX="30.0" layoutY="7.0" prefHeight="386.0" prefWidth="300.0" AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="7.0">
+        <GridPane layoutX="30.0" layoutY="7.0" prefHeight="418.0" prefWidth="303.0" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="7.0">
             <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="143.0" minWidth="10.0" prefWidth="112.0" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="188.0" minWidth="10.0" prefWidth="188.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="143.0" minWidth="10.0" prefWidth="118.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="163.0" />
             </columnConstraints>
             <rowConstraints>
-                <RowConstraints maxHeight="166.0" minHeight="10.0" prefHeight="86.0" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="307.0" minHeight="10.0" prefHeight="160.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="234.0" minHeight="10.0" prefHeight="66.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="166.0" minHeight="10.0" prefHeight="87.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="338.0" minHeight="10.0" prefHeight="278.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="234.0" minHeight="10.0" prefHeight="67.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
                 <DatePicker fx:id="eligibleDateInput" prefHeight="25.0" prefWidth="185.0" GridPane.columnIndex="1" />
@@ -30,7 +26,7 @@
                         <Insets />
                     </GridPane.margin>
                 </Label>
-                <TextArea fx:id="disqualifyOrganDescriptionInput" prefHeight="175.0" prefWidth="188.0" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <TextArea fx:id="disqualifyOrganDescriptionInput" prefHeight="294.0" prefWidth="177.0" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Label fx:id="eligibleDateErrorLabel" prefHeight="17.0" prefWidth="185.0" textFill="RED" wrapText="true" GridPane.columnIndex="1" GridPane.valignment="BOTTOM">
                <GridPane.margin>
                   <Insets bottom="10.0" />
@@ -47,10 +43,13 @@
                   <Insets top="5.0" />
                </GridPane.margin>
             </Label>
-            <Label prefHeight="85.0" prefWidth="112.0" text="description must not be empty and only alphanumeric, apostrophes, and hyphens are allowed." wrapText="true" GridPane.rowIndex="1">
+            <Label fx:id="disqualifyOrganDescriptionRulesLabel" prefHeight="85.0" prefWidth="112.0" text="Description must not be empty\\n Only alphanumeric, apostrophes, and hyphens are allowed." textFill="#727272" wrapText="true" GridPane.rowIndex="1" GridPane.valignment="TOP">
                <font>
                   <Font size="10.0" />
                </font>
+               <GridPane.margin>
+                  <Insets top="15.0" />
+               </GridPane.margin>
             </Label>
             </children>
         </GridPane>

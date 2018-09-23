@@ -118,7 +118,7 @@ public class DisqualifiedOrgansHandler {
         connection.setAutoCommit(false); //These commits will maybe have to be removed as they are now nested within other ones like them.
         try {
             for (OrgansWithDisqualification organ : disqualifications) {
-                if (!organ.isCurrentlyDisqualified()) { //Organs no longer disqualified will be deleted
+                if (!organ.isCurrentlyDisqualified() && organ.getEligibleDate().isBefore(LocalDate.now())) { //Organs no longer disqualified AND past their eligible date has passed will be deleted
                     try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE_DISQUALIFIED_STATEMENT)) {
                         Integer id = organ.getDisqualifiedId();
                         if (id == null) {

@@ -57,6 +57,11 @@ public class DisqualifyOrganReasonLogicController {
         stage.close();
     }
 
+    /**
+     * Validates the date that the organ will be eligible again
+     * @param date the organ will be valid on
+     * @return true if the date is valid
+     */
     public boolean validateEligibleOrganDate(LocalDate date) {
         return AttributeValidation.validateEligibleOrganDate(date);
     }

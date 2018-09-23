@@ -24,6 +24,7 @@ import odms.commons.utils.ProgressTask;
 import odms.controller.AppController;
 import odms.controller.gui.panel.view.OrganExpiryViewController;
 import odms.controller.gui.popup.view.DisqualifyOrganReasonViewController;
+import odms.controller.gui.popup.view.RemoveDisqualificationViewController;
 import odms.controller.gui.widget.ProgressBarTableCellFactory;
 import odms.controller.gui.window.UserController;
 
@@ -206,7 +207,11 @@ public class DonationTabPageController {
      */
     private void initDisqualifiedOrgans() {
         userDisqualifiedOrgansTable.setItems(organsWithDisqualifications);
-        organsWithDisqualifications.addAll(currentUser.getDonorDetails().getDisqualifiedOrgans());
+        for (OrgansWithDisqualification organ : currentUser.getDonorDetails().getDisqualifiedOrgans()) {
+            if (organ.isCurrentlyDisqualified()) {
+                organsWithDisqualifications.add(organ);
+            }
+        }
         organsWithDisqualifications.addListener((ListChangeListener<? super OrgansWithDisqualification>) a ->{
             if (listenFlag) {
                 currentUser.saveStateForUndo();
@@ -359,7 +364,9 @@ public class DonationTabPageController {
         Collections.addAll(leftOverOrgans, Organs.values());
         leftOverOrgans.removeAll(donating);
         for (OrgansWithDisqualification organ : currentUser.getDonorDetails().getDisqualifiedOrgans()) {
-            leftOverOrgans.remove(organ.getOrganType());
+            if (organ.isCurrentlyDisqualified()) {
+                leftOverOrgans.remove(organ.getOrganType());
+            }
         }
         canDonate.setItems(FXCollections.observableList(leftOverOrgans));
     }
@@ -523,17 +530,20 @@ public class DonationTabPageController {
         launchDisqualifyOrganReason(false);
     }
 
+    @FXML
+    void removeDisqualification() {
+        launchRemoveDisqualification();
+    }
+
     /**
      * Launches the pop-up to enter reason for disqualifying organ and
      * eligible date for users to re-donate organ
      */
     private void launchDisqualifyOrganReason(Boolean isUpdate) {
         Organs organ = null;
-        if(!currentOrgans.getSelectionModel().getSelectedItems().isEmpty()){
+        if (!currentOrgans.getSelectionModel().getSelectedItems().isEmpty()) {
             organ = currentOrgans.getSelectionModel().getSelectedItems().get(0);
-        }
-
-        if(!canDonate.getSelectionModel().getSelectedItems().isEmpty()){
+        } else if (!canDonate.getSelectionModel().getSelectedItems().isEmpty()) {
             organ = canDonate.getSelectionModel().getSelectedItems().get(0);
         }
 
@@ -545,7 +555,7 @@ public class DonationTabPageController {
             DisqualifyOrganReasonViewController disqualifyOrganReasonViewController = disqualifyOrganReasonLoader.getController();
             Stage disqualifyOrganReasonStage = new Stage();
 
-            if(isUpdate){
+            if (isUpdate) {
                 OrgansWithDisqualification organsWithDisqualification = userDisqualifiedOrgansTable.getSelectionModel().getSelectedItem();
                 disqualifyOrganReasonViewController.updateMode(organsWithDisqualification);
                 disqualifyOrganReasonViewController.init(organsWithDisqualification.getOrganType(), currentUser, disqualifyOrganReasonStage, application.getUsername(), organsWithDisqualifications);
@@ -562,6 +572,26 @@ public class DonationTabPageController {
 
         } catch (IOException e) {
             Log.severe("Failed to load disqualify Organ Reason pop-up window for user: " + currentUser.getNhi(), e);
+        }
+    }
+
+    private void launchRemoveDisqualification() {
+        FXMLLoader removeDisqualifiedOrgansLoader = new FXMLLoader(getClass().getResource("/FXML/removeDisqualificationView.fxml"));
+        Parent root;
+
+        try {
+            root = removeDisqualifiedOrgansLoader.load();
+            RemoveDisqualificationViewController removeDisqualificationViewController = removeDisqualifiedOrgansLoader.getController();
+            Stage removeDisqualifiedStage = new Stage();
+
+            removeDisqualificationViewController.init(userDisqualifiedOrgansTable.getSelectionModel().getSelectedItem(), currentUser, removeDisqualifiedStage, organsWithDisqualifications);
+
+            removeDisqualifiedStage.setScene(new Scene(root));
+            removeDisqualifiedStage.showAndWait();
+            refreshCurrentlyDonating();
+            Log.info("Successfully launched the remove disqualified pop-up window for user: " + currentUser.getNhi());
+        } catch (IOException e) {
+            Log.severe("Failed to load the remove disqualified pop-up window for user: " + currentUser.getNhi(), e);
         }
     }
 }
