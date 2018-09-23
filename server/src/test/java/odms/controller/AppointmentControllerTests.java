@@ -58,7 +58,7 @@ public class AppointmentControllerTests {
         when(handler.getAppointmentStrategy()).thenReturn(strategy);
 
 
-        controller = new AppointmentController(manager, socketHandler);
+        controller = new AppointmentController(manager, socketHandler, mock(Mailer.class));
         LocalDateTime testDate = LocalDate.now().plusDays(2).atTime(9, 0, 0);
         testAppointment = new Appointment("ABC1234", "0", AppointmentCategory.GENERAL_CHECK_UP, testDate, "Help", AppointmentStatus.PENDING);
         controller.setMailer(mailer);
