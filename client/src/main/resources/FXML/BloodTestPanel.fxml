@@ -20,9 +20,8 @@
                </Label>
          </children>
       </AnchorPane>
-       <AnchorPane fx:id="bloodTestTableViewPane" prefHeight="685.0" prefWidth="786.0" visible="false"
-                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="414.0"
-                   AnchorPane.topAnchor="50.0">
+       <AnchorPane fx:id="bloodTestTableViewPane" prefHeight="685.0" prefWidth="786.0" AnchorPane.bottomAnchor="0.0"
+                   AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="414.0" AnchorPane.topAnchor="50.0">
            <children>
                <TableView fx:id="bloodTestTableView" layoutX="23.0" layoutY="6.0" prefHeight="630.0" prefWidth="752.0" AnchorPane.bottomAnchor="49.0" AnchorPane.leftAnchor="23.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="6.0">
                    <columns>
@@ -43,8 +42,7 @@
            </children>
        </AnchorPane>
        <AnchorPane fx:id="bloodTestDetailsPane" layoutX="800.0" layoutY="50.0" prefHeight="685.0" prefWidth="407.0"
-                   visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                   AnchorPane.topAnchor="50.0">
+                   AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
            <children>
                <GridPane layoutX="10.0" layoutY="26.0" prefHeight="549.0" prefWidth="369.0"
                          AnchorPane.bottomAnchor="110.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="28.0"
@@ -156,7 +154,7 @@
                        text="Update Blood Test" AnchorPane.bottomAnchor="47.0" AnchorPane.rightAnchor="28.0"/>
            </children>
        </AnchorPane>
-       <AnchorPane fx:id="bloodTestGraphViewPane" layoutY="13.0" prefHeight="685.0" prefWidth="786.0"
+       <AnchorPane fx:id="bloodTestGraphViewPane" layoutY="13.0" prefHeight="685.0" prefWidth="786.0" visible="false"
                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="414.0"
                    AnchorPane.topAnchor="50.0">
          <children>
@@ -182,7 +180,8 @@
          </children>
       </AnchorPane>
        <AnchorPane fx:id="bloodTestGraphFilterPane" layoutX="800.0" layoutY="50.0" prefHeight="685.0" prefWidth="407.0"
-                   AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
+                   visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                   AnchorPane.topAnchor="50.0">
          <children>
              <GridPane layoutX="26.0" layoutY="63.0" prefHeight="378.0" prefWidth="355.0"
                        AnchorPane.bottomAnchor="244.0" AnchorPane.leftAnchor="26.0" AnchorPane.rightAnchor="26.0"
@@ -218,14 +217,21 @@
                        </value>
                    </ComboBox>
                    <Label text="Filter Blood Test Properties:" GridPane.columnSpan="2" GridPane.rowIndex="3"/>
-                  <CheckBox mnemonicParsing="false" text="Red Blood Cell Count" GridPane.rowIndex="4" />
-                  <CheckBox mnemonicParsing="false" text="White Blood Cell Count" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                  <CheckBox mnemonicParsing="false" text="Haemoglobin Levels" GridPane.rowIndex="5" />
-                  <CheckBox mnemonicParsing="false" text="Platelet Levels" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                  <CheckBox mnemonicParsing="false" text="Glucose Levels" GridPane.rowIndex="6" />
-                  <CheckBox mnemonicParsing="false" text="Haematocrit Levels" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                  <CheckBox mnemonicParsing="false" text="Mean Cell Volume" GridPane.rowIndex="7" />
-                  <CheckBox mnemonicParsing="false" text="Mean Cell Haematocrit" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                   <CheckBox fx:id="rBCCheckBox" mnemonicParsing="false" text="Red Blood Cell Count"
+                             GridPane.rowIndex="4"/>
+                   <CheckBox fx:id="wBCCheckBox" mnemonicParsing="false" text="White Blood Cell Count"
+                             GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                   <CheckBox fx:id="haemoglobinCheckBox" mnemonicParsing="false" text="Haemoglobin Levels"
+                             GridPane.rowIndex="5"/>
+                   <CheckBox fx:id="plateletCheckBox" mnemonicParsing="false" text="Platelet Levels"
+                             GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+                   <CheckBox fx:id="glucoseCheckBox" mnemonicParsing="false" text="Glucose Levels"
+                             GridPane.rowIndex="6"/>
+                   <CheckBox fx:id="haematocritCheckBox" mnemonicParsing="false" text="Haematocrit Levels"
+                             GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+                   <CheckBox fx:id="mCVCheckBox" mnemonicParsing="false" text="Mean Cell Volume" GridPane.rowIndex="7"/>
+                   <CheckBox fx:id="mCHCheckBox" mnemonicParsing="false" text="Mean Cell Haematocrit"
+                             GridPane.columnIndex="1" GridPane.rowIndex="7"/>
                   <Label text="Filter Options">
                      <font>
                         <Font size="16.0" />
