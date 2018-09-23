@@ -6,7 +6,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -104,8 +103,6 @@ public class BloodTestViewController {
     private LineChart<String, Double> bloodTestGraph;
     @FXML
     private CategoryAxis timeRangeAxis;
-    @FXML
-    private NumberAxis bloodTestPropertyAxis;
 
     @FXML
     private AnchorPane bloodTestTableViewPane;
@@ -400,12 +397,19 @@ public class BloodTestViewController {
                 break;
 
             case "Month":
+                timeRangeAxis.setVisible(false);
                 bloodTestGraph.setTitle("Property over the past Month");
                 timeRangeAxis.setLabel("Time in weeks");
-                testDate = bloodTest.getTestDate().toString();
                 timeRange = new ArrayList<>();
+                LocalDate date = bloodTest.getTestDate();
+                LocalDate now = LocalDate.now();
+
                 for (int i = WEEKS_IN_A_MONTH - 1; i >= 0; i -= 1) {
-                    timeRange.add(LocalDate.now().minusWeeks(i).toString());
+                    timeRange.add(now.minusWeeks(i).toString());
+
+                    if (now.minusWeeks(i).compareTo(date) <= 0 && date.compareTo(now.minusWeeks(i)) < 0) {
+                        testDate = now.minusWeeks(i).toString();
+                    }
                 }
 
                 changeTimeRange(timeRange);
