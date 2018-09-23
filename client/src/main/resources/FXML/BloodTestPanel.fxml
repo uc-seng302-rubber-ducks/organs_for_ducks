@@ -20,7 +20,9 @@
                </Label>
          </children>
       </AnchorPane>
-       <AnchorPane fx:id="bloodTestTableViewPane" prefHeight="685.0" prefWidth="786.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="414.0" AnchorPane.topAnchor="50.0">
+       <AnchorPane fx:id="bloodTestTableViewPane" prefHeight="685.0" prefWidth="786.0" visible="false"
+                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="414.0"
+                   AnchorPane.topAnchor="50.0">
            <children>
                <TableView fx:id="bloodTestTableView" layoutX="23.0" layoutY="6.0" prefHeight="630.0" prefWidth="752.0" AnchorPane.bottomAnchor="49.0" AnchorPane.leftAnchor="23.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="6.0">
                    <columns>
@@ -40,9 +42,13 @@
                </HBox>
            </children>
        </AnchorPane>
-       <AnchorPane fx:id="bloodTestDetailsPane" layoutX="800.0" layoutY="50.0" prefHeight="685.0" prefWidth="407.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
+       <AnchorPane fx:id="bloodTestDetailsPane" layoutX="800.0" layoutY="50.0" prefHeight="685.0" prefWidth="407.0"
+                   visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                   AnchorPane.topAnchor="50.0">
            <children>
-               <GridPane layoutX="10.0" layoutY="26.0" prefHeight="549.0" prefWidth="369.0">
+               <GridPane layoutX="10.0" layoutY="26.0" prefHeight="549.0" prefWidth="369.0"
+                         AnchorPane.bottomAnchor="110.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="28.0"
+                         AnchorPane.topAnchor="26.0">
                    <columnConstraints>
                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="178.0" />
                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="206.0" minWidth="10.0" prefWidth="42.0" />
@@ -68,7 +74,8 @@
                        <TextField fx:id="glucose" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5" />
                        <TextField fx:id="haematocrit" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="6" />
                        <TextField fx:id="meanCellVolume" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="7" />
-                       <TextField fx:id="meanCellHaematocrit" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="8" />
+                       <TextField fx:id="meanCellHaematocrit" visible="false" GridPane.columnIndex="1"
+                                  GridPane.columnSpan="2" GridPane.rowIndex="8"/>
                        <Label text="Date Of Blood Test:" />
                        <Label fx:id="bloodTestDateLabel" GridPane.columnIndex="2" />
                        <Label fx:id="bloodTestRCCountLabel" GridPane.columnIndex="2" GridPane.rowIndex="1" />
@@ -137,16 +144,21 @@
                        </VBox>
                    </children>
                </GridPane>
-               <Label layoutX="10.0" layoutY="8.0" text="Blood Test Details">
+               <Label layoutX="10.0" layoutY="8.0" text="Blood Test Details" AnchorPane.leftAnchor="10.0"
+                      AnchorPane.topAnchor="8.0">
                    <font>
                        <Font name="System Bold" size="14.0" />
                    </font>
                </Label>
-               <Button fx:id="deleteBloodTest" layoutX="10.0" layoutY="613.0" mnemonicParsing="false" text="Delete Blood test" />
-               <Button fx:id="updateBloodTest" layoutX="264.0" layoutY="613.0" mnemonicParsing="false" text="Update Blood Test" />
+               <Button fx:id="deleteBloodTest" layoutX="10.0" layoutY="613.0" mnemonicParsing="false"
+                       text="Delete Blood test" AnchorPane.bottomAnchor="47.0" AnchorPane.leftAnchor="10.0"/>
+               <Button fx:id="updateBloodTest" layoutX="241.0" layoutY="613.0" mnemonicParsing="false"
+                       text="Update Blood Test" AnchorPane.bottomAnchor="47.0" AnchorPane.rightAnchor="28.0"/>
            </children>
        </AnchorPane>
-      <AnchorPane fx:id="bloodTestGraphViewPane" layoutY="13.0" prefHeight="685.0" prefWidth="786.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="414.0" AnchorPane.topAnchor="50.0">
+       <AnchorPane fx:id="bloodTestGraphViewPane" layoutY="13.0" prefHeight="685.0" prefWidth="786.0"
+                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="414.0"
+                   AnchorPane.topAnchor="50.0">
          <children>
             <LineChart fx:id="bloodTestGraph" layoutX="8.0" layoutY="14.0" prefHeight="656.0" prefWidth="767.0" title="Property over the past Time Range" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="14.0">
               <xAxis>
@@ -159,7 +171,9 @@
          </children></AnchorPane>
       <AnchorPane layoutX="800.0" prefHeight="50.0" prefWidth="406.0" AnchorPane.leftAnchor="794.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <ToggleButton fx:id="bloodTestTableToggle" layoutX="230.0" layoutY="13.0" mnemonicParsing="false" onAction="#bloodTestTableGraphToggle" selected="true" text="Table View" AnchorPane.rightAnchor="102.0" AnchorPane.topAnchor="13.0">
+             <ToggleButton fx:id="bloodTestTableToggle" layoutX="197.0" layoutY="13.0" mnemonicParsing="false"
+                           onAction="#bloodTestTableGraphToggle" selected="true" text="Table View"
+                           AnchorPane.rightAnchor="119.0" AnchorPane.topAnchor="13.0">
                <toggleGroup>
                   <ToggleGroup fx:id="bloodTestTableGraphToggleGroup" />
                </toggleGroup>
@@ -167,9 +181,12 @@
             <ToggleButton fx:id="bloodTestGraphToggle" layoutX="303.0" layoutY="13.0" mnemonicParsing="false" onAction="#bloodTestTableGraphToggle" text="Graph View" toggleGroup="$bloodTestTableGraphToggleGroup" AnchorPane.rightAnchor="26.0" AnchorPane.topAnchor="13.0" />
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="bloodTestGraphFilterPane" layoutX="800.0" layoutY="50.0" prefHeight="685.0" prefWidth="407.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
+       <AnchorPane fx:id="bloodTestGraphFilterPane" layoutX="800.0" layoutY="50.0" prefHeight="685.0" prefWidth="407.0"
+                   AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
          <children>
-            <GridPane layoutX="26.0" layoutY="63.0" prefHeight="378.0" prefWidth="355.0">
+             <GridPane layoutX="26.0" layoutY="63.0" prefHeight="378.0" prefWidth="355.0"
+                       AnchorPane.bottomAnchor="244.0" AnchorPane.leftAnchor="26.0" AnchorPane.rightAnchor="26.0"
+                       AnchorPane.topAnchor="63.0">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -200,7 +217,7 @@
                            <String fx:value="Week" />
                        </value>
                    </ComboBox>
-                  <Label text="Filter Blood Test Properties:" GridPane.rowIndex="3" />
+                   <Label text="Filter Blood Test Properties:" GridPane.columnSpan="2" GridPane.rowIndex="3"/>
                   <CheckBox mnemonicParsing="false" text="Red Blood Cell Count" GridPane.rowIndex="4" />
                   <CheckBox mnemonicParsing="false" text="White Blood Cell Count" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                   <CheckBox mnemonicParsing="false" text="Haemoglobin Levels" GridPane.rowIndex="5" />
@@ -216,7 +233,8 @@
                   </Label>
                </children>
             </GridPane>
-            <Button layoutX="268.0" layoutY="600.0" mnemonicParsing="false" onAction="#updateGraph" text="Repopulate Graph" />
+             <Button layoutX="244.0" layoutY="601.0" mnemonicParsing="false" onAction="#updateGraph"
+                     text="Repopulate Graph" AnchorPane.bottomAnchor="59.0" AnchorPane.rightAnchor="26.0"/>
          </children></AnchorPane>
    </children>
 </AnchorPane>
