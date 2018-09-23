@@ -2,6 +2,7 @@ package odms.controller.gui.panel.view;
 
 import com.calendarfx.model.Calendar;
 import com.calendarfx.model.Entry;
+import com.calendarfx.view.CalendarView;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -26,6 +27,7 @@ import odms.controller.AppController;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
 import odms.controller.gui.panel.logic.ClinicianAppointmentRequestLogicController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
+import odms.controller.gui.widget.CalendarEntryFactory;
 import odms.controller.gui.widget.CalendarWidget;
 import odms.controller.gui.widget.CalendarWidgetFactory;
 import odms.socket.ServerEventNotifier;
@@ -127,11 +129,12 @@ public class ClinicianAppointmentRequestViewController implements Converter {
         populateClinicianTimes();
         datePickerListener(appointmentRequestDate);
         initCalendar();
-        selectedAppointmentProperty().addListener((observable, oldValue, newValue) -> {
-            displayAppointmentDetails(newValue);
-        });
+        selectedAppointmentProperty().addListener((observable, oldValue, newValue) -> displayAppointmentDetails(newValue));
     }
 
+    /**
+     * Initialises the calendarView and sets the right anchors for the calendarView
+     */
     private void initCalendar() {
         calendarView = CalendarWidgetFactory.createCalendar();
         calendarViewPane.getChildren().add(calendarView);
@@ -148,9 +151,7 @@ public class ClinicianAppointmentRequestViewController implements Converter {
      * @param dp The current date picker.
      */
     private void datePickerListener(DatePicker dp) {
-        dp.valueProperty().addListener((observable, oldValue, newValue) -> {
-                populateClinicianTimes();
-        });
+        dp.valueProperty().addListener((observable, oldValue, newValue) -> populateClinicianTimes());
     }
 
     /**
@@ -201,17 +202,7 @@ public class ClinicianAppointmentRequestViewController implements Converter {
                         appointment.getAppointmentStatus().equals(AppointmentStatus.PENDING) ||
                         appointment.getAppointmentStatus().equals(AppointmentStatus.UPDATED)) {
 
-                    Entry<Appointment> entry = new Entry<>();
-                    if (appointment.getRequestingUserId() == null) {
-                        entry.setTitle(appointment.getTitle());
-                    } else {
-                        entry.setTitle(appointment.getRequestingUserId());
-                    }
-                    entry.setUserObject(appointment);
-                    entry.setInterval(appointment.getRequestedDate(), appointment.getRequestedDate().plusHours(1));
-                    entry.titleProperty().addListener(((observable, oldValue, newValue) -> entry.getUserObject().setTitle(newValue)));
-                    entry.intervalProperty().addListener((observable, oldValue, newValue) -> entry.getUserObject().setRequestedDate(entry.getInterval().getStartDateTime()));
-                    entry.getProperties().put("quiet", true);
+                    Entry<Appointment> entry = CalendarEntryFactory.generateEntry(appointment);
                     calendarView.addEntry(entry);
                     if (selectedEntry != null && entry.getUserObject().getAppointmentId().equals(selectedEntry.getUserObject().getAppointmentId())) {
                         selectedEntry = entry;
@@ -220,27 +211,34 @@ public class ClinicianAppointmentRequestViewController implements Converter {
                 }
             }
 
-            calendarView.getSelections().addListener((SetChangeListener<Entry<?>>) change -> {
-                if (calendarView.getSelections().size() == 1 && change.getElementAdded() != null) {
-                    selectedEntry = (Entry<Appointment>) change.getElementAdded();
-                    titleChangeListener = (observable, oldValue, newValue) -> {
-                        selectedEntry.setTitle(newValue);
-                    };
-                    Appointment appointment = selectedEntry.getUserObject();
-                    setSelectedAppointment(appointment);
-                    populateClinicianTimes();
-                    if (getSelectedAppointment().getAppointmentCategory().equals(AppointmentCategory.PERSONAL))
-                        ((TextField) appointmentRequestUserNhi).textProperty().addListener(titleChangeListener);
-                    rejectAppointmentButton.setText("Cancel Appointment");
-                    acceptAppointmentButton.setText("Update Appointment");
-                } else {
-                    if (getSelectedAppointment() != null && getSelectedAppointment().getAppointmentCategory().equals(AppointmentCategory.PERSONAL))
-                        ((TextField) appointmentRequestUserNhi).textProperty().removeListener(titleChangeListener);
-                    selectedEntry = null;
-                    setSelectedAppointment(null);
-                }
-            });
+            addListenerToCalendarView(calendarView);
         }
+    }
+
+    /**
+     * Adds a listener to the calendarView provided to show the appointment details of the selected entry
+     *
+     * @param calendarView calendar view to add the listener to.
+     */
+    private void addListenerToCalendarView(CalendarView calendarView) {
+        calendarView.getSelections().addListener((SetChangeListener<Entry<?>>) change -> {
+            if (calendarView.getSelections().size() == 1 && change.getElementAdded() != null) {
+                selectedEntry = (Entry<Appointment>) change.getElementAdded();
+                titleChangeListener = (observable, oldValue, newValue) -> selectedEntry.setTitle(newValue);
+                Appointment appointment = selectedEntry.getUserObject();
+                setSelectedAppointment(appointment);
+                populateClinicianTimes();
+                if (getSelectedAppointment().getAppointmentCategory().equals(AppointmentCategory.PERSONAL))
+                    ((TextField) appointmentRequestUserNhi).textProperty().addListener(titleChangeListener);
+                rejectAppointmentButton.setText("Cancel Appointment");
+                acceptAppointmentButton.setText("Update Appointment");
+            } else {
+                if (getSelectedAppointment() != null && getSelectedAppointment().getAppointmentCategory().equals(AppointmentCategory.PERSONAL))
+                    ((TextField) appointmentRequestUserNhi).textProperty().removeListener(titleChangeListener);
+                selectedEntry = null;
+                setSelectedAppointment(null);
+            }
+        });
     }
 
     /**
@@ -374,7 +372,6 @@ public class ClinicianAppointmentRequestViewController implements Converter {
                 logicController.updateAppointment(getSelectedAppointment(), appointmentRequestCategory.getValue(),
                         appointmentRequestDate.getValue(), appointmentRequestTime.getValue().toString(), appointmentRequestDescription.getText(), true);
             } else if (status == AppointmentStatus.ACCEPTED || status == AppointmentStatus.ACCEPTED_SEEN) {
-                System.out.println(getSelectedAppointment().getTitle());
                 logicController.updateAppointment(getSelectedAppointment(), appointmentRequestCategory.getValue(),
                         appointmentRequestDate.getValue(), appointmentRequestTime.getValue().toString(), appointmentRequestDescription.getText(), false);
             } else {
