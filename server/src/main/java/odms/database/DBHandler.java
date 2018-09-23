@@ -128,7 +128,8 @@ public class DBHandler {
             "WHERE fkUserNhi = ?";
     private static final String INSERT_ELSE_UPDATE_PREFERRED_CLINICIAN = "INSERT INTO PreferredClinician (fkUserNhi, fkStaffId) " +
             "VALUES (?, ?) ON DUPLICATE KEY UPDATE fkUserNhi=?, fkStaffId=?";
-    public static final String GET_APPOINTMENTS_ON_DATE = "SELECT fkStaffId, fkUserNhi, requestedTime FROM AppointmentDetails WHERE apptId = ? ";
+    public static final String GET_APPOINTMENTS_TIME = "SELECT fkStaffId, fkUserNhi, requestedTime FROM AppointmentDetails WHERE apptId = ? ";
+ public static final String GET_APPOINTMENTS_ON_DATE = "SELECT fkStaffId, fkUserNhi, requestedTime FROM AppointmentDetails WHERE DATE(requestedTime) = ? ";
 
     private AbstractUpdateStrategy updateStrategy;
     private AbstractFetchAppointmentStrategy fetchAppointmentStrategy;
@@ -1595,7 +1596,7 @@ public class DBHandler {
     }
 
     /**
-     * Gets the appointments scheduled for the given date
+     * Gets the appointment for a specific person
      *
      * @param connection connection to the database
      * @param appointmentId appointment to get
@@ -1604,7 +1605,7 @@ public class DBHandler {
      */
     public AppointmentWithPeople getAppointmentWithPeople(Connection connection, int appointmentId) throws SQLException {
 
-        try(PreparedStatement preparedStatement  = connection.prepareStatement(GET_APPOINTMENTS_ON_DATE)){
+        try(PreparedStatement preparedStatement  = connection.prepareStatement(GET_APPOINTMENTS_TIME)){
             preparedStatement.setInt(1, appointmentId);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if(resultSet.next()){ //should only ever be a single result in the set
