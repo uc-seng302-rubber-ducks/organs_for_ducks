@@ -25,6 +25,9 @@ public class DisqualifyOrganReasonViewController {
     @FXML
     private Label descriptionErrorLabel;
 
+    @FXML
+    private Label disqualifyOrganDescriptionRulesLabel;
+
 
     private DisqualifyOrganReasonLogicController logicController;
     private Organs disqualifiedOrgan;
@@ -32,7 +35,7 @@ public class DisqualifyOrganReasonViewController {
 
 
     /**
-     * Initializes the AppointmentPickerViewController
+     * Initializes the DisqualifyOrganReasonViewController
      *
      * @param user          Current user
      * @param stage         The applications stage.
@@ -45,6 +48,9 @@ public class DisqualifyOrganReasonViewController {
 
         disqualifyOrganDescriptionInput.setTextFormatter(new TextFormatter<String>(change ->
                 change.getControlNewText().length() <= 255 ? change : null)); // limits user input to 255 characters
+        disqualifyOrganDescriptionRulesLabel.setText("Must not be empty.\n" +
+                                                     "Max 255 characters.\n" +
+                                                     "Alphanumeric, apostrophe, and hyphen characters only.");
 
     }
 
