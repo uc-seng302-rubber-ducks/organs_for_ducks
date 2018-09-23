@@ -59,8 +59,8 @@ public class BloodTestsLogicController {
         bloodTestBridge.deleteBloodtest(Integer.toString(bloodTest.getBloodTestId()), user.getNhi());
     }
 
-    public void updateBloodTest() {
-
+    public void updateBloodTest(BloodTest bloodTest) {
+        bloodTestBridge.patchBloodtest(bloodTest, user.getNhi());
     }
 
     /**
@@ -76,8 +76,10 @@ public class BloodTestsLogicController {
     }
 
     public void gotoNextPage() {
+
     }
 
     public void goToPreviousPage() {
+
     }
 }

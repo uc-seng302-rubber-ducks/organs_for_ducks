@@ -4,11 +4,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import odms.commons.model.User;
 import odms.commons.model._enum.BloodTestProperties;
 import odms.commons.model.datamodel.BloodTest;
+import odms.commons.utils.AttributeValidation;
 import odms.controller.AppController;
 import odms.controller.gui.panel.logic.BloodTestsLogicController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
@@ -63,7 +65,6 @@ public class BloodTestViewController {
     private Label bloodTestHaematocritLabel;
     @FXML
     private Label bloodTestMCHaematocritLabel;
-
     @FXML
     private TableView<BloodTest> bloodTestTableView;
     @FXML
@@ -76,7 +77,7 @@ public class BloodTestViewController {
     private ObservableList<BloodTest> bloodTests = FXCollections.observableList(new ArrayList<>());
     private BloodTestsLogicController logicController;
     private boolean fromClinician;
-    private AppController controller;
+    private BloodTest bloodTest;
 
     /**
      * Initializes the blood test tab on the given users profile
@@ -85,7 +86,6 @@ public class BloodTestViewController {
      */
     public void init(AppController controller, User user, boolean fromClinician) {
         this.fromClinician = fromClinician;
-        this.controller = controller;
         bloodTests.addListener((ListChangeListener<? super BloodTest>) observable -> {
             populateTable();
         });
@@ -144,6 +144,7 @@ public class BloodTestViewController {
 
             if (selectedBloodTest != null) {
                 displayBloodTestDetails(selectedBloodTest);
+                bloodTest = selectedBloodTest;
             } else {
                 clearDetails();
             }
@@ -227,9 +228,77 @@ public class BloodTestViewController {
         }
     }
 
+    private void invalidateNode(Node node) {
+        node.getStyleClass().add("invalid");
+    }
+
+
+    private boolean validateField() {
+        boolean valid = true;
+        if (AttributeValidation.validateDouble(redBloodCount.getText()) == -1) {
+            bloodTestRCCountLabel.setVisible(true);
+            invalidateNode(redBloodCount);
+            valid = false;
+        }
+        if (AttributeValidation.validateDouble(whiteBloodCount.getText()) == -1) {
+            bloodTestWCCountLabel.setVisible(true);
+            invalidateNode(whiteBloodCount);
+            valid = false;
+
+        }
+        if (AttributeValidation.validateDouble(heamoglobin.getText()) == -1) {
+            bloodTestHeamoglobinLabel.setVisible(true);
+            invalidateNode(heamoglobin);
+            valid = false;
+        }
+        if (AttributeValidation.validateDouble(platelets.getText()) == -1) {
+            bloodTestPlateletsLabel.setVisible(true);
+            invalidateNode(platelets);
+            valid = false;
+        }
+        if (AttributeValidation.validateDouble(glucose.getText()) == -1) {
+            bloodTestGlucoseLabel.setVisible(true);
+            invalidateNode(glucose);
+            valid = false;
+        }
+        if (AttributeValidation.validateDouble(meanCellVolume.getText()) == -1) {
+            bloodTestMCVolumeLabel.setVisible(true);
+            invalidateNode(meanCellVolume);
+            valid = false;
+        }
+        if (AttributeValidation.validateDouble(haematocrit.getText()) == -1) {
+            bloodTestHaematocritLabel.setVisible(true);
+            invalidateNode(haematocrit);
+            valid = false;
+        }
+        if (AttributeValidation.validateDouble(meanCellHaematocrit.getText()) == -1) {
+            bloodTestMCHaematocritLabel.setVisible(true);
+            invalidateNode(meanCellHaematocrit);
+            valid = false;
+        }
+        if (!AttributeValidation.validateDateBeforeTomorrow(bloodTestDatePicker.getValue())) {
+            bloodTestDateLabel.setVisible(true);
+            invalidateNode(bloodTestDatePicker);
+            valid = false;
+        }
+        return valid;
+    }
+
     @FXML
     private void updateBloodTest() {
-        logicController.updateBloodTest();
+            if (validateField()) {
+                // hmmm seems bad sadness
+                bloodTest.setGlucoseLevels(AttributeValidation.validateDouble(glucose.getText()));
+                bloodTest.setHaematocrit(AttributeValidation.validateDouble(haematocrit.getText()));
+                bloodTest.setMeanCellHaematocrit(AttributeValidation.validateDouble(meanCellHaematocrit.getText()));
+                bloodTest.setPlatelets(AttributeValidation.validateDouble(platelets.getText()));
+                bloodTest.setWhiteBloodCellCount(AttributeValidation.validateDouble(whiteBloodCount.getText()));
+                bloodTest.setRedBloodCellCount(AttributeValidation.validateDouble(redBloodCount.getText()));
+                bloodTest.setMeanCellVolume(AttributeValidation.validateDouble(meanCellVolume.getText()));
+                bloodTest.setHaemoglobinLevel(AttributeValidation.validateDouble(heamoglobin.getText()));
+                bloodTest.setTestDate(bloodTestDatePicker.getValue());
+                logicController.updateBloodTest(bloodTest);
+            }
     }
 
     @FXML
@@ -257,6 +326,5 @@ public class BloodTestViewController {
     private void addNewBloodTest() {
         logicController.addNewBloodTest();
     }
-
 
 }
