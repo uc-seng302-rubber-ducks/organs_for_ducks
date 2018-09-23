@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.*?>
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
-
-<AnchorPane prefHeight="453.0" prefWidth="694.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FXML.UpdateAdminn">
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="453.0" prefWidth="694.0" stylesheets="@../gui.css"
+            xmlns="http://javafx.com/javafx/8" fx:controller="odms.controller.gui.window.UpdateAdminController">
    <children>
       <TabPane layoutY="43.0" prefHeight="409.0" prefWidth="694.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
@@ -18,12 +14,14 @@
                      <children>
                         <GridPane hgap="10.0" layoutX="20.0" layoutY="14.0" prefHeight="316.0" prefWidth="651.0">
                            <children>
-                              <Label styleClass="label-title" text="Username:" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
+                               <Label styleClass="label-title" text="Username*:" GridPane.halignment="RIGHT"
+                                      GridPane.valignment="CENTER">
                                  <padding>
                                     <Insets right="15.0" />
                                  </padding>
                               </Label>
-                              <Label styleClass="label-title" text="First Name:" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                               <Label styleClass="label-title" text="First Name*:" GridPane.halignment="RIGHT"
+                                      GridPane.rowIndex="1" GridPane.valignment="CENTER">
                                  <padding>
                                     <Insets right="15.0" />
                                  </padding>
@@ -38,12 +36,14 @@
                                     <Insets right="15.0" />
                                  </padding>
                               </Label>
-                              <Label styleClass="label-title" text="Password:" GridPane.halignment="RIGHT" GridPane.rowIndex="4" GridPane.valignment="CENTER">
+                               <Label styleClass="label-title" text="Password*:" GridPane.halignment="RIGHT"
+                                      GridPane.rowIndex="4" GridPane.valignment="CENTER">
                                  <padding>
                                     <Insets right="15.0" />
                                  </padding>
                               </Label>
-                              <Label styleClass="label-title" text="Confirm Password:" GridPane.halignment="RIGHT" GridPane.rowIndex="5" GridPane.valignment="CENTER">
+                               <Label styleClass="label-title" text="Confirm Password*:" GridPane.halignment="RIGHT"
+                                      GridPane.rowIndex="5" GridPane.valignment="CENTER">
                                  <padding>
                                     <Insets right="15.0" />
                                  </padding>
@@ -54,9 +54,24 @@
                               <TextField fx:id="lastNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                               <PasswordField fx:id="passwordTextField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                               <PasswordField fx:id="cPasswordTextField" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                              <Label fx:id="errorLabel" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-                              <Label fx:id="invalidFName" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                              <Label fx:id="invalidUsername" text="Label" GridPane.columnIndex="2" />
+                               <Label fx:id="confirmPasswordErrorLabel" styleClass="label-error"
+                                      text="Passwords do not match" visible="false" GridPane.columnIndex="1"
+                                      GridPane.rowIndex="5" GridPane.valignment="BOTTOM"/>
+                               <Label fx:id="invalidFName" styleClass="label-error"
+                                      text="Only alphanumeric characters are allowed" visible="false"
+                                      GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="BOTTOM"/>
+                               <Label fx:id="invalidUsername" styleClass="label-error"
+                                      text="Only alphanumeric characters are allowed" visible="false"
+                                      GridPane.columnIndex="1" GridPane.valignment="BOTTOM"/>
+                               <Label fx:id="passwordErrorLabel" styleClass="label-error"
+                                      text="Passwords cannot be empty" visible="false" GridPane.columnIndex="1"
+                                      GridPane.rowIndex="4" GridPane.valignment="BOTTOM"/>
+                               <Label fx:id="invalidMName" styleClass="label-error"
+                                      text="Only alphanumeric characters are allowed" visible="false"
+                                      GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM"/>
+                               <Label fx:id="invalidLName" styleClass="label-error"
+                                      text="Only alphanumeric characters are allowed" visible="false"
+                                      GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.valignment="BOTTOM"/>
                            </children>
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="284.0" minWidth="10.0" prefWidth="172.0" />
@@ -80,8 +95,9 @@
           </Tab>
         </tabs>
       </TabPane>
-      <Label layoutX="9.0" layoutY="11.0" styleClass="label-sub-title" stylesheets="@../gui.css" text="Update Admin" />
-      <Button fx:id="undoAdminUpdateButton" layoutX="559.0" layoutY="9.0" mnemonicParsing="false" onAction="#undoAdminUpdate" text="Undo" />
-      <Button fx:id="redoAdminUpdateButton" layoutX="622.0" layoutY="9.0" mnemonicParsing="false" onAction="#redoAdminUpdate" text="Redo" />
+       <Label fx:id="adminDetailInputTitle" layoutX="9.0" layoutY="11.0" styleClass="label-sub-title"
+              stylesheets="@../gui.css" text="Update Admin"/>
+       <Label fx:id="adminGenericErrorLabel" layoutX="86.0" layoutY="417.0" styleClass="label-error"
+              text="There is an error in the fields. Please double check your inputs" visible="false"/>
    </children>
 </AnchorPane>

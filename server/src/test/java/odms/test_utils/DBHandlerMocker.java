@@ -1,4 +1,4 @@
-package test_utils;
+package odms.test_utils;
 
 import odms.commons.model.Clinician;
 import odms.commons.model.User;

@@ -10,6 +10,7 @@ import odms.commons.model.User;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
 import odms.commons.model._enum.UserType;
+import odms.commons.utils.Log;
 import okhttp3.*;
 import org.junit.Assert;
 import org.junit.Before;
@@ -138,7 +139,7 @@ public class AppointmentBridgeTest extends BridgeTestBase {
             try {
                 waitForRunLater();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Log.severe("The callback was interrupted", e);
             }
             Assert.assertEquals(expected.get(0), testList.get(0));
         } finally {

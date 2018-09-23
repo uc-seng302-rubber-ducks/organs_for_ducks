@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.image.*?>
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-
-
-<AnchorPane prefHeight="453.0" prefWidth="694.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FXML.UpdateCliniciann">
+<AnchorPane prefHeight="453.0" prefWidth="694.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.UpdateClinicianController">
    <children>
       <TabPane layoutY="49.0" prefHeight="403.0" prefWidth="694.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
-          <Tab text="Clinician Details">
+          <Tab fx:id="clinicianDetailsTab" text="Clinician Details">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -25,10 +20,30 @@
                               <Label styleClass="label-title" text="Middle Name:" GridPane.rowIndex="4" />
                               <Label styleClass="label-title" text="Last Name:" GridPane.rowIndex="5" />
                               <Label styleClass="label-title" text="Confirm Password: *" GridPane.rowIndex="2" />
-                              <TextField fx:id="staffIDTextField" GridPane.columnIndex="1" />
-                              <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <PasswordField fx:id="confirmPasswordField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <TextField fx:id="firstNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <VBox GridPane.columnIndex="1">
+                                 <children>
+                                    <TextField fx:id="staffIDTextField" GridPane.columnIndex="1" />
+                                    <Label fx:id="staffIdErrorLabel" styleClass="label-error" text="Only alphanumeric characters are allowed" visible="false" />
+                                 </children>
+                              </VBox>
+                              <VBox GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <children>
+                                    <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <Label fx:id="passwordErrorLabel" styleClass="label-error" text="Passwords do not match" visible="false" />
+                                 </children>
+                              </VBox>
+                              <VBox GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                 <children>
+                                    <PasswordField fx:id="confirmPasswordField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                    <Label fx:id="confirmPasswordErrorLabel" styleClass="label-error" text="Passwords do not match" visible="false" />
+                                 </children>
+                              </VBox>
+                              <VBox GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                 <children>
+                                    <TextField fx:id="firstNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                    <Label fx:id="firstNameErrorLabel" prefHeight="36.0" prefWidth="231.0" styleClass="label-error" text="Only alphanumeric characters are allowed" visible="false" wrapText="true" />
+                                 </children>
+                              </VBox>
                               <TextField fx:id="middleNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                               <TextField fx:id="lastNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                            </children>
@@ -49,15 +64,15 @@
                            </rowConstraints>
                         </GridPane>
                         <ImageView fx:id="profileImage" fitHeight="198.0" fitWidth="276.0" layoutX="400.0" layoutY="24.0" pickOnBounds="true" preserveRatio="true" />
-                        <Button layoutX="400.0" layoutY="258.0" mnemonicParsing="false" text="Upload Photo" />
-                        <Button layoutX="525.0" layoutY="261.0" mnemonicParsing="false" text="reset profile photo" />
+                        <Button layoutX="400.0" layoutY="262.0" mnemonicParsing="false" text="Upload Photo" />
+                        <Button layoutX="525.0" layoutY="261.0" mnemonicParsing="false" text="Reset profile photo" />
                         <Button fx:id="cancelButton" layoutX="11.0" layoutY="332.0" mnemonicParsing="false" onAction="#cancelUpdate" text="Cancel" />
                         <Button fx:id="confirmButton" layoutX="571.0" layoutY="326.0" mnemonicParsing="false" onAction="#saveChanges" text="Save Changes" />
                      </children>
                   </AnchorPane>
             </content>
           </Tab>
-          <Tab text="Address">
+          <Tab fx:id="clinicianAddressTab" text="Address">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -77,8 +92,9 @@
                               <Label styleClass="label-title" text="Country:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                               <Label fx:id="emptyRegionLabel" text="Region cannot be empty" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                               <ComboBox fx:id="regionSelector" prefHeight="25.0" prefWidth="222.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <TextField fx:id="regionTextField" visible="false" />
+                              <Label fx:id="regionErrorLabel" styleClass="label-error" text="A region must be provided" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.valignment="BOTTOM" />
                               <ComboBox fx:id="countrySelector" onAction="#countrySelectorListener" prefHeight="25.0" prefWidth="223.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-                              <TextField fx:id="regionTextField" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                            </children>
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="238.0" minWidth="10.0" prefWidth="144.0" />
@@ -105,8 +121,7 @@
           </Tab>
         </tabs>
       </TabPane>
-      <Label layoutX="14.0" layoutY="14.0" styleClass="label-sub-title" text="Update Clinician" />
-      <Button fx:id="redoClinicianFormButton" layoutX="633.0" layoutY="9.0" mnemonicParsing="false" onAction="#redo" text="Redo" />
-      <Button fx:id="undoClinicianFormButton" layoutX="571.0" layoutY="9.0" mnemonicParsing="false" onAction="#undo" text="Undo" />
+      <Label fx:id="titleLabel" layoutX="14.0" layoutY="14.0" styleClass="label-sub-title" text="Update Clinician" />
+      <Label fx:id="clinicianGenericErrorLabel" layoutX="87.0" layoutY="421.0" styleClass="label-error" text="There is an error with one of the fields. Please double check your input" visible="false" />
    </children>
 </AnchorPane>

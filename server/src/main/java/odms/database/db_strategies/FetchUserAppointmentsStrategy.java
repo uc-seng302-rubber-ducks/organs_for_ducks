@@ -1,4 +1,4 @@
-package odms.commons.database.db_strategies;
+package odms.database.db_strategies;
 
 import odms.commons.model.Appointment;
 import odms.commons.model._enum.db.appointment.statements.AppointmentStatement;
@@ -35,8 +35,9 @@ public class FetchUserAppointmentsStrategy extends AbstractFetchAppointmentStrat
      * multiple unseen appointments, as they can only have one pending appointment and must mark others as seen. Even
      * if it becomes the case that the user has two Appointments unseen, one will show up the first time they log in, and
      * the other the next time, so it is not a major issue.
+     *
      * @param connection Non null connection to the database
-     * @param userId Id of the user to search for an unseen appointment for
+     * @param userId     Id of the user to search for an unseen appointment for
      * @return An unseen appointment that will be used to populate an alert window before being marked as seen
      * @throws SQLException if the connection is invalid or there is an error with the database
      */
@@ -44,7 +45,7 @@ public class FetchUserAppointmentsStrategy extends AbstractFetchAppointmentStrat
         Appointment appointment = null;
         try (PreparedStatement preparedStatement = connection.prepareStatement(AppointmentStatement.GET_UNSEEN_APPTS_FOR_USER.getStatement())) {
             preparedStatement.setString(1, userId);
-            try (ResultSet results= preparedStatement.executeQuery()) {
+            try (ResultSet results = preparedStatement.executeQuery()) {
                 while (results.next()) {
                     appointment = decodeAppointmentFromResultSet(results);
                 }

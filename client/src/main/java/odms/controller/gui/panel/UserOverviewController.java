@@ -182,7 +182,7 @@ public class UserOverviewController {
         }
 
         String weight;
-        if (user.getWeight() > 0) {
+        if (user.getWeight() != null && user.getWeight() > 0) {
             weight = java.lang.Double.toString(user.getWeight());
             weightValue.setText(weight);
         } else {
@@ -190,14 +190,14 @@ public class UserOverviewController {
         }
 
         String height;
-        if (user.getHeight() > 0) {
+        if (user.getHeight() != null && user.getHeight() > 0) {
             height = java.lang.Double.toString(user.getHeight());
             heightValue.setText(height);
         } else {
             heightValue.setText("");
         }
 
-        if (user.getHeight() > 0 && user.getWeight() > 0) {
+        if (user.getHeight() != null && user.getWeight() != null && user.getHeight() > 0 && user.getWeight() > 0) {
             //TODO fix BMI kg/m^
             DecimalFormat df = new DecimalFormat("#.00");
             double bmi = user.getWeight() / ((user.getHeight()) /100 * (user.getHeight()/100));

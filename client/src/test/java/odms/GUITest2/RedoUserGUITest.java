@@ -48,6 +48,7 @@ public class RedoUserGUITest extends ApplicationTest {
 
         AppController.setInstance(application);
         when(application.getUserBridge()).thenReturn(bridge);
+        when(application.getUsername()).thenReturn("asfdsafsafsa");
 
         when(application.getUserOverviews()).thenReturn(Collections.singleton(UserOverview.fromUser(user)));
         when(bridge.getUser("ABC1234")).thenReturn(user);
@@ -84,7 +85,7 @@ public class RedoUserGUITest extends ApplicationTest {
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         setTextField(this, "#lNameInput", "Jefferson");
-        clickOnButton(this,"#confirmButton");
+        clickOnButton(this,"#updateProfileButton");
         clickOnButton(this,"#undoButton");
         clickOnButton(this,"#redoButton");
         verifyThat("#lNameValue", LabeledMatchers.hasText("Jefferson"));
@@ -96,17 +97,17 @@ public class RedoUserGUITest extends ApplicationTest {
         clickOn("#editDetailsUser");
 
         setTextField(this, "#lNameInput", "Jefferson");
-        clickOnButton(this,"#confirmButton");
+        clickOnButton(this,"#updateProfileButton");
 
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");;
         setComboBox(this, "#alcoholComboBox", "Low");
-        clickOnButton(this,"#confirmButton");
+        clickOnButton(this,"#updateProfileButton");
 
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         setTextField(this, "#cell", "011899992");
-        clickOnButton(this,"#confirmButton");
+        clickOnButton(this,"#updateProfileButton");
 
         clickOnButton(this,"#undoButton");
         clickOnButton(this,"#redoButton");

@@ -1,4 +1,4 @@
-package odms.commons.database.db_strategies;
+package odms.database.db_strategies;
 
 import odms.commons.model.Appointment;
 import odms.commons.model._enum.AppointmentCategory;
@@ -24,6 +24,7 @@ public abstract class AbstractFetchAppointmentStrategy { //NOSONAR - can't conve
 
     /**
      * Takes a result set and returns an appointment based on the current row of the result set
+     *
      * @param results result set with the cursor set to the row to generate the appointment from
      * @return the appointment
      * @throws SQLException if there was an error with the result set

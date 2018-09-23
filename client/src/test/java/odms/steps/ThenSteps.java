@@ -7,7 +7,6 @@ import odms.commons.model.User;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static odms.TestUtils.TableViewsMethod.getCellValue;
@@ -40,7 +39,7 @@ public class ThenSteps extends ApplicationTest {
 
     @Then("^I should see an invalid date of birth, \"([^\"]*)\" error message$")
     public void iShouldSeeAnInvalidDateOfBirthErrorMessage(String arg1) {
-        verifyThat("#invalidDOB", Node::isVisible);
+        verifyThat("#dobErrorLabel", Node::isVisible);
     }
 
     @Then("^I should see an invalid date of death, \"([^\"]*)\" error message$")

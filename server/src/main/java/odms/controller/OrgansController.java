@@ -1,10 +1,10 @@
 package odms.controller;
 
-import odms.commons.database.DBHandler;
-import odms.commons.database.JDBCDriver;
 import odms.commons.model.datamodel.AvailableOrganDetail;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.utils.OrganSorter;
+import odms.database.DBHandler;
+import odms.database.JDBCDriver;
 import odms.exception.ServerDBException;
 import odms.security.IsClinician;
 import odms.utils.DBManager;
@@ -61,7 +61,7 @@ public class OrgansController extends BaseController {
             Log.info("Getting all matching organs");
             List<TransplantDetails> sortedMatches = new ArrayList<>();
 
-            AvailableOrganDetail availableOrganDetail = handler.getAvailableOrgansByNhi(organ.toString(), donorNhi, connection);
+            AvailableOrganDetail availableOrganDetail = handler.getAvailableOrgansByNhi(organ, donorNhi, connection);
 
             if(availableOrganDetail == null){
                 return sortedMatches;

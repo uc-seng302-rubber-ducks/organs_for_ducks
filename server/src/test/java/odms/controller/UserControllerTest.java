@@ -1,10 +1,10 @@
 package odms.controller;
 
-import odms.commons.database.DBHandler;
-import odms.commons.database.JDBCDriver;
 import odms.commons.model.User;
 import odms.commons.model.datamodel.ComboBoxClinician;
 import odms.commons.model.dto.UserOverview;
+import odms.database.DBHandler;
+import odms.database.JDBCDriver;
 import odms.exception.NotFoundException;
 import odms.exception.ServerDBException;
 import odms.socket.SocketHandler;

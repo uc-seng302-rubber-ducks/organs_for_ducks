@@ -1,8 +1,8 @@
 package odms.controller;
 
-import odms.commons.database.DBHandler;
-import odms.commons.database.JDBCDriver;
 import odms.commons.model.Administrator;
+import odms.database.DBHandler;
+import odms.database.JDBCDriver;
 import odms.exception.NotFoundException;
 import odms.exception.ServerDBException;
 import odms.socket.SocketHandler;
@@ -118,7 +118,7 @@ public class AdministratorControllerTest {
     }
 
     @Test
-    public void deleteAdministratorShouldReturnOK() throws SQLException {
+    public void deleteAdministratorShouldReturnOK() {
         ResponseEntity res = controller.deleteAdministrator("12");
         Assert.assertEquals(HttpStatus.OK, res.getStatusCode());
     }

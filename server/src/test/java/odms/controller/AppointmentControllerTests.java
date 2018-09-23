@@ -1,13 +1,13 @@
 package odms.controller;
 
 
-import odms.commons.database.DBHandler;
-import odms.commons.database.JDBCDriver;
-import odms.commons.database.db_strategies.AppointmentUpdateStrategy;
 import odms.commons.model.Appointment;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
 import odms.commons.model._enum.UserType;
+import odms.database.DBHandler;
+import odms.database.JDBCDriver;
+import odms.database.db_strategies.AppointmentUpdateStrategy;
 import odms.exception.ServerDBException;
 import odms.socket.SocketHandler;
 import odms.utils.DBManager;
@@ -208,7 +208,7 @@ public class AppointmentControllerTests {
     }
 
     @Test
-    public void deleteAppointmentShouldReturnOKIfConnectionValid() throws SQLException {
+    public void deleteAppointmentShouldReturnOKIfConnectionValid() {
         testAppointment.setAppointmentId(1);
         ResponseEntity res = controller.deleteAppointment(testAppointment);
         Assert.assertEquals(HttpStatus.OK, res.getStatusCode());

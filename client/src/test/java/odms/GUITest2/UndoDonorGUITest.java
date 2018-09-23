@@ -42,7 +42,7 @@ public class UndoDonorGUITest extends ApplicationTest {
         AppController.setInstance(application);
         User user = new User("Frank", LocalDate.now().minusDays(2), "ABC1234");
         user.setDateOfDeath(LocalDate.now());
-        user.setContact(new EmergencyContact("", "", "01556677"));
+        user.setContact(new EmergencyContact("a", "", "01556677"));
         user.getUndoStack().clear();
         when(application.getUserBridge()).thenReturn(bridge);
         when(application.getUserOverviews()).thenReturn(Collections.singleton(UserOverview.fromUser(user)));
@@ -86,7 +86,7 @@ public class UndoDonorGUITest extends ApplicationTest {
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         setTextField(this, "#lNameInput", "Jefferson");
-        clickOnButton(this,"#confirmButton");
+        clickOnButton(this,"#updateProfileButton");
         clickOnButton(this,"#undoButton");
 
         verifyThat("#lNameValue", LabeledMatchers.hasText(""));
@@ -100,7 +100,7 @@ public class UndoDonorGUITest extends ApplicationTest {
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         setTextField(this, "#lNameInput", "Jefferson");
-        clickOnButton(this,"#confirmButton");
+        clickOnButton(this,"#updateProfileButton");
         clickOnButton(this,"#undoButton");
 
         Assert.assertTrue(lookup("#undoButton").queryAs(Button.class).isDisabled());
@@ -113,19 +113,22 @@ public class UndoDonorGUITest extends ApplicationTest {
     public void testEqualChangesEqualUndos() {
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
-        setTextField(this, "#lNameInput", "Jefferson");
-        clickOnButton(this,"#confirmButton");
+        //setTextField(this, "#lNameInput", "Jefferson");
+        clickOn("#updateProfileButton");
 
-        clickOn("#editMenuUser");
-        clickOn("#editDetailsUser");;
-        clickOn("#genderIdComboBox");
-        clickOn("Non Binary");
-        clickOnButton(this,"#confirmButton");
 
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
+        clickOn("#healthDetailsTab");
+        clickOn("#genderIdComboBox");
+        clickOn("Non Binary");
+        clickOnButton(this,"#updateProfileButton");
+
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
+        clickOn("#healthDetailsTab");
         clickOn("#smokerCheckBox");
-        clickOnButton(this,"#confirmButton");
+        clickOnButton(this,"#updateProfileButton");
         clickOnButton(this,"#undoButton");
         clickOnButton(this,"#undoButton");
         clickOnButton(this,"#undoButton");
@@ -146,7 +149,7 @@ public class UndoDonorGUITest extends ApplicationTest {
         doubleClickOn("#nhiInput");
 
         write("ABD1111");
-        clickOnButton(this,"#confirmButton");
+        clickOnButton(this,"#updateProfileButton");
 
         clickOnButton(this,"#undoButton");
 

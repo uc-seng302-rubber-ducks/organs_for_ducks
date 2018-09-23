@@ -10,10 +10,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -36,6 +32,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +50,37 @@ public class UpdateUserController {
     private final int MAX_FILE_SIZE = 2097152;
     //<editor-fold desc="fxml stuff">
     @FXML
+    private Label fNameErrorLabel;
+    @FXML
+    private Label genericErrorLabel;
+    @FXML
+    private Label phoneErrorLabel;
+    @FXML
+    private Label cellErrorLabel;
+    @FXML
+    private Label emailErrorLabel;
+    @FXML
+    private Label ecCellPhoneErrorLabel;
+    @FXML
+    private Label ecEmailErrorLabel;
+    @FXML
+    private Label ecZipCodeErrorLabel;
+    @FXML
+    private Label ecPhoneErrorLabel;
+    @FXML
+    private Label ecNameErrorLabel;
+    @FXML
+    private Label heightErrorLabel;
+    @FXML
+    private Label weightErrorLabel;
+    @FXML
+    private Label nhiErrorLabel;
+    @FXML
+    private Label dobErrorLabel;
+    @FXML
     private TextField nhiInput;
+    @FXML
+    private Label photoErrorLabel;
     @FXML
     private TextField fNameInput;
     @FXML
@@ -127,10 +154,6 @@ public class UpdateUserController {
     @FXML
     private DatePicker dobInput;
     @FXML
-    private Button undoUpdateButton;
-    @FXML
-    private Button redoUpdateButton;
-    @FXML
     private ImageView profileImage;
     @FXML
     private DatePicker updateDeathDetailsDatePicker;
@@ -186,8 +209,6 @@ public class UpdateUserController {
         currentUser = User.clone(oldUser);
         this.appController = controller;
         setUserDetails(currentUser);
-        undoUpdateButton.setDisable(true);
-        redoUpdateButton.setDisable(true);
         updateDeathDetailsErrorLabel.setVisible(false);
         updateDeathDetailsOverrideWarningLabel.setVisible(false);
         undoMarker = currentUser.getUndoStack().size();
@@ -233,11 +254,9 @@ public class UpdateUserController {
 
         // creates a listener for each text field
         for (TextField tf : allTextFields) {
-
-            if (tf == null) {
-            System.out.println(tf);
+            if (tf != null) {
+                textFieldListener(tf);
             }
-            textFieldListener(tf);
         }
 
         comboBoxListener(birthGenderComboBox);
@@ -256,14 +275,6 @@ public class UpdateUserController {
 
         addCheckBoxListener(smokerCheckBox);
 
-        final KeyCombination shortcutZ = new KeyCodeCombination(
-                KeyCode.Z, KeyCombination.SHORTCUT_DOWN);
-
-        scene.addEventFilter(KeyEvent.KEY_RELEASED, e -> {
-            if (shortcutZ.match(e)) {
-                undo();
-            }
-        });
 
         stage.setOnCloseRequest(event -> {
             event.consume();
@@ -282,9 +293,7 @@ public class UpdateUserController {
      */
     @FXML
     private void countrySelectorListener(ActionEvent event) {
-//        if (listen) {
         appController.countrySelectorEventHandler(countrySelector, regionSelector, regionInput, currentUser, null);
-//        }
     }
 
     /**
@@ -298,9 +307,7 @@ public class UpdateUserController {
      */
     @FXML
     private void ecCountrySelectorListener(ActionEvent event) {
-//        if (listen) {
         appController.countrySelectorEventHandler(ecCountrySelector, ecRegionSelector, ecRegionInput, currentUser, null);
-//        }
     }
 
     /**
@@ -310,10 +317,6 @@ public class UpdateUserController {
      */
     private void update() {
         updateUndos();
-        if (!undoUpdateButton.isDisabled() && !stage.getTitle().endsWith("*")) {
-            stage.setTitle(stage.getTitle() + "*");
-        }
-
     }
 
     /**
@@ -324,6 +327,7 @@ public class UpdateUserController {
     private void datePickerListener(DatePicker dp) {
         dp.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (listen) {
+                dp.getStyleClass().remove("invalid");
                 update();
             }
         });
@@ -347,7 +351,7 @@ public class UpdateUserController {
      *
      * @param cb The current ComboBox.
      */
-    private void comboBoxListener(ComboBox cb) {
+    private void comboBoxListener(ComboBox<String> cb) {
         cb.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (listen) {
                 update();
@@ -363,6 +367,7 @@ public class UpdateUserController {
     private void textFieldListener(TextField field) {
         field.textProperty().addListener((observable, oldValue, newValue) -> {
             if (listen) {
+                field.getStyleClass().remove("invalid");
                 update();
             }
         });
@@ -732,14 +737,10 @@ public class UpdateUserController {
         } else if (user.getHeight() > 0) {
             heightInput.setText(Double.toString(user.getHeight()));
         } else {
-            heightInput.setText("0.0");
+            heightInput.setText("");
         }
 
         listen = true;
-
-        undoUpdateButton.setDisable(currentUser.getUndoStack().size() <= undoMarker);
-        redoUpdateButton.setDisable(currentUser.getRedoStack().isEmpty());
-
     }
 
     /**
@@ -770,9 +771,7 @@ public class UpdateUserController {
             inFile = new File(filename);
 
             if (inFile.length() > MAX_FILE_SIZE) { //if more than 2MB
-                Alert imageTooLargeAlert = new Alert(Alert.AlertType.WARNING, "Could not upload the image as the image size exceeded 2MB");
-                imageTooLargeAlert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-                imageTooLargeAlert.showAndWait();
+                photoErrorLabel.setVisible(true);
                 isValid = false;
             }
             if (isValid) {
@@ -784,16 +783,17 @@ public class UpdateUserController {
     }
 
     /**
-     *
+     * Checks that all fields with user input are valid and confirms the update if they are,
+     * otherwise the update is rejected.
      */
     @FXML
     public void confirmUpdate() throws IOException {
+        hideErrorMessages();
         boolean valid = validateFields();
-
 
         if (valid) {
             removeFormChanges();
-            if(inFile != null){
+            if (inFile != null) {
                 String filePath = setUpImageFile(inFile, currentUser.getNhi());
                 currentUser.setProfilePhotoFilePath(filePath);
             }
@@ -808,6 +808,8 @@ public class UpdateUserController {
                 Log.severe("Update user failed for User NHI: " + currentUser.getNhi(), ex);
             }
             stage.close();
+        } else {
+            genericErrorLabel.setVisible(true);
         }
     }
 
@@ -830,46 +832,61 @@ public class UpdateUserController {
         String nhi = nhiInput.getText();
         if (!AttributeValidation.validateNHI(nhi)) {
             invalidateTextField(nhiInput);
+            nhiErrorLabel.setText("Enter a valid NHI. e.g. ABC1234");
+            nhiErrorLabel.setVisible(true);
             valid = false;
         } else if (appController.getUserBridge().getExists(nhi) && !oldUser.getNhi().equals(nhi)) { // if a user was found, but it is not the current user
             invalidateTextField(nhiInput);
+            nhiErrorLabel.setText("This NHI is already in use");
+            nhiErrorLabel.setVisible(true);
             valid = false;
         }
 
         LocalDate dob = dobInput.getValue();
 
         String fName = fNameInput.getText();
-        if (!AttributeValidation.checkRequiredString(fName)) {
+        if (!AttributeValidation.checkRequiredStringName(fName)) {
             invalidateTextField(fNameInput);
+            fNameErrorLabel.setVisible(true);
             valid = false;
         }
 
         if (!AttributeValidation.validateDateOfBirth(dob)) {
             invalidateTextField(dobInput);
+            dobErrorLabel.setVisible(true);
             valid = false;
         }
 
         double height = AttributeValidation.validateDouble(heightInput.getText());
         double weight = AttributeValidation.validateDouble(weightInput.getText());
-        if (height == -1 || weight == -1) {
+        if (height == -1) {
             invalidateTextField(heightInput);
+            heightErrorLabel.setVisible(true);
+            valid = false;
+        }
+
+        if (weight == -1) {
             invalidateTextField(weightInput);
+            weightErrorLabel.setVisible(true);
             valid = false;
         }
 
         // validate contact info
         if (!AttributeValidation.validateEmail(this.email.getText())) {
             invalidateTextField(this.email);
+            emailErrorLabel.setVisible(true);
             valid = false;
         }
 
         if (!AttributeValidation.validatePhoneNumber(phone.getText().replaceAll(" ", ""))) {
             invalidateTextField(phone);
+            phoneErrorLabel.setVisible(true);
             valid = false;
         }
 
         if (!AttributeValidation.validateCellNumber(cell.getText().replaceAll(" ", ""))) {
             invalidateTextField(cell);
+            cellErrorLabel.setVisible(true);
             valid = false;
         }
 
@@ -911,23 +928,40 @@ public class UpdateUserController {
      * Validates the Emergency Contact Details section of the form.
      */
     private void validateEmergencyContactDetails() throws InvalidFieldsException {
-        boolean valid;
+        boolean valid = true;
         // validate emergency contact info
-        String emergencyEmail = ecEmail.getText();
-        valid = AttributeValidation.validateEmail(emergencyEmail);
+        if (!AttributeValidation.validateEmail(ecEmail.getText())) {
+            invalidateTextField(ecEmail);
+            ecEmailErrorLabel.setText("Invalid email address");
+            ecEmailErrorLabel.setVisible(true);
+            valid = false;
+        }
 
+        if (!AttributeValidation.validatePhoneNumber(ecPhone.getText().replaceAll(" ", ""))) {
+            invalidateTextField(ecPhone);
+            ecPhoneErrorLabel.setText("Invalid phone number");
+            ecPhoneErrorLabel.setVisible(true);
+            valid = false;
+        }
 
-        String emergencyPhone = ecPhone.getText();
-        valid &= AttributeValidation.validatePhoneNumber(emergencyPhone.replaceAll(" ", ""));
+        if (!AttributeValidation.validateCellNumber(ecCell.getText().replaceAll(" ", ""))) {
+            invalidateTextField(ecCell);
+            ecCellPhoneErrorLabel.setText("Invalid cell phone number");
+            ecCellPhoneErrorLabel.setVisible(true);
+            valid = false;
+        }
 
-        String emergencyCell = ecCell.getText();
-        valid &= AttributeValidation.validateCellNumber(emergencyCell.replaceAll(" ", ""));
+        if (!AttributeValidation.checkString(ecName.getText())) {
+            invalidateTextField(ecName);
+            ecNameErrorLabel.setText("Names cannot contain special characters");
+            ecNameErrorLabel.setVisible(true);
+            valid = false;
+        }
 
-        String eName = ecName.getText();
-        valid &= AttributeValidation.checkString(eName);
-
-        String eStreetNumber = ecStreetNumber.getText();
-        valid &= AttributeValidation.checkString(eStreetNumber);
+        if (!AttributeValidation.checkString(ecStreetNumber.getText())) {
+            invalidateTextField(ecStreetNumber);
+            valid = false;
+        }
 
         String eRegion;
         if (ecRegionInput.isVisible()) {
@@ -936,20 +970,45 @@ public class UpdateUserController {
         } else {
             eRegion = ecRegionSelector.getSelectionModel().getSelectedItem();
         }
-        valid &= AttributeValidation.checkString(eRegion);
+        if (!AttributeValidation.checkString(eRegion)) {
+            invalidateTextField(ecRegionInput);
+            valid = false;
+        }
 
-        String eRelationship = ecRelationship.getText();
-        valid &= AttributeValidation.checkString(eRelationship);
+        if (!AttributeValidation.checkString(ecRelationship.getText())) {
+            invalidateTextField(ecRelationship);
+            valid = false;
+        }
 
+        if (ecName.getText().isEmpty() != ecCell.getText().isEmpty()) {
+            invalidateTextField(ecName);
+            invalidateTextField(ecCell);
+            ecNameErrorLabel.setText("A name and cell must be provided");
+            ecCellPhoneErrorLabel.setText("A name and cell must be provided");
+            ecNameErrorLabel.setVisible(true);
+            ecCellPhoneErrorLabel.setVisible(true);
+            valid = false;
+        }
         // the name and cell number are required if any other attributes are filled out
-
+        if (!valid) {
+            throw new InvalidFieldsException();
+        }
     }
 
-    private boolean updateDeathDetails(){
+    /**
+     * Updates the users death details with new values
+     *
+     * @return true if the death details values have changed, false otherwise
+     */
+    private boolean updateDeathDetails() {
         boolean changed = false;
         LocalDate dateOfDeath = updateDeathDetailsDatePicker.getValue();
-        LocalTime timeOfDeath = LocalTime.parse(updateDeathDetailsTimeTextField.getText());
-        currentUser.setMomentOfDeath(currentUser.getDeathDetails().createMomentOfDeath(dateOfDeath, timeOfDeath));
+        try {
+            LocalTime timeOfDeath = LocalTime.parse(updateDeathDetailsTimeTextField.getText());
+            currentUser.setMomentOfDeath(currentUser.getDeathDetails().createMomentOfDeath(dateOfDeath, timeOfDeath));
+        } catch (DateTimeParseException e) {
+            Log.severe("There is an incorrect time format in the death details time field", e);
+        }
 
         currentUser.setDeathCity(updateDeathDetailsCityTextField.getText());
         if (isNewZealand) {
@@ -981,8 +1040,6 @@ public class UpdateUserController {
         if (changed) {
             currentUser.getRedoStack().clear();
         }
-        undoUpdateButton.setDisable(currentUser.getUndoStack().size() <= undoMarker);
-        redoUpdateButton.setDisable(currentUser.getRedoStack().isEmpty());
     }
 
 
@@ -1051,7 +1108,8 @@ public class UpdateUserController {
 
         if (height.isEmpty() && (currentUser.getHeightText() != null && !currentUser.getHeightText()
                 .isEmpty())) {
-            currentUser.setHeightText(null);
+            currentUser.setHeightText("");
+            currentUser.setHeight(-1.0);
             changed = true;
         } else if (!height.isEmpty() && !height.equals(currentUser.getHeightText())) {
             currentUser.setHeightText(height);
@@ -1062,7 +1120,7 @@ public class UpdateUserController {
 
         if (weight.isEmpty() && (currentUser.getWeightText() != null && !currentUser.getWeightText()
                 .isEmpty())) {
-            currentUser.setWeightText(null);
+            currentUser.setWeightText("");
             changed = true;
         } else if (!weight.isEmpty() && !weight.equals(currentUser.getWeightText())) {
             currentUser.setWeightText(weight);
@@ -1276,31 +1334,6 @@ public class UpdateUserController {
         return changed;
     }
 
-    /**
-     * Undoes a form change
-     */
-    @FXML
-    void undo() {
-        currentUser.undo();
-        undoUpdateButton.setDisable(currentUser.getUndoStack().size() <= undoMarker);
-        setUserDetails(currentUser);
-
-        if (undoUpdateButton.isDisabled()) {
-            stage.setTitle(stage.getTitle().substring(0, stage.getTitle().length() - 1));
-        }
-        Log.info("Undo executed for User NHI: " + currentUser.getNhi());
-    }
-
-    /**
-     * Redoes a form change
-     */
-    @FXML
-    void redo() {
-        currentUser.redo();
-        redoUpdateButton.setDisable(currentUser.getRedoStack().isEmpty());
-        setUserDetails(currentUser);
-        Log.info("Redo executed for User NHI: " + currentUser.getNhi());
-    }
 
     /**
      * Prompts the user with a warning alert if there are unsaved changes, otherwise cancels
@@ -1308,7 +1341,7 @@ public class UpdateUserController {
      */
     @FXML
     void goBack() {
-        if (!undoUpdateButton.isDisabled()) { // has changes
+        if (currentUser.getUndoStack().size() > undoMarker) { // has changes
             Alert alert = new Alert(Alert.AlertType.WARNING,
                     "You have unsaved changes, are you sure you want to cancel?",
                     ButtonType.YES, ButtonType.NO);
@@ -1326,7 +1359,6 @@ public class UpdateUserController {
                     userController.showUser(oldUser);
                     Log.info("User update Cancelled for User NHI: " + currentUser.getNhi());
                 } catch (NullPointerException ex) {
-                    //TODO causes npe if donor is new in this session
                     //the text fields etc. are all null
                     Log.severe("Error cancelling user update for User NHI: " + currentUser.getNhi(), ex);
                 }
@@ -1346,5 +1378,25 @@ public class UpdateUserController {
             }
             stage.close();
         }
+    }
+
+    /**
+     * Makes all the error messages no longer visible.
+     */
+    private void hideErrorMessages() {
+        nhiErrorLabel.setVisible(false);
+        dobErrorLabel.setVisible(false);
+        fNameErrorLabel.setVisible(false);
+        photoErrorLabel.setVisible(false);
+        phoneErrorLabel.setVisible(false);
+        cellErrorLabel.setVisible(false);
+        emailErrorLabel.setVisible(false);
+        ecCellPhoneErrorLabel.setVisible(false);
+        ecEmailErrorLabel.setVisible(false);
+        ecZipCodeErrorLabel.setVisible(false);
+        ecPhoneErrorLabel.setVisible(false);
+        ecNameErrorLabel.setVisible(false);
+        weightErrorLabel.setVisible(false);
+        heightErrorLabel.setVisible(false);
     }
 }
