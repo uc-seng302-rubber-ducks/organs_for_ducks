@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import odms.bridge.BloodTestBridge;
 import odms.commons.model.User;
 import odms.commons.model.datamodel.BloodTest;
 import odms.commons.utils.Log;
@@ -20,15 +21,19 @@ public class BloodTestsLogicController {
     private static final int ROWS_PER_PAGE = 30;
     private int startingIndex = 0;
     private User user;
+    private BloodTestBridge bloodTestBridge;
+
 
     /**
      * Constructor to create a new logical instance of the controller
      *
      * @param bloodTests  observable list of BloodTest to use to populate the Blood tests table
      */
-    public BloodTestsLogicController(ObservableList<BloodTest> bloodTests, User user) {
+    public BloodTestsLogicController(ObservableList<BloodTest> bloodTests, User user, AppController controller) {
         this.bloodTests = bloodTests;
         this.user = user;
+        bloodTestBridge = controller.getBloodTestBridge();
+
     }
 
     public void addNewBloodTest() {
@@ -39,7 +44,7 @@ public class BloodTestsLogicController {
             root = newBloodTestLoader.load();
             NewBloodTestViewController newBloodTestViewController = newBloodTestLoader.getController();
             Stage bloodTestStage = new Stage();
-            newBloodTestViewController.init(user,bloodTestStage);
+            newBloodTestViewController.init(user,bloodTestStage, bloodTestBridge);
             bloodTestStage.setScene(new Scene(root));
             bloodTestStage.showAndWait();
             Log.info("Successfully launched the new blood test pop-up window for user: " + user.getNhi());
@@ -51,7 +56,7 @@ public class BloodTestsLogicController {
     }
 
     public void deleteBloodTest(BloodTest bloodTest) {
-        user.getHealthDetails().getBloodTests().remove(bloodTest);
+        bloodTestBridge.deleteBloodtest(Integer.toString(bloodTest.getBloodTestId()), user.getNhi());
     }
 
     public void updateBloodTest() {

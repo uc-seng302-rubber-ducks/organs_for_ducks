@@ -9,6 +9,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import odms.commons.model.User;
 import odms.commons.model._enum.BloodTestProperties;
 import odms.commons.model.datamodel.BloodTest;
+import odms.controller.AppController;
 import odms.controller.gui.panel.logic.BloodTestsLogicController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 
@@ -75,15 +76,16 @@ public class BloodTestViewController {
     private ObservableList<BloodTest> bloodTests = FXCollections.observableList(new ArrayList<>());
     private BloodTestsLogicController logicController;
     private boolean fromClinician;
+    private AppController controller;
 
     /**
      * Initializes the blood test tab on the given users profile
      *
      * @param user The current user
      */
-    public void init(User user, boolean fromClinician) {
+    public void init(AppController controller, User user, boolean fromClinician) {
         this.fromClinician = fromClinician;
-
+        this.controller = controller;
         bloodTests.addListener((ListChangeListener<? super BloodTest>) observable -> {
             populateTable();
         });
@@ -92,7 +94,7 @@ public class BloodTestViewController {
             showFields();
         }
 
-        logicController = new BloodTestsLogicController(bloodTests, user);
+        logicController = new BloodTestsLogicController(bloodTests, user, controller);
         initBloodTestTableView();
     }
 
@@ -228,7 +230,6 @@ public class BloodTestViewController {
     @FXML
     private void updateBloodTest() {
         logicController.updateBloodTest();
-
     }
 
     @FXML
