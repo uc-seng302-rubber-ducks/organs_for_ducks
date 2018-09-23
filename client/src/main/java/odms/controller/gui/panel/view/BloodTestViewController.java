@@ -112,6 +112,7 @@ public class BloodTestViewController {
     private ObservableList<BloodTest> graphBloodTests = FXCollections.observableList(new ArrayList<>());
     private ObservableList<String> timeRangeCategory = FXCollections.observableList(new ArrayList<>());
     private BloodTestsLogicController logicController;
+    private final int MONTH_IN_WEEKS = 4;
     private boolean fromClinician;
 
     /**
@@ -174,8 +175,7 @@ public class BloodTestViewController {
      */
     private void initGraphView() {
         timeRangeAxis.setAutoRanging(false);
-        //timeRangeAxis.setCategories();
-        //changeTimeRange(1, 7, 1);
+        timeRangeAxis.setCategories(timeRangeCategory);
     }
 
     /**
@@ -302,7 +302,7 @@ public class BloodTestViewController {
     private void updateGraph() {
         changeLabels();
         logicController.updateGraph(timeRangeFilterOption.getValue());
-        //populateGraph();
+        populateGraph();
     }
 
     /**
@@ -320,7 +320,6 @@ public class BloodTestViewController {
         XYChart.Series<String, Double> series = new XYChart.Series<>();
         XYChart.Data<String, Double> data;
         for (BloodTest bloodTest : graphBloodTests) {
-            //data = new XYChart.Data<>(bloodTest.getTestDate().getDayOfWeek().getValue(), bloodTest.getRedBloodCellCount());
             data = new XYChart.Data<>(bloodTest.getTestDate().getDayOfWeek().name(), bloodTest.getRedBloodCellCount());
             series.getData().add(data);
         }
@@ -353,8 +352,14 @@ public class BloodTestViewController {
                 break;
 
             case "Month":
-                bloodTestTitle.setText("Property over the current Month");
+                bloodTestTitle.setText("Property over the past Month");
                 timeRangeAxis.setLabel("Time in weeks");
+                timeRange = new ArrayList<>();
+                for (int i = MONTH_IN_WEEKS - 1; i >= 0; i -= 1) {
+                    timeRange.add(LocalDate.now().minusWeeks(i).toString());
+                }
+
+                changeTimeRange(timeRange);
                 break;
 
             case "Year":
@@ -369,7 +374,12 @@ public class BloodTestViewController {
         }
     }
 
-
+    /**
+     * Sets the x-axis of the graph to have fixed values for either the days of the week, the week of the month,
+     * or the month of the year. These are given through a collection.
+     *
+     * @param categories Collection containing the categories for the time range.
+     */
     private void changeTimeRange(Collection<String> categories) {
         timeRangeCategory.clear();
         timeRangeCategory.addAll(categories);
