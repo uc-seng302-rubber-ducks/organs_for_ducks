@@ -20,9 +20,11 @@ import odms.controller.gui.popup.utils.AlertWindowFactory;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -342,7 +344,7 @@ public class BloodTestViewController {
             case "Week":
                 bloodTestTitle.setText("Property over the current Week");
                 timeRangeAxis.setLabel("Time in days");
-                timeRange = Stream.of(DayOfWeek.values()).map(DayOfWeek::name).collect(Collectors.toList());
+                timeRange = Stream.of(DayOfWeek.values()).map(dayOfWeek -> dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.ENGLISH)).collect(Collectors.toList());
                 changeTimeRange(timeRange);
                 break;
 
@@ -365,7 +367,7 @@ public class BloodTestViewController {
             case "Year":
                 bloodTestTitle.setText("Property over the current Year");
                 timeRangeAxis.setLabel("Time in months");
-                timeRange = Stream.of(Month.values()).map(Month::name).collect(Collectors.toList());
+                timeRange = Stream.of(Month.values()).map(month -> month.getDisplayName(TextStyle.SHORT, Locale.ENGLISH)).collect(Collectors.toList());
                 changeTimeRange(timeRange);
                 break;
 
