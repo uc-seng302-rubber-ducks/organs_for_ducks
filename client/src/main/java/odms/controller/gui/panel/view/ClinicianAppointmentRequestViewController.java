@@ -17,6 +17,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.model.Appointment;
 import odms.commons.model.Clinician;
 import odms.commons.model._enum.AppointmentCategory;
@@ -136,13 +137,15 @@ public class ClinicianAppointmentRequestViewController implements Converter {
      * Initialises the calendarView and sets the right anchors for the calendarView
      */
     private void initCalendar() {
-        calendarView = CalendarWidgetFactory.createCalendar();
-        calendarViewPane.getChildren().add(calendarView);
-        AnchorPane.setTopAnchor(calendarView,0.0);
-        AnchorPane.setBottomAnchor(calendarView,0.0);
-        AnchorPane.setLeftAnchor(calendarView, 0.0);
-        AnchorPane.setRightAnchor(calendarView, 0.0);
-        populateCalendar();
+        if (ConfigPropertiesSession.getInstance().getProperty("testConfig", "false").equals("false")) {
+            calendarView = CalendarWidgetFactory.createCalendar();
+            calendarViewPane.getChildren().add(calendarView);
+            AnchorPane.setTopAnchor(calendarView, 0.0);
+            AnchorPane.setBottomAnchor(calendarView, 0.0);
+            AnchorPane.setLeftAnchor(calendarView, 0.0);
+            AnchorPane.setRightAnchor(calendarView, 0.0);
+            populateCalendar();
+        }
     }
 
     /**
