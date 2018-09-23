@@ -641,8 +641,17 @@ public class UpdateUserController {
     private boolean validateFields() {
         boolean valid;
         String nhi = nhiInput.getText();
-        valid = AttributeValidation.validateNHI(nhi);
+        boolean inUse = false;
+        if (!nhi.equalsIgnoreCase(oldUser.getNhi())) {
+            inUse = appController.getUserBridge().getExists(nhi);
+        }
+        valid = !inUse && AttributeValidation.validateNHI(nhi);
         if (!valid) {
+            if (inUse) {
+                invalidNHI.setText("That NHI is in use");
+            } else {
+                invalidNHI.setText("Invalid NHI");
+            }
             invalidNHI.setVisible(true);
         } else {
             if (appController.getUserBridge().getExists(nhi) && !currentUser.getNhi().equals(nhi)) { // if a user was found, but it is not the current user
@@ -699,7 +708,7 @@ public class UpdateUserController {
         if (valid) { // only updates if everything is valid
             appController.update(currentUser);
         }
-        if(!currentUser.getNhi().equals(nhi) && AppController.getInstance().getUserBridge().getExists(nhi)){
+        if (!currentUser.getNhi().equals(nhi) && AppController.getInstance().getUserBridge().getExists(nhi)) {
             valid = false;
         }
         return valid;

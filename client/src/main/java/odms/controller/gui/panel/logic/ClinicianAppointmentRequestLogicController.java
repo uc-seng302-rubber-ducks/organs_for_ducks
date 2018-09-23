@@ -44,6 +44,14 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
     private Set<LocalTime> TIMES = new HashSet<>(Arrays.asList(LocalTime.of(8,0),LocalTime.of(9,0),LocalTime.of(10,0),LocalTime.of(11,0),LocalTime.of(12,0),LocalTime.of(13,0),LocalTime.of(14,0),LocalTime.of(15,0),LocalTime.of(16,0),LocalTime.of(17,0)));
 
 
+    /**
+     * creates a new logic controller
+     *
+     * @param availableAppointment list of appointments that are shown in the view controller
+     * @param controller           instance of appController to be used
+     * @param clinician            host clinician to use
+     * @param availableTimes       list of times when the clinician is available
+     */
     public ClinicianAppointmentRequestLogicController(ObservableList<Appointment> availableAppointment, AppController controller, Clinician clinician, ObservableList<LocalTime> availableTimes) {
         this.availableAppointments = availableAppointment;
         this.appController = controller;
