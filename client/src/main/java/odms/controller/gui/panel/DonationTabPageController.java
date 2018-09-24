@@ -151,30 +151,6 @@ public class DonationTabPageController {
             }
         });
 
-        currentOrgans.getSelectionModel().getSelectedItems().addListener((ListChangeListener<? super Organs>) a ->{
-            if(!currentOrgans.getSelectionModel().getSelectedItems().isEmpty()) {
-                canDonate.getSelectionModel().clearSelection();
-                organQualificationStatusChangerButton.setDisable(false);
-            } else {
-                if(!userDisqualifiedOrgansTable.getSelectionModel().isEmpty()) {
-                    userDisqualifiedOrgansTable.getSelectionModel().clearSelection();
-                }
-                organQualificationStatusChangerButton.setDisable(true);
-            }
-        });
-
-        canDonate.getSelectionModel().getSelectedItems().addListener((ListChangeListener<? super Organs>) a ->{
-            if(canDonate.getSelectionModel().getSelectedItems().isEmpty()){
-                organQualificationStatusChangerButton.setDisable(true);
-            } else {
-                if(!userDisqualifiedOrgansTable.getSelectionModel().isEmpty()) {
-                    userDisqualifiedOrgansTable.getSelectionModel().clearSelection();
-                }
-                currentOrgans.getSelectionModel().clearSelection();
-                organQualificationStatusChangerButton.setDisable(false);
-            }
-        });
-
         disqualifiedOrganColumn.setCellValueFactory(new PropertyValueFactory<>("organType"));
         disqualifiedReasonColumn.setCellValueFactory(new PropertyValueFactory<>("reason"));
         disqualifiedDateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
@@ -183,27 +159,76 @@ public class DonationTabPageController {
         userDisqualifiedOrgansTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         userDisqualifiedOrgansTable.setVisible(false);
 
-        userDisqualifiedOrgansTable.getSelectionModel().selectedItemProperty().addListener(a ->{
-            if(!canDonate.getSelectionModel().isEmpty()) {
-                canDonate.getSelectionModel().clearSelection();
-            }
-            if(!currentOrgans.getSelectionModel().isEmpty()) {
-                currentOrgans.getSelectionModel().clearSelection();
-            }
-            if(userDisqualifiedOrgansTable.getSelectionModel().isEmpty()) {
-                organQualificationStatusChangerButton.setDisable(true);
-                updateDisqualifiedOrgan.setDisable(true);
-                deleteDisqualifiedOrgans.setDisable(true);
-            } else {
-                organQualificationStatusChangerButton.setDisable(true);
-                updateDisqualifiedOrgan.setDisable(false);
-                deleteDisqualifiedOrgans.setDisable(false);
-            }
-        });
         initDisqualifiedOrgans();
         showOrHideExpiryTable();
 
+    }
 
+    /**
+     * when an item at UserDisqualifiedOrgansTable is selected,
+     * update and remove button is enabled and
+     * disqualify button is disabled.
+     * both canDonate and currentOrgans listview is cleared.
+     */
+    @FXML
+    public void UserDisqualifiedOrgansTableMouseClick() {
+        organQualificationStatusChangerButton.setDisable(true);
+        if(!canDonate.getSelectionModel().isEmpty()) {
+            canDonate.getSelectionModel().clearSelection();
+        }
+        if(!currentOrgans.getSelectionModel().isEmpty()) {
+            currentOrgans.getSelectionModel().clearSelection();
+        }
+
+        if (!userDisqualifiedOrgansTable.getSelectionModel().isEmpty()){
+            updateDisqualifiedOrgan.setDisable(false);
+            deleteDisqualifiedOrgans.setDisable(false);
+        } else {
+            updateDisqualifiedOrgan.setDisable(true);
+            deleteDisqualifiedOrgans.setDisable(true);
+        }
+    }
+
+    /**
+     * when an item at canDonate listview is selected,
+     * update and remove button is disabled and
+     * disqualify button is enabled.
+     * both updateDisqualifiedOrgan table and currentOrgans listview is cleared.
+     */
+    @FXML
+    public void canDonateMouseClick() {
+        updateDisqualifiedOrgan.setDisable(true);
+        deleteDisqualifiedOrgans.setDisable(true);
+        if (!userDisqualifiedOrgansTable.getSelectionModel().isEmpty()){
+            userDisqualifiedOrgansTable.getSelectionModel().clearSelection();
+        }
+        if(!canDonate.getSelectionModel().getSelectedItems().isEmpty()){
+            currentOrgans.getSelectionModel().clearSelection();
+            organQualificationStatusChangerButton.setDisable(false);
+        } else {
+            organQualificationStatusChangerButton.setDisable(true);
+        }
+    }
+
+    /**
+     * when an item at currentOrgans listview is selected,
+     * update and remove button is disabled and
+     * disqualify button is enabled.
+     * both updateDisqualifiedOrgan table and canDonate listview is cleared.
+     */
+    @FXML
+    public void currentOrgansMouseClick() {
+        updateDisqualifiedOrgan.setDisable(true);
+        deleteDisqualifiedOrgans.setDisable(true);
+        if (!userDisqualifiedOrgansTable.getSelectionModel().isEmpty()){
+            userDisqualifiedOrgansTable.getSelectionModel().clearSelection();
+        }
+        if(!currentOrgans.getSelectionModel().getSelectedItems().isEmpty()) {
+            canDonate.getSelectionModel().clearSelection();
+            organQualificationStatusChangerButton.setDisable(false);
+        } else {
+            organQualificationStatusChangerButton.setDisable(true);
+        }
     }
 
     /**
@@ -596,6 +621,8 @@ public class DonationTabPageController {
             disqualifyOrganReasonStage.setScene(new Scene(root));
             disqualifyOrganReasonStage.showAndWait();
             refreshCurrentlyDonating();
+            updateDisqualifiedOrgan.setDisable(true);
+            deleteDisqualifiedOrgans.setDisable(true);
             Log.info("Successfully launched the disqualify Organ Reason pop-up window for user: " + currentUser.getNhi());
 
         } catch (IOException e) {
