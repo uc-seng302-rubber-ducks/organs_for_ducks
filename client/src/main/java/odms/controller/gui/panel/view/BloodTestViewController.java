@@ -23,13 +23,9 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.TextStyle;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.Optional;
 
 public class BloodTestViewController {
 
@@ -89,22 +85,6 @@ public class BloodTestViewController {
     private ListView<TextStringRadioButton> bloodTestPropertyListView;
     @FXML
     private ComboBox<String> timeRangeFilterOption;
-    @FXML
-    private CheckBox rBCCheckBox;
-    @FXML
-    private CheckBox wBCCheckBox;
-    @FXML
-    private CheckBox haemoglobinCheckBox;
-    @FXML
-    private CheckBox plateletCheckBox;
-    @FXML
-    private CheckBox glucoseCheckBox;
-    @FXML
-    private CheckBox haematocritCheckBox;
-    @FXML
-    private CheckBox mCVCheckBox;
-    @FXML
-    private CheckBox mCHCheckBox;
 
     @FXML
     private LineChart<String, Double> bloodTestGraph;
@@ -338,12 +318,10 @@ public class BloodTestViewController {
 
     /**
      * Updates the graph
-     * TODO : use this when listeners are added
      */
     private void updateGraph() {
         changeLabels();
         logicController.updateGraph(timeRangeFilterOption.getValue());
-        populateGraph();
     }
 
     /**
@@ -352,9 +330,10 @@ public class BloodTestViewController {
     private void populateGraph() {
         bloodTestGraph.getData().removeAll(bloodTestGraph.getData());
         ObservableList<TextStringRadioButton> items = bloodTestPropertyListView.getItems();
-        for(TextStringRadioButton item : items){
-            if(item.isSelected()){
+        for (TextStringRadioButton item : items) {
+            if (item.isSelected()) {
                 createGraphSeries(BloodTestProperties.valueOf(item.getText().replaceAll(" ", "_").toUpperCase()));
+                return;
             }
         }
     }
@@ -363,40 +342,42 @@ public class BloodTestViewController {
      * Creates a series containing the specified property and the time frame to populate the graph
      */
     private void createGraphSeries(BloodTestProperties property) {
-        XYChart.Series<String, Double> series = new XYChart.Series<>();
-        for (BloodTest bloodTest : graphBloodTests) {
-            addAppropriateProperty(bloodTest, series, property);
+        if (graphBloodTests.size() != 0) {
+            XYChart.Series<String, Double> series = new XYChart.Series<>();
+            for (BloodTest bT : graphBloodTests) {
+                addAppropriateProperty(bT, series, property);
+            }
+            bloodTestGraph.getData().add(series);
         }
-        bloodTestGraph.getData().add(series);
     }
 
     /**
      * Adds the given blood test property to the chart series.
      *
-     * @param bloodTest The current blood test to gather data from
+     * @param bT        The current blood test to gather data from
      * @param series    The current series being created and applied to the graph
      * @param property  The blood test property to be displayed on the chart series
      */
-    private void addAppropriateProperty(BloodTest bloodTest, XYChart.Series<String, Double> series, BloodTestProperties property) {
-        String date = logicController.changeValuesBasedOnTimeRange(bloodTest, timeRangeFilterOption.getValue());
+    private void addAppropriateProperty(BloodTest bT, XYChart.Series<String, Double> series, BloodTestProperties property) {
+        String date = logicController.changeValuesBasedOnTimeRange(bT, timeRangeFilterOption.getValue());
         double value = 0.0;
 
         if (property == BloodTestProperties.RED_BLOOD_CELL) {
-            value = bloodTest.getRedBloodCellCount();
+            value = bT.getRedBloodCellCount();
         } else if (property == BloodTestProperties.WHITE_BLOOD_CELL) {
-            value = bloodTest.getWhiteBloodCellCount();
+            value = bT.getWhiteBloodCellCount();
         } else if (property == BloodTestProperties.GLUCOSE) {
-            value = bloodTest.getGlucoseLevels();
+            value = bT.getGlucoseLevels();
         } else if (property == BloodTestProperties.HAEMATOCRIT) {
-            value = bloodTest.getHaematocrit();
+            value = bT.getHaematocrit();
         } else if (property == BloodTestProperties.HAEMOGLOBIN) {
-            value = bloodTest.getHaemoglobinLevel();
+            value = bT.getHaemoglobinLevel();
         } else if (property == BloodTestProperties.MEAN_CELL_HAEMATOCRIT) {
-            value = bloodTest.getMeanCellHaematocrit();
+            value = bT.getMeanCellHaematocrit();
         } else if (property == BloodTestProperties.MEAN_CELL_VOLUME) {
-            value = bloodTest.getMeanCellVolume();
+            value = bT.getMeanCellVolume();
         } else if (property == BloodTestProperties.PLATELETS) {
-            value = bloodTest.getPlatelets();
+            value = bT.getPlatelets();
         }
 
         if (value != 0.0) {
@@ -532,7 +513,6 @@ public class BloodTestViewController {
     @FXML
     private void updateBloodTest() {
             if (validateField()) {
-                // hmmm seems bad sadness
                 bloodTest.setGlucoseLevels(AttributeValidation.validateDouble(glucose.getText()));
                 bloodTest.setHaematocrit(AttributeValidation.validateDouble(haematocrit.getText()));
                 bloodTest.setMeanCellHaematocrit(AttributeValidation.validateDouble(meanCellHaematocrit.getText()));
