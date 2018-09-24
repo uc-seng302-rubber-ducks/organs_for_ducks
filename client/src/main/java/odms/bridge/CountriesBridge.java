@@ -29,6 +29,7 @@ public class CountriesBridge extends Bifrost {
         if(response.isSuccessful()){
             return handler.decodeCountries(response);
         }
+        response.close();
         return new HashSet();
     }
 
@@ -54,6 +55,7 @@ public class CountriesBridge extends Bifrost {
                 if(!response.isSuccessful()){
                     throw new IOException("Failed to put to the countries endpoint");
                 }
+                response.close();
             }
         });
 

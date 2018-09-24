@@ -1,10 +1,8 @@
 package odms.steps;
 
-import com.sun.javafx.stage.StageHelper;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.When;
 import javafx.collections.FXCollections;
-import javafx.scene.Node;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -15,10 +13,7 @@ import odms.commands.DeleteUser;
 import odms.commands.View;
 import odms.commons.model.UserBuilder;
 import odms.commons.model.dto.UserOverview;
-import odms.commons.utils.Log;
 import odms.view.CLI;
-import org.loadui.testfx.Assertions;
-import org.testfx.api.FxAssert;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import picocli.CommandLine;
@@ -30,8 +25,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 
-import static odms.TestUtils.FxRobotHelper.clickOnButton;
-import static odms.TestUtils.FxRobotHelper.setTextField;
+import static odms.TestUtils.FxRobotHelper.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -73,12 +67,12 @@ public class WhenSteps extends ApplicationTest {
     @When("^I register a user using the GUI with the NHI \"([^\"]*)\", first name \"([^\"]*)\" and date of birth \"([^\"]*)\"$")
     public void iRegisterAUserUsingTheGUIWithTheNHIFirstNameAndDateOfBirth(String nhi, String fName,
                                                                            String dob) {
-        setTextField(this, "#nhiInput", nhi);
+        setTextField(this, "#newUserNhiInput", nhi);
         setTextField(this, "#fNameInput", fName);
         clickOn("#dobInput");
         write(dob);
-        clickOn("#nhiInput");
-        CucumberTestModel.setUserNhi(nhi);
+        //clickOn("#newUserNhiInput");
+        //CucumberTestModel.setUserNhi(nhi);
         CucumberTestModel.setUser(new UserBuilder().setNhi(nhi).setFirstName(fName).setDateOfBirth(LocalDate.parse(dob, DateTimeFormatter.ofPattern("D/M/yyyy"))).build());
     }
 
@@ -168,14 +162,18 @@ public class WhenSteps extends ApplicationTest {
 
     @When("^The user is updated to have died on \"([^\"]*)\"$")
     public void theUserIsUpdatedToHaveDiedOn(String dod) {
-
-        clickOn("#updateDeathDetailsButton");
-        clickOn("#updateDeathDetailsDatePicker");
-        for (int i = 0; i < 20; i++) { //arbitrarily long number to ensure all is deleted
-            push(KeyCode.BACK_SPACE);
-        }
-        write(dod);
-        clickOnButton(this, "#confirmUpdateDeathDetailsButton");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
+        clickOn("#deathtab");
+        setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.parse(dod, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        clickOnButton(this, "#updateProfileButton");
+//        clickOn("#updateDeathDetailsButton");
+//        clickOn("#updateDeathDetailsDatePicker");
+//        for (int i = 0; i < 20; i++) { //arbitrarily long number to ensure all is deleted
+//            push(KeyCode.BACK_SPACE);
+//        }
+//        write(dod);
+//        clickOnButton(this, "#updateProfileButton");
     }
 
     @And("^I open the user page$")

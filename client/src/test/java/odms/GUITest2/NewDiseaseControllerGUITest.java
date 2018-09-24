@@ -117,6 +117,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
         clickOnButton(this,"#addDiseaseButton");
         setTextField(this,"#diseaseNameInput", "A1");
         //Use default date
+        setDateValue(this, "#diagnosisDateInput", LocalDate.of(2007, 1, 12));
         clickOnButton(this,"#createButton");
         assertEquals("A1", getCellValue("#currentDiseaseTableView", 1, 1).toString());
 

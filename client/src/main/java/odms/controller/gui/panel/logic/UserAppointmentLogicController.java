@@ -4,9 +4,11 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import odms.commons.model.Appointment;
 import odms.commons.model.User;
+import odms.commons.model._enum.AppointmentStatus;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.UserType;
 import odms.commons.model.event.UpdateNotificationEvent;
@@ -20,11 +22,11 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public class UserAppointmentLogicController implements PropertyChangeListener {
 
     private static final int ROWS_PER_PAGE = 30;
-    private AppController appController;
     private User user;
     private ObservableList<Appointment> appointments;
     private int startingIndex = 0;
@@ -33,12 +35,10 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
      * Constructor to create a new logical instance of the controller
      *
      * @param appointments  Observable list of appointments used to populate the users appointments table
-     * @param appController Main controller
      * @param user          User that the appointment panel belongs to
      */
-    public UserAppointmentLogicController(ObservableList<Appointment> appointments, AppController appController, User user) {
+    public UserAppointmentLogicController(ObservableList<Appointment> appointments, User user) {
         this.appointments = appointments;
-        this.appController = appController;
         this.user = user;
         ServerEventNotifier.getInstance().addPropertyChangeListener(this);
     }
@@ -48,7 +48,7 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
      * Launches the pop-up to create and view requested appointments in more detail
      */
     public void launchAppointmentPicker() {
-        if (appController.getAppointmentsBridge().pendingExists(user.getNhi())) {
+        if (AppController.getInstance().getAppointmentsBridge().checkAppointmentStatusExists(user.getNhi(), UserType.USER, AppointmentStatus.PENDING)) {
             alertUser("You cannot request a new appointment as you already have one pending approval.");
             return;
         }
@@ -60,7 +60,7 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
             root = appointmentRequestLoader.load();
             AppointmentPickerViewController appointmentPickerViewController = appointmentRequestLoader.getController();
             Stage appointmentPickerStage = new Stage();
-            appointmentPickerViewController.init(user, appointmentPickerStage, appController);
+            appointmentPickerViewController.init(user, appointmentPickerStage);
             appointmentPickerStage.setScene(new Scene(root));
             appointmentPickerStage.showAndWait();
             Log.info("Successfully launched the appointment picker pop-up window for user: " + user.getNhi());
@@ -76,14 +76,39 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
      * @param appointment The appointment to be cancelled
      */
     public void cancelAppointment(Appointment appointment) {
-        // todo: notify the clinician when a user cancels their appointment - task in story 101C
+        AppointmentStatus status = appointment.getAppointmentStatus();
+
+        if (!(status == AppointmentStatus.ACCEPTED || status == AppointmentStatus.ACCEPTED_SEEN || status == AppointmentStatus.PENDING)) {
+            alertUser("This appointment is no longer available");
+            return;
+        }
 
         if (appointment.getRequestedDate().minusDays(1).isBefore(LocalDateTime.now())) {
             alertUser("You cannot cancel this appointment as it is within 24 hours of the scheduled time");
             return;
         }
 
-        // delete the appointment
+        Optional<ButtonType> result = confirmOption("Are you sure you want to delete this appointment?");
+
+        if (!result.isPresent()) {
+            return;
+        }
+
+        if (result.get() == ButtonType.OK) {
+            appointment.setAppointmentStatus(AppointmentStatus.CANCELLED_BY_USER);
+            AppController.getInstance().getAppointmentsBridge().patchAppointmentStatus(appointment.getAppointmentId(),
+                    AppointmentStatus.CANCELLED_BY_USER.getDbValue());
+        }
+    }
+
+    /**
+     * Creates a confirmation alert pop-up with the given message
+     * Extracted for easier testability
+     *
+     * @return the confirmation alert window result
+     */
+    public Optional<ButtonType> confirmOption(String message) {
+        return AlertWindowFactory.generateConfirmation(message);
     }
 
     /**
@@ -91,7 +116,7 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
      */
     public void updateTable(int startIndex) {
         appointments.clear();
-        appController.getAppointmentsBridge().getAppointments(ROWS_PER_PAGE, startIndex, appointments, user.getNhi(), UserType.USER);
+        AppController.getInstance().getAppointmentsBridge().getAppointments(ROWS_PER_PAGE, startIndex, appointments, user.getNhi(), UserType.USER);
     }
 
     /**
@@ -124,7 +149,7 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
      *
      * @param message message to display to the user.
      */
-    private void alertUser(String message) {
+    public void alertUser(String message) {
         AlertWindowFactory.generateError(message);
     }
 
@@ -149,6 +174,18 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
         }
         if (event.getType().equals(EventTypes.APPOINTMENT_UPDATE)) {
             updateTable(startingIndex);
+        }
+
+        if (event.getType().equals(EventTypes.USER_UPDATE) && event.getOldIdentifier().equalsIgnoreCase(user.getNhi()) || event.getNewIdentifier().equalsIgnoreCase(user.getNhi())) {
+
+            try {
+                User newUser = AppController.getInstance().getUserBridge().getUser(event.getNewIdentifier());
+                if (newUser != null) {
+                    user = newUser;                }
+            } catch (IOException ex) {
+                Log.warning("failed to get updated user", ex);
+            }
+
         }
     }
 }

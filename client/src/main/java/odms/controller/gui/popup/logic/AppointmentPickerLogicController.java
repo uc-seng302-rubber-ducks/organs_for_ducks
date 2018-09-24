@@ -17,20 +17,16 @@ public class AppointmentPickerLogicController {
 
     private User user;
     private Stage stage;
-    private AppController appController;
 
     /**
      * Initializes the AppointmentPickerLogicController
      *
      * @param user          Current user
-     * @param appController The applications controller.
      * @param stage         The applications stage.
      */
-    public AppointmentPickerLogicController(User user, Stage stage, AppController appController) {
+    public AppointmentPickerLogicController(User user, Stage stage) {
         this.user = user;
         this.stage = stage;
-        this.appController = appController;
-
     }
 
     /**
@@ -53,12 +49,16 @@ public class AppointmentPickerLogicController {
         }
 
         if (description.isEmpty()) {
-            message += "A description must be provided.";
+            message += "A description must be provided.\n";
+        }
+
+        if (preferredClinician.isEmpty()) {
+            message += "A preferred clinician must be selected.\n";
         }
 
         if (message.isEmpty()) {
             Appointment appointment = new Appointment(user.getNhi(), preferredClinician, type, date.atStartOfDay(), description, AppointmentStatus.PENDING);
-            appController.getAppointmentsBridge().postAppointment(appointment);
+            AppController.getInstance().getAppointmentsBridge().postAppointment(appointment);
             stage.close();
         } else {
             alertUser(message);
@@ -81,4 +81,14 @@ public class AppointmentPickerLogicController {
     private void alertUser(String message) {
         Platform.runLater(() -> AlertWindowFactory.generateError(message));
     }
+
+
+    /**
+     * Sets the default preferred clinician for the user if the checkbox in the appointment picker is checked
+     * @param staffId Id of the clinician to set.
+     */
+    public void setDefaultPreferredClinician(String staffId) {
+        AppController.getInstance().getUserBridge().putPreferredClinician(user.getNhi(), staffId);
+    }
+
 }

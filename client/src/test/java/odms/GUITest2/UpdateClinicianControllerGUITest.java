@@ -145,6 +145,7 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
 
     @Test
     public void testUpdateRegionAndCountry() {
+        clickOn("#clinicianAddressTab");
         clickOn("#countrySelector");
         clickOn("New Zealand");
         setComboBox(this, "#regionSelector", "Otago");

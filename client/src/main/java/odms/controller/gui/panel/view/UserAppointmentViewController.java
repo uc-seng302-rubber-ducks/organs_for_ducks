@@ -1,9 +1,11 @@
 package odms.controller.gui.panel.view;
 
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -13,11 +15,14 @@ import odms.commons.model.Appointment;
 import odms.commons.model.User;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
+import odms.commons.utils.AppointmentTableCellFactory;
 import odms.controller.AppController;
 import odms.controller.gui.panel.logic.UserAppointmentLogicController;
+import odms.controller.gui.popup.utils.AlertWindowFactory;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class UserAppointmentViewController {
 
@@ -40,22 +45,42 @@ public class UserAppointmentViewController {
     private TableColumn<Appointment, AppointmentStatus> userAppointmentStatusColumn;
 
     @FXML
-    private Label userAppointmentDetailsLabel;
+    private Label userAppointmentDescriptionLabel;
+
+    @FXML
+    private Label userAppointmentStatusLabel;
+
+    @FXML
+    private Label userAppointmentDateLabel;
+
+    @FXML
+    private Label userAppointmentTimeLabel;
+
+    @FXML
+    private Label userAppointmentClinicianIdLabel;
+
+    @FXML
+    private Label userAppointmentCategoryLabel;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm");
 
     /**
+     * Compares the appointment status value so that when applied to the table view, pending appointments will be
+     * displayed at the top of the table
+     */
+    private Comparator<AppointmentStatus> statusComparator = Comparator.comparingInt(AppointmentStatus::getDbValue);
+
+    /**
      * Initialises the panel
      *
-     * @param appController Main controller
-     * @param user          User that the panel belongs to
+     * @param user User that the panel belongs to
      */
-    public void init(AppController appController, User user) {
+    public void init(User user) {
         appointments.addListener((ListChangeListener<? super Appointment>) observable -> {
             populateTable();
         });
 
-        logicController = new UserAppointmentLogicController(appointments, appController, user);
+        logicController = new UserAppointmentLogicController(appointments, user);
         initUserAppointmentsTableView();
     }
 
@@ -68,14 +93,24 @@ public class UserAppointmentViewController {
         userAppointmentCategoryColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentCategory"));
         userAppointmentClinicianIdColumn.setCellValueFactory(new PropertyValueFactory<>("requestedClinicianId"));
         userAppointmentStatusColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentStatus"));
+        userAppointmentStatusColumn.setCellFactory(cell -> AppointmentTableCellFactory.generateAppointmentTableCell());
+
         logicController.updateTable(0);
         populateTable();
-        userAppointmentStatusColumn.setSortType(TableColumn.SortType.ASCENDING);
         setOnClickBehaviour();
+        userAppointmentStatusColumn.setSortType(TableColumn.SortType.ASCENDING);
+        userAppointmentStatusColumn.setComparator(statusComparator);
     }
 
+    /**
+     * Creates a sorted list to change the default ordering of the table view and then populates the table
+     * with all of the users appointments
+     */
     private void populateTable() {
+        SortedList<Appointment> sortedAppointments = new SortedList<>(appointments);
+        sortedAppointments.comparatorProperty().bind(userAppointmentsTableView.comparatorProperty());
         userAppointmentsTableView.setItems(appointments);
+        Platform.runLater(() -> userAppointmentsTableView.getSortOrder().add(userAppointmentStatusColumn));
     }
 
     /**
@@ -91,6 +126,11 @@ public class UserAppointmentViewController {
      */
     @FXML
     public void cancelAppointment() {
+        if (userAppointmentsTableView.getSelectionModel().getSelectedItem() == null) {
+            AlertWindowFactory.generateInfoWindow("You must select an appointment to delete");
+            return;
+        }
+
         logicController.cancelAppointment(userAppointmentsTableView.getSelectionModel().getSelectedItem());
     }
 
@@ -98,8 +138,16 @@ public class UserAppointmentViewController {
      * Binds a table view row selection to show all details for that appointment
      */
     private void setOnClickBehaviour() {
-        userAppointmentsTableView.getSelectionModel().selectedItemProperty().addListener(a ->
-                displayAppointmentDetails(userAppointmentsTableView.getSelectionModel().getSelectedItem()));
+        userAppointmentsTableView.getSelectionModel().selectedItemProperty().addListener(a -> {
+            Appointment selectedAppointment = userAppointmentsTableView.getSelectionModel().getSelectedItem();
+            displayAppointmentDetails(selectedAppointment);
+
+            if (selectedAppointment != null && selectedAppointment.getAppointmentStatus() == AppointmentStatus.CANCELLED_BY_CLINICIAN) {
+                selectedAppointment.setAppointmentStatus(AppointmentStatus.CANCELLED_BY_CLINICIAN_SEEN);
+                AppController.getInstance().getAppointmentsBridge().patchAppointmentStatus(selectedAppointment.getAppointmentId(),
+                        AppointmentStatus.CANCELLED_BY_CLINICIAN_SEEN.getDbValue());
+            }
+        });
     }
 
     /**
@@ -109,28 +157,20 @@ public class UserAppointmentViewController {
      */
     private void displayAppointmentDetails(Appointment appointment) {
         if (appointment != null) {
-            userAppointmentDetailsLabel.setText(displayDetails(appointment));
+            userAppointmentStatusLabel.setText(appointment.getAppointmentStatus().toString());
+            userAppointmentDateLabel.setText(appointment.getRequestedDate().toLocalDate().toString());
+            userAppointmentTimeLabel.setText(appointment.getRequestedDate().toLocalTime().toString());
+            userAppointmentClinicianIdLabel.setText(appointment.getRequestedClinicianId());
+            userAppointmentCategoryLabel.setText(appointment.getAppointmentCategory().toString());
+            userAppointmentDescriptionLabel.setText(appointment.getRequestDescription());
         } else {
-            userAppointmentDetailsLabel.setText("");
+            userAppointmentStatusLabel.setText("");
+            userAppointmentDateLabel.setText("");
+            userAppointmentTimeLabel.setText("");
+            userAppointmentClinicianIdLabel.setText("");
+            userAppointmentCategoryLabel.setText("");
+            userAppointmentDescriptionLabel.setText("");
         }
-    }
-
-    /**
-     * Formats the given appointment's details into multiple lines so it is more readable.
-     *
-     * @param appointment The appointment to be viewed
-     * @return A string containing details of the appointment
-     */
-    private String displayDetails(Appointment appointment) {
-        String newLines = "\n\n\n";
-        String details = appointment.getAppointmentStatus().toString() + newLines;
-        details += appointment.getRequestedDate().toLocalDate().toString() + newLines;
-        details += appointment.getRequestedDate().toLocalTime().toString() + newLines;
-        details += appointment.getRequestedClinicianId() + newLines;
-        details += appointment.getAppointmentCategory().toString() + newLines;
-        details += appointment.getRequestDescription();
-
-        return details;
     }
 
     /**

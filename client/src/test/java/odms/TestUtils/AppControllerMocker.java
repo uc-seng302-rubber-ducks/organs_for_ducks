@@ -1,7 +1,6 @@
 package odms.TestUtils;
 
 import odms.bridge.*;
-import odms.commons.model.Appointment;
 import odms.controller.AppController;
 import odms.socket.OdmsSocketHandler;
 
@@ -20,8 +19,9 @@ public class AppControllerMocker {
         UserBridge userBridge = mock(UserBridge.class);
         ClinicianBridge clinicianBridge = mock(ClinicianBridge.class);
         LoginBridge loginBridge = mock(LoginBridge.class);
+        OrgansBridge organsBridge = mock(OrgansBridge.class);
         TransplantBridge transplantBridge = mock(TransplantBridge.class);
-        AppointmentsBridge appointmentBridge= mock(AppointmentsBridge.class);
+        AppointmentsBridge appointmentsBridge = mock(AppointmentsBridge.class);
         OdmsSocketHandler socketHandler = mock(OdmsSocketHandler.class);
 
 
@@ -29,8 +29,10 @@ public class AppControllerMocker {
         when(application.getUserBridge()).thenReturn(userBridge);
         when(application.getClinicianBridge()).thenReturn(clinicianBridge);
         when(application.getLoginBridge()).thenReturn(loginBridge);
+        when(application.getOrgansBridge()).thenReturn(organsBridge);
         when(application.getTransplantBridge()).thenReturn(transplantBridge);
-        when(application.getAppointmentsBridge()).thenReturn(appointmentBridge);
+        when(application.getAppointmentsBridge()).thenReturn(appointmentsBridge);
+        when(application.getSocketHandler()).thenReturn(socketHandler);
         when(application.getToken()).thenReturn("tokenGoesHere");
 
         return application;

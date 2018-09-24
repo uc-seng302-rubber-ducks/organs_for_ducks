@@ -9,10 +9,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import odms.commons.config.ConfigPropertiesSession;
@@ -123,12 +119,6 @@ public class UpdateClinicianController {
     private Button confirmButton;
 
     @FXML
-    private Button undoClinicianFormButton;
-
-    @FXML
-    private Button redoClinicianFormButton;
-
-    @FXML
     private ImageView profileImage;
 
     @FXML
@@ -162,8 +152,6 @@ public class UpdateClinicianController {
         this.controller = controller;
         this.stage = stage;
         this.ownStage = ownStage;
-        undoClinicianFormButton.setDisable(true);
-        redoClinicianFormButton.setDisable(true);
         countrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
         for (Regions regions : Regions.values()) {
             regionSelector.getItems().add(regions.toString());
@@ -204,16 +192,6 @@ public class UpdateClinicianController {
                 passwordField.setDisable(true);
                 confirmPasswordField.setDisable(true);
             }
-
-            final KeyCombination shortcutZ = new KeyCodeCombination(
-                    KeyCode.Z, KeyCombination.CONTROL_DOWN);
-
-            scene.addEventFilter(KeyEvent.KEY_RELEASED, e -> {
-                if (shortcutZ.match(e)) {
-                    undo();
-                }
-            });
-
 
             if (!clinician.getCountry().equals(defaultCountry) && !clinician.getCountry().equals("")) {
                 regionSelector.setVisible(false);
@@ -334,7 +312,7 @@ public class UpdateClinicianController {
      *
      * @param cb The current ComboBox.
      */
-    private void comboBoxListener(ComboBox cb) {
+    private void comboBoxListener(ComboBox<String> cb) {
         cb.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (Listen) {
                 update();
@@ -392,7 +370,7 @@ public class UpdateClinicianController {
      */
     private void update() {
         updateUndos();
-        if (undoClinicianFormButton.isDisabled() && passwordField.getText().isEmpty() && confirmPasswordField.getText().isEmpty()) {
+        if (currentClinician.getUndoStack().size() <= undoMarker && passwordField.getText().isEmpty() && confirmPasswordField.getText().isEmpty()) {
             ownStage.setTitle("Update Clinician: " + currentClinician.getFirstName());
         } else if (!ownStage.getTitle().endsWith("*")) {
             ownStage.setTitle(ownStage.getTitle() + " *");
@@ -434,8 +412,6 @@ public class UpdateClinicianController {
             prefillFields(currentClinician);
             currentClinician.getRedoStack().clear();
         }
-        undoClinicianFormButton.setDisable(currentClinician.getUndoStack().size() <= undoMarker);
-        redoClinicianFormButton.setDisable(currentClinician.getRedoStack().isEmpty());
     }
 
 
@@ -616,7 +592,8 @@ public class UpdateClinicianController {
     private void cancelUpdate() {
 
         if (!newClinician) {
-            if (!undoClinicianFormButton.isDisabled() || !passwordField.getText().isEmpty() || !confirmPasswordField.getText().isEmpty()) {
+
+            if (currentClinician.getUndoStack().size() > undoMarker || !passwordField.getText().isEmpty() || !confirmPasswordField.getText().isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.WARNING,
                         "You have unsaved changes, are you sure you want to cancel?",
                         ButtonType.YES, ButtonType.NO);
@@ -693,7 +670,7 @@ public class UpdateClinicianController {
             valid = false;
         }
 
-        String password = "";
+        String password = ""; //NOSONAR //complaining about hard-coded credentials
         String fName = "";
         String mName = "";
         String lName = "";
@@ -733,7 +710,7 @@ public class UpdateClinicianController {
         }
 
         if ((firstNameTextField.getText()).isEmpty()) {
-            emptyFNameLabel.setVisible(true);
+            firstNameErrorLabel.setVisible(true);
         } else {
             fName = firstNameTextField.getText();
         }
@@ -887,28 +864,5 @@ public class UpdateClinicianController {
         confirmPasswordErrorLabel.setVisible(false);
         firstNameErrorLabel.setVisible(false);
         staffIdErrorLabel.setVisible(false);
-    }
-
-    /**
-     * Redoes the previous undone action
-     */
-    @FXML
-    public void redo() {
-        currentClinician.redo();
-        redoClinicianFormButton.setDisable(currentClinician.getRedoStack().isEmpty());
-        prefillFields(currentClinician);
-        Log.info("Redo executed for Clinician Staff Id: " + currentClinician.getStaffId());
-    }
-
-
-    /**
-     * Undoes the previous action
-     */
-    @FXML
-    public void undo() {
-        currentClinician.undo();
-        undoClinicianFormButton.setDisable(currentClinician.getUndoStack().size() <= undoMarker);
-        prefillFields(currentClinician);
-        Log.info("Undo executed for Clinician Staff Id: " + currentClinician.getStaffId());
     }
 }

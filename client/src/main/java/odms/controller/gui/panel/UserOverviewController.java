@@ -1,19 +1,13 @@
 package odms.controller.gui.panel;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.model.User;
-import odms.commons.utils.Log;
 import odms.controller.AppController;
-import java.io.IOException;
+
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.time.temporal.ChronoUnit;
@@ -90,9 +84,6 @@ public class UserOverviewController {
 
     @FXML
     private Label countryOfDeathValue;
-
-    @FXML
-    private Button deleteUser;
 
 
     @FXML

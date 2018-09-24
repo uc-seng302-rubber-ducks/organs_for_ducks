@@ -11,8 +11,7 @@ import odms.controller.AppController;
 
 import java.util.Optional;
 
-import static odms.commons.utils.AttributeValidation.checkRequiredString;
-import static odms.commons.utils.AttributeValidation.checkRequiredStringName;
+import static odms.commons.utils.AttributeValidation.*;
 import static odms.commons.utils.UndoHelpers.removeFormChanges;
 
 public class UpdateAdminController {
@@ -35,12 +34,6 @@ public class UpdateAdminController {
 
     @FXML
     private TextField cPasswordTextField;
-
-    @FXML
-    private Button redoAdminUpdateButton;
-
-    @FXML
-    private Button undoAdminUpdateButton;
 
     @FXML
     private Label invalidUsername;
@@ -96,9 +89,6 @@ public class UpdateAdminController {
             adminClone = Administrator.clone(admin);
             undoMarker = adminClone.getUndoStack().size();
 
-            undoAdminUpdateButton.setDisable(true);
-            redoAdminUpdateButton.setDisable(true);
-
             stage.setTitle("Update Administrator: " + admin.getFirstName());
             prefillFields();
 
@@ -117,9 +107,26 @@ public class UpdateAdminController {
 
         } else {
             adminDetailInputTitle.setText("Create Admin");
-            undoAdminUpdateButton.setVisible(false);
-            redoAdminUpdateButton.setVisible(false);
+
+            styleListener(usernameTextField);
+            styleListener(firstNameTextField);
+            styleListener(middleNameTextField);
+            styleListener(lastNameTextField);
+            styleListener(passwordTextField);
+            styleListener(cPasswordTextField);
         }
+    }
+
+    /**
+     * Listens for user input on all of the fields to remove invalid css for that field.
+     * Used only when creating a new administrator.
+     *
+     * @param field The current textfield/password field
+     */
+    private void styleListener(TextField field) {
+        field.textProperty().addListener((observable, oldValue, newValue) -> {
+            field.getStyleClass().remove("invalid");
+        });
     }
 
     /**
@@ -140,7 +147,7 @@ public class UpdateAdminController {
     private void detectChanges() {
         updateAdminUndos();
 
-        if (undoAdminUpdateButton.isDisabled() && passwordTextField.getText().isEmpty() && cPasswordTextField.getText().isEmpty()) {
+        if (adminClone.getUndoStack().size() <= undoMarker && passwordTextField.getText().isEmpty() && cPasswordTextField.getText().isEmpty()) {
             stage.setTitle("Update Administrator: " + admin.getFirstName());
         } else if (!stage.getTitle().endsWith("*")) {
             stage.setTitle(stage.getTitle() + " *");
@@ -158,11 +165,7 @@ public class UpdateAdminController {
 
         if (changed) {
             prefillFields();
-            //adminClone.getRedoStack().clear(); //TODO
         }
-
-        undoAdminUpdateButton.setDisable(adminClone.getUndoStack().size() <= undoMarker);
-        redoAdminUpdateButton.setDisable(adminClone.getRedoStack().isEmpty());
     }
 
 
@@ -265,7 +268,7 @@ public class UpdateAdminController {
             valid = false;
         }
 
-        if (!firstNameTextField.getText().equals(admin.getFirstName())) {
+        if (!firstNameTextField.getText().equals(admin.getFirstName()) || newAdmin) {
             if (checkRequiredStringName(firstNameTextField.getText())) {
                 admin.setFirstName(firstNameTextField.getText());
             } else {
@@ -275,8 +278,8 @@ public class UpdateAdminController {
                 valid = false;
             }
         }
-        if (!middleNameTextField.getText().isEmpty() && !middleNameTextField.getText().equals(admin.getMiddleName())) {
-            if (checkRequiredStringName(middleNameTextField.getText())) {
+        if (!middleNameTextField.getText().isEmpty() && (!middleNameTextField.getText().equals(admin.getMiddleName()) || newAdmin)) {
+            if (checkString(middleNameTextField.getText())) {
                 admin.setMiddleName(middleNameTextField.getText());
             } else {
                 invalidateNode(middleNameTextField);
@@ -285,8 +288,8 @@ public class UpdateAdminController {
             }
         }
 
-        if (!lastNameTextField.getText().isEmpty() && !lastNameTextField.getText().equals(admin.getLastName())) {
-            if (checkRequiredStringName(lastNameTextField.getText())) {
+        if (!lastNameTextField.getText().isEmpty() && (!lastNameTextField.getText().equals(admin.getLastName()) || newAdmin)) {
+            if (checkString(lastNameTextField.getText())) {
                 admin.setLastName(lastNameTextField.getText());
             } else {
                 invalidateNode(lastNameTextField);
@@ -295,7 +298,7 @@ public class UpdateAdminController {
             }
         }
 
-        if (!passwordTextField.getText().isEmpty()) {
+        if (!passwordTextField.getText().isEmpty() || newAdmin) {
             String password = cPasswordTextField.getText();
             if (passwordTextField.getText().equals(password)) {
                 if (checkRequiredString(passwordTextField.getText())) {
@@ -360,20 +363,6 @@ public class UpdateAdminController {
         }
     }
 
-    @FXML
-    public void redoAdminUpdate() {
-        adminClone.redo();
-        redoAdminUpdateButton.setDisable(adminClone.getRedoStack().isEmpty());
-        prefillFields();
-
-    }
-
-    @FXML
-    public void undoAdminUpdate() {
-        adminClone.undo();
-        undoAdminUpdateButton.setDisable(adminClone.getUndoStack().isEmpty());
-        prefillFields();
-    }
 
     /**
      * If changes are present, a pop up alert is displayed.
@@ -382,7 +371,7 @@ public class UpdateAdminController {
     @FXML
     private void cancelUpdate() {
         if (!newAdmin) {
-            if (!undoAdminUpdateButton.isDisabled() || !passwordTextField.getText().isEmpty() || !cPasswordTextField.getText().isEmpty()) {
+            if (adminClone.getUndoStack().size() > undoMarker || !passwordTextField.getText().isEmpty() || !cPasswordTextField.getText().isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.WARNING,
                         "You have unsaved changes, are you sure you want to cancel?",
                         ButtonType.YES, ButtonType.NO);

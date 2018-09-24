@@ -132,18 +132,22 @@ INSERT INTO AppointmentStatus(statusId, status) VALUES
   (1, 'pending'), -- Used when clinician hasn't seen or approved it
   (2, 'accepted'), -- Used when clinician has confirmed the appointment but the user has not seen it.
   (3, 'rejected'), -- Used when the clinician has rejected the appointment but the user has not seen it.
-  (4, 'cancelled'), -- Used when the appointment is cancelled by either party
-  (5, 'updated'), -- Used when the appointment is updated by the clinician
-  (6, 'accepted_seen'), -- Used when the appointment has been accepted and seen by the user
-  (7, 'rejected_seen'), -- Used when the appointment has been rejected and seen by the user
-  (8, 'cancelled_seen'); -- Used when the appointment has been cancelled and seen by the user
+  (4, 'cancelled_by_user'), -- Used when the appointment is cancelled by a user
+  (5, 'cancelled_by_clinician'), -- Used when the appointment is cancelled by a clinician
+  (6, 'updated'), -- Used when the appointment is updated by the clinician
+  (7, 'accepted_seen'), -- Used when the appointment has been accepted and seen by the user
+  (8, 'rejected_seen'), -- Used when the appointment has been rejected and seen by the user
+  (9, 'cancelled_by_user_seen'), -- Used when the appointment has been seen by the clinician
+  (10, 'cancelled_by_clinician_seen'); -- Used when the appointment has been seen by the user
+
 
 INSERT INTO AppointmentCategory(categoryId, category) VALUES
   (1, 'Blood test'),
   (2, 'General check-up'),
   (3, 'Health advice'),
   (4, 'Prescription renewal'),
-  (5, 'Other');
+  (5, 'Other'),
+  (6, 'Personal');
 
 INSERT INTO AppointmentDetails(apptId, fkUserNhi, fkStaffId, fkCategoryId, requestedTime, fkStatusId, description) VALUES
   (1, 'DEF2314', '23', 4, '2018-01-10 16:15:01', 3, 'need stress relief due to SENG302'),

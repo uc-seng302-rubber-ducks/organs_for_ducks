@@ -11,6 +11,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,6 +40,11 @@ public class AvailableOrgansControllerTest {
         when(controller.getOrgansBridge()).thenReturn(bridge);
         when(client.newCall(any(Request.class))).thenReturn(call);
 
+    }
+
+    @After
+    public void tearDown() {
+        AppController.setInstance(null);
     }
 
     @Test

@@ -32,7 +32,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testfx.api.FxAssert.verifyThat;
 
@@ -41,23 +40,17 @@ public class GivenSteps extends ApplicationTest {
 
     @Before
     public void before() {
-
-        ConfigPropertiesSession mockSession = mock(ConfigPropertiesSession.class);
-        when(mockSession.getProperty(eq("server.url"))).thenReturn("http://test.url");
-        when(mockSession.getProperty(eq("server.url"), anyString())).thenReturn("http://test.url");
-        when(mockSession.getProperty(eq("server.token.header"), anyString())).thenReturn("x-auth-token");
-        when(mockSession.getProperty(eq("server.token.header"))).thenReturn("x-auth-token");
-        when(mockSession.getProperty(eq("testConfig"), anyString())).thenReturn("true");
+        ConfigPropertiesSession mockSession = CucumberTestModel.getSession();
         ConfigPropertiesSession.setInstance(mockSession);
         AppController.setInstance(CucumberTestModel.getController());
     }
-
 
     @After
     public void tearDown() throws TimeoutException {
         if (FxToolkit.isFXApplicationThreadRunning()) {
             FxToolkit.cleanupStages();
         }
+        ConfigPropertiesSession.setInstance(null);
         AppController.setInstance(null);
     }
 
@@ -68,8 +61,9 @@ public class GivenSteps extends ApplicationTest {
 
     @Given("^I have started the GUI$")
     public void iHaveStartedTheGUI() throws Throwable {
+        AppController.setInstance(CucumberTestModel.getController());
         FxToolkit.registerPrimaryStage();
-        FxToolkit.setupApplication(App.class);
+        FxToolkit.setupApplication(App.class, "--testConfig=true");
     }
 
     @Given("^a user with the NHI \"([^\"]*)\" exists$")

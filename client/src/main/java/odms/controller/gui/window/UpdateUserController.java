@@ -10,10 +10,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -36,6 +32,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -54,19 +51,14 @@ public class UpdateUserController {
     //<editor-fold desc="fxml stuff">
     @FXML
     private Label fNameErrorLabel;
-
     @FXML
     private Label genericErrorLabel;
-
     @FXML
     private Label phoneErrorLabel;
-
     @FXML
     private Label cellErrorLabel;
-
     @FXML
     private Label emailErrorLabel;
-
     @FXML
     private Label ecCellPhoneErrorLabel;
     @FXML
@@ -81,7 +73,6 @@ public class UpdateUserController {
     private Label heightErrorLabel;
     @FXML
     private Label weightErrorLabel;
-
     @FXML
     private Label nhiErrorLabel;
     @FXML
@@ -163,10 +154,6 @@ public class UpdateUserController {
     @FXML
     private DatePicker dobInput;
     @FXML
-    private Button undoUpdateButton;
-    @FXML
-    private Button redoUpdateButton;
-    @FXML
     private ImageView profileImage;
     @FXML
     private DatePicker updateDeathDetailsDatePicker;
@@ -177,7 +164,7 @@ public class UpdateUserController {
     @FXML
     private TextField updateDeathDetailsRegionTextField;
     @FXML
-    private ChoiceBox<String> updateDeathDetailsRegionChoiceBox;
+    private ComboBox<String> updateDeathDetailsRegionComboBox;
     @FXML
     private ComboBox<String> updateDeathDetailsCountryComboBox;
     @FXML
@@ -186,6 +173,8 @@ public class UpdateUserController {
     private Label updateDeathDetailsOverrideWarningLabel;
     @FXML
     private Button removeUpdateDeathDetailsButton;
+    @FXML
+    private Tab deathtab;
     //</editor-fold>
     @FXML
     private Button resetProfileImageUser;
@@ -206,7 +195,7 @@ public class UpdateUserController {
      * @param controller An instance of the AppController class.
      * @param stage      The applications stage.
      */
-    public void init(User user, AppController controller, Stage stage, UserController userController) {
+    public void init(User user, AppController controller, Stage stage, UserController userController, boolean fromClinician) {
         countrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
         ecCountrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
         for (Regions regions : Regions.values()) {
@@ -222,8 +211,6 @@ public class UpdateUserController {
         currentUser = User.clone(oldUser);
         this.appController = controller;
         setUserDetails(currentUser);
-        undoUpdateButton.setDisable(true);
-        redoUpdateButton.setDisable(true);
         updateDeathDetailsErrorLabel.setVisible(false);
         updateDeathDetailsOverrideWarningLabel.setVisible(false);
         undoMarker = currentUser.getUndoStack().size();
@@ -265,15 +252,13 @@ public class UpdateUserController {
                 lNameInput,
                 heightInput, weightInput, phone, cell, street, streetNumber, city, neighborhood, zipCode, email,
                 ecName, ecPhone, ecCell, ecEmail, ecStreet, ecStreetNumber, ecCity, ecNeighborhood, ecZipCode,
-                ecRelationship, regionInput, ecRegionInput};
+                ecRelationship, regionInput, ecRegionInput, updateDeathDetailsCityTextField, updateDeathDetailsRegionTextField, updateDeathDetailsTimeTextField};
 
         // creates a listener for each text field
         for (TextField tf : allTextFields) {
-
-            if (tf == null) {
-            System.out.println(tf);
+            if (tf != null) {
+                textFieldListener(tf);
             }
-            textFieldListener(tf);
         }
 
         comboBoxListener(birthGenderComboBox);
@@ -284,19 +269,18 @@ public class UpdateUserController {
         comboBoxListener(ecRegionSelector);
         comboBoxListener(countrySelector);
         comboBoxListener(ecCountrySelector);
+        comboBoxListener(updateDeathDetailsCountryComboBox);
+        comboBoxListener(updateDeathDetailsRegionComboBox);
 
         datePickerListener(dobInput);
+        datePickerListener(updateDeathDetailsDatePicker);
 
         addCheckBoxListener(smokerCheckBox);
 
-        final KeyCombination shortcutZ = new KeyCodeCombination(
-                KeyCode.Z, KeyCombination.SHORTCUT_DOWN);
-
-        scene.addEventFilter(KeyEvent.KEY_RELEASED, e -> {
-            if (shortcutZ.match(e)) {
-                undo();
-            }
-        });
+        if (!fromClinician) {
+            deathtab.setDisable(true);
+            deathtab.setStyle("visibility: hidden");
+        }
 
         stage.setOnCloseRequest(event -> {
             event.consume();
@@ -315,9 +299,7 @@ public class UpdateUserController {
      */
     @FXML
     private void countrySelectorListener(ActionEvent event) {
-//        if (listen) {
         appController.countrySelectorEventHandler(countrySelector, regionSelector, regionInput, currentUser, null);
-//        }
     }
 
     /**
@@ -331,9 +313,7 @@ public class UpdateUserController {
      */
     @FXML
     private void ecCountrySelectorListener(ActionEvent event) {
-//        if (listen) {
         appController.countrySelectorEventHandler(ecCountrySelector, ecRegionSelector, ecRegionInput, currentUser, null);
-//        }
     }
 
     /**
@@ -343,10 +323,6 @@ public class UpdateUserController {
      */
     private void update() {
         updateUndos();
-        if (!undoUpdateButton.isDisabled() && !stage.getTitle().endsWith("*")) {
-            stage.setTitle(stage.getTitle() + "*");
-        }
-
     }
 
     /**
@@ -381,7 +357,7 @@ public class UpdateUserController {
      *
      * @param cb The current ComboBox.
      */
-    private void comboBoxListener(ComboBox cb) {
+    private void comboBoxListener(ComboBox<String> cb) {
         cb.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (listen) {
                 update();
@@ -411,7 +387,7 @@ public class UpdateUserController {
     @FXML
     private void prefillDeathDetailsTab() {
         for (Regions regions : Regions.values()) {
-            updateDeathDetailsRegionChoiceBox.getItems().add(regions.toString());
+            updateDeathDetailsRegionComboBox.getItems().add(regions.toString());
         }
         for (String country : appController.getAllCountries()) {
             updateDeathDetailsCountryComboBox.getItems().add(country);
@@ -474,9 +450,9 @@ public class UpdateUserController {
         updateDeathDetailsRegionTextField.setDisable(isNewZealand);
         updateDeathDetailsRegionTextField.setVisible(!isNewZealand);
 
-        updateDeathDetailsRegionChoiceBox.setValue(currentChoiceRegion);
-        updateDeathDetailsRegionChoiceBox.setDisable(!isNewZealand);
-        updateDeathDetailsRegionChoiceBox.setVisible(isNewZealand);
+        updateDeathDetailsRegionComboBox.setValue(currentChoiceRegion);
+        updateDeathDetailsRegionComboBox.setDisable(!isNewZealand);
+        updateDeathDetailsRegionComboBox.setVisible(isNewZealand);
 
     }
 
@@ -771,10 +747,6 @@ public class UpdateUserController {
         }
 
         listen = true;
-
-        undoUpdateButton.setDisable(currentUser.getUndoStack().size() <= undoMarker);
-        redoUpdateButton.setDisable(currentUser.getRedoStack().isEmpty());
-
     }
 
     /**
@@ -817,14 +789,13 @@ public class UpdateUserController {
     }
 
     /**
-     *
+     * Checks that all fields with user input are valid and confirms the update if they are,
+     * otherwise the update is rejected.
      */
     @FXML
     public void confirmUpdate() throws IOException {
-
         hideErrorMessages();
         boolean valid = validateFields();
-
 
         if (valid) {
             removeFormChanges();
@@ -880,7 +851,7 @@ public class UpdateUserController {
         LocalDate dob = dobInput.getValue();
 
         String fName = fNameInput.getText();
-        if (!AttributeValidation.checkRequiredString(fName)) {
+        if (!AttributeValidation.checkRequiredStringName(fName)) {
             invalidateTextField(fNameInput);
             fNameErrorLabel.setVisible(true);
             valid = false;
@@ -930,16 +901,16 @@ public class UpdateUserController {
         } catch (InvalidFieldsException e) {
             valid = false;
         }
-        if (!validateDeathDetailsFields()){
+        if (!validateDeathDetailsFields()) {
             valid = false;
         }
 
         if (valid) { // only updates if everything is valid
             appController.update(currentUser);
         }
-
-
-
+        if (!currentUser.getNhi().equals(nhi) && AppController.getInstance().getUserBridge().getExists(nhi)) {
+            valid = false;
+        }
         return valid;
     }
 
@@ -1030,16 +1001,25 @@ public class UpdateUserController {
         }
     }
 
-    private boolean updateDeathDetails(){
+    /**
+     * Updates the users death details with new values
+     *
+     * @return true if the death details values have changed, false otherwise
+     */
+    private boolean updateDeathDetails() {
         boolean changed = false;
         LocalDate dateOfDeath = updateDeathDetailsDatePicker.getValue();
-        LocalTime timeOfDeath = LocalTime.parse(updateDeathDetailsTimeTextField.getText());
-        currentUser.setMomentOfDeath(currentUser.getDeathDetails().createMomentOfDeath(dateOfDeath, timeOfDeath));
+        try {
+            LocalTime timeOfDeath = LocalTime.parse(updateDeathDetailsTimeTextField.getText());
+            currentUser.setMomentOfDeath(currentUser.getDeathDetails().createMomentOfDeath(dateOfDeath, timeOfDeath));
+        } catch (DateTimeParseException e) {
+            Log.severe("There is an incorrect time format in the death details time field", e);
+        }
 
         currentUser.setDeathCity(updateDeathDetailsCityTextField.getText());
         if (isNewZealand) {
             //if checkChangedProperty(u)
-            currentUser.setDeathRegion(updateDeathDetailsRegionChoiceBox.getValue());
+            currentUser.setDeathRegion(updateDeathDetailsRegionComboBox.getValue());
         } else {
             currentUser.setDeathRegion(updateDeathDetailsRegionTextField.getText());
         }
@@ -1066,8 +1046,6 @@ public class UpdateUserController {
         if (changed) {
             currentUser.getRedoStack().clear();
         }
-        undoUpdateButton.setDisable(currentUser.getUndoStack().size() <= undoMarker);
-        redoUpdateButton.setDisable(currentUser.getRedoStack().isEmpty());
     }
 
 
@@ -1362,31 +1340,6 @@ public class UpdateUserController {
         return changed;
     }
 
-    /**
-     * Undoes a form change
-     */
-    @FXML
-    void undo() {
-        currentUser.undo();
-        undoUpdateButton.setDisable(currentUser.getUndoStack().size() <= undoMarker);
-        setUserDetails(currentUser);
-
-        if (undoUpdateButton.isDisabled()) {
-            stage.setTitle(stage.getTitle().substring(0, stage.getTitle().length() - 1));
-        }
-        Log.info("Undo executed for User NHI: " + currentUser.getNhi());
-    }
-
-    /**
-     * Redoes a form change
-     */
-    @FXML
-    void redo() {
-        currentUser.redo();
-        redoUpdateButton.setDisable(currentUser.getRedoStack().isEmpty());
-        setUserDetails(currentUser);
-        Log.info("Redo executed for User NHI: " + currentUser.getNhi());
-    }
 
     /**
      * Prompts the user with a warning alert if there are unsaved changes, otherwise cancels
@@ -1394,7 +1347,7 @@ public class UpdateUserController {
      */
     @FXML
     void goBack() {
-        if (!undoUpdateButton.isDisabled()) { // has changes
+        if (currentUser.getUndoStack().size() > undoMarker) { // has changes
             Alert alert = new Alert(Alert.AlertType.WARNING,
                     "You have unsaved changes, are you sure you want to cancel?",
                     ButtonType.YES, ButtonType.NO);
@@ -1412,7 +1365,6 @@ public class UpdateUserController {
                     userController.showUser(oldUser);
                     Log.info("User update Cancelled for User NHI: " + currentUser.getNhi());
                 } catch (NullPointerException ex) {
-                    //TODO causes npe if donor is new in this session
                     //the text fields etc. are all null
                     Log.severe("Error cancelling user update for User NHI: " + currentUser.getNhi(), ex);
                 }
@@ -1452,12 +1404,5 @@ public class UpdateUserController {
         ecNameErrorLabel.setVisible(false);
         weightErrorLabel.setVisible(false);
         heightErrorLabel.setVisible(false);
-    }
-
-    public void confirmUpdateDeathDetails() {
-
-    }
-
-    public void cancelUpdateDeathDetails() {
     }
 }

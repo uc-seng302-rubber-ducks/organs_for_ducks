@@ -90,6 +90,7 @@ public class AppController {
         loginBridge = new LoginBridge(client);
         transplantBridge = new TransplantBridge(client);
         countriesBridge = new CountriesBridge(client);
+        appointmentsBridge = new AppointmentsBridge(client);
     }
 
     /**
@@ -515,7 +516,6 @@ public class AppController {
      */
     public void deleteClinician(Clinician clinician) {
         clinician.setDeleted(true);
-
         getClinicianBridge().deleteClinician(clinician, getToken());
     }
 
@@ -526,9 +526,7 @@ public class AppController {
      */
     public void deleteAdmin(Administrator admin) {
         admin.setDeleted(true);
-
         getAdministratorBridge().deleteAdmin(admin, token);
-        admins.remove(admin);
     }
 
     public UserController getUserController() {
@@ -764,5 +762,9 @@ public class AppController {
 
     public OkHttpClient getClient() {
         return client;
+    }
+
+    public void setAppointmentsBridge(AppointmentsBridge appointmentsBridge) {
+        this.appointmentsBridge = appointmentsBridge;
     }
 }
