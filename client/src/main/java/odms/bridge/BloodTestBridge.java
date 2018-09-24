@@ -32,7 +32,7 @@ public class BloodTestBridge extends Bifrost {
      * @param nhi nhi of the user to post the blood test for
      */
     public void postBloodtest(BloodTest bloodTest, String nhi){
-        String url = ip + USER + nhi + " /bloodTest";
+        String url = ip + "/" + USER + nhi + "/bloodTest";
         RequestBody requestBody = RequestBody.create(json, new Gson().toJson(bloodTest));
         Request request = new Request.Builder().post(requestBody).url(url).build();
         client.newCall(request).enqueue(CommonMethods.loggedCallback("POST", url));
@@ -45,7 +45,7 @@ public class BloodTestBridge extends Bifrost {
      * @param nhi nhi of the user to patch the blood test for
      */
     public void patchBloodtest(BloodTest bloodTest, String nhi){
-        String url = ip + USER + nhi +"/bloodTest/"+bloodTest.getBloodTestId();
+        String url = ip + "/" + USER + nhi +"/bloodTest/"+bloodTest.getBloodTestId();
         RequestBody requestBody = RequestBody.create(json, new Gson().toJson(bloodTest));
         Request request = new Request.Builder().patch(requestBody).url(url).build();
         client.newCall(request).enqueue(CommonMethods.loggedCallback("PATCH", url));

@@ -13,7 +13,7 @@ public class BloodTestHandler {
     private static final String CREATE_BLOOD_TEST_STMT = "INSERT INTO BloodTestDetails (fkUserNhi, redBloodCellCount, " +
             "whiteBloodCellCount, haemoglobinLevel, platelets, glucoseLevels, meanCellVolume, haematocrit, " +
             "meanCellHaematocrit, testDate) " +
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private static final String SELECT_ONE_BLOOD_TEST = "SELECT * FROM BloodTestDetails WHERE bloodTestId = ?";
     private static final String DELETE_ONE_BLOOD_TEST = "DELETE FROM BloodTestDetails WHERE bloodTestId = ?";
