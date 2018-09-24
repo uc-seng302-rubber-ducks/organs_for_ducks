@@ -34,6 +34,9 @@ public class NewDiseaseController {
     public Label diagnosisDateInputErrorMessage;
 
     @FXML
+    public Label headerLabel;
+
+    @FXML
     public RadioButton chronicRadioButton;
 
     @FXML
@@ -59,16 +62,18 @@ public class NewDiseaseController {
         this.userController = userController;
         currentUser = user;
         editableDisease = disease;
+        if(disease != null) {
+            String diseaseName = disease.getName();
+            LocalDate date = disease.getDiagnosisDate();
+            boolean isCured = disease.getIsCured();
+            boolean isChronic = disease.getIsChronic();
 
-        String diseaseName = disease.getName();
-        LocalDate date = disease.getDiagnosisDate();
-        boolean isCured = disease.getIsCured();
-        boolean isChronic = disease.getIsChronic();
-
-        diseaseNameInput.setText(diseaseName);
-        diagnosisDateInput.setValue(date);
-        curedRadioButton.setSelected(isCured);
-        chronicRadioButton.setSelected(isChronic);
+            diseaseNameInput.setText(diseaseName);
+            diagnosisDateInput.setValue(date);
+            curedRadioButton.setSelected(isCured);
+            chronicRadioButton.setSelected(isChronic);
+            headerLabel.setText("Update Disease");
+        }
     }
 
     /**
@@ -143,10 +148,7 @@ public class NewDiseaseController {
             diseaseNameInputErrorMessage.setVisible(false);
         }
 
-        if (diagnosisDate == null) {
-            diagnosisDateInputErrorMessage.setVisible(true);
-            isValid = false;
-        } else if (diagnosisDate.isAfter(LocalDate.now()) || diagnosisDate.isBefore(currentUser.getDateOfBirth())) {
+        if (diagnosisDate == null || diagnosisDate.isAfter(LocalDate.now()) || diagnosisDate.isBefore(currentUser.getDateOfBirth())) {
             diagnosisDateInputErrorMessage.setVisible(true);
             isValid = false;
         } else {
@@ -154,7 +156,9 @@ public class NewDiseaseController {
         }
 
         if (isValid) {
-
+            if(editableDisease == null){
+                editableDisease = new Disease();
+            }
             //this if/if else ensures that cured diseases can only be in pastDiseases[] and chronic diseases can only be in currentDiseases[]
             if (isCured && !editableDisease.getIsCured()) { //if it WASNT cured, but now IS, move to past
                 currentUser.getCurrentDiseases().remove(editableDisease);
@@ -175,7 +179,13 @@ public class NewDiseaseController {
                 editableDisease.setIsCured(isCured);
                 editableDisease.setIsChronic(isChronic);
             } else {
-
+                if(!currentUser.getCurrentDiseases().contains(editableDisease) && !currentUser.getPastDiseases().contains(editableDisease)) {
+                    if(isCured){
+                        currentUser.addPastDisease(editableDisease);
+                    } else {
+                        currentUser.addCurrentDisease(editableDisease);
+                    }
+                }
                 editableDisease.setName(diseaseName);
                 editableDisease.setDiagnosisDate(diagnosisDate);
                 editableDisease.setIsCured(isCured);
@@ -183,7 +193,7 @@ public class NewDiseaseController {
 
             }
 
-            //Refresh the view
+
             userController.refreshDiseases();
             closeNewDiseaseWindow();
             Log.info("Successfully added new disease: " + diseaseName + " for User NHI: " + currentUser.getNhi());

@@ -31,6 +31,8 @@ public class Appointment {
 
     private String rejectionReason;
 
+    private String title = null; //This is used over nhi if clinician has a personal appointment
+
     /**
      * Empty constructor for Appointment. Useful for creating one from the database or specific customisation for tests.
      * Be careful that an Appointment created by this method may have null fields
@@ -111,6 +113,14 @@ public class Appointment {
 
     public void setAppointmentStatus(AppointmentStatus appointmentStatus) {
         this.appointmentStatus = appointmentStatus;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public boolean isSeen() {

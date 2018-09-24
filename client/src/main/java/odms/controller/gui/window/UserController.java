@@ -160,6 +160,7 @@ public class UserController implements PropertyChangeListener {
         stage.setMinWidth(1200);
         stage.setMinHeight(800);
         changeCurrentUser(user);
+        stage.setMaximized(true);
 
         // This is the place to set visible and invisible controls for Clinician vs User
         medicationTabPageController.init(controller, user, fromClinician, this);
@@ -229,7 +230,7 @@ public class UserController implements PropertyChangeListener {
             Stage updateStage = new Stage();
             updateStage.initModality(Modality.APPLICATION_MODAL);
             updateStage.setScene(new Scene(root));
-            updateUserController.init(currentUser, application, updateStage, this);
+            updateUserController.init(currentUser, application, updateStage, this, this.fromClinician);
             updateStage.show();
             Log.info("Successfully launched update user window for User NHI: " + currentUser.getNhi());
 
@@ -551,7 +552,7 @@ public class UserController implements PropertyChangeListener {
     }
 
     public void refreshCurrentlyReceivingList() {
-        receiverTabPageController.refreshCurrentlyReceiving();
+        receiverTabPageController.populateReceiverLists(currentUser);
     }
 
     /**

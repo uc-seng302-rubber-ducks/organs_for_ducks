@@ -1,9 +1,7 @@
 package odms.GUITest2;
 
-import javafx.scene.Node;
 import odms.App;
 import odms.TestUtils.AppControllerMocker;
-import odms.TestUtils.CommonTestMethods;
 import odms.bridge.UserBridge;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
@@ -17,7 +15,6 @@ import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
-import org.testfx.matcher.control.TextInputControlMatchers;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -34,7 +31,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        CommonTestMethods.runMethods();
+        //CommonTestMethods.runMethods();
     }
 
     @Before
@@ -76,33 +73,16 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
     }
 
     @Test
-    public void SingleChangeSingleUndo() {
-        clickOn("#editMenuUser");
-        clickOn("#editDetailsUser");
-        setTextField(this, "#preferredFNameTextField","i");
-
-        clickOnButton(this,"#undoUpdateButton");
-        verifyThat("#preferredFNameTextField", TextInputControlMatchers.hasText("Frank"));
-
-    }
-
-    @Test
-    public void NoChangeUndoDisabled() {
-        clickOn("#editMenuUser");
-        clickOn("#editDetailsUser");
-        verifyThat("#undoUpdateButton", Node::isDisabled);
-    }
-
-    @Test
     public void ChangesResetWhenCancelButtonClicked() {
         //Dont change me to the new methods ill break
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         clickOn("#mNameInput");
         write("geoff");
+        clickOn("#healthDetailsTab");
         clickOn("#smokerCheckBox");
 
-        clickOn("#cancelButton");
+        clickOn("#UserCancelButton");
         clickOn("#yesButton");
 
         verifyThat("#smokerValue", LabeledMatchers.hasText("No"));
@@ -115,8 +95,9 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         setTextField(this,"#mNameInput","geoff");
+        clickOn("#healthDetailsTab");
         clickOn("#smokerCheckBox");
-        clickOnButton(this,"#confirmButton");
+        clickOnButton(this,"#updateProfileButton");
 
         verifyThat("#smokerValue", LabeledMatchers.hasText("Yes"));
         verifyThat("#mNameValue", LabeledMatchers.hasText("geoff"));
@@ -125,63 +106,5 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
 
         verifyThat("#smokerValue", LabeledMatchers.hasText("No"));
         verifyThat("#mNameValue", LabeledMatchers.hasText(""));
-    }
-
-    @Test
-    public void MultipleChangesSingleUndo() {
-        clickOn("#editMenuUser");
-        clickOn("#editDetailsUser");
-        setTextField(this,"#ecPhone","123");
-        setTextField(this,"#ecPhone","1234");
-
-        clickOnButton(this,"#undoUpdateButton");
-        sleep(1000);
-        verifyThat("#ecPhone", TextInputControlMatchers.hasText("123"));
-    }
-
-    @Test
-    public void MultipleChangesEqualUndos() {
-        clickOn("#editMenuUser");
-        clickOn("#editDetailsUser");
-
-//    unable to check text in combo boxes as it is lazily created/populated
-        clickOn("#genderIdComboBox");
-        clickOn("Male");
-
-        clickOn("#heightInput");
-        write("1");
-
-        clickOn("#lNameInput");
-        write("qw");
-
-        clickOnButton(this,"#undoUpdateButton");
-        clickOnButton(this,"#undoUpdateButton");
-        clickOnButton(this,"#undoUpdateButton");
-
-
-        verifyThat("#lNameInput", TextInputControlMatchers.hasText(""));
-        verifyThat("#heightInput", TextInputControlMatchers.hasText("0.0"));
-    }
-
-    @Test
-    public void MultipleActionsTwoUndosOneAction() {
-        //check we can traverse the stack properly
-        clickOn("#editMenuUser");
-        clickOn("#editDetailsUser");
-
-        clickOn("#heightInput");
-        write("1");
-
-        clickOn("#lNameInput");
-        write("qw");
-
-        clickOnButton(this,"#undoUpdateButton");
-        clickOnButton(this,"#undoUpdateButton");
-
-        clickOn("#lNameInput");
-        write("lasagna");
-
-        verifyThat("#heightInput", TextInputControlMatchers.hasText("0.01"));
-        verifyThat("#lNameInput", TextInputControlMatchers.hasText("lasagna"));
     }
 }

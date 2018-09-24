@@ -1,0 +1,467 @@
+/*
+    Document   : controlStyle2
+*/
+.root {
+    -fx-font-family-sans-serif: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    -fx-font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    -fx-font-size: 13px;
+    -fx-background-color: #F5F5FF;
+}
+
+
+/****************************************
+*                                       *
+* LABEL                            *
+*                                       *
+****************************************/
+
+.label {
+    -fx-font-size: 12px;
+    -fx-text-fill: BLACK;
+}
+
+.label {
+    -fx-font-family: sans-serif;
+}
+
+.label-sub-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+
+}
+
+.label-main-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+.label-title {
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+.label-error {
+    -fx-font-size: 10px;
+    -fx-text-fill: #C63636;
+}
+
+/****************************************
+*                                       *
+* COMBO_BOX & CHOICE_BOX                *
+*                                       *
+****************************************/
+
+.combo-box, .choice-box {
+    -fx-background-color: white;
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 2.5%;
+
+}
+
+.combo-box:focused, .choice-box:focused {
+    -fx-background-color: white;
+    -fx-border-width: 2;
+    -fx-border-color: #78c9e9;
+    -fx-border-radius: 2.5%;
+}
+
+.combo-box-popup .list-view .list-cell:filled:hover
+{
+    -fx-background-color: #9ab87c;
+}
+
+.combo-box-popup .list-view .list-cell:filled:selected, .combo-box-popup .list-view .list-cell:filled:selected:hover
+{
+    -fx-background-color: #9ab87c;
+}
+
+.choice-box .menu-item:focused
+{
+    -fx-background-color: #9ab87c;
+}
+
+/****************************************
+*                                       *
+* BUTTON                            *
+*                                       *
+****************************************/
+
+.button:disabled {
+    -fx-opacity: 0.45;
+}
+
+.button {
+    -fx-padding: 3 6 6 6;
+    -fx-border-style: solid;
+    -fx-border-width: 0 1px 4px 1px;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: WHITE;
+}
+
+.button {
+    -fx-border-color: #127ba3;
+    -fx-background-color: #158CBA;
+}
+
+.button:hover {
+    -fx-background-color: #117298;
+    -fx-border-color: #106a8c;
+}
+
+.button:pressed {
+    -fx-background-color: #004a6c;
+    -fx-border-color: #004a6c;
+}
+
+
+.button-secondary {
+    -fx-border-width: 1 1px 4px 1px;
+    -fx-background-color: #f0f0f0;
+    -fx-border-color: #c7c6c6;
+    -fx-text-fill: BLACK;
+}
+
+.button-secondary:hover {
+    -fx-background-color: #dddddd;
+    -fx-border-color: #d7d6d6;
+}
+
+.button-secondary:pressed {
+    -fx-background-color: #b7b6b6;
+    -fx-border-color: #b7b6b6;
+}
+/****************************************
+*                                       *
+* TEXT_FIELD                            *
+*                                       *
+****************************************/
+
+.text-field {
+    -fx-background-color: #fff;
+    -fx-border-width: 1px;
+    -fx-border-style: solid;
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 2.5%;
+}
+
+.text-field:disabled {
+    -fx-opacity: 0.45;
+}
+
+.text-field:focused {
+    -fx-background-color: white;
+    -fx-border-color: #78c9e9;
+    -fx-border-width: 2;
+    -fx-border-radius: 2.5%;
+}
+
+.invalid {
+    -fx-border-color: #FF4136;
+    -fx-background-color: rgba(100%, 25%, 21%, 0.5);
+}
+
+.invalid > .text-field {
+    -fx-background-color: rgba(100%, 25%, 21%, 0.5);
+}
+
+/****************************************
+*                                       *
+* TABLE-VIEW                            *
+*                                       *
+****************************************/
+
+.table-view {
+    -fx-background-color: -fx-box-border, -fx-control-inner-background;
+    -fx-background-insets: 0,1;
+    -fx-table-header-border-color: #959595;
+    -fx-table-cell-border-color: #bbbbbb;
+}
+
+.table-row-cell{
+    -fx-background-color: -fx-table-cell-border-color, -fx-control-inner-background;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 0.0em; /* 0 */
+    -fx-text-fill: -fx-text-inner-color;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: -fx-table-cell-border-color, derive(-fx-control-inner-background,-5%);
+    -fx-background-insets: 0, 0 0 1 0;
+}
+
+.table-row-cell:focused,
+.tree-table-row-cell:focused {
+    -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-control-inner-background;
+    -fx-background-insets: 0, 1, 2;
+}
+
+.table-row-cell:focused:odd {
+    -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, derive(-fx-control-inner-background,-5%);
+    -fx-background-insets: 0, 1, 2;
+}
+
+/* When the table-row-cell is selected and focused */
+.table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled:focused:selected,
+.tree-table-view:focused > .virtual-flow > .clipped-container > .sheet > .tree-table-row-cell:filled:focused:selected {
+    -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-selection-bar;
+    -fx-background-insets: 0, 1, 2;
+    -fx-background: -fx-accent;
+    -fx-text-fill: -fx-selection-bar-text;
+}
+
+.table-cell {
+    -fx-padding: 0.166667em; /* 2px, plus border adds 1px */
+
+    -fx-background-color: transparent;
+    -fx-border-color: transparent -fx-table-cell-border-color transparent transparent;
+    -fx-border-width: 0.083333em; /* 1 */
+    -fx-cell-size: 2.0em; /* 24 */
+    -fx-text-fill: -fx-text-inner-color;
+}
+
+/* When the TableView is _not_ focused, we show alternate selection colors */
+.table-row-cell:filled > .table-cell:selected:focused,
+.table-row-cell:filled > .table-cell:selected,
+.tree-table-row-cell:filled > .tree-table-cell:selected:focused,
+.tree-table-row-cell:filled > .tree-table-cell:selected {
+    -fx-background-color: lightgray;
+    -fx-text-fill: -fx-selection-bar-text;
+}
+
+.table-view > .column-header-background > .show-hide-columns-button,
+.tree-table-view > .column-header-background > .show-hide-columns-button{
+    -fx-background-color: -fx-body-color;
+
+
+    -fx-border-insets: 0 0 0 1, 0 0 0 0;
+}
+
+.table-view /*> column-header-background > nested-column-header >*/ .arrow,
+.tree-table-view /*> column-header-background > nested-column-header >*/ .arrow {
+    -fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
+    -fx-background-insets: 1 0 -1 0, 0;
+    -fx-padding: 0.25em 0.3125em 0.25em 0.3125em; /* 3 3.75 3 3.75 */
+    -fx-shape: "M 0 0 h 7 l -3.5 4 z";
+}
+
+.table-view .column-header .sort-order-dot,
+.tree-table-view .column-header .sort-order-dot {
+    -fx-background-color: derive(-fx-mark-highlight-color, 40%), -fx-mark-color;
+    -fx-padding: 0.0625em 0.104em 0.0625em 0.104em;
+}
+
+/****************************************
+*                                       *
+* PROGRESS-BAR                            *
+*                                       *
+****************************************/
+
+.progress-bar {
+    color: #fff;
+    -fx-text-alignment: center;
+    -fx-background-color: #158CBA;
+}
+
+/****************************************
+*                                       *
+* TAB-PANE                            *
+*                                       *
+****************************************/
+
+.tab-pane:bottom {
+    -fx-border-width: 1px;
+    -fx-border-style: solid;
+    -fx-border-color: #f0f0f0;
+}
+
+.tab {
+    -fx-background-color: #fff;
+    -fx-border-color: #f0f0f0;
+}
+
+.tab:selected {
+    -fx-background-color: #D7D7D7;
+    -fx-border-color: #f0f0f0;
+    -fx-scale-y: 1.1;
+    -fx-scale-x: 1.1;
+}
+
+.tab:hover {
+    -fx-border-color: #f0f0f0;
+    -fx-scale-y: 1.1;
+    -fx-scale-x: 1.1;
+
+}
+
+.custom-control {
+    -fx-background-position: relative;
+    -fx-content-display: block;
+    -fx-min-height: 1.3125em;
+    -fx-padding: 2px;
+}
+
+/****************************************
+*                                       *
+* RADIO-BUTTON                            *
+*                                       *
+****************************************/
+
+.radio-button > .radio {
+    -fx-border-radius: 50%;
+    -fx-border-color: GREY;
+    -fx-background-color: #FFF;
+}
+
+.radio-button:selected > .radio {
+    -fx-background-color: #158CBA;
+    -fx-padding: 0.35em;
+}
+
+.radio-button:selected > .radio > .dot {
+    -fx-background-color: WHITE;
+    -fx-alignment: CENTER;
+}
+
+/****************************************
+*                                       *
+* CHECK-BOX                            *
+*                                       *
+****************************************/
+.check-box > .box {
+    -fx-border-radius: 0.25em;
+    -fx-background-color: #FFF;
+    -fx-border-color: GREY;
+}
+
+.check-box:selected > .box {
+    -fx-background-color: #158CBA;
+}
+
+.check-box:selected > .box > .mark {
+    -fx-shape: "M9 21.035l-9-8.638 2.791-2.87 6.156 5.874 12.21-12.436 2.843 2.817z";
+    -fx-background-color: WHITE;
+}
+
+/****************************************
+*                                       *
+* DATEPICKER                            *
+*                                       *
+****************************************/
+
+.date-picker > .arrow-button {
+    -fx-border-radius: 5;
+    -fx-padding: 3 6 6 6;
+    -fx-border-style: solid;
+    -fx-border-width: 0 1px 4px 1px;
+    -fx-text-fill: WHITE;
+    -fx-border-color: #127ba3;
+    -fx-background-color: #158CBA;
+}
+
+.date-picker > .arrow-button:hover {
+    -fx-background-color: #117298;
+    -fx-border-color: #106a8c;
+}
+
+.date-picker > .arrow-button > .arrow {
+    -fx-background-color: WHITE;
+    -fx-padding: 0.5em 0.5em 0.5em 0.5em;
+}
+
+.date-picker-popup > * > .spinner > .button {
+    -fx-background-color: #f0f0f0;
+    -fx-border-color: #c7c6c6;
+    -fx-text-fill: BLACK;
+}
+
+.date-picker-popup > * > .spinner > .button:hover {
+    -fx-background-color: #dddddd;
+    -fx-border-color: #d7d6d6;
+}
+
+/************************************
+ *                                  *
+ * CALENDAR STUFF                   *
+ *                                  *
+ ************************************/
+.calendar-page > .container > .header > .navigation-button-bar > .container > .button {
+    -fx-padding: 3 7 3 7;
+    -fx-border-style: solid;
+    -fx-border-width: 0 1px 4px 1px;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: WHITE;
+    -fx-border-color: #127ba3;
+    -fx-background-color: #158CBA;
+}
+
+.calendar-page > .container > .header > .navigation-button-bar > .container > .button:hover {
+    -fx-background-color: #117298;
+    -fx-border-color: #106a8c;
+}
+
+.calendar-page > .container > .header > .navigation-button-bar > .container > .button:pressed {
+    -fx-background-color: #004a6c;
+    -fx-border-color: #004a6c;
+}
+
+.calendar-view .button-icon {
+    -fx-fill: WHITE;
+}
+
+.toggle-button-secondary {
+    -fx-border-color: #127ba3;
+    -fx-background-color: #158CBA;
+    -fx-text-fill: WHITE;
+    -fx-border-style: solid;
+    -fx-border-width: 0 1px 4px 1px;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+
+}
+
+.toggle-button-secondary:hover {
+    -fx-background-color: #117298;
+    -fx-border-color: #106a8c;
+}
+
+.toggle-button-secondary:pressed {
+    -fx-background-color: #004a6c;
+    -fx-border-color: #004a6c;
+}
+
+.toggle-button-secondary:selected {
+    -fx-background-color: #004a6c;
+    -fx-border-color: #004a6c;
+}
+
+.toggle-button {
+
+    -fx-border-style: solid;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-border-width: 1 1px 4px 1px;
+    -fx-background-color: #f0f0f0;
+    -fx-border-color: #c7c6c6;
+    -fx-text-fill: BLACK;
+
+}
+
+.toggle-button:hover {
+    -fx-background-color: #dddddd;
+    -fx-border-color: #d7d6d6;
+}
+
+.toggle-button:pressed {
+    -fx-background-color: #b7b6b6;
+    -fx-border-color: #b7b6b6
+}
+
+.toggle-button:selected {
+    -fx-background-color: #b7b6b6;
+    -fx-border-color: #b7b6b6
+}
+
+
+

@@ -2,7 +2,9 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.AnchorPane?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/8" fx:controller="odms.controller.gui.panel.ReceiverTabController">
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" minHeight="0.0" minWidth="0.0" prefHeight="620.0" prefWidth="894.0"
+            stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8"
+            fx:controller="odms.controller.gui.panel.ReceiverTabController">
     <children>
         <Label fx:id="notReceivingLabel" layoutX="123.0" layoutY="133.0" text="No Longer Waiting" />
         <Label fx:id="currentlyReceivingLabel" layoutX="601.0" layoutY="133.0" text="Waiting For" />
