@@ -58,7 +58,7 @@ public class BloodTestBridge extends Bifrost {
      * @param nhi nhi of the user to delete the blood test for
      */
     public void deleteBloodtest(String bloodTestId , String nhi){
-        String url = ip + USER + nhi +" /bloodTest/"+ bloodTestId;
+        String url = ip +"/" + USER + nhi +" /bloodTest/"+ bloodTestId;
         Request request = new Request.Builder().delete().url(url).build();
         client.newCall(request).enqueue(CommonMethods.loggedCallback("DELETE", url));
     }
@@ -70,7 +70,7 @@ public class BloodTestBridge extends Bifrost {
      * @return The blood test if it can be parsed; null otherwise
      */
     public BloodTest getBloodTest(String bloodTestId , String nhi) {
-        String url = ip + USER + nhi + " /bloodTest/" + bloodTestId;
+        String url = ip +"/" + USER + nhi + " /bloodTest/" + bloodTestId;
         Request request = new Request.Builder().get().url(url).build();
         BloodTest toReturn = null;
         try (Response response = client.newCall(request).execute()) {
