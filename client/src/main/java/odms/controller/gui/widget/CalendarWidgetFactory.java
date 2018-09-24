@@ -3,6 +3,7 @@ package odms.controller.gui.widget;
 import com.calendarfx.model.*;
 import com.calendarfx.view.AllDayView;
 import com.calendarfx.view.DateControl;
+import com.calendarfx.view.DayViewBase;
 import com.calendarfx.view.VirtualGrid;
 import odms.commons.model.Appointment;
 import odms.commons.model._enum.AppointmentCategory;
@@ -67,6 +68,9 @@ public class CalendarWidgetFactory {
         appointmentCategories.getCalendars().addAll(bloodTestCalendar, generalCheckUpCalendar, healthAdviceCalendar, prescriptionCalendar, otherCalendar);
         calendarView.getCalendarSources().add(appointmentCategories);
         calendarView.setRequestedTime(LocalTime.now());
+
+        calendarView.getDayPage().getDetailedDayView().getDayView().setEarlyLateHoursStrategy(DayViewBase.EarlyLateHoursStrategy.SHOW_COMPRESSED);
+        calendarView.getWeekPage().getDetailedWeekView().getWeekView().setEarlyLateHoursStrategy(DayViewBase.EarlyLateHoursStrategy.SHOW_COMPRESSED);
 
         hideButtons(calendarView);
 

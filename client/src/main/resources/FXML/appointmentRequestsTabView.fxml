@@ -5,7 +5,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <?import java.lang.*?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="735.0" prefWidth="1200.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8"
+<AnchorPane prefHeight="735.0" prefWidth="1200.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="odms.controller.gui.panel.view.ClinicianAppointmentRequestViewController">
    <children>
       <AnchorPane fx:id="tableViewPane" layoutY="60.0" prefHeight="675.0" prefWidth="803.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="397.0" AnchorPane.topAnchor="60.0">
@@ -21,8 +22,6 @@
                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                 </columnResizePolicy>
             </TableView>
-            <Label layoutX="36.0" layoutY="28.0" prefHeight="24.0" prefWidth="355.0" text="Appointments" AnchorPane.leftAnchor="36.0" AnchorPane.topAnchor="28.0">
-            </Label>
              <HBox alignment="CENTER" layoutX="162.0" layoutY="690.0" prefHeight="25.0" prefWidth="492.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="162.0" AnchorPane.rightAnchor="149.0">
                  <children>
                      <Button fx:id="previousBtn" mnemonicParsing="false" onAction="#goToPreviousPage" text="&lt;&lt;" />
@@ -35,32 +34,30 @@
                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="803.0" AnchorPane.rightAnchor="0.0"
                    AnchorPane.topAnchor="0.0">
          <children>
-             <Button fx:id="rejectAppointmentButton"  layoutX="5.0" layoutY="696.0"
-                     mnemonicParsing="false"
-                    onAction="#rejectAppointment" text="Reject Appointment" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="244.0"/>
-             <Button fx:id="acceptAppointmentButton"  layoutX="199.0" layoutY="696.0"
-                     mnemonicParsing="false"
-                    onAction="#acceptAppointment" text="Accept Appointment" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="47.0"/>
-             <Label fx:id="appointmentDetailsNhiLabel" layoutX="7.0" layoutY="109.0" text="NHI: " AnchorPane.rightAnchor="358.0"
-                    AnchorPane.topAnchor="109.0"/>
-             <Label layoutX="7.0" layoutY="147.0" styleClass="label-title" text="Status:" AnchorPane.rightAnchor="347.0"
+             <Button fx:id="rejectAppointmentButton" layoutX="5.0" layoutY="696.0" mnemonicParsing="false"
+                     onAction="#rejectAppointment" text="Reject Appointment" AnchorPane.bottomAnchor="14.0"
+                     AnchorPane.rightAnchor="244.0"/>
+             <Button fx:id="acceptAppointmentButton" layoutX="199.0" layoutY="696.0" mnemonicParsing="false"
+                     onAction="#acceptAppointment" text="Accept Appointment" AnchorPane.bottomAnchor="14.0"
+                     AnchorPane.rightAnchor="47.0"/>
+             <Label fx:id="appointmentDetailsNhiLabel" layoutX="-0.52734375" layoutY="109.0" styleClass="label-title"
+                    text="NHI: " AnchorPane.rightAnchor="363.52734375" AnchorPane.topAnchor="109.0"/>
+             <Label layoutX="2.0" layoutY="147.0" styleClass="label-title" text="Status:" AnchorPane.rightAnchor="346.0"
                     AnchorPane.topAnchor="147.0"/>
-             <Label layoutX="8.0" layoutY="193.0" styleClass="label-title" text="Date:" AnchorPane.rightAnchor="353.0"
-                    AnchorPane.topAnchor="193.0"/>
-             <Label layoutX="8.0" layoutY="245.0" styleClass="label-title" text="Time:" AnchorPane.rightAnchor="352.0"
-                    AnchorPane.topAnchor="245.0"/>
-             <Label layoutX="8.0" layoutY="334.0" styleClass="label-title" text="Description:"
-                    AnchorPane.rightAnchor="310.0"
-                    AnchorPane.topAnchor="334.0"/>
-             <Label layoutX="8.0" layoutY="290.0" styleClass="label-title" text="Category:"
-                    AnchorPane.rightAnchor="325.0"
-                    AnchorPane.topAnchor="290.0"/>
+             <Label layoutX="2.0" layoutY="194.0" styleClass="label-title" text="Date:" AnchorPane.rightAnchor="358.0"
+                    AnchorPane.topAnchor="194.0"/>
+             <Label layoutX="2.0" layoutY="246.0" styleClass="label-title" text="Time:" AnchorPane.rightAnchor="357.0"
+                    AnchorPane.topAnchor="246.0"/>
+             <Label layoutX="2.0" layoutY="334.0" styleClass="label-title" text="Description:"
+                    AnchorPane.rightAnchor="312.0" AnchorPane.topAnchor="334.0"/>
+             <Label layoutX="2.0" layoutY="291.0" styleClass="label-title" text="Category:"
+                    AnchorPane.rightAnchor="328.0" AnchorPane.topAnchor="291.0"/>
              <DatePicker fx:id="appointmentRequestDate" layoutX="130.0" layoutY="188.0" prefHeight="25.0"
                          prefWidth="218.0" AnchorPane.rightAnchor="49.0" AnchorPane.topAnchor="188.0"/>
              <Label fx:id="appointmentRequestUserNhi" layoutX="130.0" layoutY="109.0" prefHeight="15.0"
                     prefWidth="218.0" AnchorPane.rightAnchor="49.0" AnchorPane.topAnchor="109.0"/>
-             <Label fx:id="appointmentRequestStatus" layoutX="130.0" layoutY="147.0" prefHeight="15.0"
-                    prefWidth="218.0" AnchorPane.rightAnchor="49.0" AnchorPane.topAnchor="147.0"/>
+             <Label fx:id="appointmentRequestStatus" layoutX="130.0" layoutY="147.0" prefHeight="15.0" prefWidth="218.0"
+                    AnchorPane.rightAnchor="49.0" AnchorPane.topAnchor="147.0"/>
 
              <ComboBox fx:id="appointmentRequestCategory" layoutX="130.0" layoutY="285.0" prefHeight="25.0"
                        prefWidth="218.0" AnchorPane.rightAnchor="49.0" AnchorPane.topAnchor="285.0">
@@ -78,26 +75,32 @@
                  </value>
              </ComboBox>
              <TextArea fx:id="appointmentRequestDescription" layoutX="150.0" layoutY="328.0" prefHeight="313.0" prefWidth="218.0" wrapText="true" AnchorPane.bottomAnchor="108.0" AnchorPane.rightAnchor="49.0" AnchorPane.topAnchor="328.0" />
-             <Label fx:id="appointmentDetailsTitleLabel" layoutX="3.0" layoutY="75.0" text="Appointment Details" AnchorPane.rightAnchor="242.0">
+             <Label fx:id="appointmentDetailsTitleLabel" layoutX="2.0" layoutY="72.0" styleClass="label-main-title"
+                    text="Appointment Details" AnchorPane.rightAnchor="138.7607421875">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
             </Label>
              <ComboBox fx:id="appointmentRequestTime" layoutX="130.0" layoutY="240.0" prefHeight="25.0"
                        prefWidth="218.0" AnchorPane.rightAnchor="49.0"/>
-            <ToggleButton fx:id="calendarViewToggle" layoutX="60.0" layoutY="31.0" mnemonicParsing="false" onAction="#tableCalendarViewToggle" prefHeight="25.0" prefWidth="119.0" text="Calendar View" AnchorPane.rightAnchor="218.0" AnchorPane.topAnchor="31.0">
+             <ToggleButton fx:id="calendarViewToggle" layoutX="139.0" layoutY="31.0" mnemonicParsing="false"
+                           onAction="#tableCalendarViewToggle" prefHeight="25.0" prefWidth="119.0"
+                           styleClass="toggle-button-secondary" text="Calendar View" AnchorPane.rightAnchor="139.0"
+                           AnchorPane.topAnchor="31.0">
                <toggleGroup>
                   <ToggleGroup fx:id="calendarTableToggleGroup" />
                </toggleGroup>
             </ToggleButton>
-            <ToggleButton fx:id="tableViewToggle" layoutX="211.0" layoutY="31.0" mnemonicParsing="false" onAction="#tableCalendarViewToggle" text="Table View" toggleGroup="$calendarTableToggleGroup" AnchorPane.rightAnchor="96.0" AnchorPane.topAnchor="31.0" />
+             <ToggleButton fx:id="tableViewToggle" layoutX="258.0" layoutY="31.0" mnemonicParsing="false"
+                           onAction="#tableCalendarViewToggle" styleClass="toggle-button-secondary" text="Table View"
+                           toggleGroup="$calendarTableToggleGroup" AnchorPane.rightAnchor="47.0"
+                           AnchorPane.topAnchor="31.0"/>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="calendarViewPane" layoutY="60.0" prefHeight="675.0" prefWidth="803.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="397.0" AnchorPane.topAnchor="60.0" />
-      <Label prefHeight="24.0" prefWidth="355.0" text="Appointments" AnchorPane.leftAnchor="36.0" AnchorPane.topAnchor="28.0">
-         <font>
-            <Font name="System Bold" size="19.0" />
-         </font>
-      </Label>
+       <AnchorPane fx:id="calendarViewPane" layoutY="60.0" prefHeight="675.0" prefWidth="792.0" visible="false"
+                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="408.0"
+                   AnchorPane.topAnchor="60.0"/>
+       <Label prefHeight="24.0" prefWidth="355.0" styleClass="label-main-title" text="Appointments"
+              AnchorPane.leftAnchor="36.0" AnchorPane.topAnchor="28.0"/>
    </children>
 </AnchorPane>
