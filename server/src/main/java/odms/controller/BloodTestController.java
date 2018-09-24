@@ -105,12 +105,12 @@ public class BloodTestController extends BaseController {
      */
     @RequestMapping(method = RequestMethod.POST, value = "/user/{nhi}/bloodTest")
     public ResponseEntity postBloodTest(@PathVariable(value ="nhi") String nhi,
-                                   @RequestBody BloodTest bloodTest) {
+                                   @RequestBody BloodTest bloodTest) throws IOException {
         try (Connection connection = driver.getConnection()) {
             bloodTestHandler.postBloodTest(connection, bloodTest, nhi);
 
-            // TODO: get blood test id - sql to get last db entry with all the values of the blood test
-            //socketHandler.broadcast(EventTypes., , );
+            int id = bloodTestHandler.getNewBloodTestId(connection);
+            socketHandler.broadcast(EventTypes.BLOOD_TEST_UPDATE, Integer.toString(id), Integer.toString(id));
             return new ResponseEntity(HttpStatus.CREATED);
         } catch (SQLException e) {
             Log.severe("Could not post a blood test", e);

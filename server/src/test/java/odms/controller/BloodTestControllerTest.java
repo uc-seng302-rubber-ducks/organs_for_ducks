@@ -89,13 +89,13 @@ public class BloodTestControllerTest {
     }
 
     @Test
-    public void testPostBloodTestReturnsCreatedResponse() {
+    public void testPostBloodTestReturnsCreatedResponse() throws IOException {
         ResponseEntity response = controller.postBloodTest("ABC1234", testBloodTest);
         Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
     @Test(expected = ServerDBException.class)
-    public void testPostBloodTestThrowsExceptionIfNoConnection() throws SQLException {
+    public void testPostBloodTestThrowsExceptionIfNoConnection() throws SQLException, IOException {
         when(driver.getConnection()).thenThrow(new SQLException());
         controller.postBloodTest("ABC1234", testBloodTest);
     }
