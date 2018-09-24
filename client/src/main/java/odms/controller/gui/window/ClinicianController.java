@@ -34,10 +34,8 @@ import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model._abstract.UserLauncher;
 import odms.commons.model._enum.AppointmentStatus;
-import odms.commons.model._enum.AppointmentStatus;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.Organs;
-import odms.commons.model._enum.UserType;
 import odms.commons.model._enum.UserType;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.model.event.UpdateNotificationEvent;
@@ -395,7 +393,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
 
         searchTableView.setItems(sListUsers);
         searchTableView.setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2 && !searchTableView.getSelectionModel().getSelectedItems().isEmpty()) {
                 UserOverview user = searchTableView.getSelectionModel().getSelectedItem();
                 launchUser(user.getNhi());
             }
