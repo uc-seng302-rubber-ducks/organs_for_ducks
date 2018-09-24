@@ -21,13 +21,11 @@ public class RemoveDeathDetailsAlertController {
     private AppController controller;
     private Stage stage;
     private User user;
-    private UpdateDeathDetailsController deathDetails;
 
-    public void init(AppController controller, Stage stage, User user, UpdateDeathDetailsController deathDetails) {
+    public void init(AppController controller, Stage stage, User user) {
         this.controller = controller;
         this.stage = stage;
         this.user = user;
-        this.deathDetails = deathDetails;
 
         String warningTitle = "Do you really want to remove death details for user " + user.getNhi() + "?";
         String warningDetails = "Removing death details will mean this user is treated as alive.\nFor example, " +
@@ -57,11 +55,8 @@ public class RemoveDeathDetailsAlertController {
         user.setDeathRegion("");
         user.setDeathCountry("");
         user.getRedoStack().clear();
-
         stage.close();
         userController.showUser(user);
-        deathDetails.getStage().close();
-
     }
 
 

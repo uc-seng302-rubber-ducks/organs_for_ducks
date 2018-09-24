@@ -187,6 +187,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
         stage.setTitle("Administrator");
         availableOrgansViewController.init(this);
         ServerEventNotifier.getInstance().addPropertyChangeListener(this);
+        stage.setMaximized(true);
 
         userBridge.getUsers(userStartIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), genderComboBox.getValue(), appController.getToken());
 

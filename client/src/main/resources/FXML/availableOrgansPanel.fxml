@@ -2,7 +2,9 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" minHeight="-Infinity" minWidth="-Infinity" prefHeight="690.0" prefWidth="1168.0" xmlns="http://javafx.com/javafx/8" fx:controller="odms.controller.gui.panel.view.AvailableOrgansViewController">
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" minHeight="-Infinity" minWidth="-Infinity" prefHeight="690.0"
+            prefWidth="1168.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8"
+            fx:controller="odms.controller.gui.panel.view.AvailableOrgansViewController">
     <children>
       <AnchorPane prefHeight="690.0" prefWidth="787.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="381.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -24,8 +26,10 @@
          </children>
       </AnchorPane>
         <TextField fx:id="regionFilterTextField" layoutX="79.0" layoutY="54.0" onKeyPressed="#search" prefHeight="25.0" prefWidth="300.0" AnchorPane.leftAnchor="79.0" AnchorPane.topAnchor="54.0" />
-        <Label layoutX="8.0" layoutY="59.0" prefHeight="15.0" prefWidth="71.0" text="Region:" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="59.0" />
-        <Label layoutX="8.0" layoutY="24.0" prefHeight="15.0" prefWidth="71.0" text="Organ:" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="24.0" />
+        <Label layoutX="8.0" layoutY="59.0" prefHeight="15.0" prefWidth="71.0" styleClass="label-title" text="Region:"
+               AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="59.0"/>
+        <Label layoutX="8.0" layoutY="24.0" prefHeight="15.0" prefWidth="71.0" styleClass="label-title" text="Organ:"
+               AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="24.0"/>
         <ComboBox fx:id="availableOrganFilterComboBox" layoutX="79.0" layoutY="19.0" prefHeight="25.0" prefWidth="300.0" AnchorPane.leftAnchor="79.0" AnchorPane.topAnchor="19.0" />
       <AnchorPane layoutX="523.0" prefHeight="684.0" prefWidth="345.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="-5.0" AnchorPane.topAnchor="0.0">
          <children>

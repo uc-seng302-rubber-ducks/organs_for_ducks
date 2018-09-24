@@ -98,10 +98,10 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
     @Test
     public void testSignUpNoInfo() {
         clickOnButton(this, "#confirmButton");
-        verifyThat("#invalidStaffIDLabel", Node::isVisible);
-        verifyThat("#invalidStaffIDLabel", LabeledMatchers.hasText("Staff ID cannot be empty"));
-        verifyThat("#emptyPasswordLabel", Node::isVisible);
-        verifyThat("#emptyFNameLabel", Node::isVisible);
+        verifyThat("#staffIdErrorLabel", Node::isVisible);
+        verifyThat("#staffIdErrorLabel", LabeledMatchers.hasText("Staff ID cannot be empty"));
+        verifyThat("#passwordErrorLabel", Node::isVisible);
+        verifyThat("#firstNameErrorLabel", Node::isVisible);
     }
 
     @Test
@@ -126,8 +126,8 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         setTextField(this, "#firstNameTextField", "Addie");
         setTextField(this, "#regionTextField", "Wellington");
         clickOnButton(this,"#confirmButton");
-        verifyThat("#invalidStaffIDLabel", Node::isVisible);
-        verifyThat("#invalidStaffIDLabel", LabeledMatchers.hasText("Staff ID already in use"));
+        verifyThat("#staffIdErrorLabel", Node::isVisible);
+        verifyThat("#staffIdErrorLabel", LabeledMatchers.hasText("Staff ID already in use"));
     }
 
 
@@ -138,7 +138,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         lookup("#firstNameTextField").queryAs(TextField.class).setText("Affie");
         lookup("#regionTextField").queryAs(TextField.class).setText("Christchurch");
         clickOnButton(this,"#confirmButton");
-        verifyThat("#emptyPasswordLabel", Node::isVisible);
+        verifyThat("#passwordErrorLabel", Node::isVisible);
     }
 
 
@@ -150,6 +150,6 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         lookup("#firstNameTextField").queryAs(TextField.class).setText("Affie");
         lookup("#regionTextField").queryAs(TextField.class).setText("Christchurch");
         clickOnButton(this,"#confirmButton");
-        verifyThat("#incorrectPasswordLabel", Node::isVisible);
+        verifyThat("#confirmPasswordErrorLabel", Node::isVisible);
     }
 }
