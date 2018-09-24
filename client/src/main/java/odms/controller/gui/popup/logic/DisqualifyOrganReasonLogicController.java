@@ -31,6 +31,7 @@ public class DisqualifyOrganReasonLogicController {
      */
     public void confirm(Organs disqualifiedOrgan, LocalDate eligibleDate, String description, String  staffId) {
         Boolean updateMode = false;
+        user.saveStateForUndo();
 
         OrgansWithDisqualification organsWithDisqualification = new OrgansWithDisqualification(disqualifiedOrgan, description, LocalDate.now(), staffId);
         organsWithDisqualification.setEligibleDate(eligibleDate);
@@ -39,12 +40,15 @@ public class DisqualifyOrganReasonLogicController {
             if (disqualifications.get(i).getOrganType().equals(disqualifiedOrgan)) {
                 disqualifications.remove(i);
                 disqualifications.add(i, organsWithDisqualification);
+                user.getUndoStack().pop();
+                user.getUndoStack().pop();
                 updateMode = true; //we know that its update if disqualifiedOrgan already exist in the disqualified Organ table.
                 break;
             }
         }
 
         if(!updateMode) {
+            user.getUndoStack().pop();
             disqualifications.add(organsWithDisqualification);
             user.getDonorDetails().getOrgans().remove(organsWithDisqualification.getOrganType());
 

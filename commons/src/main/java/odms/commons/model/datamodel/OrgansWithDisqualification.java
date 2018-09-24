@@ -87,6 +87,7 @@ public class OrgansWithDisqualification {
                 ", disqualificationDate=" + disqualificationDate +
                 ", eligibleDate=" + eligibleDate +
                 ", staffId='" + staffId + '\'' +
+                ", isDisqualified=" + isCurrentlyDisqualified +
                 '}';
     }
 

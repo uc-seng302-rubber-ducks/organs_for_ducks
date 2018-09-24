@@ -105,7 +105,7 @@ public class DonationTabPageController {
     private AppController application;
     private UserController parent;
     private ObservableList<OrgansWithExpiry> organsWithExpiries = FXCollections.observableList(new ArrayList<>());
-    private ObservableList<OrgansWithDisqualification> organsWithDisqualifications = FXCollections.observableList(new ArrayList<>());
+    private ObservableList<OrgansWithDisqualification> disqualifiedOrgansView = FXCollections.observableList(new ArrayList<>());
     private ObservableList<OrgansWithDisqualification> observableDisqualifiedOrgans;
     private boolean listenFlag = true;
 
@@ -238,10 +238,10 @@ public class DonationTabPageController {
     private void initDisqualifiedOrgans() {
         for (OrgansWithDisqualification organ : currentUser.getDonorDetails().getDisqualifiedOrgans()) {
             if (organ.isCurrentlyDisqualified()) {
-                organsWithDisqualifications.add(organ);
+                disqualifiedOrgansView.add(organ);
             }
         }
-        userDisqualifiedOrgansTable.setItems(organsWithDisqualifications);
+        userDisqualifiedOrgansTable.setItems(disqualifiedOrgansView);
 
         observableDisqualifiedOrgans = FXCollections.observableArrayList(currentUser.getDonorDetails().getDisqualifiedOrgans());
         observableDisqualifiedOrgans.addListener((ListChangeListener<? super OrgansWithDisqualification>) a -> {
@@ -252,13 +252,13 @@ public class DonationTabPageController {
                 currentUser.getDonorDetails().getDisqualifiedOrgans().addAll(observableDisqualifiedOrgans);
             }
 
-            organsWithDisqualifications.clear();
+            disqualifiedOrgansView.clear();
             for (OrgansWithDisqualification organ : observableDisqualifiedOrgans) {
                 if (organ.isCurrentlyDisqualified()) {
-                    organsWithDisqualifications.add(organ);
+                    disqualifiedOrgansView.add(organ);
                 }
             }
-            userDisqualifiedOrgansTable.setItems(organsWithDisqualifications);
+            userDisqualifiedOrgansTable.setItems(disqualifiedOrgansView);
 
         });
     }
@@ -624,6 +624,7 @@ public class DonationTabPageController {
             refreshCurrentlyDonating();
             updateDisqualifiedOrgan.setDisable(true);
             removeDisqualifiedOrgans.setDisable(true);
+            parent.updateUndoRedoButtons();
             Log.info("Successfully launched the disqualify Organ Reason pop-up window for user: " + currentUser.getNhi());
 
         } catch (IOException e) {
@@ -647,6 +648,7 @@ public class DonationTabPageController {
             refreshCurrentlyDonating();
             updateDisqualifiedOrgan.setDisable(true);
             removeDisqualifiedOrgans.setDisable(true);
+            parent.updateUndoRedoButtons();
             Log.info("Successfully launched the remove disqualified pop-up window for user: " + currentUser.getNhi());
         } catch (IOException e) {
             Log.severe("Failed to load the remove disqualified pop-up window for user: " + currentUser.getNhi(), e);
