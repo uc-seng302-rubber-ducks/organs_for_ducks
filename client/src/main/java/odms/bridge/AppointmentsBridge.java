@@ -3,6 +3,7 @@ package odms.bridge;
 import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 import odms.commons.model.Appointment;
 import odms.commons.model._enum.AppointmentStatus;
 import odms.commons.model._enum.UserType;
@@ -12,6 +13,7 @@ import odms.controller.gui.popup.utils.AlertWindowFactory;
 import okhttp3.*;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 public class AppointmentsBridge extends Bifrost {
     private static final String APPOINTMENTS = "/appointments";
@@ -136,6 +138,45 @@ public class AppointmentsBridge extends Bifrost {
                     observableAppointments.clear();
                     observableAppointments.addAll(new JsonHandler().decodeAppointments(bodyString));
                 });
+            }
+        });
+    }
+
+    /**
+     * gets the times of appointments for a given clinician between two datetimes
+     *
+     * @param staffId             id of clinician to select by
+     * @param startDate           first date for appointments to be selected
+     * @param endDate             last date for appointments to be selected
+     * @param token               auth token to use
+     * @param observableDateTimes observable list to be updated on response
+     */
+    public void getClinicianAppointmentsTimes(String staffId, String startDate, String endDate, String token, ObservableSet<LocalDateTime> observableDateTimes){
+        String url = String.format("%s/clinicians/%s/appointmentsTimes?startDateTime=%s&endDateTime=%s", ip,staffId,startDate,endDate);
+        Request request = new Request.Builder().addHeader(tokenHeader, token).url(url).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.warning("Failed to get appointments. On Failure Triggered", e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response == null) {
+                    Log.warning("A null response was returned to the user");
+                    return;
+                }
+                ResponseBody body = response.body();
+                if (body == null) {
+                    Log.warning("A null response body was returned to the user");
+                    return;
+                }
+                String bodyString = response.body().string();
+                Platform.runLater(() -> {
+                    observableDateTimes.clear();
+                    observableDateTimes.addAll(new JsonHandler().decodeDateTimes(bodyString));
+                });
+
             }
         });
     }

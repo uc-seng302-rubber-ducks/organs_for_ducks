@@ -17,11 +17,11 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -34,6 +34,7 @@ import static org.mockito.Mockito.*;
 public class ClinicianAppointmentControllerTest {
 
     private ObservableList<Appointment> appointments;
+    private ObservableList<LocalTime> availableTimes;
     private AppController controller = AppControllerMocker.getFullMock();
     private OkHttpClient client = mock(OkHttpClient.class);
     private Call call = mock(Call.class);
@@ -50,9 +51,12 @@ public class ClinicianAppointmentControllerTest {
         when(mockSession.getProperty(eq("server.token.header"))).thenReturn("x-auth-token");
 
         appointments = FXCollections.observableList(new ArrayList<>());
+        availableTimes = FXCollections.observableList(new ArrayList<>());
         Clinician testClinician = new Clinician("default", "0", "password");
-        clinicianAppointmentRequestLogicController = spy(new ClinicianAppointmentRequestLogicController(appointments, controller, testClinician));
-        appointmentsBridge = spy(new AppointmentsBridge(client));
+        clinicianAppointmentRequestLogicController = spy(new ClinicianAppointmentRequestLogicController(appointments, controller, testClinician, availableTimes));
+
+
+        appointmentsBridge = mock(AppointmentsBridge.class);
 
         when(controller.getToken()).thenReturn("token");
         doNothing().when(appointmentsBridge).putAppointment(any(Appointment.class), anyString());
@@ -116,7 +120,6 @@ public class ClinicianAppointmentControllerTest {
         verify(controller, times(1)).getAppointmentsBridge();
     }
 
-    @Ignore // todo fix this - something is probably not mocked correclty, the ip is null
     @Test
     public void testCancelAppointmentSuccessfully() {
         LocalDateTime testDate = LocalDateTime.now().plusDays(5);
@@ -127,7 +130,6 @@ public class ClinicianAppointmentControllerTest {
         appointments.add(testAppointment);
         doNothing().when(clinicianAppointmentRequestLogicController).alertClinician(anyString());
         doReturn(Optional.of(ButtonType.OK)).when(clinicianAppointmentRequestLogicController).confirmOption(anyString());
-        doNothing().when(appointmentsBridge).patchAppointmentStatus(1, AppointmentStatus.ACCEPTED.getDbValue());
         clinicianAppointmentRequestLogicController.cancelAppointment(testAppointment);
 
         int testStatus = AppointmentStatus.CANCELLED_BY_CLINICIAN.getDbValue();

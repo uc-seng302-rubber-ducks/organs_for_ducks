@@ -6,6 +6,9 @@ import javafx.scene.layout.Region;
 
 import java.util.Optional;
 
+/**
+ * factory class to create and shows a variety of alert windows
+ */
 public class AlertWindowFactory {
 
     private AlertWindowFactory() {

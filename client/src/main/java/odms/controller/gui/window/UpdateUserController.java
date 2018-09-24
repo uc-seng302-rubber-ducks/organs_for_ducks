@@ -902,9 +902,9 @@ public class UpdateUserController {
         if (valid) { // only updates if everything is valid
             appController.update(currentUser);
         }
-
-
-
+        if (!currentUser.getNhi().equals(nhi) && AppController.getInstance().getUserBridge().getExists(nhi)) {
+            valid = false;
+        }
         return valid;
     }
 
