@@ -18,6 +18,7 @@ import odms.controller.gui.popup.utils.AlertWindowFactory;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class BloodTestViewController {
 
@@ -298,15 +299,22 @@ public class BloodTestViewController {
                 bloodTest.setHaemoglobinLevel(AttributeValidation.validateDouble(heamoglobin.getText()));
                 bloodTest.setTestDate(bloodTestDatePicker.getValue());
                 logicController.updateBloodTest(bloodTest);
-                AlertWindowFactory.generateConfirmation("Blood Test on: "+ bloodTest.getTestDate() +" updated");
-                System.out.println(bloodTest.getBloodTestId());
+                AlertWindowFactory.generateInfoWindow("Blood Test on: "+ bloodTest.getTestDate() +" updated");
             }
     }
 
     @FXML
     private void deleteBloodTest() {
         if (bloodTestTableView.getSelectionModel().getSelectedItem() != null) {
-            logicController.deleteBloodTest(bloodTestTableView.getSelectionModel().getSelectedItem());
+            Optional<ButtonType> result = AlertWindowFactory.generateConfirmation("Are you sure you want to delete this blood test?");
+
+            if (!result.isPresent()) {
+            return;
+        }
+
+            if (result.get() == ButtonType.OK) {
+                logicController.deleteBloodTest(bloodTestTableView.getSelectionModel().getSelectedItem());
+            }
         } else {
             AlertWindowFactory.generateInfoWindow("You must select an blood test to delete");
         }
