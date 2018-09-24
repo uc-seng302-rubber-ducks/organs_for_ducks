@@ -3,8 +3,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="467.0"
-            prefWidth="479.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+            minWidth="-Infinity" prefHeight="467.0" prefWidth="479.0" stylesheets="@../gui.css"
+            xmlns="http://javafx.com/javafx/8"
             fx:controller="odms.controller.gui.popup.DeregisterOrganReasonController">
     <children>
         <Label fx:id="receiverName" layoutX="194.0" layoutY="14.0" text="receiverName"/>
@@ -31,7 +32,7 @@
                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
             </padding>
             <children>
-                <Label text="Organ Name:"/>
+                <Label styleClass="label-title" text="Organ Name:"/>
                 <Label fx:id="organName" text="organName" GridPane.columnIndex="1"/>
                 <RadioButton fx:id="diseaseCuredRadioButton" mnemonicParsing="false"
                              text="the treatment has cured the disease, no longer requiring an organ transplant"
@@ -41,13 +42,12 @@
                     </toggleGroup>
                 </RadioButton>
                 <RadioButton fx:id="registrationErrorRadioButton" mnemonicParsing="false"
-                             text="the initial registering of the organ was an error"
-                             toggleGroup="$deregisterReason" wrapText="true" GridPane.columnIndex="1"
-                             GridPane.rowIndex="2"/>
+                             text="the initial registering of the organ was an error" toggleGroup="$deregisterReason"
+                             wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
                 <RadioButton fx:id="receiverDiedRadioButton" mnemonicParsing="false" text="the receiver has died"
                              toggleGroup="$deregisterReason" wrapText="true" GridPane.columnIndex="1"
                              GridPane.rowIndex="5"/>
-                <Label text="Reason:" GridPane.rowIndex="1"/>
+                <Label styleClass="label-title" text="Reason:" GridPane.rowIndex="1"/>
                 <RadioButton fx:id="transplantReceivedRadioButton" mnemonicParsing="false"
                              text="the receiver has received an organ transplant" toggleGroup="$deregisterReason"
                              wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
@@ -65,7 +65,7 @@
                                visible="false" GridPane.columnIndex="1"/>
                     </children>
                 </GridPane>
-                <Label text="Date of Death: " GridPane.rowIndex="6"/>
+                <Label styleClass="label-title" text="Date of Death: " GridPane.rowIndex="6"/>
                 <ComboBox fx:id="diseaseNameComboBox" disable="true" prefWidth="150.0" promptText="Select Disease"
                           GridPane.columnIndex="1" GridPane.rowIndex="4"/>
             </children>
