@@ -363,7 +363,6 @@ public class BloodTestViewController {
         for (BloodTest bloodTest : graphBloodTests) {
             addAppropriateProperty(bloodTest, series, property);
         }
-
         bloodTestGraph.getData().add(series);
     }
 
@@ -380,13 +379,26 @@ public class BloodTestViewController {
 
         if (property == BloodTestProperties.RED_BLOOD_CELL) {
             value = bloodTest.getRedBloodCellCount();
-
         } else if (property == BloodTestProperties.WHITE_BLOOD_CELL) {
             value = bloodTest.getWhiteBloodCellCount();
-        } // TODO: add the rest of the properties
+        } else if (property == BloodTestProperties.GLUCOSE) {
+            value = bloodTest.getGlucoseLevels();
+        } else if (property == BloodTestProperties.HAEMATOCRIT) {
+            value = bloodTest.getHaematocrit();
+        } else if (property == BloodTestProperties.HAEMOGLOBIN) {
+            value = bloodTest.getHaemoglobinLevel();
+        } else if (property == BloodTestProperties.MEAN_CELL_HAEMATOCRIT) {
+            value = bloodTest.getMeanCellHaematocrit();
+        } else if (property == BloodTestProperties.MEAN_CELL_VOLUME) {
+            value = bloodTest.getMeanCellVolume();
+        } else if (property == BloodTestProperties.PLATELETS) {
+            value = bloodTest.getPlatelets();
+        }
 
-        XYChart.Data<String, Double> data = new XYChart.Data<>(date, value);
-        series.getData().add(data);
+        if (value != 0.0) {
+            XYChart.Data<String, Double> data = new XYChart.Data<>(date, value);
+            series.getData().add(data);
+        }
     }
 
     /**
