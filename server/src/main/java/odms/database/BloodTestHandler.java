@@ -117,6 +117,7 @@ public class BloodTestHandler {
 
                 String updateStatement = "UPDATE BloodTestDetails SET ";
                 updateStatement += String.join(", ", changes);
+                updateStatement += "WHERE bloodTestId = ?";
 
                 try (PreparedStatement preparedStatement = connection.prepareStatement(updateStatement)) {
 
@@ -129,7 +130,11 @@ public class BloodTestHandler {
 
                     if (date != null) { // only adds the date if it exists
                         preparedStatement.setDate(i + 1, Date.valueOf(bloodTest.getTestDate()));
+                        preparedStatement.setInt(i + 2, id);
+                    } else {
+                        preparedStatement.setInt(i + 1, id);
                     }
+
 
                     preparedStatement.executeUpdate();
 

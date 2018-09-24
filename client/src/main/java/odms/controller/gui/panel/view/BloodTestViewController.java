@@ -298,6 +298,8 @@ public class BloodTestViewController {
                 bloodTest.setHaemoglobinLevel(AttributeValidation.validateDouble(heamoglobin.getText()));
                 bloodTest.setTestDate(bloodTestDatePicker.getValue());
                 logicController.updateBloodTest(bloodTest);
+                AlertWindowFactory.generateConfirmation("Blood Test on: "+ bloodTest.getTestDate() +" updated");
+                System.out.println(bloodTest.getBloodTestId());
             }
     }
 
