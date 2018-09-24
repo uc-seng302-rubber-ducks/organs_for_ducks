@@ -77,8 +77,8 @@ public class StatusBarGUITest extends ApplicationTest {
         FxToolkit.cleanupStages();
     }
 
-    @Ignore
-    @Test
+    //TODO fix me pls 24/09/2018
+    @Test @Ignore
     public void checkStatusBarUpdates() {
         //Told to ignore by Alanna, status bars have changed 20/9/18 - JB
         verifyThat("#statusBar", LabeledMatchers.hasText("ABC1234 Changed first name to Kate"));
