@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -88,37 +89,37 @@ public class BloodTestControllerTest {
     }
 
     @Test
-    public void testPostBloodTestReturnsCreatedResponse() {
+    public void testPostBloodTestReturnsCreatedResponse() throws IOException {
         ResponseEntity response = controller.postBloodTest("ABC1234", testBloodTest);
         Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
     @Test(expected = ServerDBException.class)
-    public void testPostBloodTestThrowsExceptionIfNoConnection() throws SQLException {
+    public void testPostBloodTestThrowsExceptionIfNoConnection() throws SQLException, IOException {
         when(driver.getConnection()).thenThrow(new SQLException());
         controller.postBloodTest("ABC1234", testBloodTest);
     }
 
     @Test
-    public void testDeleteBloodTestReturnsOkResponse() {
+    public void testDeleteBloodTestReturnsOkResponse() throws IOException {
         ResponseEntity response = controller.deleteBloodTest("ABC1234", 1);
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
     @Test(expected = ServerDBException.class)
-    public void testDeleteBloodTestThrowsExceptionIfNoConnection() throws SQLException {
+    public void testDeleteBloodTestThrowsExceptionIfNoConnection() throws SQLException, IOException {
         when(driver.getConnection()).thenThrow(new SQLException());
         controller.deleteBloodTest("ABC1234", 1);
     }
 
     @Test
-    public void testPatchBloodTestReturnsOkResponse() {
+    public void testPatchBloodTestReturnsOkResponse() throws IOException {
         ResponseEntity response = controller.patchBloodTest("ABC1234", 1, testBloodTest);
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
     @Test(expected = ServerDBException.class)
-    public void testPatchBloodTestThrowsExceptionIfNoConnection() throws SQLException {
+    public void testPatchBloodTestThrowsExceptionIfNoConnection() throws SQLException, IOException {
         when(driver.getConnection()).thenThrow(new SQLException());
         controller.patchBloodTest("ABC1234", 1, testBloodTest);
     }

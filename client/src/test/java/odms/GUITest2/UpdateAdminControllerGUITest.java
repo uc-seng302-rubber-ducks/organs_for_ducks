@@ -137,7 +137,7 @@ public class UpdateAdminControllerGUITest extends ApplicationTest {
         setTextField(this,"#passwordTextField","hey");
         setTextField(this,"#cPasswordTextField","heyy");
         clickOnButton(this,"#confirmButton");
-        verifyThat("#errorLabel", LabeledMatchers.hasText("Your passwords don't match"));
+        verifyThat("#passwordErrorLabel", LabeledMatchers.hasText("Your passwords don't match"));
     }
 
     @Test

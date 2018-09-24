@@ -7,6 +7,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import odms.bridge.BloodTestBridge;
 import odms.commons.model.User;
 import odms.commons.utils.AttributeValidation;
 import odms.controller.gui.popup.logic.NewBloodTestLogicController;
@@ -53,14 +54,16 @@ public class NewBloodTestViewController {
     private Label haematocritError;
     @FXML
     private Label meanCellHaematocritError;
+    private BloodTestBridge bloodTestBridge;
 
 
 
     private NewBloodTestLogicController logicController;
     private Boolean valid = true;
 
-    public void init(User user, Stage stage){
-        this.logicController = new NewBloodTestLogicController(user,stage);
+    public void init(User user, Stage stage, BloodTestBridge bloodTestBridge){
+        this.bloodTestBridge = bloodTestBridge;
+        this.logicController = new NewBloodTestLogicController(user,stage, bloodTestBridge);
         resetErrorLabels();
 
 

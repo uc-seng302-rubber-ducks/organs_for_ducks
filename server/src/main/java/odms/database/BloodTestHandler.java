@@ -13,11 +13,12 @@ public class BloodTestHandler {
     private static final String CREATE_BLOOD_TEST_STMT = "INSERT INTO BloodTestDetails (fkUserNhi, redBloodCellCount, " +
             "whiteBloodCellCount, haemoglobinLevel, platelets, glucoseLevels, meanCellVolume, haematocrit, " +
             "meanCellHaematocrit, testDate) " +
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private static final String SELECT_ONE_BLOOD_TEST = "SELECT * FROM BloodTestDetails WHERE bloodTestId = ?";
     private static final String DELETE_ONE_BLOOD_TEST = "DELETE FROM BloodTestDetails WHERE bloodTestId = ?";
     private static final String SELECT_ALL_BLOOD_TESTS_FOR_USER = "SELECT * FROM BloodTestDetails WHERE fkUserNhi = ? AND (testDate BETWEEN ? AND ?) LIMIT ? OFFSET ?";
+    private static final String GET_ID_FOR_NEW_BLOOD_TEST = "SELECT bloodTestId FROM BloodTestDetails ORDER BY bloodTestId DESC LIMIT 1";
 
     /**
      * Saves and stores the given blood test within the database
@@ -25,6 +26,7 @@ public class BloodTestHandler {
      * @param connection Connection to the target database
      * @param bloodTest  The blood test to be saved
      * @param nhi        The unique identifier of the user
+     * @return           Unique identifier of the blood test
      * @throws SQLException If there is an error storing the blood test into the database or the connection is invalid
      */
     public void postBloodTest(Connection connection, BloodTest bloodTest, String nhi) throws SQLException {
@@ -41,7 +43,6 @@ public class BloodTestHandler {
             preparedStatement.setDate(10, Date.valueOf(bloodTest.getTestDate()));
             preparedStatement.executeUpdate();
         }
-
     }
 
     /**
@@ -117,6 +118,7 @@ public class BloodTestHandler {
 
                 String updateStatement = "UPDATE BloodTestDetails SET ";
                 updateStatement += String.join(", ", changes);
+                updateStatement += "WHERE bloodTestId = ?";
 
                 try (PreparedStatement preparedStatement = connection.prepareStatement(updateStatement)) {
 
@@ -129,7 +131,11 @@ public class BloodTestHandler {
 
                     if (date != null) { // only adds the date if it exists
                         preparedStatement.setDate(i + 1, Date.valueOf(bloodTest.getTestDate()));
+                        preparedStatement.setInt(i + 2, id);
+                    } else {
+                        preparedStatement.setInt(i + 1, id);
                     }
+
 
                     preparedStatement.executeUpdate();
 
@@ -203,6 +209,27 @@ public class BloodTestHandler {
         }
 
         return bloodTests;
+    }
+
+    /**
+     * Retrieves the id of a newly created blood test
+     * The id will be the last entry from the database
+     *
+     * @param connection Connection to the target database
+     * @return unique identifier of the newly created blood test
+     * @throws SQLException if the connection is invalid or there is an error retrieving entries from the database
+     */
+    public int getNewBloodTestId(Connection connection) throws SQLException {
+        int id = 0;
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(GET_ID_FOR_NEW_BLOOD_TEST)) {
+            try (ResultSet results = preparedStatement.executeQuery()) {
+                while (results.next()) {
+                    id = results.getInt("bloodTestId");
+                }
+            }
+        }
+        return id;
     }
 
     /**

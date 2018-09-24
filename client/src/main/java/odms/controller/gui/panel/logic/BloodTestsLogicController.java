@@ -5,25 +5,33 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import odms.bridge.BloodTestBridge;
 import odms.commons.model.User;
+import odms.commons.model._enum.EventTypes;
 import odms.commons.model.datamodel.BloodTest;
+import odms.commons.model.event.UpdateNotificationEvent;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.popup.view.NewBloodTestViewController;
+import odms.socket.ServerEventNotifier;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
-public class BloodTestsLogicController {
+public class BloodTestsLogicController implements PropertyChangeListener {
 
     private ObservableList<BloodTest> bloodTests;
     private ObservableList<BloodTest> graphBloodTests;
     private static final int ROWS_PER_PAGE = 30;
-    private static final int RESULTS_ON_GRAPH = 50;
+    private static final int RESULTS_ON_GRAPH = 365;
     private int startingIndex = 0;
     private User user;
+    private BloodTestBridge bloodTestBridge;
+
 
     /**
      * Constructor to create a new logical instance of the controller
@@ -34,6 +42,9 @@ public class BloodTestsLogicController {
         this.bloodTests = bloodTests;
         this.graphBloodTests = graphBloodTests;
         this.user = user;
+        bloodTestBridge = AppController.getInstance().getBloodTestBridge();
+        ServerEventNotifier.getInstance().addPropertyChangeListener(this);
+
     }
 
     public void addNewBloodTest() {
@@ -44,7 +55,7 @@ public class BloodTestsLogicController {
             root = newBloodTestLoader.load();
             NewBloodTestViewController newBloodTestViewController = newBloodTestLoader.getController();
             Stage bloodTestStage = new Stage();
-            newBloodTestViewController.init(user,bloodTestStage);
+            newBloodTestViewController.init(user, bloodTestStage, bloodTestBridge);
             bloodTestStage.setScene(new Scene(root));
             bloodTestStage.showAndWait();
             Log.info("Successfully launched the new blood test pop-up window for user: " + user.getNhi());
@@ -56,11 +67,11 @@ public class BloodTestsLogicController {
     }
 
     public void deleteBloodTest(BloodTest bloodTest) {
-        user.getHealthDetails().getBloodTests().remove(bloodTest);
+        bloodTestBridge.deleteBloodtest(Integer.toString(bloodTest.getBloodTestId()), user.getNhi());
     }
 
-    public void updateBloodTest() {
-
+    public void updateBloodTest(BloodTest bloodTest) {
+        bloodTestBridge.patchBloodtest(bloodTest, user.getNhi());
     }
 
     /**
@@ -76,9 +87,27 @@ public class BloodTestsLogicController {
     }
 
     public void gotoNextPage() {
+
     }
 
     public void goToPreviousPage() {
+
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        UpdateNotificationEvent event;
+        try {
+            event = (UpdateNotificationEvent) evt;
+        } catch (ClassCastException ex) {
+            return;
+        }
+        if (event == null) {
+            return;
+        }
+        if (event.getType().equals(EventTypes.BLOOD_TEST_UPDATE)) {
+            updateTableView(startingIndex);
+        }
     }
 
     /**

@@ -88,8 +88,7 @@
                        <TextField fx:id="glucose" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5" />
                        <TextField fx:id="haematocrit" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="6" />
                        <TextField fx:id="meanCellVolume" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="7" />
-                       <TextField fx:id="meanCellHaematocrit" visible="false" GridPane.columnIndex="1"
-                                  GridPane.columnSpan="2" GridPane.rowIndex="8"/>
+                       <TextField fx:id="meanCellHaematocrit" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="8"/>
                        <Label text="Date Of Blood Test:" />
                        <Label fx:id="bloodTestDateLabel" GridPane.columnIndex="2" />
                        <Label fx:id="bloodTestRCCountLabel" GridPane.columnIndex="2" GridPane.rowIndex="1" />
@@ -164,9 +163,9 @@
                        <Font name="System Bold" size="14.0" />
                    </font>
                </Label>
-               <Button fx:id="deleteBloodTest" layoutX="10.0" layoutY="613.0" mnemonicParsing="false"
+               <Button fx:id="deleteBloodTest" layoutX="10.0" layoutY="613.0" mnemonicParsing="false" onAction="#deleteBloodTest"
                        text="Delete Blood test" AnchorPane.bottomAnchor="47.0" AnchorPane.leftAnchor="10.0"/>
-               <Button fx:id="updateBloodTest" layoutX="241.0" layoutY="613.0" mnemonicParsing="false"
+               <Button fx:id="updateBloodTest" layoutX="241.0" layoutY="613.0" mnemonicParsing="false" onAction="#updateBloodTest"
                        text="Update Blood Test" AnchorPane.bottomAnchor="47.0" AnchorPane.rightAnchor="28.0"/>
            </children>
        </AnchorPane>
