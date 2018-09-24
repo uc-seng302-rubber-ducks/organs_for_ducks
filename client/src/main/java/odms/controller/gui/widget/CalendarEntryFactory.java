@@ -11,6 +11,12 @@ public class CalendarEntryFactory {
 
     }
 
+    /**
+     * Generates a Calendar Entry with the specified appointment as a base model
+     *
+     * @param appointment appointment to use as a base model
+     * @return an entry with the appointment used as a base
+     */
     public static Entry<Appointment> generateEntry(Appointment appointment) {
         Entry<Appointment> entry = new Entry<>();
         if (appointment.getRequestingUserId() == null) {
