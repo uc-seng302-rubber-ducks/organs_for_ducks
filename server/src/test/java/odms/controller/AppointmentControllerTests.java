@@ -8,6 +8,7 @@ import odms.commons.model._enum.UserType;
 import odms.database.DBHandler;
 import odms.database.JDBCDriver;
 import odms.database.db_strategies.AppointmentUpdateStrategy;
+import odms.email.Mailer;
 import odms.exception.ServerDBException;
 import odms.socket.SocketHandler;
 import odms.utils.DBManager;
@@ -39,6 +40,7 @@ public class AppointmentControllerTests {
     private DBHandler handler;
     private SocketHandler socketHandler;
     private Appointment testAppointment;
+    private Mailer mailer;
 
     @Before
     public void setUp() throws SQLException {
@@ -48,15 +50,18 @@ public class AppointmentControllerTests {
         driver = mock(JDBCDriver.class);
         socketHandler = mock(SocketHandler.class);
         AppointmentUpdateStrategy strategy = mock(AppointmentUpdateStrategy.class);
+        mailer = mock(Mailer.class);
 
         when(driver.getConnection()).thenReturn(connection);
         when(manager.getHandler()).thenReturn(handler);
         when(manager.getDriver()).thenReturn(driver);
         when(handler.getAppointmentStrategy()).thenReturn(strategy);
 
-        controller = new AppointmentController(manager, socketHandler);
+
+        controller = new AppointmentController(manager, socketHandler, mock(Mailer.class));
         LocalDateTime testDate = LocalDate.now().plusDays(2).atTime(9, 0, 0);
         testAppointment = new Appointment("ABC1234", "0", AppointmentCategory.GENERAL_CHECK_UP, testDate, "Help", AppointmentStatus.PENDING);
+        controller.setMailer(mailer);
     }
 
     @Test
