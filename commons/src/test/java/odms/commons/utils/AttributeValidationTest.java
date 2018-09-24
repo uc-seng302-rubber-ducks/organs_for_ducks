@@ -77,4 +77,13 @@ public class AttributeValidationTest {
     public void testDoDBeforeDoB() {
         assertFalse(AttributeValidation.validateDateOfDeath(LocalDate.now().minusDays(5), LocalDate.now().minusDays(6)));
     }
+
+    @Test
+    public void testValidateEligibleOrganDateToday() {
+        assertFalse(AttributeValidation.validateEligibleOrganDate(LocalDate.now()));
+    }
+    @Test
+    public void testValidateEligibleOrganDateNull() {
+        assertTrue(AttributeValidation.validateEligibleOrganDate(null));
+    }
 }

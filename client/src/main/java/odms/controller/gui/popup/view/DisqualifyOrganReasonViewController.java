@@ -32,6 +32,7 @@ public class DisqualifyOrganReasonViewController {
     private DisqualifyOrganReasonLogicController logicController;
     private Organs disqualifiedOrgan;
     private String staffId;
+    private Stage stage;
 
 
     /**
@@ -42,9 +43,10 @@ public class DisqualifyOrganReasonViewController {
      */
     public void init(Organs disqualifiedOrgan, User user, Stage stage, String staffId, ObservableList<OrgansWithDisqualification> disqualifiedOrgans) {
         stage.setResizable(false);
+        this.stage = stage;
         this.disqualifiedOrgan = disqualifiedOrgan;
         this.staffId = staffId;
-        this.logicController = new DisqualifyOrganReasonLogicController(user, stage, disqualifiedOrgans);
+        this.logicController = new DisqualifyOrganReasonLogicController(user, disqualifiedOrgans);
 
         disqualifyOrganDescriptionInput.setTextFormatter(new TextFormatter<String>(change ->
                 change.getControlNewText().length() <= 255 ? change : null)); // limits user input to 255 characters
@@ -54,15 +56,23 @@ public class DisqualifyOrganReasonViewController {
 
     }
 
+    /**
+     * pre-populates disqualify organ reason
+     * pop-up if its being used to update disqualified organs.
+     *
+     * @param organsWithDisqualification the disqualified organ
+     */
     public void updateMode(OrgansWithDisqualification organsWithDisqualification){
         eligibleDateInput.setValue(organsWithDisqualification.getEligibleDate());
         disqualifyOrganDescriptionInput.setText(organsWithDisqualification.getReason());
     }
 
-
+    /**
+     * closes the Disqualify Organ Reason view.
+     */
     @FXML
     public void disqualifyOrganCancel() {
-        logicController.cancel();
+        stage.close();
     }
 
     /**
@@ -93,6 +103,10 @@ public class DisqualifyOrganReasonViewController {
         }
     }
 
+    /**
+     * validates and processes input from the pop up
+     * when user has selected confirm to disqualify an organ.
+     */
     @FXML
     public void disqualifyOrganConfirm() {
         //This is the best way I can think of editing the labels without the logic controller knowing about them, but keeping the least amount of logic in the view-controller
@@ -101,6 +115,7 @@ public class DisqualifyOrganReasonViewController {
         if (validDate && validDescription) {
             logicController.confirm(disqualifiedOrgan, eligibleDateInput.getValue(), disqualifyOrganDescriptionInput.getText(), staffId);
         }
+        stage.close();
     }
 
 }

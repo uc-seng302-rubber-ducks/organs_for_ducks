@@ -1,7 +1,6 @@
 package odms.controller.gui.popup.logic;
 
 import javafx.collections.ObservableList;
-import javafx.stage.Stage;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.OrgansWithDisqualification;
@@ -12,18 +11,15 @@ import java.time.LocalDate;
 public class DisqualifyOrganReasonLogicController {
 
     private User user;
-    private Stage stage;
     private ObservableList<OrgansWithDisqualification> disqualifications;
 
     /**
      * Initializes the DisqualifyOrganReasonLogicController
      *
      * @param user          Current user
-     * @param stage         The applications stage.
      */
-    public DisqualifyOrganReasonLogicController(User user, Stage stage, ObservableList<OrgansWithDisqualification> disqualifiedOrgans) {
+    public DisqualifyOrganReasonLogicController(User user, ObservableList<OrgansWithDisqualification> disqualifiedOrgans) {
         this.user = user;
-        this.stage = stage;
         this.disqualifications = disqualifiedOrgans;
     }
 
@@ -35,6 +31,7 @@ public class DisqualifyOrganReasonLogicController {
      */
     public void confirm(Organs disqualifiedOrgan, LocalDate eligibleDate, String description, String  staffId) {
         Boolean updateMode = false;
+        user.saveStateForUndo();
 
         OrgansWithDisqualification organsWithDisqualification = new OrgansWithDisqualification(disqualifiedOrgan, description, LocalDate.now(), staffId);
         organsWithDisqualification.setEligibleDate(eligibleDate);
@@ -43,18 +40,19 @@ public class DisqualifyOrganReasonLogicController {
             if (disqualifications.get(i).getOrganType().equals(disqualifiedOrgan)) {
                 disqualifications.remove(i);
                 disqualifications.add(i, organsWithDisqualification);
+                user.getUndoStack().pop();
+                user.getUndoStack().pop();
                 updateMode = true; //we know that its update if disqualifiedOrgan already exist in the disqualified Organ table.
                 break;
             }
         }
 
         if(!updateMode) {
+            user.getUndoStack().pop();
             disqualifications.add(organsWithDisqualification);
             user.getDonorDetails().getOrgans().remove(organsWithDisqualification.getOrganType());
 
         }
-
-        stage.close();
     }
 
     /**
@@ -73,14 +71,6 @@ public class DisqualifyOrganReasonLogicController {
      */
     public boolean validateDescription(String description) {
         return AttributeValidation.checkRequiredString(description);
-    }
-
-
-    /**
-     * closes the Disqualify Organ Reason view.
-     */
-    public void cancel() {
-        stage.close();
     }
 
 }

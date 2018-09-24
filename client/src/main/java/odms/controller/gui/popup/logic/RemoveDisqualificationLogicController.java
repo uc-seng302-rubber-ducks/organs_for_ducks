@@ -23,17 +23,18 @@ public class RemoveDisqualificationLogicController {
      * Confirms the disqualification of an organ
      */
     public void confirm(OrgansWithDisqualification disqualifiedOrgan, String description) {
-
+        user.saveStateForUndo();
         disqualifiedOrgan.setReason(description);
         disqualifiedOrgan.setCurrentlyDisqualified(false);
-//        for (int i = 0; i < disqualifications.size(); i++) {
-//            if (disqualifications.get(i).getOrganType().equals(disqualifiedOrgan.getOrganType())) {
-//                disqualifications.remove(i);
-//                disqualifications.add(i, disqualifiedOrgan);
-//                break;
-//            }
-//        }
-
+        for (int i = 0; i < disqualifications.size(); i++) {
+            if (disqualifications.get(i).getOrganType().equals(disqualifiedOrgan.getOrganType())) {
+                disqualifications.remove(i);
+                disqualifications.add(i, disqualifiedOrgan);
+                user.getUndoStack().pop();
+                user.getUndoStack().pop();
+                break;
+            }
+        }
         stage.close();
     }
 

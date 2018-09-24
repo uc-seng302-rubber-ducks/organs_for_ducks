@@ -134,7 +134,8 @@ public class AttributeValidation {
      * checks that Eligible Organ Date is after
      * today's date. Eligible date is optional field.
      *
-     * @param eligibleDate appointment date
+     * @param eligibleDate date to allow organs to be eligible for
+     *                     donation again
      * @return true if appointment date is
      * after the current date, false otherwise.
      */
