@@ -53,7 +53,7 @@ public class ClinicianAppointmentControllerTest {
         appointments = FXCollections.observableList(new ArrayList<>());
         availableTimes = FXCollections.observableList(new ArrayList<>());
         Clinician testClinician = new Clinician("default", "0", "password");
-        clinicianAppointmentRequestLogicController = spy(new ClinicianAppointmentRequestLogicController(appointments, controller, testClinician, availableTimes));
+        clinicianAppointmentRequestLogicController = spy(new ClinicianAppointmentRequestLogicController(appointments, controller, testClinician, availableTimes, null));
 
 
         appointmentsBridge = mock(AppointmentsBridge.class);
