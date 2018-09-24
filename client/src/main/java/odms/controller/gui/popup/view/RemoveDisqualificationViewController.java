@@ -24,6 +24,7 @@ public class RemoveDisqualificationViewController {
 
     private RemoveDisqualificationLogicController logicController;
     private OrgansWithDisqualification disqualifiedOrgan;
+    private Stage stage;
 
 
     /**
@@ -34,8 +35,9 @@ public class RemoveDisqualificationViewController {
      */
     public void init(OrgansWithDisqualification disqualifiedOrgan, User user, Stage stage, ObservableList<OrgansWithDisqualification> disqualifiedOrgans) {
         stage.setResizable(false);
+        this.stage = stage;
         this.disqualifiedOrgan = disqualifiedOrgan;
-        this.logicController = new RemoveDisqualificationLogicController(user, stage, disqualifiedOrgans);
+        this.logicController = new RemoveDisqualificationLogicController(user, disqualifiedOrgans);
 
         removeDisqualificationDescriptionTextField.setTextFormatter(new TextFormatter<String>(change ->
                 change.getControlNewText().length() <= 255 ? change : null)); // limits user input to 255 characters
@@ -45,10 +47,12 @@ public class RemoveDisqualificationViewController {
 
     }
 
-
+    /**
+     * closes the Disqualify Organ Reason view.
+     */
     @FXML
     public void removeDisqualificationCancel() {
-        logicController.cancel();
+        stage.close();
     }
 
 
@@ -56,7 +60,7 @@ public class RemoveDisqualificationViewController {
      * Validates the description text field. If it not valid, set the error message and return false
      * @return Boolean describing if the input is valid
      */
-    private boolean validateDescription() { //Deal with this
+    private boolean validateDescription() {
         if (!logicController.validateDescription(removeDisqualificationDescriptionTextField.getText())) {
             removeDisqualificationDescriptionErrorLabel.setText("Invalid description.");
             return false;
@@ -70,6 +74,7 @@ public class RemoveDisqualificationViewController {
     public void removeDisqualificationConfirm() {
         if (validateDescription()) {
             logicController.confirm(disqualifiedOrgan, removeDisqualificationDescriptionTextField.getText());
+            stage.close();
         }
     }
 }

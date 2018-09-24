@@ -114,8 +114,8 @@ public class DisqualifyOrganReasonViewController {
         boolean validDescription = validateDescription();
         if (validDate && validDescription) {
             logicController.confirm(disqualifiedOrgan, eligibleDateInput.getValue(), disqualifyOrganDescriptionInput.getText(), staffId);
+            stage.close();
         }
-        stage.close();
     }
 
 }
