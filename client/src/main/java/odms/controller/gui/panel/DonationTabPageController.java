@@ -384,6 +384,13 @@ public class DonationTabPageController {
         for (Map.Entry<Organs, ExpiryReason> organEntry : organsExpiryReasonMap.entrySet()) {
             organsWithExpiries.add(new OrgansWithExpiry(organEntry.getKey(), organEntry.getValue(), currentUser.getMomentDeath()));
         }
+        //Add the disqualified organs to the expired organs (It's an AC)
+        for (OrgansWithDisqualification organ : currentUser.getDonorDetails().getDisqualifiedOrgans()) {
+            if (organ.isCurrentlyDisqualified()) {
+                ExpiryReason expiryDetails = new ExpiryReason(organ.getStaffId(), organ.getDate().atStartOfDay(), organ.getReason(), currentUser.getFullName());
+                organsWithExpiries.add(new OrgansWithExpiry(organ.getOrganType(), expiryDetails, currentUser.getMomentDeath()));
+            }
+        }
         organExpiryColumn.setCellFactory(callback -> ProgressBarTableCellFactory.generateCell(organExpiryColumn));
 
         currentlyDonating.setItems(organsWithExpiries);

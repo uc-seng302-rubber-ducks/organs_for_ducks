@@ -175,6 +175,7 @@ public class DisqualifiedOrgansHandlerTest {
     public void testDeleteDisqualifiedOrgans_CommitsOnce_WithNotCurrentlyDisqualifiedOrgan() throws SQLException {
         OrgansWithDisqualification testOrgan = createTestDisqualifiedOrgan(0);
         testOrgan.setCurrentlyDisqualified(false);
+        testOrgan.setEligibleDate(LocalDate.now().minusDays(1));
         Collection<OrgansWithDisqualification> disqualifications = new ArrayList<>();
         disqualifications.add(testOrgan);
 
@@ -200,6 +201,9 @@ public class DisqualifiedOrgansHandlerTest {
         testOrgan1.setCurrentlyDisqualified(false);
         testOrgan2.setCurrentlyDisqualified(false);
         testOrgan3.setCurrentlyDisqualified(false);
+        testOrgan1.setEligibleDate(LocalDate.now().minusDays(1));
+        testOrgan2.setEligibleDate(LocalDate.now().minusDays(1));
+        testOrgan3.setEligibleDate(LocalDate.now().minusDays(1));
 
         Collection<OrgansWithDisqualification> disqualifications = new ArrayList<>();
         disqualifications.add(testOrgan1);
@@ -218,6 +222,9 @@ public class DisqualifiedOrgansHandlerTest {
         testOrgan1.setCurrentlyDisqualified(false);
         testOrgan2.setCurrentlyDisqualified(true);
         testOrgan3.setCurrentlyDisqualified(false);
+        testOrgan1.setEligibleDate(LocalDate.now().minusDays(1));
+        testOrgan2.setEligibleDate(LocalDate.now().minusDays(1));
+        testOrgan3.setEligibleDate(LocalDate.now().minusDays(1));
 
         Collection<OrgansWithDisqualification> disqualifications = new ArrayList<>();
         disqualifications.add(testOrgan1);
@@ -236,6 +243,10 @@ public class DisqualifiedOrgansHandlerTest {
         testOrgan4.setCurrentlyDisqualified(false);
         testOrgan5.setCurrentlyDisqualified(false);
         testOrgan6.setCurrentlyDisqualified(false);
+        testOrgan4.setEligibleDate(LocalDate.now().minusDays(1));
+        testOrgan5.setEligibleDate(LocalDate.now().minusDays(1));
+        testOrgan6.setEligibleDate(LocalDate.now().minusDays(1));
+
 
         Collection<OrgansWithDisqualification> disqualifications = new ArrayList<>();
         disqualifications.add(testOrgan4);
@@ -250,6 +261,7 @@ public class DisqualifiedOrgansHandlerTest {
     public void testDeleteDisqualifiedOrgans_RollsBack_WhenSqlException() throws SQLException {
         OrgansWithDisqualification testOrgan = createTestDisqualifiedOrgan(0);
         testOrgan.setCurrentlyDisqualified(false);
+        testOrgan.setEligibleDate(LocalDate.now().minusDays(1));
 
         Collection<OrgansWithDisqualification> disqualifications = new ArrayList<>();
         disqualifications.add(testOrgan);
@@ -259,6 +271,28 @@ public class DisqualifiedOrgansHandlerTest {
         handler.deleteDisqualifiedOrgan(connection, disqualifications);
         verify(connection, times(0)).commit();
         verify(connection, times(1)).rollback();
+    }
+
+    @Test
+    public void testDeleteDisqualifiedOrgans_CommitsMoreThanOnce_WhenOneEligibleDateIsInvalid() throws SQLException {
+        OrgansWithDisqualification testOrgan4 = createTestDisqualifiedOrgan(4);
+        OrgansWithDisqualification testOrgan5 = createTestDisqualifiedOrgan(5);
+        OrgansWithDisqualification testOrgan6 = createTestDisqualifiedOrgan(6);
+        testOrgan4.setCurrentlyDisqualified(false);
+        testOrgan5.setCurrentlyDisqualified(false);
+        testOrgan6.setCurrentlyDisqualified(false);
+        testOrgan4.setEligibleDate(LocalDate.now().minusDays(1));
+        testOrgan5.setEligibleDate(LocalDate.now().plusDays(1));
+        testOrgan6.setEligibleDate(LocalDate.now().minusDays(1));
+
+
+        Collection<OrgansWithDisqualification> disqualifications = new ArrayList<>();
+        disqualifications.add(testOrgan4);
+        disqualifications.add(testOrgan5);
+        disqualifications.add(testOrgan6);
+
+        handler.deleteDisqualifiedOrgan(connection, disqualifications);
+        verify(connection, times(2)).commit();
     }
 
 }
