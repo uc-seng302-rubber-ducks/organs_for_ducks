@@ -11,10 +11,7 @@ import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 
-import java.time.DayOfWeek;
-import java.time.Duration;
-import java.time.LocalTime;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -105,14 +102,33 @@ public class CalendarWidgetFactory {
                 AppController.getInstance().getAppointmentsBridge().deleteAppointment((Appointment) evt.getEntry().getUserObject());
             } else if (evt.getOldInterval() != null && !evt.getOldInterval().equals(evt.getEntry().getInterval())) { // Only put if the times has changed
                 Entry<Appointment> entry = (Entry<Appointment>) evt.getEntry();
-                if (entry != null) {
+                if (entry != null && !entry.getProperties().containsKey(QUIET_MODE)) {
                     checkNoClashes(calendarView, entry, evt);
-                    if (!entry.getProperties().containsKey(QUIET_MODE)) {
+                    checkNotInPast(entry, evt);
+                    if (!entry.getInterval().equals(evt.getOldInterval()))
                         AppController.getInstance().getAppointmentsBridge().putAppointment(entry.getUserObject(), AppController.getInstance().getToken());
-                    }
                 }
             }
         });
+    }
+
+    /**
+     * Checks that the entry being moved does not end up a day in the past
+     *
+     * @param entry entry to be checked
+     */
+    private static void checkNotInPast(Entry<Appointment> entry, CalendarEvent event) {
+        if (entry.getInterval().getStartDateTime().isBefore(LocalDateTime.now())) {
+            entry.getProperties().put("quiet", true);
+            entry.setInterval(event.getOldInterval());
+            entry.getProperties().remove("quiet");
+            AlertWindowFactory.generateInfoWindow("Cannot move entries into the past");
+        } else if (entry.getInterval().getStartTime().isAfter(LocalTime.of(END_TIME, 0)) || entry.getInterval().getStartTime().isBefore(LocalTime.of(START_TIME, 0))) {
+            entry.getProperties().put("quiet", true);
+            entry.setInterval(event.getOldInterval());
+            entry.getProperties().remove("quiet");
+            AlertWindowFactory.generateInfoWindow("Cannot move entries before the hours of 8am and 6 pm");
+        }
     }
 
     /**
