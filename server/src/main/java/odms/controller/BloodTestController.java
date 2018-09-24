@@ -1,6 +1,7 @@
 package odms.controller;
 
 
+import odms.commons.model._enum.EventTypes;
 import odms.commons.model.datamodel.BloodTest;
 import odms.commons.utils.Log;
 import odms.database.BloodTestHandler;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.DateTimeException;
@@ -106,6 +108,9 @@ public class BloodTestController extends BaseController {
                                    @RequestBody BloodTest bloodTest) {
         try (Connection connection = driver.getConnection()) {
             bloodTestHandler.postBloodTest(connection, bloodTest, nhi);
+
+            // TODO: get blood test id - sql to get last db entry with all the values of the blood test
+            //socketHandler.broadcast(EventTypes., , );
             return new ResponseEntity(HttpStatus.CREATED);
         } catch (SQLException e) {
             Log.severe("Could not post a blood test", e);
@@ -124,9 +129,10 @@ public class BloodTestController extends BaseController {
     @RequestMapping(method = RequestMethod.PATCH, value = "/user/{nhi}/bloodTest/{id}")
     public ResponseEntity patchBloodTest(@PathVariable(value ="nhi") String nhi,
                                          @PathVariable(value = "id") int id,
-                                         @RequestBody BloodTest bloodTest) {
+                                         @RequestBody BloodTest bloodTest) throws IOException {
         try (Connection connection = driver.getConnection()) {
             bloodTestHandler.patchBloodTest(connection, nhi, id, bloodTest);
+            socketHandler.broadcast(EventTypes.BLOOD_TEST_UPDATE, Integer.toString(bloodTest.getBloodTestId()), Integer.toString(id));
             return new ResponseEntity(HttpStatus.OK);
         } catch (SQLException e) {
             Log.severe("Could not patch a blood test", e);
@@ -143,9 +149,10 @@ public class BloodTestController extends BaseController {
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "/user/{nhi}/bloodTest/{id}")
     public ResponseEntity deleteBloodTest(@PathVariable(value ="nhi") String nhi,
-                                          @PathVariable(value = "id") int id) {
+                                          @PathVariable(value = "id") int id) throws IOException {
         try (Connection connection = driver.getConnection()) {
             bloodTestHandler.deleteBloodTest(connection, nhi, id);
+            socketHandler.broadcast(EventTypes.BLOOD_TEST_UPDATE, Integer.toString(id), Integer.toString(id));
             return new ResponseEntity(HttpStatus.OK);
         } catch (SQLException e) {
             Log.severe("Could not patch a blood test", e);

@@ -7,15 +7,20 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import odms.bridge.BloodTestBridge;
 import odms.commons.model.User;
+import odms.commons.model._enum.EventTypes;
 import odms.commons.model.datamodel.BloodTest;
+import odms.commons.model.event.UpdateNotificationEvent;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.popup.view.NewBloodTestViewController;
+import odms.socket.ServerEventNotifier;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.time.LocalDate;
 
-public class BloodTestsLogicController {
+public class BloodTestsLogicController implements PropertyChangeListener {
 
     private ObservableList<BloodTest> bloodTests;
     private static final int ROWS_PER_PAGE = 30;
@@ -33,6 +38,7 @@ public class BloodTestsLogicController {
         this.bloodTests = bloodTests;
         this.user = user;
         bloodTestBridge = controller.getBloodTestBridge();
+        ServerEventNotifier.getInstance().addPropertyChangeListener(this);
 
     }
 
@@ -81,5 +87,21 @@ public class BloodTestsLogicController {
 
     public void goToPreviousPage() {
 
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        UpdateNotificationEvent event;
+        try {
+            event = (UpdateNotificationEvent) evt;
+        } catch (ClassCastException ex) {
+            return;
+        }
+        if (event == null) {
+            return;
+        }
+        if (event.getType().equals(EventTypes.BLOOD_TEST_UPDATE)) {
+            updateTableView(startingIndex);
+        }
     }
 }
