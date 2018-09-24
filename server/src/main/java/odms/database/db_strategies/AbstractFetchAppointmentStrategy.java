@@ -46,6 +46,7 @@ public abstract class AbstractFetchAppointmentStrategy { //NOSONAR - can't conve
                 appointment.setAppointmentStatus(status);
             }
         }
+        appointment.setTitle(results.getString("title"));
         return appointment;
     }
 }

@@ -42,6 +42,7 @@ public class AppointmentPickerViewController {
     public void init(User user, Stage stage) {
         this.logicController = new AppointmentPickerLogicController(user, stage);
         appointmentBookingTypeInput.getItems().addAll(AppointmentCategory.values());
+        appointmentBookingTypeInput.getItems().remove(AppointmentCategory.PERSONAL); //Only clinicians can use this category
 
         appointmentBookingDescriptionInput.setTextFormatter(new TextFormatter<String>(change ->
                 change.getControlNewText().length() <= 255 ? change : null)); // limits user input to 255 characters
