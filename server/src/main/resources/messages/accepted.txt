@@ -1,6 +1,6 @@
 Hello %s,
 
-Your appointment scheduled for %s with %s %s has been accepted
+Your appointment scheduled for %s with %s %s has been accepted.
 It is now at %s.
 
 

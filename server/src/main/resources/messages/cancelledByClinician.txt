@@ -1,6 +1,6 @@
 Hello %s,
 
-Your appointment scheduled for %s with %s %s, has been cancelled. We apologise for any inconvenience this has caused
+Your appointment scheduled for %s with %s %s, has been cancelled. We apologise for any inconvenience this has caused.
 
 
 Regards,

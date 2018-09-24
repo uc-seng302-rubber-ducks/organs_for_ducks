@@ -22,12 +22,14 @@ public class Scheduler {
 
     private JDBCDriver driver;
     private DBHandler handler;
+    private MessageComposer composer;
 
 
     @Autowired
-    public Scheduler(DBManager dbManager) {
+    public Scheduler(DBManager dbManager, MessageComposer composer) {
         this.driver = dbManager.getDriver();
         this.handler = dbManager.getHandler();
+        this.composer = composer;
     }
 
 
@@ -39,12 +41,14 @@ public class Scheduler {
      */
     @Scheduled(cron="0 0 8 * * * ")
     public void sendEmailsDaily(){
-        Collection<AppointmentWithPeople> appointmentWithPeopleTomorrow = new ArrayList<>();
-        Collection<AppointmentWithPeople> appointmentWithPeopleNextWeek = new ArrayList<>();
-        String emailString = "Hello %s\n\nJust a reminder you have an appointment scheduled for %s,\n With %s %s,\n\n\nRegards,\n\n%s";
+        Collection<AppointmentWithPeople> appointmentWithPeopleTomorrow;
+        Collection<AppointmentWithPeople> appointmentWithPeopleNextWeek;
+        Collection<AppointmentWithPeople> appointments = new ArrayList<>();
         try (Connection connection = driver.getConnection()) {
             appointmentWithPeopleTomorrow = handler.getAppointmentsForDate(connection, LocalDate.now().plusDays(1));
             appointmentWithPeopleNextWeek = handler.getAppointmentsForDate(connection, LocalDate.now().plusDays(7));
+            appointments.addAll(appointmentWithPeopleNextWeek);
+            appointments.addAll(appointmentWithPeopleTomorrow);
 
         } catch (SQLException e){
             Log.severe("Unable to get appointments date", e);
@@ -52,22 +56,16 @@ public class Scheduler {
         MailHandler mailHandler = new MailHandler();
         mailHandler.setMailSender(new JavaMailSenderImpl() {
         });
-        for(AppointmentWithPeople appointment : appointmentWithPeopleTomorrow){
+        for (AppointmentWithPeople appointment : appointments) {
             if(!appointment.getUser().getEmail().equals("") || appointment.getUser().getEmail() != null){
-                mailHandler.sendMail(appointment.getUser().getEmail(),
-                        String.format("Appointment for: %s",appointment.getAppointmentDateTimeString()),
-                        String.format(emailString, appointment.getUser().getFullName(), appointment.getAppointmentDateTimeString(), appointment.getClinician().getFirstName(),appointment.getClinician().getLastName(),appointment.getClinician().getFirstName()));
-
+                String message = composer.writeReminder(appointment);
+                if (!message.isEmpty()) {
+                    mailHandler.sendMail(appointment.getUser().getEmail(),
+                            String.format("Appointment for: %s", appointment.getAppointmentDateTimeString()),
+                            message);
+                }
             }
         }
 
-        for(AppointmentWithPeople appointment : appointmentWithPeopleNextWeek){
-            if(!appointment.getUser().getEmail().equals("") || appointment.getUser().getEmail() != null){
-                mailHandler.sendMail( appointment.getUser().getEmail(),
-                        String.format("Appointment for: %s", appointment.getAppointmentDateTimeString()),
-                        String.format(emailString, appointment.getUser().getFullName(), appointment.getAppointmentDateTimeString(), appointment.getClinician().getFirstName(),appointment.getClinician().getLastName(),appointment.getClinician().getFirstName()));
-
-            }
-        }
     }
 }

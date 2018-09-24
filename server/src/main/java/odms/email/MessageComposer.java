@@ -72,6 +72,16 @@ public class MessageComposer {
         return "";
     }
 
+    public String writeReminder(AppointmentWithPeople appointment) {
+        String raw = readFile("messages/reminder.txt");
+        if (raw != null) {
+            return String.format(raw, appointment.getUser().getFullName(), appointment.getAppointmentDateTimeString(),
+                    appointment.getClinician().getFirstName(), appointment.getClinician().getLastName(),
+                    appointment.getClinician().getFirstName(), appointment.getClinician().getLastName());
+        }
+        return "";
+    }
+
 
     /**
      * attempts to read a file in the resources package. returns null if it is not found/error while reading
