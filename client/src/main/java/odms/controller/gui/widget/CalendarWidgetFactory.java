@@ -119,14 +119,14 @@ public class CalendarWidgetFactory {
      */
     private static void checkNotInPast(Entry<Appointment> entry, CalendarEvent event) {
         if (entry.getInterval().getStartDateTime().isBefore(LocalDateTime.now())) {
-            entry.getProperties().put("quiet", true);
+            entry.getProperties().put(QUIET_MODE, true);
             entry.setInterval(event.getOldInterval());
-            entry.getProperties().remove("quiet");
+            entry.getProperties().remove(QUIET_MODE);
             AlertWindowFactory.generateInfoWindow("Cannot move entries into the past");
         } else if (entry.getInterval().getStartTime().isAfter(LocalTime.of(END_TIME, 0)) || entry.getInterval().getStartTime().isBefore(LocalTime.of(START_TIME, 0))) {
-            entry.getProperties().put("quiet", true);
+            entry.getProperties().put(QUIET_MODE, true);
             entry.setInterval(event.getOldInterval());
-            entry.getProperties().remove("quiet");
+            entry.getProperties().remove(QUIET_MODE);
             AlertWindowFactory.generateInfoWindow("Cannot move entries before the hours of 8am and 6 pm");
         }
     }
