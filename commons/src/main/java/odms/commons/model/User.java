@@ -600,14 +600,23 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setDateOfDeath(LocalDate dateOfDeath) {
-        this.saveStateForUndo();
-        updateLastModified();
+
         if (dateOfDeath != null) {
+            if (this.getDateOfDeath() != null && this.getDateOfDeath().equals(dateOfDeath)) {
+                return;
+            }
             this.deathDetails.setMomentOfDeath(deathDetails.createMomentOfDeath(dateOfDeath, deathDetails.getTimeOfDeath()));
             this.isDeceased = true;
+            this.saveStateForUndo();
+            updateLastModified();
         } else {
+            if (this.getDateOfDeath() == null) {
+                return;
+            }
             this.deathDetails.setMomentOfDeath(null);
             this.isDeceased = false;
+            this.saveStateForUndo();
+            updateLastModified();
         }
         addChange(new Change(isDeceased ? ("Changed moment of death to " + dateOfDeath.toString())
                 : "Removed moment of death"));
@@ -618,37 +627,52 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setMomentOfDeath(LocalDateTime momentOfDeath) {
-        this.saveStateForUndo();
-        updateLastModified();
+
+
         if (momentOfDeath != null) {
+            if (this.getMomentDeath() != null && this.getMomentDeath().equals(momentOfDeath)) {
+                return;
+            }
+            this.saveStateForUndo();
             this.deathDetails.setMomentOfDeath(momentOfDeath);
             this.isDeceased = true;
+            updateLastModified();
+
         } else {
+            if (this.getMomentDeath() == null) {
+                return;
+            }
+            this.saveStateForUndo();
             this.deathDetails.setMomentOfDeath(null);
             this.isDeceased = false;
+            updateLastModified();
         }
         addChange(new Change(isDeceased ? ("Changed moment of death to " + momentOfDeath.toString())
                 : "Removed moment of death"));
     }
 
-    public double getHeight() {
+    public Double getHeight() {
         return healthDetails.getHeight();
     }
 
-    public void setHeight(double height) {
-        if (healthDetails.getHeight() != height) {
+    public void setHeight(Double height) {
+        if (!healthDetails.getHeight().equals(height)) {
             this.saveStateForUndo();
             updateLastModified();
-            healthDetails.setHeight(height);
+            if (height == -1) {
+                healthDetails.setHeight(null);
+            } else {
+                healthDetails.setHeight(height);
+            }
             addChange(new Change("Changed height to " + height));
         }
     }
 
-    public double getWeight() {
+    public Double getWeight() {
         return healthDetails.getWeight();
     }
 
-    public void setWeight(double weight) {
+    public void setWeight(Double weight) {
         if (weight != healthDetails.getWeight()) {
             this.saveStateForUndo();
             updateLastModified();
