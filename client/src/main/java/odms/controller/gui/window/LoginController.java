@@ -31,7 +31,7 @@ public class LoginController {
     private static final String USER_VIEW_URL = "/FXML/userView.fxml";
     private static final String CLINICIAN_VIEW_URL = "/FXML/clinicianView.fxml";
     private static final String ADMIN_VIEW_URL = "/FXML/adminView.fxml";
-    private static final String NEW_USER_VIEW_URL = "/FXML/createNewUserr.fxml";
+    private static final String NEW_USER_VIEW_URL = "/FXML/createNewUser.fxml";
     private static final String HELP_VIEW_URL = "/FXML/loginHelp.fxml";
     private static final String NETWORK_ERROR = "A network error occurred. Please try again or contact your IT department.";
     private static final String UNSPECIFIED_ERROR = "An unspecified error occurred. Please try again or contact your IT department.";
