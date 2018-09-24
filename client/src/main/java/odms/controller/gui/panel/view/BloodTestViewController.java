@@ -15,7 +15,7 @@ import odms.commons.model._enum.BloodTestProperties;
 import odms.commons.model.datamodel.BloodTest;
 import odms.controller.gui.panel.logic.BloodTestsLogicController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
-import odms.controller.gui.widget.TextStringCheckBox;
+import odms.controller.gui.widget.TextStringRadioButton;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -83,7 +83,7 @@ public class BloodTestViewController {
     private Toggle bloodTestGraphToggle;
 
     @FXML
-    private ListView<TextStringCheckBox> bloodTestPropertyListView;
+    private ListView<TextStringRadioButton> bloodTestPropertyListView;
     @FXML
     private ComboBox<String> timeRangeFilterOption;
     @FXML
@@ -196,47 +196,18 @@ public class BloodTestViewController {
         timeRangeAxis.setCategories(timeRangeCategory);
         bloodTestGraph.setLegendVisible(false);
 
-//        for (BloodTestProperties btp : BloodTestProperties.values()) {
-//            bloodTestPropertyListView.getItems().add(btp.toString());
-//        }
-
-//        bloodTestPropertyListView.getItems().add(rBCCheckBox);
-//        bloodTestPropertyListView.getItems().add(wBCCheckBox);
-//
-//        bloodTestPropertyListView.setCellFactory(CheckBoxListCell.forListView(new Callback<CheckBox, ObservableValue<Boolean>>() {
-//            @Override
-//            public ObservableValue<Boolean> call(CheckBox param) {
-//                BooleanProperty ob = new SimpleBooleanProperty();
-//                ob.addListener((obs, wasSelected, isNowSelected) -> {
-//                    if (isNowSelected) {
-//                        System.out.println("selected");
-//                    }
-//                });
-//                return null;
-//            }
-//        }));
-
-//        bloodTestPropertyListView.setCellFactory(CheckBoxListCell.forListView(new Callback<String, ObservableValue<Boolean>>() {
-//            @Override
-//            public ObservableValue<Boolean> call(String item) {
-//                BooleanProperty observable = new SimpleBooleanProperty();
-//                observable.addListener((obs, wasSelected, isNowSelected) -> {
-//                     if (isNowSelected) {
-//                         updateGraph();
-//                     }
-//                });
-//                return observable;
-//            }
-//        }));
-
-        ObservableList<TextStringCheckBox> bloodTestProperties = FXCollections.observableList(new ArrayList<>());
+        final ToggleGroup toggleGroup = new ToggleGroup();
+        ObservableList<TextStringRadioButton> bloodTestProperties = FXCollections.observableList(new ArrayList<>());
         for (BloodTestProperties btp : BloodTestProperties.values()) {
-            bloodTestProperties.add(new TextStringCheckBox(btp.toString()));
+            TextStringRadioButton radioButton = new TextStringRadioButton(btp.toString());
+            radioButton.selectedProperty().addListener(a -> updateGraph());
+            bloodTestProperties.add(radioButton);
+            radioButton.setToggleGroup(toggleGroup);
         }
 
         bloodTestPropertyListView.setItems(bloodTestProperties);
-//
-//        ObservableList<TextStringCheckBox> dfj = bloodTestPropertyListView.getItems();
+
+        timeRangeFilterOption.getSelectionModel().selectedItemProperty().addListener(a -> updateGraph());
     }
 
     /**
@@ -376,14 +347,12 @@ public class BloodTestViewController {
      */
     private void populateGraph() {
         bloodTestGraph.getData().removeAll(bloodTestGraph.getData());
-
-        if (rBCCheckBox.isSelected()) {
-            createGraphSeries(BloodTestProperties.RBC);
+        ObservableList<TextStringRadioButton> items = bloodTestPropertyListView.getItems();
+        for(TextStringRadioButton item : items){
+            if(item.isSelected()){
+                createGraphSeries(BloodTestProperties.valueOf(item.getText().replaceAll(" ", "_").toUpperCase()));
+            }
         }
-
-        if (wBCCheckBox.isSelected()) {
-            createGraphSeries(BloodTestProperties.WBC);
-        } // TODO: add the rest of the properties
     }
 
     /**
@@ -409,10 +378,10 @@ public class BloodTestViewController {
         String date = logicController.changeValuesBasedOnTimeRange(bloodTest, timeRangeFilterOption.getValue());
         double value = 0.0;
 
-        if (property == BloodTestProperties.RBC) {
+        if (property == BloodTestProperties.RED_BLOOD_CELL) {
             value = bloodTest.getRedBloodCellCount();
 
-        } else if (property == BloodTestProperties.WBC) {
+        } else if (property == BloodTestProperties.WHITE_BLOOD_CELL) {
             value = bloodTest.getWhiteBloodCellCount();
         } // TODO: add the rest of the properties
 

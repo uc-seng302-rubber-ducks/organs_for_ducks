@@ -1,8 +1,8 @@
 package odms.commons.model._enum;
 
 public enum BloodTestProperties {
-    RBC("Red Blood Cell", 1, 4.2, 6.1),
-    WBC("White Blood Cell", 2, 4.5, 12.0),
+    RED_BLOOD_CELL("Red Blood Cell", 1, 4.2, 6.1),
+    WHITE_BLOOD_CELL("White Blood Cell", 2, 4.5, 12.0),
     HAEMOGLOBIN("Haemoglobin", 3, 113.0, 145.0),
     PLATELETS("Platelets", 4, 150.0, 475.0),
     GLUCOSE("Glucose", 5, 0.0, 7.8),

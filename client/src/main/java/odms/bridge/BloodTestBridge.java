@@ -147,8 +147,8 @@ public class BloodTestBridge extends Bifrost {
         List<BloodTestProperties> lowValues = new ArrayList<>();
         List<BloodTestProperties> highValues = new ArrayList<>();
 
-        checkLower(BloodTestProperties.RBC, bloodTest.getRedBloodCellCount(), lowValues);
-        checkLower(BloodTestProperties.WBC, bloodTest.getWhiteBloodCellCount(), lowValues);
+        checkLower(BloodTestProperties.RED_BLOOD_CELL, bloodTest.getRedBloodCellCount(), lowValues);
+        checkLower(BloodTestProperties.WHITE_BLOOD_CELL, bloodTest.getWhiteBloodCellCount(), lowValues);
         checkLower(BloodTestProperties.HAEMOGLOBIN, bloodTest.getHaemoglobinLevel(), lowValues);
         checkLower(BloodTestProperties.PLATELETS, bloodTest.getPlatelets(), lowValues);
         checkLower(BloodTestProperties.GLUCOSE, bloodTest.getGlucoseLevels(), lowValues);
@@ -156,8 +156,8 @@ public class BloodTestBridge extends Bifrost {
         checkLower(BloodTestProperties.MEAN_CELL_VOLUME, bloodTest.getMeanCellVolume(), lowValues);
         checkLower(BloodTestProperties.MEAN_CELL_HAEMATOCRIT, bloodTest.getMeanCellHaematocrit(), lowValues);
 
-        checkHigher(BloodTestProperties.RBC, bloodTest.getRedBloodCellCount(), highValues);
-        checkHigher(BloodTestProperties.WBC, bloodTest.getWhiteBloodCellCount(), highValues);
+        checkHigher(BloodTestProperties.RED_BLOOD_CELL, bloodTest.getRedBloodCellCount(), highValues);
+        checkHigher(BloodTestProperties.WHITE_BLOOD_CELL, bloodTest.getWhiteBloodCellCount(), highValues);
         checkHigher(BloodTestProperties.HAEMOGLOBIN, bloodTest.getHaemoglobinLevel(), highValues);
         checkHigher(BloodTestProperties.PLATELETS, bloodTest.getPlatelets(), highValues);
         checkHigher(BloodTestProperties.GLUCOSE, bloodTest.getGlucoseLevels(), highValues);
