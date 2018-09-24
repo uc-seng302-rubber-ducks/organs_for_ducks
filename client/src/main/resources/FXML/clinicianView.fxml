@@ -6,7 +6,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <?import java.lang.String?>
-<AnchorPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.ClinicianController">
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="800.0" prefWidth="1200.0" stylesheets="@../gui.css"
+            xmlns="http://javafx.com/javafx/8" fx:controller="odms.controller.gui.window.ClinicianController">
     <children>
         <MenuBar prefHeight="37.0" prefWidth="619.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <menus>
@@ -43,14 +44,14 @@
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
-                                        <Label text="First Name:" GridPane.rowIndex="1" />
-                                        <Label text="Middle Name:" GridPane.rowIndex="2" />
-                                        <Label text="Last Name:" GridPane.rowIndex="3" />
+                                        <Label styleClass="label-title" text="First Name:" GridPane.rowIndex="1"/>
+                                        <Label styleClass="label-title" text="Middle Name:" GridPane.rowIndex="2"/>
+                                        <Label styleClass="label-title" text="Last Name:" GridPane.rowIndex="3"/>
                                         <Label fx:id="mNameLabel" text="Label" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                         <Label fx:id="lNameLabel" text="Label" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                         <Label fx:id="fNameLabel" text="Label" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                         <Label fx:id="staffIdLabel" text="StaffId" GridPane.columnIndex="1" />
-                                        <Label text="Staff ID:" />
+                                        <Label styleClass="label-title" text="Staff ID:"/>
                                     </children>
                                 </GridPane>
                                 <GridPane layoutX="381.0" layoutY="72.0" prefHeight="201.0" prefWidth="333.0" AnchorPane.bottomAnchor="106.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="72.0">
@@ -66,10 +67,10 @@
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Label text="Address:" />
+                               <Label styleClass="label-title" text="Address:"/>
                               <Label fx:id="addressLabel" text="Label" wrapText="true" GridPane.columnIndex="1" GridPane.columnSpan="3" />
-                              <Label text="City:" GridPane.rowIndex="1" />
-                              <Label text="Zip Code:" GridPane.rowIndex="2" />
+                               <Label styleClass="label-title" text="City:" GridPane.rowIndex="1"/>
+                               <Label styleClass="label-title" text="Zip Code:" GridPane.rowIndex="2"/>
                               <Label fx:id="cityLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <Label fx:id="zipLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                <Label fx:id="asdf" text="Region:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
@@ -176,7 +177,9 @@
               <Font size="20.0" />
           </font>
       </Label>
-      <Button fx:id="undoButton" layoutX="481.0" layoutY="5.0" mnemonicParsing="false" onAction="#undo" text="Undo" AnchorPane.rightAnchor="86.0" AnchorPane.topAnchor="5.0" />
-      <Button fx:id="redoButton" layoutX="545.0" layoutY="5.0" mnemonicParsing="false" onAction="#redo" text="Redo" AnchorPane.rightAnchor="22.0" AnchorPane.topAnchor="5.0" />
+        <Button fx:id="undoButton" layoutX="481.0" layoutY="5.0" mnemonicParsing="false" onAction="#undo"
+                styleClass="button-secondary" text="Undo" AnchorPane.rightAnchor="86.0" AnchorPane.topAnchor="5.0"/>
+        <Button fx:id="redoButton" layoutX="545.0" layoutY="5.0" mnemonicParsing="false" onAction="#redo"
+                styleClass="button-secondary" text="Redo" AnchorPane.rightAnchor="22.0" AnchorPane.topAnchor="5.0"/>
     </children>
 </AnchorPane>

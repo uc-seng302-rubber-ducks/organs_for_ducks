@@ -5,7 +5,8 @@ public enum AppointmentCategory {
     GENERAL_CHECK_UP("General check up", 2),
     HEALTH_ADVICE("Health advice", 3),
     PRESCRIPTION_RENEWAL("Prescription renewal", 4),
-    OTHER("Other", 5);
+    OTHER("Other", 5),
+    PERSONAL("Personal", 6);
 
     private final String name;
     private final int dbValue;

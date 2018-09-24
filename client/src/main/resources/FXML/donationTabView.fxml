@@ -4,8 +4,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.AnchorPane?>
-
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.panel.DonationTabPageController">
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" minHeight="0.0" minWidth="0.0" prefHeight="582.0" prefWidth="790.0"
+            stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8"
+            fx:controller="odms.controller.gui.panel.DonationTabPageController">
     <children>
         <ListView fx:id="canDonate" layoutX="41.0" layoutY="86.0" onMouseClicked="#canDonateMouseClick" prefHeight="437.0" prefWidth="200.0" />
         <ListView fx:id="currentOrgans" layoutX="368.0" layoutY="86.0" onMouseClicked="#currentOrgansMouseClick" prefHeight="437.0" prefWidth="200.0" />
@@ -21,8 +22,8 @@
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
         </TableView>
-        <Label layoutX="108.0" layoutY="66.0" text="Donatable" />
-        <Label fx:id="donatingOrgansTableLabel" layoutX="410.0" layoutY="66.0" text="Currently Donating" />
+        <Label layoutX="108.0" layoutY="66.0" styleClass="label-title" text="Donatable"/>
+        <Label fx:id="donatingOrgansTableLabel" layoutX="549.0" layoutY="64.0" styleClass="label-title" text="Currently Donating"/>
         <Button fx:id="donate" layoutX="285.0" layoutY="184.0" mnemonicParsing="false" onAction="#donate" text="&gt;&gt;" />
         <Button fx:id="undonateButton" layoutX="284.0" layoutY="286.0" mnemonicParsing="false" onAction="#undonate" text="&lt;&lt;" />
         <Button fx:id="expireOrganButton" layoutX="612.0" layoutY="536.0" mnemonicParsing="false" onAction="#expireOrgan" text="Expire organ" />
