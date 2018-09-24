@@ -1,0 +1,8 @@
+Hello %s,
+
+Your appointment with %s %s, has been updated.
+Your new appointment is scheduled for %s. If this does not work for you please contact us or schedule a new appointment.
+
+
+Regards,
+%s %s

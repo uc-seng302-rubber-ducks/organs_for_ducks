@@ -37,6 +37,9 @@ public class Disease extends Deletable {
         this.diagnosisDate = diagnosisDate;
     }
 
+    public Disease() {
+    }
+
     public transient Comparator<Disease> diseaseDateComparator = (o1, o2) -> {
         LocalDate diseaseDate1 = o1.getDiagnosisDate();
         LocalDate diseaseDate2 = o2.getDiagnosisDate();

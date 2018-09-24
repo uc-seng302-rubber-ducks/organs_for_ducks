@@ -203,6 +203,8 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
 
         if (pending) {
             appointment.setAppointmentStatus(AppointmentStatus.ACCEPTED);
+        } else if(appointment.getAppointmentStatus() != AppointmentStatus.ACCEPTED) {
+            appointment.setAppointmentStatus(AppointmentStatus.UPDATED);
         }
 
         appointment.setRequestedDate(LocalDateTime.of(date, localTime));
