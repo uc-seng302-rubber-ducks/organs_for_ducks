@@ -26,13 +26,13 @@ public class RemoveDisqualificationLogicController {
 
         disqualifiedOrgan.setReason(description);
         disqualifiedOrgan.setCurrentlyDisqualified(false);
-//        for (int i = 0; i < disqualifications.size(); i++) {
-//            if (disqualifications.get(i).getOrganType().equals(disqualifiedOrgan.getOrganType())) {
-//                disqualifications.remove(i);
-//                disqualifications.add(i, disqualifiedOrgan);
-//                break;
-//            }
-//        }
+        for (int i = 0; i < disqualifications.size(); i++) {
+            if (disqualifications.get(i).getOrganType().equals(disqualifiedOrgan.getOrganType())) {
+                disqualifications.remove(i);
+                disqualifications.add(i, disqualifiedOrgan);
+                break;
+            }
+        }
 
         stage.close();
     }

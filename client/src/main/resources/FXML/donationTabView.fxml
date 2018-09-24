@@ -27,7 +27,7 @@
         <Button fx:id="undonateButton" layoutX="284.0" layoutY="286.0" mnemonicParsing="false" onAction="#undonate" text="&lt;&lt;" />
         <Button fx:id="expireOrganButton" layoutX="612.0" layoutY="536.0" mnemonicParsing="false" onAction="#expireOrgan" text="Expire organ" />
         <Button fx:id="removeExpiryReasonButton" layoutX="393.0" layoutY="536.0" mnemonicParsing="false" onAction="#removeExpiry" text="Cancel Manual Expiry" />
-      <TableView fx:id="userDisqualifiedOrgansTable" layoutX="590.0" layoutY="86.0" onMouseClicked="#UserDisqualifiedOrgansTableMouseClick" prefHeight="437.0" prefWidth="576.0">
+      <TableView fx:id="userDisqualifiedOrgansTable" layoutX="590.0" layoutY="86.0" onMouseClicked="#userDisqualifiedOrgansTableMouseClick" prefHeight="437.0" prefWidth="576.0">
         <columns>
           <TableColumn fx:id="disqualifiedOrganColumn" prefWidth="149.0" text="Organ" />
           <TableColumn fx:id="disqualifiedReasonColumn" prefWidth="190.0" text="Disqualification Reason" />
@@ -39,6 +39,6 @@
       <Label fx:id="disqualifiedOrgansTableLabel" layoutX="594.0" layoutY="66.0" text="Disqualified Organs" />
         <Button fx:id="organQualificationStatusChangerButton" disable="true" layoutX="245.0" layoutY="14.0" mnemonicParsing="false" onAction="#changeDisqualificationStatus" text="Disqulify Organ" />
       <Button fx:id="updateDisqualifiedOrgan" disable="true" layoutX="909.0" layoutY="536.0" mnemonicParsing="false" onAction="#updateDisqualifiedOrgan" text="Update" />
-      <Button fx:id="deleteDisqualifiedOrgans" disable="true" layoutX="785.0" layoutY="536.0" mnemonicParsing="false" onAction="#removeDisqualifiedOrgans" text="Delete" />
+      <Button fx:id="removeDisqualifiedOrgans" disable="true" layoutX="785.0" layoutY="536.0" mnemonicParsing="false" onAction="#removeDisqualification" text="Remove" />
     </children>
 </AnchorPane>

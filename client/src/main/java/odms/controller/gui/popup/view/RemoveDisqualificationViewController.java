@@ -20,12 +20,6 @@ public class RemoveDisqualificationViewController {
     private TextArea removeDisqualificationDescriptionTextField;
 
     @FXML
-    private Button removeDisqualificationCancelButton;
-
-    @FXML
-    private Button removeDisqualificationConfirmButton;
-
-    @FXML
     private Label removeDisqualificationDescriptionErrorLabel;
 
     private RemoveDisqualificationLogicController logicController;
