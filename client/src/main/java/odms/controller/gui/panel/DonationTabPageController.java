@@ -223,30 +223,42 @@ public class DonationTabPageController {
     }
 
     /**
-     * If the user is dead, the expiry table, expiry/disqualified tables toggle button will be shown. If role is clinician
+     * If the user is dead, the expiry table will be shown. If role is clinician
      * or admin the relative expire/disqualify buttons for organs will be shown too.
      */
     private void showOrHideExpiryTable() {
         if (currentUser.getDeathDetails().getMomentOfDeath() == null) {
             //user is alive, only show disqualified table, don't show toggle
-            currentlyDonating.setVisible(false);
-            expireOrganButton.setVisible(false);
-            removeExpiryReasonButton.setVisible(false);
-            organQualificationStatusChangerButton.setVisible(true);
+            currentlyDonating.setVisible(false); //Hide expiry table
+            expireOrganButton.setVisible(false); //Hide expire organ button
+            removeExpiryReasonButton.setVisible(false); //Hide remove expiry button
+            organQualificationStatusChangerButton.setVisible(true); // Show the disqualify button
 
-            userDisqualifiedOrgansTable.setVisible(true);
-            toggleDisqualificationExpiryButton.setVisible(false);
+            userDisqualifiedOrgansTable.setVisible(true); //Show the disqualified table
+            //toggleDisqualificationExpiryButton.setVisible(false);
 
-        } else {
-            toggleDisqualificationExpiryButton.setVisible(true);
-            disqualifiedOrgansTableLabel.setVisible(false);
-            userDisqualifiedOrgansTable.setLayoutX(368);
+        } else { //user is dead, show expiry stuff
+            //toggleDisqualificationExpiryButton.setVisible(true);
+            disqualifiedOrgansTableLabel.setVisible(false); //Hide label for disqualified organs table
+            //userDisqualifiedOrgansTable.setLayoutX(368);
             toggleDisqualifiedExpired(true);
+            //Show expiry things
+            toggleDisqualificationExpiryButton.setText("Show disqualified organs ");
+            donatingOrgansTableLabel.setText("Currently Donating");
+            organQualificationStatusChangerButton.setVisible(false);
+            updateDisqualifiedOrgan.setVisible(false);currentlyDonating.setVisible(goToExpiryMode);
+            expireOrganButton.setVisible(goToExpiryMode);
+            removeExpiryReasonButton.setVisible(goToExpiryMode);
+
+            userDisqualifiedOrgansTable.setVisible(!goToExpiryMode);
+
             organQualificationStatusChangerButton.setVisible(false);
             organQualificationStatusChangerButton.setText("Disqualify Organ");
             organQualificationStatusChangerButton.setDisable(true);
         }
     }
+
+
 
     /**
      * Sets what table and relating buttons are visible on the organ donating screen.
@@ -280,7 +292,7 @@ public class DonationTabPageController {
 
     @FXML
     private void toggleDisqualificationExpiry() {
-        toggleDisqualifiedExpired(userDisqualifiedOrgansTable.isVisible());
+        //toggleDisqualifiedExpired(userDisqualifiedOrgansTable.isVisible());
     }
 
     /**
@@ -380,6 +392,7 @@ public class DonationTabPageController {
     private void populateTableView(Map<Organs, ExpiryReason> organsExpiryReasonMap) {
         currentOrgans.setVisible(false);
         currentlyDonating.setVisible(true);
+        showOrHideExpiryTable(); //CHOOSE HERE
         organsWithExpiries.clear();
         for (Map.Entry<Organs, ExpiryReason> organEntry : organsExpiryReasonMap.entrySet()) {
             organsWithExpiries.add(new OrgansWithExpiry(organEntry.getKey(), organEntry.getValue(), currentUser.getMomentDeath()));
