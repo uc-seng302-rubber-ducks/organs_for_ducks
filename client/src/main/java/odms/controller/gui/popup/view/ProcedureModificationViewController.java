@@ -42,6 +42,14 @@ public class ProcedureModificationViewController {
     private ProcedureTabController procedureTabController;
     private MedicalProcedure procedure;
 
+    /**
+     * initialises the controller
+     *
+     * @param procedure              procedure to be modified
+     * @param stage                  stage to display on
+     * @param currentUser            user related to the procedure
+     * @param procedureTabController parent controller from which this was called
+     */
     public void init(MedicalProcedure procedure, Stage stage, User currentUser, ProcedureTabController procedureTabController){
         this.stage = stage;
         this.user = currentUser;
@@ -58,6 +66,9 @@ public class ProcedureModificationViewController {
         }
     }
 
+    /**
+     * sets up the affected organs listview with entries containing an organ and a checkbox
+     */
     private void setupOrgans() {
         ObservableList<TextStringCheckBox> allOrgans = FXCollections.observableList(new ArrayList<>());
         for (Organs organ : Organs.values()) {
@@ -66,6 +77,10 @@ public class ProcedureModificationViewController {
         organsAffectedByProcedureListView.setItems(allOrgans);
     }
 
+    /**
+     * displays the selected procedure
+     * @param procedure procedure to be displayed
+     */
     private void showProcedureToEdit(MedicalProcedure procedure) {
         procedureTextField.setText(procedure.getSummary());
         procedureDateSelector.setValue(procedure.getProcedureDate());
@@ -78,11 +93,17 @@ public class ProcedureModificationViewController {
     }
 
 
+    /**
+     * fired when cancel button is clicked
+     */
     @FXML
     void cancelNewProcedure() {
         stage.close();
     }
 
+    /**
+     * fired when the confirm button is clicked
+     */
     @FXML
     void addNewProcedure() {
         String procedureName = procedureTextField.getText();

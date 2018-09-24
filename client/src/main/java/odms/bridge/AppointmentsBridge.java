@@ -142,7 +142,16 @@ public class AppointmentsBridge extends Bifrost {
         });
     }
 
-    public void getClinicianAppointmentsTimes(String staffId, String startDate, String endDate, String token,ObservableSet<LocalDateTime> observableDateTimes){
+    /**
+     * gets the times of appointments for a given clinician between two datetimes
+     *
+     * @param staffId             id of clinician to select by
+     * @param startDate           first date for appointments to be selected
+     * @param endDate             last date for appointments to be selected
+     * @param token               auth token to use
+     * @param observableDateTimes observable list to be updated on response
+     */
+    public void getClinicianAppointmentsTimes(String staffId, String startDate, String endDate, String token, ObservableSet<LocalDateTime> observableDateTimes){
         String url = String.format("%s/clinicians/%s/appointmentsTimes?startDateTime=%s&endDateTime=%s", ip,staffId,startDate,endDate);
         Request request = new Request.Builder().addHeader(tokenHeader, token).url(url).build();
         client.newCall(request).enqueue(new Callback() {
