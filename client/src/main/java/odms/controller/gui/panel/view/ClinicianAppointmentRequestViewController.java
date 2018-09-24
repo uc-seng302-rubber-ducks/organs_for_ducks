@@ -380,7 +380,7 @@ public class ClinicianAppointmentRequestViewController implements Converter {
                 logicController.updateAppointment(getSelectedAppointment(), appointmentRequestCategory.getValue(),
                         appointmentRequestDate.getValue(), appointmentRequestTime.getValue().toString(), appointmentRequestDescription.getText(), false);
             } else {
-                AlertWindowFactory.generateInfoWindow(".This appointment is no longer available");
+                AlertWindowFactory.generateInfoWindow("This appointment is no longer available");
             }
         }
 
