@@ -174,7 +174,6 @@ public class AppointmentsBridge extends Bifrost {
                 String bodyString = response.body().string();
                 Platform.runLater(() -> {
                     observableDateTimes.clear();
-                    System.out.println(bodyString);
                     observableDateTimes.addAll(new JsonHandler().decodeDateTimes(bodyString));
                 });
             }
