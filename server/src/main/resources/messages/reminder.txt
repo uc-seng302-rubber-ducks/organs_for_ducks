@@ -1,0 +1,7 @@
+Hello %s,
+
+Just a reminder you have an appointment scheduled for %s with %s %s.
+
+
+Regards
+%s %s

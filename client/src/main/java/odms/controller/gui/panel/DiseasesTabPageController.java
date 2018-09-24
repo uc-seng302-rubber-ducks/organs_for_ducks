@@ -256,24 +256,7 @@ public class DiseasesTabPageController {
     @FXML
     private void addDisease() {
 
-        FXMLLoader addDiseaseLoader = new FXMLLoader(
-                getClass().getResource("/FXML/createNewDisease.fxml"));
-        Parent root;
-        try {
-            root = addDiseaseLoader.load();
-            NewDiseaseController newDiseaseController = addDiseaseLoader.getController();
-            Stage stage = new Stage();
-            Disease disease = new Disease("", false, false, LocalDate.now());
-            currentUser.addCurrentDisease(disease);
-            newDiseaseController.init(currentUser, application, stage, disease, parent);
-            stage.setScene(new Scene(root));
-            stage.show();
-            Log.info("successfully launched add Diseases pop-up window for User NHI: " + currentUser.getNhi());
-        } catch (IOException e) {
-            Log.severe("failed to load add Diseases pop-up window for User NHI: " + currentUser.getNhi(), e);
-            AlertWindowFactory.generateError("Whoops! Something went wrong!");
-        }
-
+        launchDiseasesGui(null);
 
     }
 

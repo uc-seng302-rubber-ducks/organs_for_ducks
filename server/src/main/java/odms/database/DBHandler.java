@@ -4,6 +4,7 @@ import odms.commons.model.*;
 import odms.commons.model._enum.Organs;
 import odms.commons.model._enum.UserType;
 import odms.commons.model.datamodel.*;
+import odms.commons.model.dto.AppointmentWithPeople;
 import odms.commons.utils.Log;
 import odms.commons.utils.PasswordManager;
 import odms.database.db_strategies.*;
@@ -11,6 +12,7 @@ import odms.database.db_strategies.*;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.sql.*;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -126,7 +128,8 @@ public class DBHandler {
             "WHERE fkUserNhi = ?";
     private static final String INSERT_ELSE_UPDATE_PREFERRED_CLINICIAN = "INSERT INTO PreferredClinician (fkUserNhi, fkStaffId) " +
             "VALUES (?, ?) ON DUPLICATE KEY UPDATE fkUserNhi=?, fkStaffId=?";
-
+    public static final String GET_APPOINTMENTS_TIME = "SELECT fkStaffId, fkUserNhi, requestedTime FROM AppointmentDetails WHERE apptId = ? ";
+    public static final String GET_APPOINTMENTS_ON_DATE = "SELECT fkStaffId, fkUserNhi, requestedTime FROM AppointmentDetails WHERE DATE(requestedTime) = ? ";
 
     private AbstractUpdateStrategy updateStrategy;
     private AbstractFetchAppointmentStrategy fetchAppointmentStrategy;
@@ -1562,6 +1565,65 @@ public class DBHandler {
     }
 
     /**
+     * Gets the appointments scheduled for the given date
+     *
+     * @param connection connection to the database
+     * @param requestedDate Date to get appointments for
+     * @return collection of the appointments
+     * @throws SQLException sql db has gone wrong
+     */
+    public Collection<AppointmentWithPeople> getAppointmentsForDate(Connection connection, LocalDate requestedDate) throws SQLException {
+        List<AppointmentWithPeople> results = new ArrayList<>();
+        try(PreparedStatement preparedStatement  = connection.prepareStatement(GET_APPOINTMENTS_ON_DATE)){
+            preparedStatement.setDate(1, Date.valueOf(requestedDate));
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()){
+                    String nhi = resultSet.getString("fkUserNhi");
+                    String id = resultSet.getString("fkStaffId");
+                    LocalDateTime appointmentTime = resultSet.getTimestamp("requestedTime").toLocalDateTime();
+                    User user = getOneUser(connection, nhi);
+                    Clinician clinician = getOneClinician(connection, id);
+                    AppointmentWithPeople appointment = new AppointmentWithPeople();
+                    appointment.setUser(user);
+                    appointment.setClinician(clinician);
+                    appointment.setAppointmentTime(appointmentTime);
+                    results.add(appointment);
+                }
+            }
+        }
+        return results;
+    }
+
+    /**
+     * Gets the appointment for a specific person
+     *
+     * @param connection connection to the database
+     * @param appointmentId appointment to get
+     * @return collection of the appointments
+     * @throws SQLException sql db has gone wrong
+     */
+    public AppointmentWithPeople getAppointmentWithPeople(Connection connection, int appointmentId) throws SQLException {
+        try(PreparedStatement preparedStatement  = connection.prepareStatement(GET_APPOINTMENTS_TIME)){
+            preparedStatement.setInt(1, appointmentId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if(resultSet.next()){ //should only ever be a single result in the set
+                    String nhi = resultSet.getString("fkUserNhi");
+                    String id = resultSet.getString("fkStaffId");
+                    LocalDateTime appointmentTime = resultSet.getTimestamp("requestedTime").toLocalDateTime();
+                    User user = getOneUser(connection, nhi);
+                    Clinician clinician = getOneClinician(connection, id);
+                    AppointmentWithPeople appointment = new AppointmentWithPeople();
+                    appointment.setUser(user);
+                    appointment.setClinician(clinician);
+                    appointment.setAppointmentTime(appointmentTime);
+                    return appointment;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * Gets and returns the blood test handler to the blood test controller
      *
      * @return A BloodTestHandler
@@ -1569,5 +1631,4 @@ public class DBHandler {
     public BloodTestHandler getBloodTestHandler() {
         return new BloodTestHandler();
     }
-
 }

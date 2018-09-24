@@ -7,7 +7,7 @@
             minWidth="-Infinity" prefHeight="467.0" prefWidth="479.0" stylesheets="@../gui.css"
             xmlns="http://javafx.com/javafx/8" fx:controller="odms.controller.gui.popup.NewDiseaseController">
     <children>
-        <Label layoutX="14.0" layoutY="14.0" text="Create New Disease"/>
+        <Label fx:id="headerLabel" layoutX="14.0" layoutY="14.0" text="Create New Disease"/>
         <Separator layoutX="7.0" layoutY="34.0" prefHeight="11.0" prefWidth="479.0"/>
         <Button fx:id="cancelButton" layoutX="12.0" layoutY="425.0" mnemonicParsing="false" onAction="#cancelCreation"
                 text="Cancel"/>
