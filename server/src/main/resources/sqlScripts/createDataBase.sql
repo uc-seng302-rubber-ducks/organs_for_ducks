@@ -307,10 +307,10 @@ CREATE TABLE PreferredClinician (
     ON UPDATE CASCADE
 );
 
-CREATE EVENT qualifyOrgans
-  ON SCHEDULE AT Current_timestamp + Interval 1 DAY
-  ON COMPLETION PRESERVE
-  DO
-    UPDATE DisqualifiedOrgans set isCurrentlyDisqulified = 0
-    WHERE dateEligable <= CURDATE();
+CREATE DEFINER=`seng302-team100`@`%` EVENT `qualifyOrgans` 
+  ON SCHEDULE EVERY 1 DAY ON COMPLETION PRESERVE 
+DISABLE DO 
+  UPDATE DisqualifiedOrgans 
+  set isCurrentlyDisqulifed = 0 
+  WHERE dateEligable <= CURDATE()
 
