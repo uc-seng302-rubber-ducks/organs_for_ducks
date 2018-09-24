@@ -75,7 +75,7 @@ public class DonationTabPageController {
     private Button removeExpiryReasonButton;
 
     @FXML
-    private Button organQualificationStatusChangerButton;
+    private Button disqualifyOrganButton;
 
     @FXML
     private TableView<OrgansWithDisqualification> userDisqualifiedOrgansTable;
@@ -93,10 +93,10 @@ public class DonationTabPageController {
     private TableColumn<OrgansWithDisqualification, String> disqualifiedStaffIdColumn;
 
     @FXML
-    private Button toggleDisqualificationExpiryButton;
+    private Button updateDisqualifiedOrgan;
 
     @FXML
-    private Button updateDisqualifiedOrgan;
+    private Button removeDisqualificationButton;
 
     private User currentUser;
     private AppController application;
@@ -151,24 +151,24 @@ public class DonationTabPageController {
         currentOrgans.getSelectionModel().getSelectedItems().addListener((ListChangeListener<? super Organs>) a ->{
             if(!currentOrgans.getSelectionModel().getSelectedItems().isEmpty()) {
                 canDonate.getSelectionModel().clearSelection();
-                organQualificationStatusChangerButton.setDisable(false);
+                disqualifyOrganButton.setDisable(false);
             } else {
                 if(!userDisqualifiedOrgansTable.getSelectionModel().isEmpty()) {
                     userDisqualifiedOrgansTable.getSelectionModel().clearSelection();
                 }
-                organQualificationStatusChangerButton.setDisable(true);
+                disqualifyOrganButton.setDisable(true);
             }
         });
 
         canDonate.getSelectionModel().getSelectedItems().addListener((ListChangeListener<? super Organs>) a ->{
             if(canDonate.getSelectionModel().getSelectedItems().isEmpty()){
-                organQualificationStatusChangerButton.setDisable(true);
+                disqualifyOrganButton.setDisable(true);
             } else {
                 if(!userDisqualifiedOrgansTable.getSelectionModel().isEmpty()) {
                     userDisqualifiedOrgansTable.getSelectionModel().clearSelection();
                 }
                 currentOrgans.getSelectionModel().clearSelection();
-                organQualificationStatusChangerButton.setDisable(false);
+                disqualifyOrganButton.setDisable(false);
             }
         });
 
@@ -188,10 +188,10 @@ public class DonationTabPageController {
                 currentOrgans.getSelectionModel().clearSelection();
             }
             if(userDisqualifiedOrgansTable.getSelectionModel().isEmpty()) {
-                organQualificationStatusChangerButton.setDisable(true);
+                disqualifyOrganButton.setDisable(true);
                 updateDisqualifiedOrgan.setDisable(true);
             } else {
-                organQualificationStatusChangerButton.setDisable(true);
+                disqualifyOrganButton.setDisable(true);
                 updateDisqualifiedOrgan.setDisable(false);
 
             }
@@ -228,71 +228,43 @@ public class DonationTabPageController {
      */
     private void showOrHideExpiryTable() {
         if (currentUser.getDeathDetails().getMomentOfDeath() == null) {
-            //user is alive, only show disqualified table, don't show toggle
-            currentlyDonating.setVisible(false); //Hide expiry table
-            expireOrganButton.setVisible(false); //Hide expire organ button
-            removeExpiryReasonButton.setVisible(false); //Hide remove expiry button
-            organQualificationStatusChangerButton.setVisible(true); // Show the disqualify button
+            //user is alive, only show disqualified table
 
+            //Hide expiry things
+            currentlyDonating.setVisible(false); // Hide the table
+            expireOrganButton.setVisible(false); // Hide the expire button
+            removeExpiryReasonButton.setVisible(false); //Hide the remove expiry button
+
+            //Show disqualification things
+            disqualifiedOrgansTableLabel.setVisible(true); //Show label for disqualified organs table
             userDisqualifiedOrgansTable.setVisible(true); //Show the disqualified table
-            //toggleDisqualificationExpiryButton.setVisible(false);
+            disqualifyOrganButton.setVisible(true); // Show the disqualify button
+            updateDisqualifiedOrgan.setVisible(true); //Show the update button
+            removeDisqualificationButton.setVisible(true); //Show the remove button
 
-        } else { //user is dead, show expiry stuff
-            //toggleDisqualificationExpiryButton.setVisible(true);
-            disqualifiedOrgansTableLabel.setVisible(false); //Hide label for disqualified organs table
-            //userDisqualifiedOrgansTable.setLayoutX(368);
-            toggleDisqualifiedExpired(true);
-            //Show expiry things
-            toggleDisqualificationExpiryButton.setText("Show disqualified organs ");
+            //Show donating things
             donatingOrgansTableLabel.setText("Currently Donating");
-            organQualificationStatusChangerButton.setVisible(false);
-            updateDisqualifiedOrgan.setVisible(false);currentlyDonating.setVisible(goToExpiryMode);
-            expireOrganButton.setVisible(goToExpiryMode);
-            removeExpiryReasonButton.setVisible(goToExpiryMode);
-
-            userDisqualifiedOrgansTable.setVisible(!goToExpiryMode);
-
-            organQualificationStatusChangerButton.setVisible(false);
-            organQualificationStatusChangerButton.setText("Disqualify Organ");
-            organQualificationStatusChangerButton.setDisable(true);
-        }
-    }
+            currentOrgans.setVisible(true);
 
 
-
-    /**
-     * Sets what table and relating buttons are visible on the organ donating screen.
-     * @param goToExpiryMode boolean describing to the function should show the expiry table. If false, it will show
-     *                       the disqualified table.
-     */
-    private void toggleDisqualifiedExpired(boolean goToExpiryMode) {
-
-        if (goToExpiryMode) {
-            toggleDisqualificationExpiryButton.setText("Show disqualified organs ");
-            donatingOrgansTableLabel.setText("Currently Donating");
-            organQualificationStatusChangerButton.setVisible(false);
-            updateDisqualifiedOrgan.setVisible(false);
         } else {
-            toggleDisqualificationExpiryButton.setText("Show organ expiry details");
-            donatingOrgansTableLabel.setText("Disqualified Organs");
-            organQualificationStatusChangerButton.setVisible(true);
-            updateDisqualifiedOrgan.setVisible(true);
+            //Hide disqualification things
+            disqualifiedOrgansTableLabel.setVisible(false); //Hide label for disqualified organs table
+            userDisqualifiedOrgansTable.setVisible(false); //Hide disqualified table
+            disqualifyOrganButton.setVisible(false); //Hide button to disqualify organs
+            updateDisqualifiedOrgan.setVisible(false); //Hide the update button
+            removeDisqualificationButton.setVisible(false); //Hide the remove button
+
+            //Hide donating things
+            donatingOrgansTableLabel.setText("Expired Organs");
+            currentOrgans.setVisible(false);
+
+            //Show expiry things
+            currentlyDonating.setVisible(true); // Show the table
+            expireOrganButton.setVisible(true); // Show the expire button
+            removeExpiryReasonButton.setVisible(true); //Show the remove expiry button
+
         }
-
-        currentlyDonating.setVisible(goToExpiryMode);
-        expireOrganButton.setVisible(goToExpiryMode);
-        removeExpiryReasonButton.setVisible(goToExpiryMode);
-
-        userDisqualifiedOrgansTable.setVisible(!goToExpiryMode);
-        //disqualify button set visible !goToExpiryMode
-        //un-disqualify button set visible !goToExpiryMode
-
-        updateButton();
-    }
-
-    @FXML
-    private void toggleDisqualificationExpiry() {
-        //toggleDisqualifiedExpired(userDisqualifiedOrgansTable.isVisible());
     }
 
     /**
@@ -302,9 +274,7 @@ public class DonationTabPageController {
         if (application.getUsername() == null || application.getUsername().isEmpty()) {
             expireOrganButton.setVisible(false);
             removeExpiryReasonButton.setVisible(false);
-            organQualificationStatusChangerButton.setVisible(false);
-            //disqualify organ setVisible false
-            //un-disqualify organ setVisible false
+            disqualifyOrganButton.setVisible(false);
         }
     }
 
@@ -368,6 +338,7 @@ public class DonationTabPageController {
         } else {
             currentlyDonating.setVisible(false);
             currentOrgans.setVisible(true);
+            showOrHideExpiryTable();
             currentOrgans.setItems(FXCollections.observableList(donating));
             currentOrgans.setCellFactory(column -> OrganListCellFactory.generateListCell(currentUser));
         }
@@ -546,7 +517,7 @@ public class DonationTabPageController {
     }
 
     @FXML
-    void changeDisqualificationStatus() {
+    void disqualifyOrgan() {
         launchDisqualifyOrganReason(false);
     }
 

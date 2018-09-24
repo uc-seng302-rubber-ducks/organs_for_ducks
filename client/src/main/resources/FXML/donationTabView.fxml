@@ -32,9 +32,8 @@
             <TableColumn fx:id="disqualifiedStaffIdColumn" prefWidth="88.0" text="Staff ID" />
         </columns>
       </TableView>
-      <Button fx:id="toggleDisqualificationExpiryButton" layoutX="714.0" layoutY="14.0" mnemonicParsing="false" onAction="#toggleDisqualificationExpiry" text="Button" />
       <Label fx:id="disqualifiedOrgansTableLabel" layoutX="594.0" layoutY="66.0" text="Disqualified Organs" />
-        <Button fx:id="organQualificationStatusChangerButton" disable="true" layoutX="245.0" layoutY="14.0" mnemonicParsing="false" onAction="#changeDisqualificationStatus" text="Disqulify Organ" />
+        <Button fx:id="disqualifyOrganButton" disable="true" layoutX="245.0" layoutY="14.0" mnemonicParsing="false" onAction="#disqualifyOrgan" text="Disqulify Organ" />
       <Button fx:id="updateDisqualifiedOrgan" disable="true" layoutX="845.0" layoutY="536.0" mnemonicParsing="false" onAction="#updateDisqualifiedOrgan" text="Update" />
       <Button fx:id="removeDisqualificationButton" disable="true" layoutX="590.0" layoutY="536.0" mnemonicParsing="false" onAction="#removeDisqualification" text="Remove Disqualification" />
     </children>
