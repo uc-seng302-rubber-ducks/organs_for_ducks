@@ -173,6 +173,8 @@ public class UpdateUserController {
     private Label updateDeathDetailsOverrideWarningLabel;
     @FXML
     private Button removeUpdateDeathDetailsButton;
+    @FXML
+    private Tab deathtab;
     //</editor-fold>
     @FXML
     private Button resetProfileImageUser;
@@ -193,7 +195,7 @@ public class UpdateUserController {
      * @param controller An instance of the AppController class.
      * @param stage      The applications stage.
      */
-    public void init(User user, AppController controller, Stage stage, UserController userController) {
+    public void init(User user, AppController controller, Stage stage, UserController userController, boolean fromClinician) {
         countrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
         ecCountrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
         for (Regions regions : Regions.values()) {
@@ -275,6 +277,10 @@ public class UpdateUserController {
 
         addCheckBoxListener(smokerCheckBox);
 
+        if (!fromClinician) {
+            deathtab.setDisable(true);
+            deathtab.setStyle("visibility: hidden");
+        }
 
         stage.setOnCloseRequest(event -> {
             event.consume();

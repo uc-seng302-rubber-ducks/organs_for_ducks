@@ -117,8 +117,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         doubleClickOn(getCell("#searchTableView", 0, 0));
     }
 
-    //TODO Users can currently edit their own death details. JR Friday 21 @23:13
-    @Test @Ignore
+    @Test @Ignore //Using css to make the tab invisible makes the test unable to find it
     public void testUserCannotEditDeathDetails() {
         setTextField(this,"#userIDTextField", "ABC1244");
         clickOnButton(this,"#loginUButton");

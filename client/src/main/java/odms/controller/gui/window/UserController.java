@@ -230,7 +230,7 @@ public class UserController implements PropertyChangeListener {
             Stage updateStage = new Stage();
             updateStage.initModality(Modality.APPLICATION_MODAL);
             updateStage.setScene(new Scene(root));
-            updateUserController.init(currentUser, application, updateStage, this);
+            updateUserController.init(currentUser, application, updateStage, this, this.fromClinician);
             updateStage.show();
             Log.info("Successfully launched update user window for User NHI: " + currentUser.getNhi());
 
