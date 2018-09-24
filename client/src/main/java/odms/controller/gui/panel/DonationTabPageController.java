@@ -599,6 +599,7 @@ public class DonationTabPageController {
             if (isUpdate) {
                 OrgansWithDisqualification organsWithDisqualification = userDisqualifiedOrgansTable.getSelectionModel().getSelectedItem();
                 disqualifyOrganReasonViewController.init(organsWithDisqualification.getOrganType(), currentUser, disqualifyOrganReasonStage, application.getUsername(), observableDisqualifiedOrgans);
+                disqualifyOrganReasonViewController.updateMode(userDisqualifiedOrgansTable.getSelectionModel().getSelectedItem());
 
             } else {
                 disqualifyOrganReasonViewController.init(organ, currentUser, disqualifyOrganReasonStage, application.getUsername(), observableDisqualifiedOrgans);
