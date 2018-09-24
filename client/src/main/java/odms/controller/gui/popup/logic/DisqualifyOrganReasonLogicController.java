@@ -1,7 +1,6 @@
 package odms.controller.gui.popup.logic;
 
 import javafx.collections.ObservableList;
-import javafx.stage.Stage;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.OrgansWithDisqualification;
@@ -12,18 +11,15 @@ import java.time.LocalDate;
 public class DisqualifyOrganReasonLogicController {
 
     private User user;
-    private Stage stage;
     private ObservableList<OrgansWithDisqualification> disqualifications;
 
     /**
      * Initializes the DisqualifyOrganReasonLogicController
      *
      * @param user          Current user
-     * @param stage         The applications stage.
      */
-    public DisqualifyOrganReasonLogicController(User user, Stage stage, ObservableList<OrgansWithDisqualification> disqualifiedOrgans) {
+    public DisqualifyOrganReasonLogicController(User user, ObservableList<OrgansWithDisqualification> disqualifiedOrgans) {
         this.user = user;
-        this.stage = stage;
         this.disqualifications = disqualifiedOrgans;
     }
 
@@ -53,8 +49,6 @@ public class DisqualifyOrganReasonLogicController {
             user.getDonorDetails().getOrgans().remove(organsWithDisqualification.getOrganType());
 
         }
-
-        stage.close();
     }
 
     /**
@@ -73,14 +67,6 @@ public class DisqualifyOrganReasonLogicController {
      */
     public boolean validateDescription(String description) {
         return AttributeValidation.checkRequiredString(description);
-    }
-
-
-    /**
-     * closes the Disqualify Organ Reason view.
-     */
-    public void cancel() {
-        stage.close();
     }
 
 }

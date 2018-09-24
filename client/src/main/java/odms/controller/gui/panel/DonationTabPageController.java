@@ -250,15 +250,16 @@ public class DonationTabPageController {
                 this.parent.updateUndoRedoButtons();
                 currentUser.getDonorDetails().getDisqualifiedOrgans().clear();
                 currentUser.getDonorDetails().getDisqualifiedOrgans().addAll(observableDisqualifiedOrgans);
-
-                organsWithDisqualifications.clear();
-                for (OrgansWithDisqualification organ : observableDisqualifiedOrgans) {
-                    if (organ.isCurrentlyDisqualified()) {
-                        organsWithDisqualifications.add(organ);
-                    }
-                }
-                userDisqualifiedOrgansTable.setItems(organsWithDisqualifications);
             }
+
+            organsWithDisqualifications.clear();
+            for (OrgansWithDisqualification organ : observableDisqualifiedOrgans) {
+                if (organ.isCurrentlyDisqualified()) {
+                    organsWithDisqualifications.add(organ);
+                }
+            }
+            userDisqualifiedOrgansTable.setItems(organsWithDisqualifications);
+
         });
     }
 
@@ -443,8 +444,8 @@ public class DonationTabPageController {
      */
     public void refreshDisqualifiedOrgans() {
         listenFlag = false;
-        organsWithDisqualifications.clear();
-        organsWithDisqualifications.setAll(currentUser.getDonorDetails().getDisqualifiedOrgans());
+        observableDisqualifiedOrgans.clear();
+        observableDisqualifiedOrgans.setAll(currentUser.getDonorDetails().getDisqualifiedOrgans());
         listenFlag = true;
     }
 
@@ -611,7 +612,6 @@ public class DonationTabPageController {
 
             if (isUpdate) {
                 OrgansWithDisqualification organsWithDisqualification = userDisqualifiedOrgansTable.getSelectionModel().getSelectedItem();
-                disqualifyOrganReasonViewController.updateMode(organsWithDisqualification);
                 disqualifyOrganReasonViewController.init(organsWithDisqualification.getOrganType(), currentUser, disqualifyOrganReasonStage, application.getUsername(), observableDisqualifiedOrgans);
 
             } else {
