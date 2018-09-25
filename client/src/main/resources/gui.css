@@ -463,5 +463,22 @@
     -fx-border-color: #b7b6b6
 }
 
+/************************************
+ *                                  *
+ * LINE CHART GRAPH                 *
+ *                                  *
+ ************************************/
+
+.chart-plot-background {
+    -fx-background-color: WHITE;
+}
+
+.chart-vertical-grid-lines {
+    -fx-stroke: transparent;
+}
+
+.chart-horizontal-grid-lines {
+    -fx-stroke: #B2C8D2;
+}
 
 
