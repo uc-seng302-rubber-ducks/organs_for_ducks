@@ -234,6 +234,10 @@ public class BloodTestViewController {
     }
 
 
+    /**
+     * checks that all the blood test properties are valid
+     * @return if all the blood test properties are valid
+     */
     private boolean validateField() {
         boolean valid = true;
         if (AttributeValidation.validateDouble(redBloodCount.getText()) == -1) {
@@ -285,10 +289,13 @@ public class BloodTestViewController {
         return valid;
     }
 
+    /**
+     * check that all field are valid then gets all the values from the textfield,
+     * then calls the logic controller to update the blood test
+     */
     @FXML
     private void updateBloodTest() {
             if (validateField()) {
-                // hmmm seems bad sadness
                 bloodTest.setGlucoseLevels(AttributeValidation.validateDouble(glucose.getText()));
                 bloodTest.setHaematocrit(AttributeValidation.validateDouble(haematocrit.getText()));
                 bloodTest.setMeanCellHaematocrit(AttributeValidation.validateDouble(meanCellHaematocrit.getText()));
@@ -303,6 +310,10 @@ public class BloodTestViewController {
             }
     }
 
+    /**
+     * check to make sure the user want to delete a test
+     * see logicController.deleteBloodTest
+     */
     @FXML
     private void deleteBloodTest() {
         if (bloodTestTableView.getSelectionModel().getSelectedItem() != null) {
@@ -332,6 +343,9 @@ public class BloodTestViewController {
 
     }
 
+    /**
+     *  see logicController.addNewBloodTest
+     */
     @FXML
     private void addNewBloodTest() {
         logicController.addNewBloodTest();

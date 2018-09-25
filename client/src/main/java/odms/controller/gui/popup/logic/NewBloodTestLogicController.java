@@ -27,6 +27,18 @@ public class NewBloodTestLogicController {
     }
 
 
+    /**
+     * a method to add a new blood test to a user
+     * @param date the blood test happened
+     * @param redBloodCount the blood test's red blood count
+     * @param whiteBloodCount the blood test's white blood count
+     * @param heamoglobin the blood test's heamoglobin level
+     * @param platelets the blood test's platelets level
+     * @param glucose the blood test's glucose level
+     * @param meanCellVolume the blood test's meanCellVolume level
+     * @param haematocrit the blood test's haematocrit level
+     * @param meanCellHaematocrit the blood test's meanCellHaematocrit level
+     */
     public void addBloodTest(LocalDate date, String redBloodCount, String whiteBloodCount, String heamoglobin,
                              String platelets, String  glucose, String meanCellVolume, String haematocrit,
                              String meanCellHaematocrit) {

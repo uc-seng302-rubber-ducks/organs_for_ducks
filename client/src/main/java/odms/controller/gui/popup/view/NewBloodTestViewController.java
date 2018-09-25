@@ -57,7 +57,6 @@ public class NewBloodTestViewController {
     private Label haematocritError;
     @FXML
     private Label meanCellHaematocritError;
-    private BloodTestBridge bloodTestBridge;
 
 
 
@@ -65,7 +64,6 @@ public class NewBloodTestViewController {
     private Boolean valid = true;
 
     public void init(User user, Stage stage, BloodTestBridge bloodTestBridge){
-        this.bloodTestBridge = bloodTestBridge;
         this.logicController = new NewBloodTestLogicController(user,stage);
         resetErrorLabels();
     }
@@ -77,6 +75,9 @@ public class NewBloodTestViewController {
 
     }
 
+    /**
+     * resets the error label to be hidden
+     */
     private void resetErrorLabels(){
         dateErrorLabel.setVisible(false);
         redBloodCellError.setVisible(false);
@@ -89,6 +90,13 @@ public class NewBloodTestViewController {
         meanCellHaematocritError.setVisible(false);
     }
 
+    /**
+     * a method to check blood test properties and set error labels if they are invalid
+     * @param textField the textfield containing the value for a blood test property
+     * @param label the error label for a blood test property
+     * @param bloodTestProperties the BloodTestProperty to get the upper and lower bound
+     * @return returns true if the value in the textfield is a valid input
+     */
     private Boolean BloodTestValidation(TextField textField, Label label, BloodTestProperties bloodTestProperties){
         valid = true;
         DecimalFormat df2 = new DecimalFormat(".##");
@@ -111,6 +119,10 @@ public class NewBloodTestViewController {
         return valid;
     }
 
+    /**
+     * check that all blood test properties are valid
+     * @return returns true if all properties are valid
+     */
     private boolean validateField() {
         boolean fieldValid = true;
         fieldValid &= BloodTestValidation(redBloodCount,redBloodCellError,BloodTestProperties.RBC);
@@ -130,6 +142,9 @@ public class NewBloodTestViewController {
 
     }
 
+    /**
+     * a method to add a new blood test to a user
+     */
     @FXML
     private void addBloodTest() {
         resetErrorLabels();
@@ -141,6 +156,10 @@ public class NewBloodTestViewController {
         }
     }
 
+    /**
+     * changes a node to show the user if it is invalid
+     * @param node a node to mark as invalid
+     */
     private void invalidateNode(Node node) {
         node.getStyleClass().add("invalid");
     }

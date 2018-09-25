@@ -37,6 +37,9 @@ public class BloodTestsLogicController implements PropertyChangeListener {
         ServerEventNotifier.getInstance().addPropertyChangeListener(this);
     }
 
+    /**
+     * Opens the new blood test pop up for users to add a new blood test
+     */
     public void addNewBloodTest() {
         FXMLLoader newBloodTestLoader = new FXMLLoader(getClass().getResource("/FXML/BloodTestPopUP.fxml"));
         Parent root;
@@ -56,11 +59,19 @@ public class BloodTestsLogicController implements PropertyChangeListener {
 
     }
 
+    /**
+     * Calls the database to delete the given blood test
+     * @param bloodTest the blood test to be deleted
+     */
     public void deleteBloodTest(BloodTest bloodTest) {
         AppController.getInstance().getBloodTestBridge().deleteBloodtest(Integer.toString(bloodTest.getBloodTestId()),
                 user.getNhi());
     }
 
+    /**
+     * Calls the database to update the given blood entry
+     * @param bloodTest the blood test to be updated
+     */
     public void updateBloodTest(BloodTest bloodTest) {
         AppController.getInstance().getBloodTestBridge().patchBloodtest(bloodTest, user.getNhi());
     }
