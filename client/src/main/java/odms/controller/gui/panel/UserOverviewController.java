@@ -189,7 +189,6 @@ public class UserOverviewController {
         }
 
         if (user.getHeight() != null && user.getWeight() != null && user.getHeight() > 0 && user.getWeight() > 0) {
-            //TODO fix BMI kg/m^
             DecimalFormat df = new DecimalFormat("#.00");
             double bmi = user.getWeight() / ((user.getHeight()) * (user.getHeight()));
             String formattedBmi = df.format(bmi);
