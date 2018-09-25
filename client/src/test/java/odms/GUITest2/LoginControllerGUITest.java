@@ -99,7 +99,7 @@ public class LoginControllerGUITest extends ApplicationTest {
     }
 
     @Test
-    public void ValidClinicianLogin() throws IOException, UnauthorisedException {
+    public void validClinicianLogin() throws IOException, UnauthorisedException {
         when(loginBridge.loginToServer(anyString(), anyString(), anyString())).thenReturn("haHAA");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(new Clinician("default", "0", "admin"));
         clickOn("#clinicianTab");
