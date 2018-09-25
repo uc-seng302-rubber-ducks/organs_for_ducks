@@ -9,13 +9,11 @@ import odms.commons.utils.AttributeValidation;
 public class RemoveDisqualificationLogicController {
 
     private User user;
-    private Stage stage;
     private ObservableList<OrgansWithDisqualification> disqualifications;
 
 
-    public RemoveDisqualificationLogicController(User user, Stage stage, ObservableList<OrgansWithDisqualification> disqualifiedOrgans) {
+    public RemoveDisqualificationLogicController(User user, ObservableList<OrgansWithDisqualification> disqualifiedOrgans) {
         this.user = user;
-        this.stage = stage;
         this.disqualifications = disqualifiedOrgans;
     }
 
@@ -35,7 +33,6 @@ public class RemoveDisqualificationLogicController {
                 break;
             }
         }
-        stage.close();
     }
 
     /**
@@ -47,11 +44,4 @@ public class RemoveDisqualificationLogicController {
         return AttributeValidation.checkRequiredString(description);
     }
 
-
-    /**
-     * closes the Disqualify Organ Reason view.
-     */
-    public void cancel() {
-        stage.close();
-    }
 }
