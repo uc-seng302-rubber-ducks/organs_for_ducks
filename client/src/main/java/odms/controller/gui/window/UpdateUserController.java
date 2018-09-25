@@ -19,6 +19,7 @@ import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.model._enum.Regions;
+import odms.commons.model.datamodel.DeathDetails;
 import odms.commons.model.datamodel.ExpiryReason;
 import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.Log;
@@ -49,6 +50,8 @@ public class UpdateUserController {
 
     private final int MAX_FILE_SIZE = 2097152;
     //<editor-fold desc="fxml stuff">
+    @FXML
+    private CheckBox userDead;
     @FXML
     private Label fNameErrorLabel;
     @FXML
@@ -220,7 +223,6 @@ public class UpdateUserController {
             stage.setTitle("Update User: " + user.getFirstName());
         }
 
-        Scene scene = stage.getScene();
 
         boolean hasOverridedExpiry = false;
         for (Map.Entry<Organs, ExpiryReason> pair: currentUser.getDonorDetails().getOrganMap().entrySet()) {
@@ -244,6 +246,9 @@ public class UpdateUserController {
 
         if (currentUser.getMomentDeath() == null) {
             removeUpdateDeathDetailsButton.setDisable(true);
+            setDeathDetailsFieldsDisabled(false);
+        } else {
+            userDead.setSelected(true);
         }
 
         prefillDeathDetailsTab();
@@ -276,6 +281,7 @@ public class UpdateUserController {
         datePickerListener(updateDeathDetailsDatePicker);
 
         addCheckBoxListener(smokerCheckBox);
+        addDeathCheckBoxListener(userDead);
 
         if (!fromClinician) {
             deathtab.setDisable(true);
@@ -350,6 +356,43 @@ public class UpdateUserController {
                 update();
             }
         });
+    }
+
+    /**
+     * listens for a change on a checkbox and enables/disables the death details form
+     *
+     * @param checkBox checkbox to add a listener to
+     */
+    private void addDeathCheckBoxListener(CheckBox checkBox) {
+        checkBox.selectedProperty().addListener(((observable, oldValue, newValue) -> {
+            setDeathDetailsFieldsDisabled(newValue);
+
+        }));
+    }
+
+    /**
+     * disables or enables death details form based on whether the user is dead
+     *
+     * @param isDead true if the user is dead
+     */
+    private void setDeathDetailsFieldsDisabled(Boolean isDead) {
+        if (isDead) {
+            updateDeathDetailsDatePicker.setDisable(false);
+            updateDeathDetailsTimeTextField.setDisable(false);
+            updateDeathDetailsCityTextField.setDisable(false);
+            updateDeathDetailsRegionComboBox.setDisable(false);
+            updateDeathDetailsCountryComboBox.setDisable(false);
+            removeUpdateDeathDetailsButton.setDisable(false);
+            updateDeathDetails();
+        } else {
+            updateDeathDetailsDatePicker.setDisable(true);
+            updateDeathDetailsTimeTextField.setDisable(true);
+            updateDeathDetailsCityTextField.setDisable(true);
+            updateDeathDetailsRegionComboBox.setDisable(true);
+            updateDeathDetailsCountryComboBox.setDisable(true);
+            removeUpdateDeathDetailsButton.setDisable(true);
+            currentUser.setDeathDetails(new DeathDetails());
+        }
     }
 
     /**
@@ -901,10 +944,11 @@ public class UpdateUserController {
         } catch (InvalidFieldsException e) {
             valid = false;
         }
-        if (!validateDeathDetailsFields()) {
-            valid = false;
+        if (userDead.isSelected()) {
+            if (!validateDeathDetailsFields()) {
+                valid = false;
+            }
         }
-
         if (valid) { // only updates if everything is valid
             appController.update(currentUser);
         }
@@ -1009,22 +1053,24 @@ public class UpdateUserController {
      */
     private boolean updateDeathDetails() {
         boolean changed = false;
-        LocalDate dateOfDeath = updateDeathDetailsDatePicker.getValue();
-        try {
-            LocalTime timeOfDeath = LocalTime.parse(updateDeathDetailsTimeTextField.getText());
-            currentUser.setMomentOfDeath(currentUser.getDeathDetails().createMomentOfDeath(dateOfDeath, timeOfDeath));
-        } catch (DateTimeParseException e) {
-            Log.severe("There is an incorrect time format in the death details time field", e);
-        }
+        if (userDead.isSelected()) {
+            LocalDate dateOfDeath = updateDeathDetailsDatePicker.getValue();
+            try {
+                LocalTime timeOfDeath = LocalTime.parse(updateDeathDetailsTimeTextField.getText());
+                currentUser.setMomentOfDeath(currentUser.getDeathDetails().createMomentOfDeath(dateOfDeath, timeOfDeath));
+            } catch (DateTimeParseException e) {
+                Log.warning("There is an incorrect time format in the death details time field");
+            }
 
-        currentUser.setDeathCity(updateDeathDetailsCityTextField.getText());
-        if (isNewZealand) {
-            //if checkChangedProperty(u)
-            currentUser.setDeathRegion(updateDeathDetailsRegionComboBox.getValue());
-        } else {
-            currentUser.setDeathRegion(updateDeathDetailsRegionTextField.getText());
+            currentUser.setDeathCity(updateDeathDetailsCityTextField.getText());
+            if (isNewZealand) {
+                //if checkChangedProperty(u)
+                currentUser.setDeathRegion(updateDeathDetailsRegionComboBox.getValue());
+            } else {
+                currentUser.setDeathRegion(updateDeathDetailsRegionTextField.getText());
+            }
+            currentUser.setDeathCountry(updateDeathDetailsCountryComboBox.getValue());
         }
-        currentUser.setDeathCountry(updateDeathDetailsCountryComboBox.getValue());
         return changed;
     }
 
