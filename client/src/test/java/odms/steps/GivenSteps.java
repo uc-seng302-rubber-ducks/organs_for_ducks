@@ -8,6 +8,7 @@ import javafx.scene.control.TableView;
 import odms.App;
 import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.exception.ApiException;
+import odms.commons.exception.UnauthorisedException;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
@@ -117,7 +118,7 @@ public class GivenSteps extends ApplicationTest {
     }
 
     @Given("^The Create New Disease screen is loaded$")
-    public void theCreateNewDiseaseScreenIsLoaded() throws IOException {
+    public void theCreateNewDiseaseScreenIsLoaded() throws IOException, UnauthorisedException {
         when(CucumberTestModel.getClinicianBridge().getClinician(anyString(), anyString())).thenReturn(
                 new Clinician("", "0", "")
         );

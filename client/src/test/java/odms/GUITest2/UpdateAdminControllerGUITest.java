@@ -4,6 +4,7 @@ import odms.App;
 import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
 import odms.bridge.*;
+import odms.commons.exception.UnauthorisedException;
 import odms.commons.model.Administrator;
 import odms.controller.AppController;
 import odms.controller.gui.window.AdministratorViewController;
@@ -40,7 +41,7 @@ public class UpdateAdminControllerGUITest extends ApplicationTest {
     }
 
     @Before
-    public void setUpCreateScene() throws TimeoutException, IOException {
+    public void setUpCreateScene() throws TimeoutException, IOException, UnauthorisedException {
 
         testAdmin = new Administrator("admin1", "Anna", "Kate", "Robertson", "face");
         AdministratorBridge administratorBridge = mock(AdministratorBridge.class);

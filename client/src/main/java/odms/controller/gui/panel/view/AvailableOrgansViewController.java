@@ -18,6 +18,7 @@ import odms.commons.model.datamodel.AvailableOrganDetail;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.utils.ProgressTask;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
+import odms.controller.gui.widget.LoadingTableView;
 import odms.controller.gui.widget.ProgressBarTableCellFactory;
 import odms.services.TimeRemainingComparator;
 
@@ -28,7 +29,7 @@ import java.util.Comparator;
 public class AvailableOrgansViewController {
 
     @FXML
-    private TableView<AvailableOrganDetail> availableOrgansTableView;
+    private LoadingTableView<AvailableOrganDetail> availableOrgansTableView;
 
     @FXML
     private ComboBox<String> availableOrganFilterComboBox;
@@ -52,7 +53,7 @@ public class AvailableOrgansViewController {
     private TableColumn<AvailableOrganDetail, ProgressTask> progressBarColumn;
 
     @FXML
-    private TableView<TransplantDetails> matchesView;
+    private LoadingTableView<TransplantDetails> matchesView;
 
 
     private ObservableList<AvailableOrganDetail> availableOrganDetails = FXCollections.observableList(new ArrayList<>());
@@ -139,7 +140,8 @@ public class AvailableOrgansViewController {
      */
     @FXML
     public void search() {
-        logicController.search(0, availableOrganFilterComboBox.getValue(), regionFilterTextField.getText());
+        availableOrgansTableView.setWaiting(true);
+        logicController.search(0, availableOrganFilterComboBox.getValue(), regionFilterTextField.getText(), availableOrgansTableView);
     }
 
     /**
@@ -147,7 +149,7 @@ public class AvailableOrgansViewController {
      */
     @FXML
     private void goToPreviousPage() {
-        logicController.goPrevPage();
+        logicController.goPrevPage(availableOrgansTableView);
     }
 
     /**
@@ -155,7 +157,7 @@ public class AvailableOrgansViewController {
      */
     @FXML
     private void goToPreviousPageMatches() {
-        logicController.goPrevPageMatches();
+        logicController.goPrevPageMatches(matchesView);
     }
 
     /**
@@ -163,7 +165,7 @@ public class AvailableOrgansViewController {
      */
     @FXML
     private void goToNextPage() {
-        logicController.goNextPage();
+        logicController.goNextPage(availableOrgansTableView);
     }
 
     /**
@@ -171,7 +173,7 @@ public class AvailableOrgansViewController {
      */
     @FXML
     private void goToNextPageMatches() {
-        logicController.goNextPageMatches();
+        logicController.goNextPageMatches(matchesView);
     }
 
 
@@ -198,8 +200,12 @@ public class AvailableOrgansViewController {
                 parent.launchUser(availableOrgansTableView.getSelectionModel().getSelectedItem().getDonorNhi());
             }
         });
-        availableOrgansTableView.getSelectionModel().selectedItemProperty().addListener(a ->
-                logicController.showMatches(availableOrgansTableView.getSelectionModel().getSelectedItem()));
+        availableOrgansTableView.getSelectionModel().selectedItemProperty().addListener(a -> {
+            if (availableOrgansTableView.getSelectionModel().selectedItemProperty().getValue() != null) {
+                matchesView.setWaiting(true);
+                logicController.showMatches(availableOrgansTableView.getSelectionModel().getSelectedItem(), matchesView);
+            }
+        });
 
 
         matchesView.setOnMouseClicked(event -> {

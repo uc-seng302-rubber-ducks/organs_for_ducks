@@ -1,7 +1,6 @@
 package odms.controller.gui.panel;
 
 import javafx.animation.PauseTransition;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -15,6 +14,7 @@ import odms.commons.model._abstract.UserLauncher;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.controller.AppController;
+import odms.controller.gui.widget.LoadingTableView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +56,7 @@ public class TransplantWaitListController {
     @FXML
     private Button transplantPrevPageButton;
     @FXML
-    private TableView<TransplantDetails> transplantWaitListTableView;
+    private LoadingTableView<TransplantDetails> transplantWaitListTableView;
     private List<CheckBox> filterCheckBoxList = new ArrayList<>();
     private AppController appController;
     private UserLauncher parent;
@@ -139,7 +139,8 @@ public class TransplantWaitListController {
      */
     private void populateWaitListTable(int startIndex, int count, String regionSearch, List<Organs> allowedOrgans) {
         transplantList.clear();
-        appController.getTransplantBridge().getWaitingList(startIndex, count, "", regionSearch, allowedOrgans, transplantList);
+        transplantWaitListTableView.setWaiting(true);
+        appController.getTransplantBridge().getWaitingList(startIndex, count, "", regionSearch, allowedOrgans, transplantList, transplantWaitListTableView);
     }
 
     public void displayWaitListTable() {
@@ -149,10 +150,6 @@ public class TransplantWaitListController {
 
         if (!transplantList.isEmpty()) {
             transplantWaitListTableView.setItems(sTransplantList);
-
-        } else {
-            transplantWaitListTableView.setItems(null);
-            Platform.runLater(() -> transplantWaitListTableView.setPlaceholder(new Label("No Receivers currently registered")));
         }
 
         //needs to be re-run each time as a handler on empty list will cause issues

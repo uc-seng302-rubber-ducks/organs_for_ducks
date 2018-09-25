@@ -9,6 +9,7 @@ import javafx.scene.control.TableView;
 import odms.App;
 import odms.TestUtils.AppControllerMocker;
 import odms.bridge.*;
+import odms.commons.exception.UnauthorisedException;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
@@ -50,7 +51,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
     }
 
     @Before
-    public void setUpCreateScene() throws TimeoutException, IOException {
+    public void setUpCreateScene() throws TimeoutException, IOException, UnauthorisedException {
 
         UserBridge bridge = mock(UserBridge.class);
         ClinicianBridge clinicianBridge = mock(ClinicianBridge.class);
@@ -86,7 +87,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
 
         when(application.getOrgansBridge()).thenReturn(organsBridge);
         doNothing().when(organsBridge).getAvailableOrgansList(anyInt(),anyInt(),anyString(),anyString(),
-                anyString(),anyString(),anyString(),any(ObservableList.class));
+                anyString(), anyString(), anyString(), any(ObservableList.class), eq(null));
 
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class, "--testConfig=true");
