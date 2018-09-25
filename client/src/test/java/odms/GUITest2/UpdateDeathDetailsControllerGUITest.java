@@ -248,8 +248,8 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         setTextField(this, "#updateDeathDetailsTimeTextField", timeString);
         setTextField(this, "#updateDeathDetailsCityTextField", "Atlantis");
         setTextField(this, "#updateDeathDetailsRegionTextField", "Atlantic");
-        clickOnButton(this, "#removeUpdateDeathDetailsButton");
-        clickOnButton(this, "#cancelRemoveDeathDetailsButton");
+        clickOn("#userDead");
+        clickOn("#cancelButton");
 
         verifyThat("#updateDeathDetailsTimeTextField", TextInputControlMatchers.hasText(timeString));
         verifyThat("#updateDeathDetailsCityTextField", TextInputControlMatchers.hasText("Atlantis"));
@@ -268,8 +268,8 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         clickOn("#deathtab");
-        clickOnButton(this, "#removeUpdateDeathDetailsButton");
-        clickOnButton(this, "#confirmRemoveDeathDetailsButton");
+        clickOn("#userDead");
+        clickOn("#okButton");
         clickOnButton(this, "#updateProfileButton");
 
         verifyThat("#DODValue", LabeledMatchers.hasText(""));
@@ -292,7 +292,6 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         verifyThat("#updateDeathDetailsOverrideWarningLabel", Node::isVisible);
         verifyThat("#updateDeathDetailsTimeTextField", Node::isDisabled);
         verifyThat("#updateDeathDetailsDatePicker", Node::isDisabled);
-        verifyThat("#removeUpdateDeathDetailsButton", Node::isDisabled);
     }
 
     @Test
