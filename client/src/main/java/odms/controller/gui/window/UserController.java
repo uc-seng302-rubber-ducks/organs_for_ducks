@@ -26,6 +26,7 @@ import odms.controller.gui.StatusBarController;
 import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.panel.*;
 import odms.controller.gui.panel.view.UserAppointmentViewController;
+import odms.controller.gui.popup.UserAppointmentAlertController;
 import odms.socket.ServerEventNotifier;
 
 import java.beans.PropertyChangeEvent;
@@ -131,6 +132,7 @@ public class UserController implements PropertyChangeListener {
     private Stage stage;
     private EmergencyContact contact = null;
     private ObservableList<Change> changelog;
+    private UserAppointmentAlertController userAppointmentAlertController = new UserAppointmentAlertController();
 
     /**
      * Gives the user view the application controller and hides all label and buttons that are not
@@ -158,6 +160,7 @@ public class UserController implements PropertyChangeListener {
         stage.setMinWidth(1200);
         stage.setMinHeight(800);
         changeCurrentUser(user);
+        stage.setMaximized(true);
 
         // This is the place to set visible and invisible controls for Clinician vs User
         medicationTabPageController.init(controller, user, fromClinician, this);
@@ -203,10 +206,15 @@ public class UserController implements PropertyChangeListener {
         changelog.addListener((ListChangeListener.Change<? extends Change> change) -> historyTableView
                 .setItems(changelog));
 
-            userProfileTabPageController.init(controller, user, this.stage, fromClinician);
+        userProfileTabPageController.init(controller, user, this.stage, fromClinician);
 
-            ServerEventNotifier.getInstance().addPropertyChangeListener(this);
-        }
+        ServerEventNotifier.getInstance().addPropertyChangeListener(this);
+
+        userAppointmentAlertController.setAppController(controller);
+        userAppointmentAlertController.checkForUnseenUpdates(user.getNhi());
+    }
+
+
 
 
     /**
@@ -222,7 +230,7 @@ public class UserController implements PropertyChangeListener {
             Stage updateStage = new Stage();
             updateStage.initModality(Modality.APPLICATION_MODAL);
             updateStage.setScene(new Scene(root));
-            updateUserController.init(currentUser, application, updateStage, this);
+            updateUserController.init(currentUser, application, updateStage, this, this.fromClinician);
             updateStage.show();
             Log.info("Successfully launched update user window for User NHI: " + currentUser.getNhi());
 
@@ -544,7 +552,7 @@ public class UserController implements PropertyChangeListener {
     }
 
     public void refreshCurrentlyReceivingList() {
-        receiverTabPageController.refreshCurrentlyReceiving();
+        receiverTabPageController.populateReceiverLists(currentUser);
     }
 
     /**
@@ -608,6 +616,8 @@ public class UserController implements PropertyChangeListener {
                 Log.warning("failed to get updated user", ex);
             }
 
+        } else if (event.getType().equals(EventTypes.REQUEST_UPDATE)) {
+            userAppointmentAlertController.checkForUnseenUpdates(currentUser.getNhi());
         }
     }
 }

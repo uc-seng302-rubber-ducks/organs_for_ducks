@@ -14,13 +14,14 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import odms.bridge.LoginBridge;
 import odms.commons.exception.ApiException;
+import odms.commons.exception.UnauthorisedException;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
+import odms.commons.model._enum.UserType;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
-import odms.view.CLI;
 
 import java.io.IOException;
 import java.net.URL;
@@ -37,6 +38,7 @@ public class LoginController {
     private static final String HELP_VIEW_URL = "/FXML/loginHelp.fxml";
     private static final String NETWORK_ERROR = "A network error occurred. Please try again or contact your IT department.";
     private static final String UNSPECIFIED_ERROR = "An unspecified error occurred. Please try again or contact your IT department.";
+    private static final String UNAUTHORISED_ERROR = "Either the user does not exist, the password is incorrect or the username is incorrect\nPlease try again";
     @FXML
     private TextField userIDTextField;
     @FXML
@@ -143,6 +145,8 @@ public class LoginController {
             return;
         }
 
+        appController.getAppointmentsBridge().deleteCancelledAppointments(user.getNhi(), UserType.USER);
+
         FXMLLoader userLoader = new FXMLLoader(getClass().getResource(USER_VIEW_URL));
         Parent root;
         try {
@@ -177,6 +181,11 @@ public class LoginController {
             token = loginBridge.loginToServer(wantedClinician, clinicianPassword, "clinician");
         } catch (ApiException ex) {
             clinicianWarningLabel.setText("An error occurred. Please try again later.");
+            Log.severe(UNSPECIFIED_ERROR, ex);
+            return;
+        } catch (UnauthorisedException e) {
+            clinicianWarningLabel.setText(UNAUTHORISED_ERROR);
+            return;
         }
 
         if (token == null) {
@@ -194,6 +203,8 @@ public class LoginController {
         if (clinician == null || clinician.isDeleted()) {
             clinicianWarningLabel.setText("The Clinician does not exist");
         } else {
+            appController.getAppointmentsBridge().deleteCancelledAppointments(clinician.getStaffId(), UserType.CLINICIAN);
+
             FXMLLoader clinicianLoader = new FXMLLoader(
                     getClass().getResource(CLINICIAN_VIEW_URL));
             Parent root;
@@ -236,6 +247,9 @@ public class LoginController {
         } catch (ApiException e) {
             adminWarningLabel.setText(UNSPECIFIED_ERROR);
             Log.severe(UNSPECIFIED_ERROR, e);
+            return;
+        } catch (UnauthorisedException e) {
+            adminWarningLabel.setText(UNAUTHORISED_ERROR);
             return;
         }
         if (token == null) {
@@ -298,51 +312,5 @@ public class LoginController {
 
     }
 
-    /**
-     * Displays a pop up window with instructions to help the user on the login page.
-     */
-    @FXML
-    private void helpButton() {
-
-        if (helpStage == null) {
-            try {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(HELP_VIEW_URL));
-                Parent root = fxmlLoader.load();
-                helpStage = new Stage();
-                helpStage.setTitle("Login Help");
-                helpStage.setScene(new Scene(root));
-                helpStage.setResizable(false);
-                helpStage.setOnCloseRequest(event -> helpStage = null);
-                helpStage.show();
-                Log.info("Successfully launched help window");
-            } catch (Exception e) {
-                Log.severe("could not load help window", e);
-            }
-        }
-    }
-
-
-    /**
-     * Opens the Command Line version of the application
-     */
-    @FXML
-    void openCLI() {
-        stage.hide();
-
-        CLI.main(new String[]{"gui"});
-        stage.show();
-        FXMLLoader adminLoader = new FXMLLoader(getClass().getResource(ADMIN_VIEW_URL));
-        Parent root;
-        try {
-            root = adminLoader.load();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Administrator");
-            AdministratorViewController administratorViewController = adminLoader.getController();
-            administratorViewController.init(new Administrator(), appController, stage, true);
-            Log.info("Successfully launched CLI");
-        } catch (IOException e) {
-            Log.severe("could not load CLI", e);
-        }
-    }
 }
 

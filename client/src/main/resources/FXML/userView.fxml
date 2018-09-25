@@ -3,7 +3,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" fx:controller="odms.controller.gui.window.UserController">
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+            minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" stylesheets="@../gui.css"
+            xmlns="http://javafx.com/javafx/8" fx:controller="odms.controller.gui.window.UserController">
     <children>
       <AnchorPane prefHeight="675.0" prefWidth="894.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -18,20 +20,25 @@
                           <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                   <children>
-                                      <Label layoutX="14.0" layoutY="14.0" text="Personal Contact Details" />
-                                      <Label layoutX="14.0" layoutY="50.0" text="Home Phone:" />
-                                      <Label layoutX="14.0" layoutY="80.0" text="Cell Phone:" />
-                                      <Label layoutX="14.0" layoutY="110.0" text="Address:" />
-                                      <Label layoutX="192.0" layoutY="161.0" text="Region:" />
-                                      <Label layoutX="14.0" layoutY="244.0" text="Email:" />
-                                      <Label layoutX="14.0" layoutY="276.0" text="Emergency Contact Details" />
-                                      <Label layoutX="17.0" layoutY="312.0" text="Name:" />
-                                      <Label layoutX="17.0" layoutY="342.0" text="Home Phone:" />
-                                      <Label layoutX="17.0" layoutY="372.0" text="Cell Phone:" />
-                                      <Label layoutX="17.0" layoutY="402.0" text="Address:" />
-                                      <Label layoutX="192.0" layoutY="450.0" text="Region:" />
-                                      <Label layoutX="17.0" layoutY="518.0" text="Email:" />
-                                      <Label layoutX="17.0" layoutY="548.0" text="Relationship:" />
+                                      <Label layoutX="14.0" layoutY="14.0" styleClass="label-sub-title"
+                                             text="Personal Contact Details"/>
+                                      <Label layoutX="14.0" layoutY="50.0" styleClass="label-title" text="Home Phone:"/>
+                                      <Label layoutX="14.0" layoutY="80.0" styleClass="label-title" text="Cell Phone:"/>
+                                      <Label layoutX="14.0" layoutY="110.0" styleClass="label-title" text="Address:"/>
+                                      <Label layoutX="192.0" layoutY="161.0" styleClass="label-title" text="Region:"/>
+                                      <Label layoutX="14.0" layoutY="244.0" styleClass="label-title" text="Email:"/>
+                                      <Label layoutX="14.0" layoutY="276.0" styleClass="label-sub-title"
+                                             text="Emergency Contact Details"/>
+                                      <Label layoutX="17.0" layoutY="312.0" styleClass="label-title" text="Name:"/>
+                                      <Label layoutX="17.0" layoutY="342.0" styleClass="label-title"
+                                             text="Home Phone:"/>
+                                      <Label layoutX="17.0" layoutY="372.0" styleClass="label-title"
+                                             text="Cell Phone:"/>
+                                      <Label layoutX="17.0" layoutY="402.0" styleClass="label-title" text="Address:"/>
+                                      <Label layoutX="192.0" layoutY="450.0" styleClass="label-title" text="Region:"/>
+                                      <Label layoutX="17.0" layoutY="518.0" styleClass="label-title" text="Email:"/>
+                                      <Label layoutX="17.0" layoutY="548.0" styleClass="label-title"
+                                             text="Relationship:"/>
                                       <Separator layoutY="29.0" prefHeight="16.0" prefWidth="900.0" />
                                       <Separator layoutY="294.0" prefHeight="10.0" prefWidth="894.0" />
                                       <Separator layoutY="257.0" prefHeight="17.0" prefWidth="894.0" />
@@ -47,12 +54,12 @@
                                       <Label fx:id="eRegion" layoutX="260.0" layoutY="450.0" />
                                       <Label fx:id="eEmail" layoutX="120.0" layoutY="521.0" />
                                       <Label fx:id="relationship" layoutX="120.0" layoutY="550.0" />
-                                      <Label layoutX="14.0" layoutY="161.0" text="City:" />
-                                      <Label layoutX="14.0" layoutY="195.0" text="Zip Code:" />
-                                      <Label layoutX="192.0" layoutY="195.0" text="Country:" />
-                                      <Label layoutX="17.0" layoutY="450.0" text="City:" />
-                                      <Label layoutX="192.0" layoutY="480.0" text="Country:" />
-                                      <Label layoutX="17.0" layoutY="480.0" text="Zip Code:" />
+                                      <Label layoutX="14.0" layoutY="161.0" styleClass="label-title" text="City:"/>
+                                      <Label layoutX="14.0" layoutY="195.0" styleClass="label-title" text="Zip Code:"/>
+                                      <Label layoutX="192.0" layoutY="195.0" styleClass="label-title" text="Country:"/>
+                                      <Label layoutX="17.0" layoutY="450.0" styleClass="label-title" text="City:"/>
+                                      <Label layoutX="192.0" layoutY="480.0" styleClass="label-title" text="Country:"/>
+                                      <Label layoutX="17.0" layoutY="480.0" styleClass="label-title" text="Zip Code:"/>
                                       <Label fx:id="ecCity" layoutX="120.0" layoutY="450.0" />
                                       <Label fx:id="ecZipCode" layoutX="120.0" layoutY="480.0" />
                                       <Label fx:id="ecCountry" layoutX="260.0" layoutY="480.0" />
@@ -131,8 +138,10 @@
                       <Font size="29.0" />
                   </font>
               </Label>
-              <Button fx:id="undoButton" mnemonicParsing="false" onAction="#undo" text="Undo" AnchorPane.rightAnchor="84.0" AnchorPane.topAnchor="4.0" />
-              <Button fx:id="redoButton" mnemonicParsing="false" onAction="#redo" text="Redo" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="4.0" />
+             <Button fx:id="undoButton" mnemonicParsing="false" onAction="#undo" styleClass="button-secondary"
+                     text="Undo" AnchorPane.rightAnchor="84.0" AnchorPane.topAnchor="4.0"/>
+             <Button fx:id="redoButton" mnemonicParsing="false" onAction="#redo" styleClass="button-secondary"
+                     text="Redo" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="4.0"/>
          </children>
       </AnchorPane>
     </children>

@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.collections.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.text.*?>
 <?import javafx.collections.FXCollections?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
+<?import odms.controller.gui.widget.LoadingTableView?>
 <?import java.lang.String?>
-
-<AnchorPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.ClinicianController">
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="800.0" prefWidth="1200.0" stylesheets="@../gui.css"
+            xmlns="http://javafx.com/javafx/8" fx:controller="odms.controller.gui.window.ClinicianController">
     <children>
         <MenuBar prefHeight="37.0" prefWidth="619.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <menus>
@@ -48,14 +45,14 @@
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
-                                        <Label text="First Name:" GridPane.rowIndex="1" />
-                                        <Label text="Middle Name:" GridPane.rowIndex="2" />
-                                        <Label text="Last Name:" GridPane.rowIndex="3" />
+                                        <Label styleClass="label-title" text="First Name:" GridPane.rowIndex="1"/>
+                                        <Label styleClass="label-title" text="Middle Name:" GridPane.rowIndex="2"/>
+                                        <Label styleClass="label-title" text="Last Name:" GridPane.rowIndex="3"/>
                                         <Label fx:id="mNameLabel" text="Label" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                         <Label fx:id="lNameLabel" text="Label" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                         <Label fx:id="fNameLabel" text="Label" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                         <Label fx:id="staffIdLabel" text="StaffId" GridPane.columnIndex="1" />
-                                        <Label text="Staff ID:" />
+                                        <Label styleClass="label-title" text="Staff ID:"/>
                                     </children>
                                 </GridPane>
                                 <GridPane layoutX="381.0" layoutY="72.0" prefHeight="201.0" prefWidth="333.0" AnchorPane.bottomAnchor="106.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="72.0">
@@ -71,10 +68,10 @@
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Label text="Address:" />
+                               <Label styleClass="label-title" text="Address:"/>
                               <Label fx:id="addressLabel" text="Label" wrapText="true" GridPane.columnIndex="1" GridPane.columnSpan="3" />
-                              <Label text="City:" GridPane.rowIndex="1" />
-                              <Label text="Zip Code:" GridPane.rowIndex="2" />
+                               <Label styleClass="label-title" text="City:" GridPane.rowIndex="1"/>
+                               <Label styleClass="label-title" text="Zip Code:" GridPane.rowIndex="2"/>
                               <Label fx:id="cityLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <Label fx:id="zipLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                <Label fx:id="asdf" text="Region:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
@@ -132,7 +129,7 @@
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="617.0">
                                     <children>
-                                        <TableView fx:id="searchTableView" prefHeight="331.0" prefWidth="600.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="2.0">
+                                        <LoadingTableView fx:id="searchTableView" prefHeight="331.0" prefWidth="600.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="2.0">
                                             <columns>
                                                 <TableColumn prefWidth="75.0" text="C1" />
                                                 <TableColumn prefWidth="75.0" text="C2" />
@@ -140,7 +137,7 @@
                                             <tooltip>
                                                 <Tooltip fx:id="searchToolTip" text="Empty Tooltip" />
                                             </tooltip>
-                                        </TableView>
+                                        </LoadingTableView>
                                         <Label fx:id="searchCountLabel" layoutX="14.0" layoutY="336.0" text="" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" />
                                         <HBox alignment="CENTER" layoutX="269.0" layoutY="244.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                             <children>
@@ -164,9 +161,9 @@
                         <fx:include fx:id="availableOrgansView" source="availableOrgansPanel.fxml" />
                     </content>
                 </Tab>
-            <Tab text="Appointments">
+            <Tab fx:id="appointmentsTab" text="Appointments">
               <content>
-                  <fx:include fx:id="appointmentRequestsView" source="appointmentRequestsTabView.fxml" />
+                  <fx:include fx:id="appointmentRequestView" source="appointmentRequestsTabView.fxml" />
               </content>
             </Tab>
             </tabs>
@@ -181,7 +178,9 @@
               <Font size="20.0" />
           </font>
       </Label>
-      <Button fx:id="undoButton" layoutX="481.0" layoutY="5.0" mnemonicParsing="false" onAction="#undo" text="Undo" AnchorPane.rightAnchor="86.0" AnchorPane.topAnchor="5.0" />
-      <Button fx:id="redoButton" layoutX="545.0" layoutY="5.0" mnemonicParsing="false" onAction="#redo" text="Redo" AnchorPane.rightAnchor="22.0" AnchorPane.topAnchor="5.0" />
+        <Button fx:id="undoButton" layoutX="481.0" layoutY="5.0" mnemonicParsing="false" onAction="#undo"
+                styleClass="button-secondary" text="Undo" AnchorPane.rightAnchor="86.0" AnchorPane.topAnchor="5.0"/>
+        <Button fx:id="redoButton" layoutX="545.0" layoutY="5.0" mnemonicParsing="false" onAction="#redo"
+                styleClass="button-secondary" text="Redo" AnchorPane.rightAnchor="22.0" AnchorPane.topAnchor="5.0"/>
     </children>
 </AnchorPane>

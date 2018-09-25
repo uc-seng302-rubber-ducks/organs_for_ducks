@@ -1,9 +1,10 @@
 package odms.controller;
 
-import odms.commons.database.DBHandler;
-import odms.commons.database.JDBCDriver;
 import odms.commons.model.User;
+import odms.commons.model.datamodel.ComboBoxClinician;
 import odms.commons.model.dto.UserOverview;
+import odms.database.DBHandler;
+import odms.database.JDBCDriver;
 import odms.exception.NotFoundException;
 import odms.exception.ServerDBException;
 import odms.socket.SocketHandler;
@@ -34,6 +35,7 @@ public class UserControllerTest {
     private DBHandler handler;
     private SocketHandler socketHandler;
     private User testUser;
+    private ComboBoxClinician testComboBoxClinician;
 
     @Before
     public void setUp() throws SQLException{
@@ -47,6 +49,7 @@ public class UserControllerTest {
         when(manager.getDriver()).thenReturn(driver);
         controller = new UserController(manager, socketHandler);
         testUser = new User("steve", LocalDate.now(), "ABC1234");
+        testComboBoxClinician = new ComboBoxClinician("Tester", "0");
     }
 
     @Test
@@ -116,7 +119,7 @@ public class UserControllerTest {
     }
 
     @Test(expected = ServerDBException.class)
-    public void deleteUserShouldThrowExceptionWhenNoConnection() throws SQLException{
+    public void deleteUserShouldThrowExceptionWhenNoConnection() throws SQLException {
         when(driver.getConnection()).thenThrow(new SQLException());
         controller.deleteUser("ABC1234");
     }
@@ -124,6 +127,30 @@ public class UserControllerTest {
     @Test
     public void deleteUserShouldReturnOK() {
         ResponseEntity res = controller.deleteUser("ABC1234");
+        Assert.assertEquals(HttpStatus.OK, res.getStatusCode());
+    }
+
+    @Test(expected = ServerDBException.class)
+    public void getPreferredClinicianShouldThrowExceptionWhenNoConnection() throws SQLException {
+        when(driver.getConnection()).thenThrow(new SQLException());
+        controller.getPreferredClinician("ABC1234");
+    }
+
+    @Test
+    public void getPreferredClinicianReturnOK() throws SQLException {
+        when(handler.getPreferredBasicClinician(any(Connection.class), anyString())).thenReturn(testComboBoxClinician);
+        Assert.assertEquals(testComboBoxClinician, controller.getPreferredClinician("ABC1234"));
+    }
+
+    @Test(expected = ServerDBException.class)
+    public void putPreferredClinicianShouldThrowExceptionWhenNoConnection() throws SQLException {
+        when(driver.getConnection()).thenThrow(new SQLException());
+        controller.putPreferredClinician("ABC1234", "0");
+    }
+
+    @Test
+    public void putPreferredClinicianReturnOK() {
+        ResponseEntity res = controller.putPreferredClinician("ABC1234", "0");
         Assert.assertEquals(HttpStatus.OK, res.getStatusCode());
     }
 

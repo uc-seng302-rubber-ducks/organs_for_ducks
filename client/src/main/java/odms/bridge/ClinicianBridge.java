@@ -13,6 +13,7 @@ import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
 import odms.commons.utils.PhotoHelper;
 import odms.controller.AppController;
+import odms.controller.gui.widget.LoadingWidget;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -27,7 +28,7 @@ public class ClinicianBridge extends RoleBridge {
         super(client);
     }
 
-    public void getClinicians(int startIndex, int count, String name, String region, String token) {
+    public void getClinicians(int startIndex, int count, String name, String region, String token, LoadingWidget clinicianTableView) {
         String url = ip + "/clinicians?startIndex=" + startIndex + "&count=" + count + "&q=" + name + "&region=" + region;
         Request request = new Request.Builder().addHeader(tokenHeader, token).url(url).build();
         client.newCall(request).enqueue(new Callback() {
@@ -48,6 +49,9 @@ public class ClinicianBridge extends RoleBridge {
                 }.getType());
                 for (Clinician clinician : clinicians) {
                     AppController.getInstance().addClinician(clinician);
+                }
+                if (clinicianTableView != null) {
+                    Platform.runLater(() -> clinicianTableView.setWaiting(false));
                 }
                 response.close();
             }
@@ -213,37 +217,6 @@ public class ClinicianBridge extends RoleBridge {
                     throw new IOException("Could not PUT " + url);
                 }
                 response.close();
-            }
-        });
-    }
-
-    public void getAppointments(int startIndex, int count, String staffId, String token, ObservableList<Appointment> observableAppointments) {
-        String url = ip + CLINICIANS + staffId + "/appointments?startIndex=" + startIndex + "&count=" + count;
-        Request request = new Request.Builder().addHeader(tokenHeader, token).url(url).build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.warning("Failed to get clinicians. On Failure Triggered", e);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response == null) {
-                    Log.warning("A null response was returned to the user");
-                    return;
-                }
-                ResponseBody body = response.body();
-                if (body == null) {
-                    Log.warning("A null response body was returned to the user");
-                    return;
-                }
-                List<Appointment> appointments = new Gson().fromJson(body.string(), new TypeToken<List<Appointment>>() {
-                }.getType());
-
-                Platform.runLater(() -> {
-                    observableAppointments.clear();
-                    observableAppointments.addAll(appointments);
-                });
             }
         });
     }

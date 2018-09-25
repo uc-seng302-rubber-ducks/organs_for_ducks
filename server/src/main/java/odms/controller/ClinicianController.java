@@ -1,11 +1,11 @@
 package odms.controller;
 
-import odms.commons.database.DBHandler;
-import odms.commons.database.JDBCDriver;
 import odms.commons.model.Clinician;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model.datamodel.ComboBoxClinician;
 import odms.commons.utils.Log;
+import odms.database.DBHandler;
+import odms.database.JDBCDriver;
 import odms.exception.NotFoundException;
 import odms.exception.ServerDBException;
 import odms.security.IsAdmin;
@@ -65,7 +65,7 @@ public class ClinicianController extends BaseController {
 
     @IsClinician
     @RequestMapping(method = RequestMethod.GET, value = "/clinicians/{staffId}")
-    public Clinician getClinician(@PathVariable("staffId") String staffId) throws SQLException {
+    public Clinician getClinician(@PathVariable("staffId") String staffId) {
         try (Connection connection = driver.getConnection()) {
             Clinician result = handler.getOneClinician(connection, staffId);
             if (result != null) {
@@ -82,7 +82,7 @@ public class ClinicianController extends BaseController {
 
     @IsAdmin
     @RequestMapping(method = RequestMethod.POST, value = "/clinicians")
-    public ResponseEntity postClinician(@RequestBody Clinician newClinician) throws SQLException {
+    public ResponseEntity postClinician(@RequestBody Clinician newClinician) {
         try (Connection connection = driver.getConnection()) {
             handler.saveClinician(newClinician, connection);
             socketHandler.broadcast(EventTypes.CLINICIAN_UPDATE, newClinician.getStaffId(), newClinician.getStaffId());

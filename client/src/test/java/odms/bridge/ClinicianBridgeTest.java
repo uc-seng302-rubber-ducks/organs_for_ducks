@@ -1,10 +1,10 @@
 package odms.bridge;
 
 import com.google.gson.Gson;
-import odms.commons.config.ConfigPropertiesSession;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import odms.TestUtils.CommonTestMethods;
+import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.model.Appointment;
 import odms.commons.model.Clinician;
 import odms.commons.model.datamodel.ComboBoxClinician;
@@ -21,7 +21,8 @@ import org.testfx.api.FxToolkit;
 import java.io.IOException;
 import java.util.List;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -51,7 +52,7 @@ public class ClinicianBridgeTest extends BridgeTestBase {
         ArgumentCaptor<Callback> callbackCaptor = ArgumentCaptor.forClass(Callback.class);
 
 
-        bridge.getClinicians(0, 10, "hackerman", "here", "asdf");
+        bridge.getClinicians(0, 10, "hackerman", "here", "asdf", null);
         verify(mockCall).enqueue(callbackCaptor.capture());
         Callback callback = callbackCaptor.getValue();
 
@@ -219,71 +220,6 @@ public class ClinicianBridgeTest extends BridgeTestBase {
 
         Assert.assertEquals(expected, actual);
 
-    }
-
-    @Test
-    public void getAppointmentsShouldNotPopulateListOnFailToSend() throws IOException {
-        ObservableList<Appointment> testList = FXCollections.emptyObservableList();
-        Call mockCall = mock(Call.class);
-        when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
-        when(mockCall.execute()).thenThrow(new IOException());
-
-        bridge.getAppointments(0,1,"0", "asdf", testList);
-        Assert.assertTrue(testList.isEmpty());
-    }
-
-    @Test
-    public void getAppointmentsShouldNotPopulateOnNullResponse() throws IOException {
-        ObservableList<Appointment> testList = FXCollections.emptyObservableList();
-        Call mockCall = mock(Call.class);
-        when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
-        when(mockCall.execute()).thenReturn(null);
-
-        bridge.getAppointments(0,1,"0", "asdf", testList);
-        Assert.assertTrue(testList.isEmpty());
-    }
-
-    @Test
-    public void getAppointmentsShouldReturnAppointmentsOnSuccess() throws Exception {
-        CommonTestMethods.runMethods();
-        FxToolkit.registerPrimaryStage();
-        try {
-            List<Appointment> someList = new ArrayList<>();
-            ObservableList<Appointment> testList = FXCollections.observableList(someList);
-
-            User testUser = new User();
-            testUser.setNhi("ABC1234");
-            Clinician testClinician = new Clinician();
-            testClinician.setStaffId("0");
-            Appointment testAppointment = new Appointment(testUser.getNhi(), testClinician.getStaffId(), AppointmentCategory.BLOOD_TEST, LocalDateTime.now(), "test", AppointmentStatus.PENDING);
-            testAppointment.setAppointmentId(0);
-            List<Appointment> expected = new ArrayList<>();
-            expected.add(testAppointment);
-
-            ArgumentCaptor<Callback> callbackCaptor = ArgumentCaptor.forClass(Callback.class);
-            Call mockCall = mock(Call.class);
-            Response mockResponse = mock(Response.class);
-            ResponseBody mockResponseBody = mock(ResponseBody.class);
-            when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
-            when(mockCall.execute()).thenReturn(mockResponse);
-            when(mockResponse.code()).thenReturn(200);
-            when(mockResponse.header(eq("Content-Type"))).thenReturn("image/jpg");
-            when(mockResponse.body()).thenReturn(mockResponseBody);
-            when(mockResponseBody.string()).thenReturn(new Gson().toJson(expected));
-
-            bridge.getAppointments(0, 1, "0", "asdf", testList);
-            verify(mockCall).enqueue(callbackCaptor.capture());
-            Callback callback = callbackCaptor.getValue();
-            callback.onResponse(mockCall, mockResponse);
-            try {
-                waitForRunLater();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            Assert.assertEquals(expected.get(0), testList.get(0));
-        } finally {
-            FxToolkit.cleanupStages();
-        }
     }
 
 }

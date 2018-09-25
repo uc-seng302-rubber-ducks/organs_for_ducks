@@ -14,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 
 public class CSVHandlerTest {
@@ -33,7 +34,7 @@ public class CSVHandlerTest {
         expected.setGenderIdentity("Male");
         expected.setBloodType("Male");
         expected.setHeight(1.94);
-        expected.setWeight(105);
+        expected.setWeight(105.0);
         expected.setStreetNumber("2158");
         expected.setStreetName("Melody");
         expected.setNeighborhood("Bình Thủy");
@@ -73,8 +74,8 @@ public class CSVHandlerTest {
         Assert.assertTrue (actual.getDateOfDeath().equals(expected.getDateOfDeath()));
         Assert.assertTrue (actual.getBirthGender().equals(expected.getBirthGender()));
         Assert.assertTrue (actual.getGenderIdentity().equals(expected.getGenderIdentity()));
-        Assert.assertTrue (actual.getHeight() == expected.getHeight());
-        Assert.assertTrue (actual.getWeight() == expected.getWeight());
+        Assert.assertTrue(Objects.equals(actual.getHeight(), expected.getHeight()));
+        Assert.assertTrue(Objects.equals(actual.getWeight(), expected.getWeight()));
         Assert.assertTrue (actual.getRegion().equals(expected.getRegion()));
         Assert.assertTrue (actual.getHomePhone().equals(expected.getHomePhone()));
         Assert.assertTrue (actual.getStreetNumber().equals(expected.getStreetNumber()));
