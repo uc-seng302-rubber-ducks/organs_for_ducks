@@ -296,6 +296,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
         deleteFieldsOfUser("DisqualifiedOrgans", user.getNhi(), connection);
         List<OrgansWithDisqualification> organs = new ArrayList<>(user.getDonorDetails().getDisqualifiedOrgans());
         disqualifiedOrgansHandler.postDisqualifiedOrgan(connection, organs, user.getNhi());
+        disqualifiedOrgansHandler.getDisqualifiedOrgans(connection, user.getNhi()); //Get the newly created disqualifiedIds
         disqualifiedOrgansHandler.updateDisqualifiedOrgan(connection, organs);
         disqualifiedOrgansHandler.deleteDisqualifiedOrgan(connection, organs);
     }

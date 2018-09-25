@@ -317,6 +317,7 @@ public class DBHandler {
                         getUserContact(user, connection);
                         getUserEmergencyContact(user, connection);
                         getDeathDetails(user, connection);
+                        getUserDisqualifiedOrgans(user, connection);
                     } catch (SQLException e) {
                         Log.warning("Unable to create instance of user with nhi " + user.getNhi(), e);
                         throw e;
@@ -619,6 +620,11 @@ public class DBHandler {
                 }
             }
         }
+    }
+
+    private void getUserDisqualifiedOrgans(User user, Connection connection) throws SQLException {
+        DisqualifiedOrgansHandler disqualifiedOrgansHandler = new DisqualifiedOrgansHandler();
+        user.getDonorDetails().getDisqualifiedOrgans().addAll(disqualifiedOrgansHandler.getDisqualifiedOrgans(connection, user.getNhi()));
     }
 
     /**
