@@ -24,8 +24,6 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class BloodTestViewController {
 
@@ -452,7 +450,24 @@ public class BloodTestViewController {
                 bloodTestGraph.setTitle("Results Over the Current Year");
                 timeRangeAxis.setLabel("Time in months");
                 timeRangeAxis.setTickLabelRotation(0);
-                timeRange = Stream.of(Month.values()).map(month -> month.getDisplayName(TextStyle.SHORT, Locale.ENGLISH)).collect(Collectors.toList());
+                Month startMonth = LocalDate.now().minusWeeks(1).getMonth();
+                List<Month> months = Arrays.asList(Month.values());
+
+                months.sort((o1, o2) -> {
+                    int o1Value = o1.getValue();
+                    if (o1Value < startMonth.getValue()) {
+                        o1Value += 12;
+                    }
+                    int o2Value = o2.getValue();
+                    if (o2Value < startMonth.getValue()) {
+                        o2Value += 12;
+                    }
+
+                    return Integer.compare(o1Value, o2Value);
+                });
+
+                timeRange = new ArrayList<>();
+                months.forEach(month -> timeRange.add(month.getDisplayName(TextStyle.SHORT, Locale.ENGLISH)));
                 changeTimeRange(timeRange);
                 break;
 
