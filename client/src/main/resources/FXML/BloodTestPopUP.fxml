@@ -20,8 +20,8 @@
             <TextField fx:id="heamoglobin" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <TextField fx:id="platelets" GridPane.columnIndex="1" GridPane.rowIndex="4" />
             <TextField fx:id="glucose" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-             <TextField fx:id="meanCellVolume" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
              <TextField fx:id="haematocrit" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+             <TextField fx:id="meanCellVolume" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
             <TextField fx:id="meanCellHaematocrit" GridPane.columnIndex="1" GridPane.rowIndex="8" />
             <Label text="Test Date:" />
             <DatePicker fx:id="testDate" prefHeight="25.0" prefWidth="335.0" GridPane.columnIndex="1" />

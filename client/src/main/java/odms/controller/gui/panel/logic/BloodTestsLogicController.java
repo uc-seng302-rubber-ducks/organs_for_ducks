@@ -50,6 +50,8 @@ public class BloodTestsLogicController implements PropertyChangeListener {
             Stage bloodTestStage = new Stage();
             newBloodTestViewController.init(user,bloodTestStage, AppController.getInstance().getBloodTestBridge());
             bloodTestStage.setScene(new Scene(root));
+            bloodTestStage.setResizable(false);
+            bloodTestStage.setTitle("Add New Blood Test");
             bloodTestStage.showAndWait();
             Log.info("Successfully launched the new blood test pop-up window for user: " + user.getNhi());
 
