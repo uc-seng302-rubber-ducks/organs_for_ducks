@@ -72,11 +72,11 @@ public class ReceiverOrganDateController {
 
         TableColumn<ReceiverOrganDetailsHolder, LocalDate> registrationDate = new TableColumn<>("Registration Date");
         registrationDate.setMinWidth(285);
-        registrationDate.setCellValueFactory(new PropertyValueFactory<>("registerDate"));
+        registrationDate.setCellValueFactory(new PropertyValueFactory<>("startDate"));
 
         TableColumn<ReceiverOrganDetailsHolder, LocalDate> deRegistrationDate = new TableColumn<>("Deregistration Date");
         deRegistrationDate.setMinWidth(285);
-        deRegistrationDate.setCellValueFactory(new PropertyValueFactory<>("deRegisterDate"));
+        deRegistrationDate.setCellValueFactory(new PropertyValueFactory<>("stopDate"));
 
         ObservableList<ReceiverOrganDetailsHolder> items = FXCollections.observableList(
                 receiverOrganDetailsList);
