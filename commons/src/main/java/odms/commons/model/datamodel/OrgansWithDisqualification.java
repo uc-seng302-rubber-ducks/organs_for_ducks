@@ -6,6 +6,10 @@ import odms.commons.utils.Log;
 import java.time.LocalDate;
 import java.util.Objects;
 
+/**
+ * Object to store information about disqualified organs. Contains the clinician that disqualified, the reason why,
+ * the date it was done, the date it will be eligible again (Short term injury) or it can be null (eg. smokers lungs)
+ */
 public class OrgansWithDisqualification {
 
     private Integer disqualifiedId;

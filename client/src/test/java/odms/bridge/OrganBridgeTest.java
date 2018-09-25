@@ -6,7 +6,6 @@ import odms.TestUtils.CommonTestMethods;
 import odms.commons.exception.ApiException;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.AvailableOrganDetail;
-import odms.commons.model.datamodel.OrgansWithDisqualification;
 import odms.commons.model.datamodel.TransplantDetails;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -158,31 +157,6 @@ public class OrganBridgeTest extends BridgeTestBase {
 
             //run the callback and check output
             callback.onResponse(mockCall, jsonResponseMock(Collections.singletonList(mock(TransplantDetails.class)), 200));
-            waitForRunLater();
-            verify(mockList, times(1)).addAll(any(List.class));
-        } finally {
-            FxToolkit.cleanupStages();
-        }
-    }
-
-    @Test
-    public void getDisqualifiedOrgansShouldAddToObservableListOnValidResponse() throws Exception {
-        //initialise toolkit so platform.runlater works
-        CommonTestMethods.runHeadless();
-        FxToolkit.registerPrimaryStage();
-        try {
-            ArgumentCaptor<Callback> callbackCaptor = ArgumentCaptor.forClass(Callback.class);
-            Call mockCall = mock(Call.class);
-            when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
-            ObservableList<OrgansWithDisqualification> mockList = mock(ObservableList.class);
-
-            //run method and catch the callback
-            bridge.getDisqualifiedOrgans("TES4321", mockList);
-            verify(mockCall).enqueue(callbackCaptor.capture());
-            Callback callback = callbackCaptor.getValue();
-
-            //run the callback and check output
-            callback.onResponse(mockCall, jsonResponseMock(Collections.singletonList(mock(OrgansWithDisqualification.class)), 200));
             waitForRunLater();
             verify(mockList, times(1)).addAll(any(List.class));
         } finally {

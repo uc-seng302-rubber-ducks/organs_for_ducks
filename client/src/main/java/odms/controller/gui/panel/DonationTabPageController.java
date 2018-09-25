@@ -564,6 +564,9 @@ public class DonationTabPageController {
         launchDisqualifyOrganReason(false);
     }
 
+    /**
+     * Calls the method to launch the remove disqualification window
+     */
     @FXML
     private void removeDisqualification() {
         launchRemoveDisqualification();
@@ -619,6 +622,10 @@ public class DonationTabPageController {
         }
     }
 
+    /**
+     * Launches the remove disqualification window. This contains a text area to insert the reason that the organ's
+     * disqualification is being removed early
+     */
     private void launchRemoveDisqualification() {
         FXMLLoader removeDisqualifiedOrgansLoader = new FXMLLoader(getClass().getResource("/FXML/removeDisqualificationView.fxml"));
         Parent root;

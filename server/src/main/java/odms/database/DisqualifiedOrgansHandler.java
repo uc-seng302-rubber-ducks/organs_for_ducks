@@ -10,6 +10,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * Contains the sql and related methods for retrieving and sending information about disqualified organs to the database
+ */
 public class DisqualifiedOrgansHandler {
 
     private static final String SELECT_DISQUALIFIED_STATEMENT = "SELECT * FROM DisqualifiedOrgans WHERE fkUserNhi = ? AND isCurrentlyDisqualified = 1";
@@ -81,6 +84,13 @@ public class DisqualifiedOrgansHandler {
         return disqualifiedOrgan;
     }
 
+    /**
+     * Creates new disqualified organs on the database
+     * @param connection to the database
+     * @param disqualifications list of disqualified organs. New entries created this session (without unique ids) will be created
+     * @param nhi of the user who the organs belong to
+     * @throws SQLException if there was an error with the statement or when connecting to the database
+     */
     public void postDisqualifiedOrgan(Connection connection, Collection<OrgansWithDisqualification> disqualifications, String nhi) throws SQLException {
         for (OrgansWithDisqualification disqualification : disqualifications) {
             if (disqualification.getDisqualifiedId() == null) { //If an organ does not have an Id then it does not exist in the database, so create it.
@@ -104,6 +114,12 @@ public class DisqualifiedOrgansHandler {
         }
     }
 
+    /**
+     * Updates disqualified organs in the database
+     * @param connection to the database
+     * @param disqualifications list of disqualified organs. Entries that do exist in the database will be updated
+     * @throws SQLException if there was an error with the statement or when connecting to the database
+     */
     public void updateDisqualifiedOrgan(Connection connection, Collection<OrgansWithDisqualification> disqualifications) throws SQLException {
         for (OrgansWithDisqualification disqualification : disqualifications) {
             if (disqualification.getDisqualifiedId() != null) { //If an organ has an Id then it exists in the database, so update it.

@@ -21,7 +21,6 @@ public class RemoveDisqualificationLogicController {
      */
     public void confirm(OrgansWithDisqualification disqualifiedOrgan, String description) {
         user.saveStateForUndo();
-        System.out.println(description);
         disqualifiedOrgan.setReason(description);
         disqualifiedOrgan.setCurrentlyDisqualified(false);
         for (int i = 0; i < disqualifications.size(); i++) {

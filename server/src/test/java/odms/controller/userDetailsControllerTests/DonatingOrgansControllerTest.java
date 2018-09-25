@@ -17,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -129,30 +128,30 @@ public class DonatingOrgansControllerTest {
         disqualified.add(testOrgan);
         return disqualified;
     }
-
-    @Test
-    public void postDisqualifiedOrgansShouldReturnCreated() throws SQLException {
-        PreparedStatement mockStmt = mock(PreparedStatement.class);
-        when(connection.prepareStatement(anyString())).thenReturn(mockStmt);
-        ResponseEntity res = controller.postDisqualifiedOrgan("ABC1234", createTestCollection());
-        Assert.assertEquals(HttpStatus.CREATED, res.getStatusCode());
-    }
-
-    @Test(expected = ServerDBException.class)
-    public void postDisqualifiedOrgansShouldThrowExceptionAndReturn500() throws SQLException {
-        when(driver.getConnection()).thenThrow(new SQLException());
-        controller.postDisqualifiedOrgan("ABC1234", createTestCollection());
-    }
-
-    @Test
-    public void deleteDisqualifiedOrgansShouldReturnOk() {
-        ResponseEntity res = controller.deleteDisqualifiedOrgan("ABC1234", createTestCollection());
-        Assert.assertEquals(HttpStatus.I_AM_A_TEAPOT, res.getStatusCode());
-    }
-
-    @Test(expected = ServerDBException.class)
-    public void deleteDisqualifiedOrgansShouldThrowExceptionAndReturn500() throws SQLException {
-        when(driver.getConnection()).thenThrow(new SQLException());
-        controller.postDisqualifiedOrgan("ABC1234", createTestCollection());
-    }
+//
+//    @Test
+//    public void postDisqualifiedOrgansShouldReturnCreated() throws SQLException {
+//        PreparedStatement mockStmt = mock(PreparedStatement.class);
+//        when(connection.prepareStatement(anyString())).thenReturn(mockStmt);
+//        ResponseEntity res = controller.postDisqualifiedOrgan("ABC1234", createTestCollection());
+//        Assert.assertEquals(HttpStatus.CREATED, res.getStatusCode());
+//    }
+//
+//    @Test(expected = ServerDBException.class)
+//    public void postDisqualifiedOrgansShouldThrowExceptionAndReturn500() throws SQLException {
+//        when(driver.getConnection()).thenThrow(new SQLException());
+//        controller.postDisqualifiedOrgan("ABC1234", createTestCollection());
+//    }
+//
+//    @Test
+//    public void deleteDisqualifiedOrgansShouldReturnOk() {
+//        ResponseEntity res = controller.deleteDisqualifiedOrgan("ABC1234", createTestCollection());
+//        Assert.assertEquals(HttpStatus.I_AM_A_TEAPOT, res.getStatusCode());
+//    }
+//
+//    @Test(expected = ServerDBException.class)
+//    public void deleteDisqualifiedOrgansShouldThrowExceptionAndReturn500() throws SQLException {
+//        when(driver.getConnection()).thenThrow(new SQLException());
+//        controller.postDisqualifiedOrgan("ABC1234", createTestCollection());
+//    }
 }

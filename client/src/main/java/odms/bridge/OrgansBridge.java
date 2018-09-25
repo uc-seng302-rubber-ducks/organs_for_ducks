@@ -1,13 +1,11 @@
 package odms.bridge;
 
-import com.google.gson.Gson;
 import com.mysql.jdbc.StringUtils;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.exception.ApiException;
 import odms.commons.model.datamodel.AvailableOrganDetail;
-import odms.commons.model.datamodel.OrgansWithDisqualification;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.utils.Log;
 import odms.commons.utils.OrganSorter;
@@ -137,75 +135,4 @@ public class OrgansBridge extends Bifrost {
         });
 
     }
-
-    /**
-     * Gets the disqualified organs for a user
-     * @param nhi user to get organs for
-     * @param observableDisqualifications Observable list to populate with the disqualified organs.
-     */
-    public void getDisqualifiedOrgans(String nhi, ObservableList<OrgansWithDisqualification> observableDisqualifications) {
-        String url = ip + "/users/" + nhi + "/disqualified";
-
-        Request request = new Request.Builder().get().header(tokenHeader, AppController.getInstance().getToken()).url(url).build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.severe("Failed to GET the list of disqualified organs for user " + nhi, e);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (200 < response.code() || response.code() > 299) {
-                    throw new ApiException(response.code(), "got response with code outside of 200 range");
-                }
-
-                ResponseBody body = response.body();
-                if (body == null) {
-                    Log.warning("A null response body was returned to the user");
-                    return;
-                }
-                String bodyString = response.body().string();
-
-                List<OrgansWithDisqualification> disqualifications = handler.decodeDisqualified(bodyString);
-
-                Platform.runLater(() -> {
-                    observableDisqualifications.clear();
-                    observableDisqualifications.addAll(disqualifications);
-                });
-            }
-        });
-    }
-
-    /**
-     * Updates or creates a user's disqualified organs
-     * @param nhi User to update disqualified organs for
-     * @param disqualifications List of disqualified organs to send to the database
-     */
-    public void postDisqualifiedOrgans(String nhi, List<OrgansWithDisqualification> disqualifications) {
-        String url = ip + "/users/" + nhi + "/disqualified";
-        RequestBody body = RequestBody.create(json, new Gson().toJson(disqualifications));
-        Request request = new Request.Builder().header(tokenHeader, AppController.getInstance().getToken())
-                .url(url).post(body).build();
-        client.newCall(request).enqueue(CommonMethods.loggedCallback("POST", url));
-    }
-
-    /**
-     * Deletes a set of disqualified organs from the user
-     * @param nhi User to delete disqualified organs from
-     * @param disqualifications List of disqualified organs to delete from the database
-     */
-    public void deleteDisqualifiedOrgans(String nhi ,List<OrgansWithDisqualification> disqualifications) {
-        String url = ip + "/users/" + nhi + "/disqualified";
-        RequestBody body = RequestBody.create(json, new Gson().toJson(disqualifications));
-        Request request = new Request.Builder().get().header(tokenHeader, AppController.getInstance().getToken())
-                .url(url).delete(body).build();
-        client.newCall(request).enqueue(CommonMethods.loggedCallback("DELETE", url));
-    }
-
-
-
-
-
-
-
 }

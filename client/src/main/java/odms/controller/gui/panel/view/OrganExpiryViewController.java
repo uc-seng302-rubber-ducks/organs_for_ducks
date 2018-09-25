@@ -73,19 +73,6 @@ public class OrganExpiryViewController {
     }
 
     /**
-     * Confirms and updates the disqualification of the selected organ
-     */
-    public void confirmDisqualification() {
-        if( Pattern.compile(" *").matcher(expirationReasonTextArea.getText()).matches()){
-            warningLabelOE.setText("A reason for expiry must be given");
-            return;
-        }
-//      //No commented out code here logicController.s/*Or here*/etDisqualificationReason(expirationReasonTextArea.getText()); //Not over here either
-        donationTabPageController.refreshCurrentlyDonating();
-        stage.close();
-    }
-
-    /**
      * Cancels the manual expiry
      */
     public void cancelExpiration() {

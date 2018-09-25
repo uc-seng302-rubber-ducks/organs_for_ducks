@@ -60,7 +60,6 @@ public class ThenSteps extends ApplicationTest {
 
     @Then("^I should see my NHI \"([^\"]*)\" along with my other details at the user view screen")
     public void theIShouldSeeMyNHIAlongWithMyOtherDetailsAtTheUserViewScreen(String nhi) {
-        System.out.println("h");
         verifyThat("#NHIValue", LabeledMatchers.hasText(nhi));
     }
 
