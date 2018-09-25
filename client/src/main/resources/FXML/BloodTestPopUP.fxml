@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<AnchorPane prefHeight="638.0" prefWidth="464.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.popup.view.NewBloodTestViewController">
+<AnchorPane prefHeight="638.0" prefWidth="503.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.popup.view.NewBloodTestViewController">
    <children>
       <Button fx:id="cancelBloodTest" layoutX="14.0" layoutY="601.0" mnemonicParsing="false" onAction="#cancel" text="Cancel" />
       <Button fx:id="addBloodTest" layoutX="333.0" layoutY="601.0" mnemonicParsing="false" onAction="#addBloodTest" text="Add Blood Test" />
@@ -12,7 +12,7 @@
             <Font name="System Bold" size="13.0" />
          </font>
       </Label>
-      <GridPane layoutX="11.0" layoutY="43.0" prefHeight="549.0" prefWidth="433.0">
+      <GridPane layoutX="11.0" layoutY="43.0" prefHeight="549.0" prefWidth="486.0">
          <children>
             <Label text="Red Blood Cell Count:" GridPane.rowIndex="1" />
             <Label text="White Blood Cell Count:" GridPane.rowIndex="2" />
@@ -31,20 +31,20 @@
             <TextField fx:id="haematocrit" GridPane.columnIndex="1" GridPane.rowIndex="7" />
             <TextField fx:id="meanCellHaematocrit" GridPane.columnIndex="1" GridPane.rowIndex="8" />
             <Label text="Test Date:" />
-            <DatePicker fx:id="testDate" prefHeight="25.0" prefWidth="271.0" GridPane.columnIndex="1" />
-            <Label fx:id="dateErrorLabel" text="please select a date" GridPane.columnIndex="1" GridPane.valignment="BOTTOM" />
-            <Label fx:id="redBloodCellError" text="please enter a postive number" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
-            <Label fx:id="whiteBloodCellError" text="please enter a postive number" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
-            <Label fx:id="heamoglobinError" text="please enter a postive number" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.valignment="BOTTOM" />
-            <Label fx:id="plateletsError" text="please enter a postive number" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.valignment="BOTTOM" />
-            <Label fx:id="glucoseError" text="please enter a postive number" GridPane.columnIndex="1" GridPane.rowIndex="5" GridPane.valignment="BOTTOM" />
-            <Label fx:id="meanCellVolumeError" text="please enter a postive number" GridPane.columnIndex="1" GridPane.rowIndex="6" GridPane.valignment="BOTTOM" />
-            <Label fx:id="haematocritError" text="please enter a postive number" GridPane.columnIndex="1" GridPane.rowIndex="7" GridPane.valignment="BOTTOM" />
-            <Label fx:id="meanCellHaematocritError" text="please enter a postive number" GridPane.columnIndex="1" GridPane.rowIndex="8" GridPane.valignment="BOTTOM" />
+            <DatePicker fx:id="testDate" prefHeight="25.0" prefWidth="335.0" GridPane.columnIndex="1" />
+            <Label fx:id="dateErrorLabel" prefHeight="15.0" prefWidth="166.0" text="please select a date" GridPane.columnIndex="1" GridPane.valignment="BOTTOM" />
+            <Label fx:id="redBloodCellError" prefHeight="15.0" prefWidth="332.0" text="please enter a postive number" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
+            <Label fx:id="whiteBloodCellError" prefHeight="15.0" prefWidth="331.0" text="please enter a postive number" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
+            <Label fx:id="heamoglobinError" prefHeight="15.0" prefWidth="337.0" text="please enter a postive number" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.valignment="BOTTOM" />
+            <Label fx:id="plateletsError" prefHeight="15.0" prefWidth="334.0" text="please enter a postive number" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.valignment="BOTTOM" />
+            <Label fx:id="glucoseError" prefHeight="15.0" prefWidth="329.0" text="please enter a postive number" GridPane.columnIndex="1" GridPane.rowIndex="5" GridPane.valignment="BOTTOM" />
+            <Label fx:id="meanCellVolumeError" prefHeight="15.0" prefWidth="328.0" text="please enter a postive number" GridPane.columnIndex="1" GridPane.rowIndex="6" GridPane.valignment="BOTTOM" />
+            <Label fx:id="haematocritError" prefHeight="15.0" prefWidth="332.0" text="please enter a postive number" GridPane.columnIndex="1" GridPane.rowIndex="7" GridPane.valignment="BOTTOM" />
+            <Label fx:id="meanCellHaematocritError" prefHeight="15.0" prefWidth="336.0" text="please enter a postive number" GridPane.columnIndex="1" GridPane.rowIndex="8" GridPane.valignment="BOTTOM" />
          </children>
          <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="210.0" minWidth="10.0" prefWidth="166.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="268.0" minWidth="10.0" prefWidth="267.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="210.0" minWidth="10.0" prefWidth="149.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="329.0" minWidth="10.0" prefWidth="329.0" />
          </columnConstraints>
          <rowConstraints>
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />

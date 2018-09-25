@@ -9,8 +9,11 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import odms.bridge.BloodTestBridge;
 import odms.commons.model.User;
+import odms.commons.model._enum.BloodTestProperties;
 import odms.commons.utils.AttributeValidation;
 import odms.controller.gui.popup.logic.NewBloodTestLogicController;
+
+import java.text.DecimalFormat;
 
 
 public class NewBloodTestViewController {
@@ -86,55 +89,44 @@ public class NewBloodTestViewController {
         meanCellHaematocritError.setVisible(false);
     }
 
-    private boolean validateField() {
-        boolean valid = true;
-        if (AttributeValidation.validateDouble(redBloodCount.getText()) == -1) {
-            redBloodCellError.setVisible(true);
-            invalidateNode(redBloodCount);
+    private Boolean BloodTestValidation(TextField textField, Label label, BloodTestProperties bloodTestProperties){
+        valid = true;
+        DecimalFormat df2 = new DecimalFormat(".##");
+        double value = AttributeValidation.validateDouble(textField.getText());
+        if (value == -1){
+            label.setVisible(true);
+            invalidateNode(textField);
             valid = false;
-        }
-        if (AttributeValidation.validateDouble(whiteBloodCount.getText()) == -1){
-            whiteBloodCellError.setVisible(true);
-            invalidateNode(whiteBloodCount);
+        } else if (value > (bloodTestProperties.getUpperBound()) * 5.0){
+            label.setText("that number is too large the max number is " + df2.format(bloodTestProperties.getUpperBound() * 5.0));
+            label.setVisible(true);
+            invalidateNode(textField);
             valid = false;
-
-        }
-        if (AttributeValidation.validateDouble(heamoglobin.getText()) == -1) {
-            heamoglobinError.setVisible(true);
-            invalidateNode(heamoglobin);
-            valid = false;
-        }
-        if (AttributeValidation.validateDouble(platelets.getText()) == -1) {
-            plateletsError.setVisible(true);
-            invalidateNode(platelets);
-            valid = false;
-        }
-        if (AttributeValidation.validateDouble(glucose.getText()) == -1) {
-            glucoseError.setVisible(true);
-            invalidateNode(glucose);
-            valid = false;
-        }
-        if (AttributeValidation.validateDouble(meanCellVolume.getText()) == -1) {
-            meanCellVolumeError.setVisible(true);
-            invalidateNode(meanCellVolume);
-            valid = false;
-        }
-        if (AttributeValidation.validateDouble(haematocrit.getText()) == -1) {
-            haematocritError.setVisible(true);
-            invalidateNode(haematocrit);
-            valid = false;
-        }
-        if (AttributeValidation.validateDouble(meanCellHaematocrit.getText()) == -1){
-            meanCellHaematocritError.setVisible(true);
-            invalidateNode(meanCellHaematocrit);
-            valid = false;
-        }
-        if(!AttributeValidation.validateDateBeforeTomorrow(testDate.getValue())){
-            dateErrorLabel.setVisible(true);
-            invalidateNode(testDate);
+        } else if (value < (bloodTestProperties.getLowerBound() / 5.0)) {
+            label.setText("that number is too small the min number is " + df2.format(bloodTestProperties.getLowerBound() / 5.0));
+            label.setVisible(true);
+            invalidateNode(textField);
             valid = false;
         }
         return valid;
+    }
+
+    private boolean validateField() {
+        boolean fieldValid = true;
+        fieldValid &= BloodTestValidation(redBloodCount,redBloodCellError,BloodTestProperties.RBC);
+        fieldValid &= BloodTestValidation(whiteBloodCount,whiteBloodCellError,BloodTestProperties.WBC);
+        fieldValid &= BloodTestValidation(heamoglobin,heamoglobinError,BloodTestProperties.HAEMOGLOBIN);
+        fieldValid &= BloodTestValidation(platelets,plateletsError,BloodTestProperties.PLATELETS);
+        fieldValid &= BloodTestValidation(glucose,glucoseError,BloodTestProperties.GLUCOSE);
+        fieldValid &= BloodTestValidation(meanCellVolume, meanCellVolumeError, BloodTestProperties.MEAN_CELL_VOLUME);
+        fieldValid &= BloodTestValidation(haematocrit, haematocritError, BloodTestProperties.HAEMATOCRIT);
+        fieldValid &= BloodTestValidation(meanCellHaematocrit, meanCellHaematocritError, BloodTestProperties.MEAN_CELL_HAEMATOCRIT);
+        if(!AttributeValidation.validateDateBeforeTomorrow(testDate.getValue())){
+            dateErrorLabel.setVisible(true);
+            invalidateNode(testDate);
+            fieldValid = false;
+        }
+        return fieldValid;
 
     }
 
