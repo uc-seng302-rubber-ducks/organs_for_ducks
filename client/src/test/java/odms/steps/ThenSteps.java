@@ -1,44 +1,22 @@
 package odms.steps;
 
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
 import cucumber.api.java.en.Then;
 import javafx.scene.Node;
 import javafx.scene.control.TableView;
 import odms.TestUtils.TableViewsMethod;
-import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
-import odms.controller.AppController;
 import org.junit.Assert;
-import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.TableViewsMethod.getCellValue;
 import static org.junit.Assert.*;
 import static org.testfx.api.FxAssert.verifyThat;
 
 public class ThenSteps extends ApplicationTest {
-
-    @Before
-    public void before() {
-        ConfigPropertiesSession mockSession = CucumberTestModel.getSession();
-        ConfigPropertiesSession.setInstance(mockSession);
-        AppController.setInstance(CucumberTestModel.getController());
-    }
-
-    @After
-    public void tearDown() throws TimeoutException {
-        if (FxToolkit.isFXApplicationThreadRunning()) {
-            FxToolkit.cleanupStages();
-        }
-        ConfigPropertiesSession.setInstance(null);
-        AppController.setInstance(null);
-    }
 
     @Then("^There are two profiles with first name \"([^\"]*)\" and last name \"([^\"]*)\"$")
     public void thereAreTwoProfilesWithFirstNameAndLastName(String name, String arg2) {

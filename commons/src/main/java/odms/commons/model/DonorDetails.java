@@ -47,6 +47,10 @@ public class DonorDetails {
         return disqualifiedOrgans;
     }
 
+    /**
+     * Adds a disqualified organ to the users list of disqualified organs
+     * @param disqualification OrgansWithDisqualification object to go into the list
+     */
     public void addDisqualification(OrgansWithDisqualification disqualification) {
         if (attachedUser != null) {
             attachedUser.saveStateForUndo();
@@ -57,6 +61,10 @@ public class DonorDetails {
         }
     }
 
+    /**
+     * Removes a disqualification from the users list of disqualified organs
+     * @param disqualification OrgansWithDisqualification object to go remove from the list
+     */
     public void removeDisqualification(OrgansWithDisqualification disqualification) {
         if (disqualifiedOrgans.contains(disqualification)) {
             attachedUser.saveStateForUndo();

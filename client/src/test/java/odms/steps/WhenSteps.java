@@ -1,7 +1,5 @@
 package odms.steps;
 
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.When;
 import javafx.collections.FXCollections;
@@ -13,10 +11,8 @@ import odms.TestUtils.TableViewsMethod;
 import odms.commands.CreateUser;
 import odms.commands.DeleteUser;
 import odms.commands.View;
-import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.model.UserBuilder;
 import odms.commons.model.dto.UserOverview;
-import odms.controller.AppController;
 import odms.view.CLI;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
@@ -28,7 +24,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
-import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.*;
 import static odms.TestUtils.TableViewsMethod.getCell;
@@ -37,22 +32,6 @@ import static org.mockito.Mockito.when;
 
 
 public class WhenSteps extends ApplicationTest {
-
-    @Before
-    public void before() {
-        ConfigPropertiesSession mockSession = CucumberTestModel.getSession();
-        ConfigPropertiesSession.setInstance(mockSession);
-        AppController.setInstance(CucumberTestModel.getController());
-    }
-
-    @After
-    public void tearDown() throws TimeoutException {
-        if (FxToolkit.isFXApplicationThreadRunning()) {
-            FxToolkit.cleanupStages();
-        }
-        ConfigPropertiesSession.setInstance(null);
-        AppController.setInstance(null);
-    }
 
     @When("^I view the previously created user")
     public void iViewThePreviouslyCreatedUser() {

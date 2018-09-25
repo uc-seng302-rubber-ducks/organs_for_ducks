@@ -622,6 +622,12 @@ public class DBHandler {
         }
     }
 
+    /**
+     * Gets a users disqualified organs form the database and adds it to the user
+     * @param user to get the disqualifications for
+     * @param connection to the database
+     * @throws SQLException if the is an error with the retrieval of the disqualifications
+     */
     private void getUserDisqualifiedOrgans(User user, Connection connection) throws SQLException {
         DisqualifiedOrgansHandler disqualifiedOrgansHandler = new DisqualifiedOrgansHandler();
         user.getDonorDetails().getDisqualifiedOrgans().addAll(disqualifiedOrgansHandler.getDisqualifiedOrgans(connection, user.getNhi()));
