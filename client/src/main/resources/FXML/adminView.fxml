@@ -4,6 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
+<?import odms.controller.gui.widget.LoadingTableView?>
 <?import java.lang.String?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="1200.0"
             minWidth="800.0" prefHeight="1200.0" prefWidth="800.0" stylesheets="@../gui.css"
@@ -149,22 +150,22 @@
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="617.0">
                                     <children>
-                                        <TableView fx:id="adminTableView" layoutY="32.0" prefHeight="240.0" prefWidth="592.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="0.0">
+                                        <LoadingTableView fx:id="adminTableView" layoutY="32.0" prefHeight="240.0" prefWidth="592.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="0.0">
                                             <tooltip>
                                                 <Tooltip fx:id="searchToolTip" text="Empty Tooltip" />
                                             </tooltip>
-                                        </TableView>
+                                        </LoadingTableView>
                                         <Label fx:id="searchCountLabel" layoutX="14.0" layoutY="336.0" text="" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" />
-                                        <TableView fx:id="clinicianTableView" prefHeight="240.0" prefWidth="592.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="0.0">
+                                        <LoadingTableView fx:id="clinicianTableView" prefHeight="240.0" prefWidth="592.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="0.0">
                                             <tooltip>
                                                 <Tooltip fx:id="searchToolTip1" text="Empty Tooltip" />
                                             </tooltip>
-                                        </TableView>
-                                        <TableView fx:id="userTableView" prefHeight="214.0" prefWidth="595.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="0.0">
+                                        </LoadingTableView>
+                                        <LoadingTableView fx:id="userTableView" prefHeight="214.0" prefWidth="595.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="0.0">
                                             <tooltip>
                                                 <Tooltip fx:id="searchToolTip2" text="Empty Tooltip" />
                                             </tooltip>
-                                        </TableView>
+                                        </LoadingTableView>
                               <HBox alignment="CENTER" layoutX="260.0" layoutY="191.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                  <children>
                                     <Button alignment="CENTER" layoutX="260.0" layoutY="191.0" mnemonicParsing="false" onAction="#goToPrevPage" text="&lt;&lt;" />

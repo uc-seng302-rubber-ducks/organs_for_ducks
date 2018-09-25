@@ -41,7 +41,7 @@ public class OrganBridgeTest extends BridgeTestBase {
         ObservableList<AvailableOrganDetail> oList = FXCollections.emptyObservableList();
 
 
-        bridge.getAvailableOrgansList(0, 10, null, null, null, null, null, oList);
+        bridge.getAvailableOrgansList(0, 10, null, null, null, null, null, oList, null);
         verify(mockClient).newCall(requestCaptor.capture());
 
 
@@ -57,7 +57,7 @@ public class OrganBridgeTest extends BridgeTestBase {
         ObservableList<AvailableOrganDetail> oList = FXCollections.emptyObservableList();
 
 
-        bridge.getAvailableOrgansList(0, 10, "Liver", "a", "b", "c", "d", oList);
+        bridge.getAvailableOrgansList(0, 10, "Liver", "a", "b", "c", "d", oList, null);
         verify(mockClient).newCall(requestCaptor.capture());
 
         Request request = requestCaptor.getValue();
@@ -71,7 +71,7 @@ public class OrganBridgeTest extends BridgeTestBase {
         ObservableList<AvailableOrganDetail> oList = FXCollections.emptyObservableList();
 
 
-        bridge.getAvailableOrgansList(5, 11, "bone marrow", "over there", "O-", "Christchurch", "New Zealand", oList);
+        bridge.getAvailableOrgansList(5, 11, "bone marrow", "over there", "O-", "Christchurch", "New Zealand", oList, null);
         verify(mockClient).newCall(requestCaptor.capture());
 
         Request request = requestCaptor.getValue();
@@ -87,7 +87,7 @@ public class OrganBridgeTest extends BridgeTestBase {
         ObservableList<AvailableOrganDetail> oList = FXCollections.emptyObservableList();
 
         //run method and catch the callback
-        bridge.getAvailableOrgansList(0, 10, null, null, null, null, null, oList);
+        bridge.getAvailableOrgansList(0, 10, null, null, null, null, null, oList, null);
         verify(mockCall).enqueue(callbackCaptor.capture());
         Callback callback = callbackCaptor.getValue();
 
@@ -108,7 +108,7 @@ public class OrganBridgeTest extends BridgeTestBase {
             ObservableList<AvailableOrganDetail> mockList = mock(ObservableList.class);
 
             //run method and catch the callback
-            bridge.getAvailableOrgansList(0, 10, null, null, null, null, null, mockList);
+            bridge.getAvailableOrgansList(0, 10, null, null, null, null, null, mockList, null);
             verify(mockCall).enqueue(callbackCaptor.capture());
             Callback callback = callbackCaptor.getValue();
 
@@ -131,7 +131,7 @@ public class OrganBridgeTest extends BridgeTestBase {
 
 
         bridge.getMatchingOrgansList(0, 10, "ABC1234",
-                new AvailableOrganDetail(Organs.HEART, "", LocalDateTime.now(), "", "", Long.valueOf("0")), mock(ObservableList.class));
+                new AvailableOrganDetail(Organs.HEART, "", LocalDateTime.now(), "", "", Long.valueOf("0")), mock(ObservableList.class), null);
         verify(mockClient).newCall(requestCaptor.capture());
 
 
@@ -152,7 +152,7 @@ public class OrganBridgeTest extends BridgeTestBase {
 
             //run method and catch the callback
             bridge.getMatchingOrgansList(0, 15, "TES4321",
-                    new AvailableOrganDetail(Organs.HEART, "", LocalDateTime.now(), "", "", Long.valueOf("0")), mockList);
+                    new AvailableOrganDetail(Organs.HEART, "", LocalDateTime.now(), "", "", Long.valueOf("0")), mockList, null);
             verify(mockCall).enqueue(callbackCaptor.capture());
             Callback callback = callbackCaptor.getValue();
 

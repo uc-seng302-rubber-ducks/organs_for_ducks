@@ -40,30 +40,32 @@ public class Mailer {
      */
     public void sendAppointmentUpdate(int statusId, AppointmentWithPeople appointment) {
         String message;
-        if (appointment.getUser().getEmail() == null || appointment.getUser().getEmail().isEmpty()) {
-            return;
+        if (appointment.getUser() != null) {
+            if (appointment.getUser().getEmail() == null || appointment.getUser().getEmail().isEmpty()) {
+                return;
+            }
+            switch (statusId) {
+                case 2:
+                    message = composer.writeAccepted(appointment);
+                    break;
+                case 3:
+                    message = composer.writeRejected(appointment);
+                    break;
+                case 5:
+                    message = composer.writeCancelledByClinician(appointment);
+                    break;
+                case 6:
+                    message = composer.writeUpdated(appointment);
+                    break;
+                default:
+                    message = "";
+            }
+            if (message.isEmpty()) {
+                return;
+            }
+            Log.info("Sending\n" + message);
+            String subject = "Appointment With " + appointment.getClinician().getFirstName() + " " + appointment.getClinician().getLastName();
+            mailHandler.sendMail(appointment.getUser().getEmail(), subject, message);
         }
-        switch (statusId) {
-            case 2:
-                message = composer.writeAccepted(appointment);
-                break;
-            case 3:
-                message = composer.writeRejected(appointment);
-                break;
-            case 5:
-                message = composer.writeCancelledByClinician(appointment);
-                break;
-            case 6:
-                message = composer.writeUpdated(appointment);
-                break;
-            default:
-                message = "";
-        }
-        if (message.isEmpty()) {
-            return;
-        }
-        Log.info("Sending\n" + message);
-        String subject = "Appointment With " + appointment.getClinician().getFirstName() + " " + appointment.getClinician().getLastName();
-        mailHandler.sendMail(appointment.getUser().getEmail(), subject, message);
     }
 }

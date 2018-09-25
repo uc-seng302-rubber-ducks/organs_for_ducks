@@ -104,13 +104,14 @@ public class CalendarWidgetFactory {
                 }
             } else if (evt.isEntryRemoved()) {
                 AppController.getInstance().getAppointmentsBridge().deleteAppointment((Appointment) evt.getEntry().getUserObject());
-            } else if (evt.getOldInterval() != null && !evt.getOldInterval().equals(evt.getEntry().getInterval())) { // Only put if the times has changed
+            } else if (evt.getOldInterval() != null) { // Only put if the times has changed
                 Entry<Appointment> entry = (Entry<Appointment>) evt.getEntry();
                 if (entry != null && !entry.getProperties().containsKey(QUIET_MODE)) {
                     checkNoClashes(calendarView, entry, evt);
                     checkNotInPast(entry, evt);
-                    if (!entry.getInterval().equals(evt.getOldInterval()))
+                    if (!entry.getInterval().equals(evt.getOldInterval())) {
                         AppController.getInstance().getAppointmentsBridge().putAppointment(entry.getUserObject(), AppController.getInstance().getToken());
+                    }
                 }
             }
         });
@@ -148,7 +149,9 @@ public class CalendarWidgetFactory {
             for (List<Entry<?>> list : c.findEntries(entry.getStartDate(), entry.getEndDate(), entry.getZoneId()).values()) {
                 for (Entry<?> e : list) {
                     if (entry.intersects(e) && !e.equals(entry)) {
+                        entry.getProperties().put(QUIET_MODE, true);
                         entry.setInterval(evt.getOldInterval());
+                        entry.getProperties().remove(QUIET_MODE);
                         AlertWindowFactory.generateInfoWindow("You cannot move this there because it clashes with another existing entry");
                     }
                 }

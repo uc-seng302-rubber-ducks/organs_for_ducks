@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import odms.commons.model.datamodel.AvailableOrganDetail;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.controller.AppController;
+import odms.controller.gui.widget.LoadingWidget;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -37,7 +38,7 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
      * @param organ the organ to filter by
      * @param region the region to filter by
      */
-    public void search(int startIndex, String organ, String region) {
+    public void search(int startIndex, String organ, String region, LoadingWidget widget) {
         shutdownThreads();
         availableOrganDetails.clear();
         this.organ = organ;
@@ -45,31 +46,31 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
         this.startingIndex = startIndex;
 
         // Make the call to the bridge here, and hand the arraylist to the bridge function
-        AppController.getInstance().getOrgansBridge().getAvailableOrgansList(startIndex, ROWS_PER_PAGE, organ, region, "", "", "", availableOrganDetails);
+        AppController.getInstance().getOrgansBridge().getAvailableOrgansList(startIndex, ROWS_PER_PAGE, organ, region, "", "", "", availableOrganDetails, widget);
     }
 
     /**
      * Goes to the previous page in the available organs table.
      */
-    public void goPrevPage() {
+    public void goPrevPage(LoadingWidget widget) {
         if (startingIndex - ROWS_PER_PAGE < 0) {
             return;
         }
 
         startingIndex = startingIndex - ROWS_PER_PAGE;
-        search(startingIndex, organ, region);
+        search(startingIndex, organ, region, widget);
     }
 
     /**
      * Goes to the next page in the available organs table
      */
-    public void goNextPage() {
+    public void goNextPage(LoadingWidget widget) {
         if (availableOrganDetails.size() < ROWS_PER_PAGE) {
             return;
         }
 
         startingIndex = startingIndex + ROWS_PER_PAGE;
-        search(startingIndex, organ, region);
+        search(startingIndex, organ, region, widget);
     }
 
     /**
@@ -87,12 +88,12 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
     /**
      * Goes to the next page of the potential matches table
      */
-    public void goNextPageMatches() {
+    public void goNextPageMatches(LoadingWidget widget) {
         if(transplantDetails.size() < ROWS_PER_PAGE){
             return;
         }
         startingIndexMatches += ROWS_PER_PAGE;
-        searchMatches(startingIndexMatches);
+        searchMatches(startingIndexMatches, widget);
 
     }
 
@@ -100,35 +101,35 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
      * Provides pagination functionality for the matches table
      * @param startingIndexMatches how many entries to skip before returning
      */
-    private void searchMatches(int startingIndexMatches) {
+    private void searchMatches(int startingIndexMatches, LoadingWidget widget) {
         if(availableOrgan == null){
             return;
         }
         transplantDetails.clear();
         this.startingIndexMatches = startingIndexMatches;
         AppController.getInstance().getOrgansBridge().getMatchingOrgansList(startingIndexMatches,
-                ROWS_PER_PAGE, availableOrgan.getDonorNhi(), availableOrgan, transplantDetails);
+                ROWS_PER_PAGE, availableOrgan.getDonorNhi(), availableOrgan, transplantDetails, widget);
     }
 
     /**
      * Goes to the previous page of the potential matches table
      */
-    public void goPrevPageMatches() {
+    public void goPrevPageMatches(LoadingWidget widget) {
         if (startingIndexMatches - ROWS_PER_PAGE < 0) {
             return;
         }
 
         startingIndexMatches -= ROWS_PER_PAGE;
-        searchMatches(startingIndexMatches);
+        searchMatches(startingIndexMatches, widget);
     }
 
     /**
      * Populates the potential matches for a selected organ
      * @param selectedItem selected item in the available organs list
      */
-    public void showMatches(AvailableOrganDetail selectedItem) {
+    public void showMatches(AvailableOrganDetail selectedItem, LoadingWidget widget) {
         this.availableOrgan = selectedItem;
-        searchMatches(0);
+        searchMatches(0, widget);
     }
 
     @Override

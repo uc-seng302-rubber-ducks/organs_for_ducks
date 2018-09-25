@@ -983,7 +983,7 @@ public class DBHandler {
      * @see TransplantDetails
      */
     public List<TransplantDetails> getTransplantDetails(Connection conn, int startIndex, int count, String name, String region, String[] organs) throws SQLException {
-        StringBuilder queryString = new StringBuilder("SELECT U.nhi, U.firstName, U.dob, U.middleName, U.lastName, O.organName, Dates.dateRegistered, Q.region, DD.momentOfDeath, H.bloodType " +
+        StringBuilder queryString = new StringBuilder("SELECT DISTINCT U.nhi, U.firstName, U.dob, U.middleName, U.lastName, O.organName, Dates.dateRegistered, Q.region, DD.momentOfDeath, H.bloodType " +
                 "from OrganAwaiting JOIN Organ O ON OrganAwaiting.fkOrgansId = O.organId\n" +
                 "  LEFT JOIN User U ON OrganAwaiting.fkUserNhi = U.nhi\n" +
                 "  LEFT JOIN HealthDetails H ON U.nhi = H.fkUserNhi\n" +
@@ -991,7 +991,7 @@ public class DBHandler {
                 "  LEFT JOIN  (SELECT Address.fkUserNhi, Address.region from Address JOIN ContactDetails Detail ON Address.fkContactId = Detail.contactId\n" +
                 "  WHERE Address.fkContactId NOT IN (SELECT EmergencyContactDetails.fkContactId FROM EmergencyContactDetails)) Q ON U.nhi = Q.fkUserNhi\n" +
                 "  LEFT JOIN OrganAwaitingDates Dates ON awaitingId = Dates.fkAwaitingId\n" +
-                "    WHERE Dates.dateDeregistered IS NULL GROUP BY U.nhi, O.organName AND ((U.firstName LIKE ? OR U.middleName LIKE ? OR U.lastName LIKE ?) AND (IFNULL(Q.region, '') LIKE ?)\n");
+                "    WHERE Dates.dateDeregistered IS NULL AND ((U.firstName LIKE ? OR U.middleName LIKE ? OR U.lastName LIKE ?) AND (IFNULL(Q.region, '') LIKE ?)\n");
         if (organs != null && organs.length > 0) {
             queryString.append("AND O.organName IN(");
 

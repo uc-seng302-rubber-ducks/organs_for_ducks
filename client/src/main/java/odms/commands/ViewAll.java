@@ -33,7 +33,7 @@ public class ViewAll implements Runnable {
     @Override
     public void run() {
         AppController controller = AppController.getInstance();
-        controller.getUserBridge().getUsers(startIndex,count,name,region,gender,controller.getToken());
+        controller.getUserBridge().getUsers(startIndex,count,name,region,gender,controller.getToken(), null);
         Set<UserOverview> overviewSet = controller.getUserOverviews();
         for (UserOverview overview : overviewSet) {
             IoHelper.display(overview.toString());
