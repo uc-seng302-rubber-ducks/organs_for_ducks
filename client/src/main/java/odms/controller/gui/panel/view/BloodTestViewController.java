@@ -396,7 +396,25 @@ public class BloodTestViewController {
                 bloodTestGraph.setTitle("Results Over the Current Week");
                 timeRangeAxis.setLabel("Time in Days");
                 timeRangeAxis.setTickLabelRotation(0);
-                timeRange = Stream.of(DayOfWeek.values()).map(dayOfWeek -> dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.ENGLISH)).collect(Collectors.toList());
+                DayOfWeek start = LocalDate.now().minusWeeks(1).getDayOfWeek();
+                List<DayOfWeek> days = Arrays.asList(DayOfWeek.values());
+
+                days.sort((o1, o2) -> {
+                    int o1Value = o1.getValue();
+                    if (o1Value < start.getValue()) {
+                        o1Value += 7;
+                    }
+                    int o2Value = o2.getValue();
+                    if (o2Value < start.getValue()) {
+                        o2Value += 7;
+                    }
+
+                    return Integer.compare(o1Value, o2Value);
+                });
+
+                timeRange = new ArrayList<>();
+                days.forEach(day -> timeRange.add(day.getDisplayName(TextStyle.SHORT, Locale.ENGLISH)));
+
                 changeTimeRange(timeRange);
                 break;
 
