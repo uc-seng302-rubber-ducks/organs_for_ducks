@@ -124,7 +124,7 @@ public class TransplantWaitListController {
     /**
      * simplified version of the method to get the first page of results with no filters
      */
-    private void populateWaitListTable() {
+    public void populateWaitListTable() {
         populateWaitListTable(0, TRANSPLANTS_PER_PAGE, waitingRegionTextfield.getText(), getAllFilteredOrgans());
     }
 

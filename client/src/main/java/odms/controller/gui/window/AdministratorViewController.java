@@ -1307,6 +1307,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
             populateUserSearchTable();
             populateClinicianSearchTable();
             populateAdminSearchTable();
+            transplantWaitListTabPageController.populateWaitListTable();
             transplantWaitListTabPageController.displayWaitListTable();
             availableOrgansViewController.search();
         } else if (event.getType().equals(EventTypes.ADMIN_UPDATE) && administrator.getUserName().equals(event.getOldIdentifier())) {
