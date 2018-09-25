@@ -47,7 +47,7 @@
 
 .label-powered {
     -fx-font-size: 10px;
-    -fx-font-size: Dark-grey;
+    -fx-text-fill: 	#A9A9A9;
 }
 
 /****************************************
