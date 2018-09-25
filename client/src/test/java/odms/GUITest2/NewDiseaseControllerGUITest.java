@@ -11,10 +11,7 @@ import odms.commons.model.Disease;
 import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 
@@ -159,18 +156,18 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
         assertEquals("B0", getCellValue("#currentDiseaseTableView", 1, 1).toString());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void deletedPastDiseaseShouldBeRemovedFromPastDiseases() {
         clickOn(getCell("#pastDiseaseTableView", 0, 0));
         clickOnButton(this,"#deleteDiseaseButton");
-        getCellValue("#pastDiseaseTableView", 0, 0);
+        Assert.assertNull(getCellValue("#pastDiseaseTableView", 0, 0));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void deletedCurrentDiseaseShouldBeRemovedFromCurrentDisease() throws NullPointerException {
         clickOn(getCell("#currentDiseaseTableView", 0, 0));
         clickOnButton(this,"#deleteDiseaseButton");
-        getCellValue("#currentDiseaseTableView", 0, 0);
+        Assert.assertNull(getCellValue("#currentDiseaseTableView", 0, 0));
     }
 
     //Only other things I can think of testing are the ordering
