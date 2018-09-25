@@ -4,6 +4,7 @@ import odms.commons.model.*;
 import odms.commons.model._enum.Organs;
 import odms.commons.model._enum.UserType;
 import odms.commons.model.datamodel.*;
+import odms.commons.model.dto.AppointmentWithPeople;
 import odms.commons.utils.Log;
 import odms.commons.utils.PasswordManager;
 import odms.database.db_strategies.*;
@@ -11,6 +12,7 @@ import odms.database.db_strategies.*;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.sql.*;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -126,7 +128,8 @@ public class DBHandler {
             "WHERE fkUserNhi = ?";
     private static final String INSERT_ELSE_UPDATE_PREFERRED_CLINICIAN = "INSERT INTO PreferredClinician (fkUserNhi, fkStaffId) " +
             "VALUES (?, ?) ON DUPLICATE KEY UPDATE fkUserNhi=?, fkStaffId=?";
-
+    public static final String GET_APPOINTMENTS_TIME = "SELECT fkStaffId, fkUserNhi, requestedTime FROM AppointmentDetails WHERE apptId = ? ";
+    public static final String GET_APPOINTMENTS_ON_DATE = "SELECT fkStaffId, fkUserNhi, requestedTime FROM AppointmentDetails WHERE DATE(requestedTime) = ? ";
 
     private AbstractUpdateStrategy updateStrategy;
     private AbstractFetchAppointmentStrategy fetchAppointmentStrategy;
@@ -976,7 +979,7 @@ public class DBHandler {
      * @see TransplantDetails
      */
     public List<TransplantDetails> getTransplantDetails(Connection conn, int startIndex, int count, String name, String region, String[] organs) throws SQLException {
-        StringBuilder queryString = new StringBuilder("SELECT U.nhi, U.firstName, U.dob, U.middleName, U.lastName, O.organName, Dates.dateRegistered, Q.region, DD.momentOfDeath, H.bloodType " +
+        StringBuilder queryString = new StringBuilder("SELECT DISTINCT U.nhi, U.firstName, U.dob, U.middleName, U.lastName, O.organName, Dates.dateRegistered, Q.region, DD.momentOfDeath, H.bloodType " +
                 "from OrganAwaiting JOIN Organ O ON OrganAwaiting.fkOrgansId = O.organId\n" +
                 "  LEFT JOIN User U ON OrganAwaiting.fkUserNhi = U.nhi\n" +
                 "  LEFT JOIN HealthDetails H ON U.nhi = H.fkUserNhi\n" +
@@ -984,7 +987,7 @@ public class DBHandler {
                 "  LEFT JOIN  (SELECT Address.fkUserNhi, Address.region from Address JOIN ContactDetails Detail ON Address.fkContactId = Detail.contactId\n" +
                 "  WHERE Address.fkContactId NOT IN (SELECT EmergencyContactDetails.fkContactId FROM EmergencyContactDetails)) Q ON U.nhi = Q.fkUserNhi\n" +
                 "  LEFT JOIN OrganAwaitingDates Dates ON awaitingId = Dates.fkAwaitingId\n" +
-                "    WHERE Dates.dateDeregistered IS NULL GROUP BY U.nhi, O.organName AND ((U.firstName LIKE ? OR U.middleName LIKE ? OR U.lastName LIKE ?) AND (IFNULL(Q.region, '') LIKE ?)\n");
+                "    WHERE Dates.dateDeregistered IS NULL AND ((U.firstName LIKE ? OR U.middleName LIKE ? OR U.lastName LIKE ?) AND (IFNULL(Q.region, '') LIKE ?)\n");
         if (organs != null && organs.length > 0) {
             queryString.append("AND O.organName IN(");
 
@@ -1568,6 +1571,68 @@ public class DBHandler {
      */
     public BloodTestHandler getBloodTestHandler() {
         return new BloodTestHandler();
+    }
+
+    /**
+     * Gets the appointments scheduled for the given date
+     *
+     * @param connection connection to the database
+     * @param requestedDate Date to get appointments for
+     * @return collection of the appointments
+     * @throws SQLException sql db has gone wrong
+     */
+    public Collection<AppointmentWithPeople> getAppointmentsForDate(Connection connection, LocalDate requestedDate) throws SQLException {
+        List<AppointmentWithPeople> results = new ArrayList<>();
+        try(PreparedStatement preparedStatement  = connection.prepareStatement(GET_APPOINTMENTS_ON_DATE)){
+            preparedStatement.setDate(1, Date.valueOf(requestedDate));
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()){
+                    String nhi = resultSet.getString("fkUserNhi");
+                    String id = resultSet.getString("fkStaffId");
+                    LocalDateTime appointmentTime = resultSet.getTimestamp("requestedTime").toLocalDateTime();
+                    User user = getOneUser(connection, nhi);
+                    Clinician clinician = getOneClinician(connection, id);
+                    AppointmentWithPeople appointment = new AppointmentWithPeople();
+                    appointment.setUser(user);
+                    appointment.setClinician(clinician);
+                    appointment.setAppointmentTime(appointmentTime);
+                    results.add(appointment);
+                }
+            }
+
+        }
+        return results;
+    }
+
+    /**
+     * Gets the appointment for a specific person
+     *
+     * @param connection connection to the database
+     * @param appointmentId appointment to get
+     * @return collection of the appointments
+     * @throws SQLException sql db has gone wrong
+     */
+    public AppointmentWithPeople getAppointmentWithPeople(Connection connection, int appointmentId) throws SQLException {
+
+        try(PreparedStatement preparedStatement  = connection.prepareStatement(GET_APPOINTMENTS_TIME)){
+            preparedStatement.setInt(1, appointmentId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if(resultSet.next()){ //should only ever be a single result in the set
+                    String nhi = resultSet.getString("fkUserNhi");
+                    String id = resultSet.getString("fkStaffId");
+                    LocalDateTime appointmentTime = resultSet.getTimestamp("requestedTime").toLocalDateTime();
+                    User user = getOneUser(connection, nhi);
+                    Clinician clinician = getOneClinician(connection, id);
+                    AppointmentWithPeople appointment = new AppointmentWithPeople();
+                    appointment.setUser(user);
+                    appointment.setClinician(clinician);
+                    appointment.setAppointmentTime(appointmentTime);
+                    return appointment;
+                }
+            }
+
+        }
+        return null;
     }
 
 }

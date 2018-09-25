@@ -12,12 +12,13 @@ import java.util.Collection;
 
 public class AppointmentUpdateStrategy extends AbstractUpdateStrategy {
 
-    private static final String CREATE_APPOINTMENT_STMT = "INSERT INTO AppointmentDetails (fkUserNhi, fkStaffId, fkCategoryId, requestedTime, fkStatusId, description) VALUES (?,?,?,?,?,?)";
+    private static final String CREATE_APPOINTMENT_STMT = "INSERT INTO AppointmentDetails (fkUserNhi, fkStaffId, fkCategoryId, requestedTime, fkStatusId, description, title) VALUES (?,?,?,?,?,?,?)";
     private static final String PATCH_APPOINTMENT_STATUS_STMT = "UPDATE AppointmentDetails SET fkStatusId = ? WHERE apptId = ?";
     private static final String DELETE_APPOINTMENT_REJECTED_SEEN = "DELETE FROM AppointmentDetails WHERE apptId = ? AND fkStatusId = 7";
     private static final String DELETE_USER_CANCELLED_APPOINTMENTS = "DELETE FROM AppointmentDetails WHERE fkStatusId = ? AND fkUserNhi = ?";
     private static final String DELETE_CLINICIAN_CANCELLED_APPOINTMENTS = "DELETE FROM AppointmentDetails WHERE fkStatusId = ? AND fkStaffId = ?";
-    private static final String UPDATE_APPOINTMENT_STMT = "UPDATE AppointmentDetails SET fkCategoryId = ?, requestedTime = ?, fkStatusId = ?, description = ? WHERE apptId = ?";
+    private static final String UPDATE_APPOINTMENT_STMT = "UPDATE AppointmentDetails SET fkCategoryId = ?, requestedTime = ?, fkStatusId = ?, description = ?, title = ?" +
+            " WHERE apptId = ?";
 
     /**
      * Updates a collection of recurring appointments
@@ -47,6 +48,7 @@ public class AppointmentUpdateStrategy extends AbstractUpdateStrategy {
             preparedStatement.setTimestamp(4, Timestamp.valueOf(appointment.getRequestedDate()));
             preparedStatement.setInt(5, appointment.getAppointmentStatus().getDbValue());
             preparedStatement.setString(6, appointment.getRequestDescription());
+            preparedStatement.setString(7, appointment.getTitle());
             preparedStatement.executeUpdate();
         }
     }
@@ -123,7 +125,8 @@ public class AppointmentUpdateStrategy extends AbstractUpdateStrategy {
             preparedStatement.setTimestamp(2, Timestamp.valueOf(appointment.getRequestedDate()));
             preparedStatement.setInt(3, appointment.getAppointmentStatus().getDbValue());
             preparedStatement.setString(4, appointment.getRequestDescription());
-            preparedStatement.setInt(5, appointment.getAppointmentId());
+            preparedStatement.setInt(6, appointment.getAppointmentId());
+            preparedStatement.setString(5, appointment.getTitle());
             preparedStatement.executeUpdate();
         }
     }

@@ -39,7 +39,7 @@ public class AdministratorBridgeTest extends BridgeTestBase {
         ArgumentCaptor<Callback> callbackCaptor = ArgumentCaptor.forClass(Callback.class);
 
         //run getAdmins, verify and get the callback it uses.
-        bridge.getAdmins(0, 10, "", "tokenGoesHere");
+        bridge.getAdmins(0, 10, "", "tokenGoesHere", null);
         verify(mockCall).enqueue(callbackCaptor.capture());
         Callback callback = callbackCaptor.getValue();
 
@@ -62,7 +62,7 @@ public class AdministratorBridgeTest extends BridgeTestBase {
         ArgumentCaptor<Callback> callbackCaptor = ArgumentCaptor.forClass(Callback.class);
 
         //run getAdmins, verify and get the callback it uses.
-        bridge.getAdmins(0, 10, "", "tokenGoesHere");
+        bridge.getAdmins(0, 10, "", "tokenGoesHere", null);
         verify(mockCall).enqueue(callbackCaptor.capture());
         Callback callback = callbackCaptor.getValue();
 

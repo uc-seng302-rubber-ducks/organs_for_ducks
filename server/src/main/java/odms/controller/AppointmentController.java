@@ -4,10 +4,12 @@ import odms.commons.model.Appointment;
 import odms.commons.model._enum.AppointmentStatus;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.UserType;
+import odms.commons.model.dto.AppointmentWithPeople;
 import odms.commons.utils.Log;
 import odms.database.DBHandler;
 import odms.database.JDBCDriver;
 import odms.database.db_strategies.AppointmentUpdateStrategy;
+import odms.email.Mailer;
 import odms.exception.ServerDBException;
 import odms.security.IsClinician;
 import odms.socket.SocketHandler;
@@ -27,17 +29,19 @@ import java.util.List;
 @OdmsController
 public class AppointmentController extends BaseController {
 
+    private Mailer mailer;
     private DBHandler handler;
     private JDBCDriver driver;
     private SocketHandler socketHandler;
     private static final String BAD_DB_RESPONSE = "Got bad response from DB. SQL error code: ";
 
     @Autowired
-    public AppointmentController(DBManager manager, SocketHandler socketHandler) {
+    public AppointmentController(DBManager manager, SocketHandler socketHandler, Mailer mailer) {
         super(manager);
         handler = super.getHandler();
         driver = super.getDriver();
         this.socketHandler = socketHandler;
+        this.mailer = mailer;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/appointments/exists")
@@ -103,7 +107,7 @@ public class AppointmentController extends BaseController {
         try (Connection connection = driver.getConnection()) {
             return handler.getPendingAppointmentsCount(connection, staffId);
         } catch (SQLException e) {
-            Log.severe("Got bad response from DB. SQL error code: " + e.getErrorCode(), e);
+            Log.severe(BAD_DB_RESPONSE + e.getErrorCode(), e);
             throw new ServerDBException(e);
         }
     }
@@ -118,18 +122,20 @@ public class AppointmentController extends BaseController {
         try (Connection connection = driver.getConnection()) {
             return handler.getBookedAppointmentDateTimes(connection, staffid,startDate,endDate);
         } catch (SQLException e) {
-            Log.severe("Got bad response from DB. SQL error code: " + e.getErrorCode(), e);
+            Log.severe(BAD_DB_RESPONSE + e.getErrorCode(), e);
             throw new ServerDBException(e);
         }
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/appointments")
-    public ResponseEntity postAppointment(@RequestBody Appointment newAppointment) {
+    @ResponseBody
+    public String postAppointment(@RequestBody Appointment newAppointment) {
+        String appointmentId = null;
         try (Connection connection = driver.getConnection()) {
             AppointmentUpdateStrategy appointmentStrategy = handler.getAppointmentStrategy();
             appointmentStrategy.postSingleAppointment(connection, newAppointment);
 
-            String appointmentId = Integer.toString(handler.getAppointmentId(connection, newAppointment));
+            appointmentId = Integer.toString(handler.getAppointmentId(connection, newAppointment));
             socketHandler.broadcast(EventTypes.APPOINTMENT_UPDATE, appointmentId, appointmentId);
 
         } catch (SQLException e) {
@@ -139,7 +145,7 @@ public class AppointmentController extends BaseController {
             Log.warning("Failed to broadcast update after posting an appointment", ex);
         }
 
-        return new ResponseEntity(HttpStatus.ACCEPTED);
+        return appointmentId;
     }
 
     @RequestMapping(method = RequestMethod.PATCH, value = "/appointments/{appointmentId}/status")
@@ -155,6 +161,8 @@ public class AppointmentController extends BaseController {
 
                 String idString = Integer.toString(appointmentId);
                 socketHandler.broadcast(EventTypes.APPOINTMENT_UPDATE, idString, idString);
+                AppointmentWithPeople appointment = handler.getAppointmentWithPeople(connection, appointmentId);
+                mailer.sendAppointmentUpdate(statusId, appointment);
             } else {
                 Log.warning("A user tried to update an appointment status that they are not allowed to.");
             }
@@ -275,6 +283,7 @@ public class AppointmentController extends BaseController {
                                          @PathVariable(value = "appointmentId") Integer appointmentId,
                                          @RequestBody Appointment appointment) {
         try (Connection connection = driver.getConnection()) {
+            Log.info(appointment.getTitle());
             if (!validateRequestedAppointmentTime(staffId, appointment.getRequestedDate()) && !appointment.getAppointmentStatus().equals(AppointmentStatus.REJECTED) && !appointment.getAppointmentStatus().equals(AppointmentStatus.REJECTED_SEEN)) {
                 return new ResponseEntity(HttpStatus.BAD_REQUEST);
             }
@@ -282,6 +291,9 @@ public class AppointmentController extends BaseController {
             AppointmentUpdateStrategy appointmentStrategy = handler.getAppointmentStrategy();
             appointmentStrategy.putSingleAppointment(connection, appointment);
             socketHandler.broadcast(EventTypes.APPOINTMENT_UPDATE, Integer.toString(appointmentId), Integer.toString(appointmentId));
+            AppointmentWithPeople appointmentwithPeople = handler.getAppointmentWithPeople(connection, appointmentId);
+
+            mailer.sendAppointmentUpdate(appointment.getAppointmentStatus().getDbValue(), appointmentwithPeople);
 
         } catch (SQLException s) {
             Log.severe("Cannot send updated appointment to database", s);
@@ -333,5 +345,9 @@ public class AppointmentController extends BaseController {
         }
 
         return true;
+    }
+
+    public void setMailer(Mailer mailer) {
+        this.mailer = mailer;
     }
 }

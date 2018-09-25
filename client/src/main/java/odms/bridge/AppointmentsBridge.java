@@ -176,7 +176,6 @@ public class AppointmentsBridge extends Bifrost {
                     observableDateTimes.clear();
                     observableDateTimes.addAll(new JsonHandler().decodeDateTimes(bodyString));
                 });
-
             }
         });
     }
@@ -245,8 +244,14 @@ public class AppointmentsBridge extends Bifrost {
 
             @Override
             public void onResponse(Call call, Response response) {
-                if (!response.isSuccessful()) {
-                    logAndNotify(response);
+                try {
+                    String resString = response.body().string();
+                    appointment.setAppointmentId(Integer.valueOf(resString.replaceAll("\"", "")));
+                    if (!response.isSuccessful()) {
+                        logAndNotify(response);
+                    }
+                } catch (IOException e) {
+                    alertUser(e.getMessage());
                 }
             }
         });

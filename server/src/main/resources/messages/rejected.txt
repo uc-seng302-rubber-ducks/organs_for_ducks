@@ -1,0 +1,8 @@
+Hello %s,
+
+Your appointment scheduled for %s with %s %s has not been accepted.
+Please make a new appointment.
+
+
+Regards,
+%s %s

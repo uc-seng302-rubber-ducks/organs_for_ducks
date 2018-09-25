@@ -20,6 +20,7 @@ import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.controller.gui.popup.view.RejectAppointmentReasonViewController;
+import odms.controller.gui.widget.LoadingWidget;
 import odms.socket.ServerEventNotifier;
 
 import java.beans.PropertyChangeEvent;
@@ -42,6 +43,7 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
     private ObservableSet<LocalDateTime> bookedDateTimes;
     private ObservableSet<LocalTime> bookedTimes;
     private Set<LocalTime> TIMES = new HashSet<>(Arrays.asList(LocalTime.of(8,0),LocalTime.of(9,0),LocalTime.of(10,0),LocalTime.of(11,0),LocalTime.of(12,0),LocalTime.of(13,0),LocalTime.of(14,0),LocalTime.of(15,0),LocalTime.of(16,0),LocalTime.of(17,0)));
+    private LoadingWidget loadingWidget;
 
 
     /**
@@ -52,7 +54,8 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
      * @param clinician            host clinician to use
      * @param availableTimes       list of times when the clinician is available
      */
-    public ClinicianAppointmentRequestLogicController(ObservableList<Appointment> availableAppointment, AppController controller, Clinician clinician, ObservableList<LocalTime> availableTimes) {
+    public ClinicianAppointmentRequestLogicController(ObservableList<Appointment> availableAppointment, AppController controller, Clinician clinician, ObservableList<LocalTime> availableTimes, LoadingWidget tableView) {
+        this.loadingWidget = tableView;
         this.availableAppointments = availableAppointment;
         this.appController = controller;
         this.clinician = clinician;
@@ -68,6 +71,9 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
      */
     public void updateTable(int startIndex) {
         availableAppointments.clear();
+        if (loadingWidget != null) {
+            loadingWidget.setWaiting(true);
+        }
         appController.getAppointmentsBridge().getClinicianAppointments(startIndex, ROWS_PER_PAGE, clinician.getStaffId(), appController.getToken(), availableAppointments);
     }
 
@@ -179,13 +185,14 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
      * gets all the times the clinician is booked for the given date and add
      * @param wantedDate the date for the appointment
      */
-    public void refreshClinicianAvailableTimes(LocalDate wantedDate){
+    public void refreshClinicianAvailableTimes(LocalDate wantedDate, Appointment appointment) {
         AppointmentsBridge appointmentsbridge = appController.getAppointmentsBridge();
         bookedDateTimes.addListener((SetChangeListener<LocalDateTime>) c -> {
             availableTimes.clear();
             refreshBookedTime();
             availableTimes.addAll(TIMES);
             availableTimes.removeAll(bookedTimes);
+            availableTimes.add(appointment.getRequestedDate().toLocalTime());
             Collections.sort(availableTimes);
         });
         appointmentsbridge.getClinicianAppointmentsTimes(clinician.getStaffId(), wantedDate.atStartOfDay().toString(),wantedDate.atStartOfDay().plusHours(24).toString(), appController.getToken(), bookedDateTimes);
@@ -202,6 +209,8 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
 
         if (pending) {
             appointment.setAppointmentStatus(AppointmentStatus.ACCEPTED);
+        } else if(appointment.getAppointmentStatus() != AppointmentStatus.ACCEPTED) {
+            appointment.setAppointmentStatus(AppointmentStatus.UPDATED);
         }
 
         appointment.setRequestedDate(LocalDateTime.of(date, localTime));

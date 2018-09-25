@@ -379,3 +379,89 @@
     -fx-background-color: #dddddd;
     -fx-border-color: #d7d6d6;
 }
+
+/************************************
+ *                                  *
+ * CALENDAR STUFF                   *
+ *                                  *
+ ************************************/
+.calendar-page > .container > .header > .navigation-button-bar > .container > .button {
+    -fx-padding: 3 7 3 7;
+    -fx-border-style: solid;
+    -fx-border-width: 0 1px 4px 1px;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: WHITE;
+    -fx-border-color: #127ba3;
+    -fx-background-color: #158CBA;
+}
+
+.calendar-page > .container > .header > .navigation-button-bar > .container > .button:hover {
+    -fx-background-color: #117298;
+    -fx-border-color: #106a8c;
+}
+
+.calendar-page > .container > .header > .navigation-button-bar > .container > .button:pressed {
+    -fx-background-color: #004a6c;
+    -fx-border-color: #004a6c;
+}
+
+.calendar-view .button-icon {
+    -fx-fill: WHITE;
+}
+
+.toggle-button-secondary {
+    -fx-border-color: #127ba3;
+    -fx-background-color: #158CBA;
+    -fx-text-fill: WHITE;
+    -fx-border-style: solid;
+    -fx-border-width: 0 1px 4px 1px;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+
+}
+
+.toggle-button-secondary:hover {
+    -fx-background-color: #117298;
+    -fx-border-color: #106a8c;
+}
+
+.toggle-button-secondary:pressed {
+    -fx-background-color: #004a6c;
+    -fx-border-color: #004a6c;
+}
+
+.toggle-button-secondary:selected {
+    -fx-background-color: #004a6c;
+    -fx-border-color: #004a6c;
+}
+
+.toggle-button {
+
+    -fx-border-style: solid;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-border-width: 1 1px 4px 1px;
+    -fx-background-color: #f0f0f0;
+    -fx-border-color: #c7c6c6;
+    -fx-text-fill: BLACK;
+
+}
+
+.toggle-button:hover {
+    -fx-background-color: #dddddd;
+    -fx-border-color: #d7d6d6;
+}
+
+.toggle-button:pressed {
+    -fx-background-color: #b7b6b6;
+    -fx-border-color: #b7b6b6
+}
+
+.toggle-button:selected {
+    -fx-background-color: #b7b6b6;
+    -fx-border-color: #b7b6b6
+}
+
+
+
