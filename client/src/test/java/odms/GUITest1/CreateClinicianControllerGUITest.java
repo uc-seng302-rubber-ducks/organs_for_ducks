@@ -6,6 +6,7 @@ import odms.App;
 import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
 import odms.bridge.*;
+import odms.commons.exception.UnauthorisedException;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
 import odms.controller.AppController;
@@ -28,6 +29,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.eq;
 import static org.testfx.api.FxAssert.verifyThat;
 
 /**
@@ -50,7 +52,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
     }
 
     @Before
-    public void setUpCreateScene() throws TimeoutException, IOException {
+    public void setUpCreateScene() throws TimeoutException, IOException, UnauthorisedException {
         AppController.setInstance(application);
         when(application.getCountriesBridge()).thenReturn(countriesBridge);
         when(application.getUserBridge()).thenReturn(bridge);
@@ -65,7 +67,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         when(countriesBridge.getAllowedCountries()).thenReturn(countries);
         when(application.getTransplantList()).thenReturn(new ArrayList<>());
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
-        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
+        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any(), eq(null));
         when(application.getToken()).thenReturn("fakeToken");
         when(administratorBridge.getAdmin(anyString(), anyString())).thenReturn(new Administrator("default", "", "", "", ""));
 

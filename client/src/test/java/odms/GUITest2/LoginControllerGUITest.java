@@ -9,6 +9,7 @@ import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
 import odms.bridge.*;
 import odms.commons.exception.ApiException;
+import odms.commons.exception.UnauthorisedException;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.controller.AppController;
@@ -31,6 +32,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.eq;
 import static org.testfx.api.FxAssert.verifyThat;
 
 public class LoginControllerGUITest extends ApplicationTest {
@@ -65,7 +67,7 @@ public class LoginControllerGUITest extends ApplicationTest {
         when(controller.getOrgansBridge()).thenReturn(organsBridge);
 
         when(controller.getTransplantList()).thenReturn(new ArrayList());
-        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
+        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any(), eq(null));
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class, "--testConfig=true");
         AppController.getInstance().getUsers().clear();
@@ -97,7 +99,7 @@ public class LoginControllerGUITest extends ApplicationTest {
     }
 
     @Test
-    public void ValidClinicianLogin() throws IOException {
+    public void validClinicianLogin() throws IOException, UnauthorisedException {
         when(loginBridge.loginToServer(anyString(), anyString(), anyString())).thenReturn("haHAA");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(new Clinician("default", "0", "admin"));
         clickOn("#clinicianTab");
@@ -108,7 +110,7 @@ public class LoginControllerGUITest extends ApplicationTest {
     }
 
     @Test
-    public void clinicianInvalidClinician() throws IOException {
+    public void clinicianInvalidClinician() throws IOException, UnauthorisedException {
         when(loginBridge.loginToServer(anyString(), anyString(), anyString())).thenReturn("FeelsGoodMan");
         clickOn("#clinicianTab");
         setTextField(this,"#staffIdTextField", "-1000");
@@ -118,7 +120,7 @@ public class LoginControllerGUITest extends ApplicationTest {
     }
 
     @Test
-    public void clinicianWrongPassword() throws IOException {
+    public void clinicianWrongPassword() throws IOException, UnauthorisedException {
         when(loginBridge.loginToServer(anyString(), anyString(), anyString())).thenThrow(new ApiException(401, ""));
         clickOn("#clinicianTab");
         setTextField(this,"#staffIdTextField", "0");
@@ -136,7 +138,7 @@ public class LoginControllerGUITest extends ApplicationTest {
     }
 
     @Test
-    public void invalidAdminLogin() throws IOException{
+    public void invalidAdminLogin() throws IOException, UnauthorisedException {
         when(loginBridge.loginToServer(anyString(), anyString(), anyString())).thenThrow(new ApiException(404, "Not found"));
         clickOn("#administratorTab");
         setTextField(this,"#adminUsernameTextField", "therock");
@@ -146,7 +148,7 @@ public class LoginControllerGUITest extends ApplicationTest {
     }
 
     @Test
-    public void wrongAdminPassword() throws IOException {
+    public void wrongAdminPassword() throws IOException, UnauthorisedException {
         when(loginBridge.loginToServer(anyString(), anyString(), anyString())).thenThrow(new ApiException(401, "Unauthorized"));
         clickOn("#administratorTab");
         setTextField(this, "#adminUsernameTextField", "default");

@@ -160,7 +160,7 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
     @Test
     public void updateBMIAfterUpdate() {
         clickOn("#healthDetailsTab");
-        setTextField(this,"#heightInput","175");
+        setTextField(this,"#heightInput","1.75");
         setTextField(this,"#weightInput","65");
         clickOnButton(this,"#updateProfileButton");
         verifyThat("#bmiValue", LabeledMatchers.hasText("21.22"));
