@@ -23,7 +23,7 @@ public class RemoveDisqualificationLogicControllerTest {
     private User testUser = new User("Frank", LocalDate.parse("1 2 3", (DateTimeFormatter.ofPattern("y M d"))),
             "ABC1234");
     @Before
-    public void setUp(){
+    public void setUp() {
         disqualifiedOrgans.add(testOrgan);
         controller = new RemoveDisqualificationLogicController(testUser, disqualifiedOrgans);
         testUser.getDonorDetails().addOrgan(Organs.LUNG, null);
@@ -35,7 +35,7 @@ public class RemoveDisqualificationLogicControllerTest {
     }
 
     @Test
-    public void confirmRemoveDisqualifiedOrganTest(){
+    public void confirmRemoveDisqualifiedOrganTest() {
         controller.confirm(testOrgan,  "Heart is repaired");
         OrgansWithDisqualification organ = disqualifiedOrgans.get(0);
         assertEquals("Heart is repaired",organ.getReason());

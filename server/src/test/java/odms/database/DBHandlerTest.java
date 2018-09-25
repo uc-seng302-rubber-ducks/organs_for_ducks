@@ -42,11 +42,12 @@ public class DBHandlerTest {
 
     @Before
     public void beforeTest() throws SQLException {
-        testUser.setDateOfBirth(LocalDate.of(2000,1,1));
+        testUser.setDateOfBirth(LocalDate.of(2000, 1, 1));
         dbHandler = new DBHandler();
         connection = mock(Connection.class);
         mockStmt = mock(PreparedStatement.class);
         mockResultSet = mock(ResultSet.class);
+        when(mockResultSet.next()).thenReturn(true, false);
         when(mockResultSet.next()).thenReturn(true);
         when(connection.prepareStatement(anyString())).thenReturn(mockStmt);
         doNothing().when(mockStmt).setString(anyInt(), anyString());

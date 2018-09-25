@@ -31,7 +31,7 @@ public class DisqualifiedOrgansHandler {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet != null && resultSet.next()) {
                     OrgansWithDisqualification disqualifiedOrgan = decodeDisqualifiedOrganFromResultSet(resultSet);
-                    if (disqualifiedOrgan == null) { //TODO This occurs in the DBHandler tests, probably needs mocking correctly
+                    if (disqualifiedOrgan == null) {
                         Log.severe("A disqualified organ was returned that had no organ type, or the type " +
                                 "id was outside the expected range. The organ was not added to the returned collection", new InvalidOrganTypeException());
                         break; //For some reason the while loop does not terminate if this case occurs.

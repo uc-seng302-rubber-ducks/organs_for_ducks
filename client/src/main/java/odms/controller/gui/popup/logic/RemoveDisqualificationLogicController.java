@@ -1,7 +1,6 @@
 package odms.controller.gui.popup.logic;
 
 import javafx.collections.ObservableList;
-import javafx.stage.Stage;
 import odms.commons.model.User;
 import odms.commons.model.datamodel.OrgansWithDisqualification;
 import odms.commons.utils.AttributeValidation;
@@ -18,10 +17,11 @@ public class RemoveDisqualificationLogicController {
     }
 
     /**
-     * Confirms the disqualification of an organ
+     * Confirms the removal of disqualification of an organ
      */
     public void confirm(OrgansWithDisqualification disqualifiedOrgan, String description) {
         user.saveStateForUndo();
+        System.out.println(description);
         disqualifiedOrgan.setReason(description);
         disqualifiedOrgan.setCurrentlyDisqualified(false);
         for (int i = 0; i < disqualifications.size(); i++) {

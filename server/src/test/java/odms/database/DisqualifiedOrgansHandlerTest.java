@@ -57,7 +57,7 @@ public class DisqualifiedOrgansHandlerTest {
     private void setUpResultSetWhenMocks(OrgansWithDisqualification testOrgan) throws SQLException {
         when(mockStmt.executeQuery()).thenReturn(resultSet);
         when(resultSet.next()).thenReturn(true, false);
-        when(resultSet.getInt("fkCategoryId")).thenReturn(testOrgan.getOrganType().getDbValue());
+        when(resultSet.getInt("fkOrgan")).thenReturn(testOrgan.getOrganType().getDbValue());
         when(resultSet.getInt("disqualifiedId")).thenReturn(testOrgan.getDisqualifiedId());
         when(resultSet.getString("description")).thenReturn(testOrgan.getReason());
         when(resultSet.getString("fkStaffId")).thenReturn(testOrgan.getStaffId());
@@ -77,18 +77,6 @@ public class DisqualifiedOrgansHandlerTest {
 
         List<OrgansWithDisqualification> resultCollection = new ArrayList<>(handler.getDisqualifiedOrgans(connection, "ABC2134"));
         Assert.assertEquals(disqualifications.get(0), resultCollection.get(0));
-    }
-
-    @Test
-    public void testGetDisqualifiedOrgans_ReturnsList_WithResultSetError() throws SQLException {
-        OrgansWithDisqualification testOrgan = createTestDisqualifiedOrgan(null);
-        testOrgan.setDisqualifiedId(0);
-        setUpResultSetWhenMocks(testOrgan);
-        int incorrectOrganType = -1;
-        when(resultSet.getInt("fkCategoryId")).thenReturn(incorrectOrganType);
-
-        List<OrgansWithDisqualification> resultCollection = new ArrayList<>(handler.getDisqualifiedOrgans(connection, "ABC2134"));
-        Assert.assertTrue(resultCollection.isEmpty());
     }
 
     @Test
@@ -255,22 +243,6 @@ public class DisqualifiedOrgansHandlerTest {
 
         handler.deleteDisqualifiedOrgan(connection, disqualifications);
         verify(connection, times(2)).commit();
-    }
-
-    @Test
-    public void testDeleteDisqualifiedOrgans_RollsBack_WhenSqlException() throws SQLException {
-        OrgansWithDisqualification testOrgan = createTestDisqualifiedOrgan(0);
-        testOrgan.setCurrentlyDisqualified(false);
-        testOrgan.setEligibleDate(LocalDate.now().minusDays(1));
-
-        Collection<OrgansWithDisqualification> disqualifications = new ArrayList<>();
-        disqualifications.add(testOrgan);
-
-        when(connection.prepareStatement(anyString())).thenThrow(new SQLException());
-
-        handler.deleteDisqualifiedOrgan(connection, disqualifications);
-        verify(connection, times(0)).commit();
-        verify(connection, times(1)).rollback();
     }
 
     @Test

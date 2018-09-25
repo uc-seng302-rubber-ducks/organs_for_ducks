@@ -370,7 +370,6 @@ public class DonationTabPageController {
         } catch (NullPointerException ex) {
             donating = new ArrayList<>();
         }
-
         if (user.getMomentDeath() != null) {
             populateTableView(currentUser.getDonorDetails().getOrganMap());
         } else {
@@ -401,12 +400,12 @@ public class DonationTabPageController {
     private void populateTableView(Map<Organs, ExpiryReason> organsExpiryReasonMap) {
         currentOrgans.setVisible(false);
         currentlyDonating.setVisible(true);
-        showOrHideExpiryTable(); //CHOOSE HERE
+        showOrHideExpiryTable();
         organsWithExpiries.clear();
         for (Map.Entry<Organs, ExpiryReason> organEntry : organsExpiryReasonMap.entrySet()) {
             organsWithExpiries.add(new OrgansWithExpiry(organEntry.getKey(), organEntry.getValue(), currentUser.getMomentDeath()));
         }
-        //Add the disqualified organs to the expired organs (It's an AC)
+        //Add the disqualified organs to the expired organs
         for (OrgansWithDisqualification organ : currentUser.getDonorDetails().getDisqualifiedOrgans()) {
             if (organ.isCurrentlyDisqualified()) {
                 ExpiryReason expiryDetails = new ExpiryReason(organ.getStaffId(), organ.getDate().atStartOfDay(), organ.getReason(), currentUser.getFullName());
@@ -607,7 +606,8 @@ public class DonationTabPageController {
             }
 
             disqualifyOrganReasonStage.setScene(new Scene(root));
-            disqualifyOrganReasonStage.showAndWait();
+            disqualifyOrganReasonStage.initModality(Modality.APPLICATION_MODAL);
+            disqualifyOrganReasonStage.show();
             refreshCurrentlyDonating();
             updateDisqualifiedOrgan.setDisable(true);
             removeDisqualificationButton.setDisable(true);
@@ -631,7 +631,8 @@ public class DonationTabPageController {
             removeDisqualificationViewController.init(userDisqualifiedOrgansTable.getSelectionModel().getSelectedItem(), currentUser, removeDisqualifiedStage, observableDisqualifiedOrgans);
 
             removeDisqualifiedStage.setScene(new Scene(root));
-            removeDisqualifiedStage.showAndWait();
+            removeDisqualifiedStage.initModality(Modality.APPLICATION_MODAL);
+            removeDisqualifiedStage.show();
             refreshCurrentlyDonating();
             updateDisqualifiedOrgan.setDisable(true);
             removeDisqualificationButton.setDisable(true);

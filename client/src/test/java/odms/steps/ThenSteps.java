@@ -1,19 +1,45 @@
 package odms.steps;
 
+import cucumber.api.java.After;
+import cucumber.api.java.Before;
 import cucumber.api.java.en.Then;
 import javafx.scene.Node;
+import javafx.scene.control.TableView;
 import odms.TestUtils.TableViewsMethod;
+import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.model.User;
+import odms.commons.model._enum.Organs;
+import odms.controller.AppController;
+import org.junit.Assert;
+import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.TableViewsMethod.getCellValue;
 import static org.junit.Assert.*;
 import static org.testfx.api.FxAssert.verifyThat;
 
 public class ThenSteps extends ApplicationTest {
+
+    @Before
+    public void before() {
+        ConfigPropertiesSession mockSession = CucumberTestModel.getSession();
+        ConfigPropertiesSession.setInstance(mockSession);
+        AppController.setInstance(CucumberTestModel.getController());
+    }
+
+    @After
+    public void tearDown() throws TimeoutException {
+        if (FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.cleanupStages();
+        }
+        ConfigPropertiesSession.setInstance(null);
+        AppController.setInstance(null);
+    }
+
     @Then("^There are two profiles with first name \"([^\"]*)\" and last name \"([^\"]*)\"$")
     public void thereAreTwoProfilesWithFirstNameAndLastName(String name, String arg2) {
         List<User> user = CucumberTestModel.getController().findUsers(name);
@@ -34,6 +60,7 @@ public class ThenSteps extends ApplicationTest {
 
     @Then("^I should see my NHI \"([^\"]*)\" along with my other details at the user view screen")
     public void theIShouldSeeMyNHIAlongWithMyOtherDetailsAtTheUserViewScreen(String nhi) {
+        System.out.println("h");
         verifyThat("#NHIValue", LabeledMatchers.hasText(nhi));
     }
 
@@ -125,5 +152,23 @@ public class ThenSteps extends ApplicationTest {
     public void the_cache_should_be_empty() throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         assertTrue(CucumberTestModel.getMedicationInteractionCache().isEmpty());
+    }
+
+    @Then("^I should see the disqualified organ in the table$")
+    public void iShouldSeeTheDisqualifiedOrganInTheTable() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        Organs organ = (Organs) getCellValue("#userDisqualifiedOrgansTable", 0, 0);
+        Assert.assertEquals(Organs.BONE_MARROW, organ);
+    }
+
+    @Then("^I should see that the disqualified organ is not in the table$")
+    public void iShouldSeeThatTheDisqualifiedOrganIsNotInTheTable() throws Throwable {
+        interact(() -> assertTrue(lookup("#userDisqualifiedOrgansTable").queryAs(TableView.class).getItems().isEmpty()));
+    }
+
+    @Then("^the organ should be expired$")
+    public void theOrganShouldBeExpired() throws Throwable {
+        Organs organ = (Organs) getCellValue("#currentlyDonating", 0, 0);
+        Assert.assertEquals(Organs.BONE_MARROW, organ);
     }
 }

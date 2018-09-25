@@ -1,5 +1,7 @@
 package odms.steps;
 
+import cucumber.api.java.After;
+import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.When;
 import javafx.collections.FXCollections;
@@ -11,8 +13,10 @@ import odms.TestUtils.TableViewsMethod;
 import odms.commands.CreateUser;
 import odms.commands.DeleteUser;
 import odms.commands.View;
+import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.model.UserBuilder;
 import odms.commons.model.dto.UserOverview;
+import odms.controller.AppController;
 import odms.view.CLI;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
@@ -24,13 +28,31 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
+import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.*;
+import static odms.TestUtils.TableViewsMethod.getCell;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 
 public class WhenSteps extends ApplicationTest {
+
+    @Before
+    public void before() {
+        ConfigPropertiesSession mockSession = CucumberTestModel.getSession();
+        ConfigPropertiesSession.setInstance(mockSession);
+        AppController.setInstance(CucumberTestModel.getController());
+    }
+
+    @After
+    public void tearDown() throws TimeoutException {
+        if (FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.cleanupStages();
+        }
+        ConfigPropertiesSession.setInstance(null);
+        AppController.setInstance(null);
+    }
 
     @When("^I view the previously created user")
     public void iViewThePreviouslyCreatedUser() {
@@ -239,4 +261,69 @@ public class WhenSteps extends ApplicationTest {
         // Write code here that turns the phrase above into concrete actions
         CucumberTestModel.getHttpRequester().getDrugInteractions(drugA, drugB);
     }
+
+    @When("^I click on the first organ in the available organs list$")
+    public void click_on_first_available_organ() {
+        clickOn("#canDonate");
+    }
+
+
+    @And("^I click on the disqualify organ button$")
+    public void iClickOnTheDisqualifyOrganButton() throws Throwable {
+        clickOnButton(this, "#disqualifyOrganButton");
+    }
+
+    @And("^I enter a description$")
+    public void iEnterADescription() throws Throwable {
+        setTextArea(this, "#disqualifyOrganDescriptionInput", "Test");
+    }
+
+    @And("^I click confirm$")
+    public void iClickConfirm() throws Throwable {
+        clickOnButton(this,"#disqualifyOrganConfirmButton");
+    }
+
+    @And("^I click on the disqualified organ in the table$")
+    public void iClickOnTheDisqualifiedOrganInTheTable() throws Throwable {
+        clickOn(getCell("#userDisqualifiedOrgansTable", 0, 0));
+    }
+
+    @And("^I click the remove disqualification button$")
+    public void iClickTheRemoveDisqualificationButton() throws Throwable {
+        clickOnButton(this, "#removeDisqualificationButton");
+    }
+
+    @And("^I enter a reason why$")
+    public void iEnterAReasonWhy() throws Throwable {
+        setTextArea(this, "#removeDisqualificationDescriptionTextField", "End of test");
+    }
+
+    @And("^I confirm the removal$")
+    public void iConfirmTheRemoval() throws Throwable {
+        clickOnButton( this, "#removeDisqualificationConfirmButton");
+    }
+
+
+    @And("^then i open the user details$")
+    public void thenIOpenTheUserDetails() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
+        clickOn("#deathtab");
+    }
+
+    @And("^then i mark the user dead$")
+    public void thenIMarkTheUserDead() throws Throwable {
+        setTextField(this, "#updateDeathDetailsCityTextField", "Greymouth");
+        clickOn("#updateProfileButton");
+    }
+
+    @And("^then i revive the user$")
+    public void iReviveTheUser() throws Throwable {
+        clickOn("#removeUpdateDeathDetailsButton");
+        clickOn("#confirmRemoveDeathDetailsButton");
+        clickOn("#updateProfileButton");
+    }
+
+
 }
