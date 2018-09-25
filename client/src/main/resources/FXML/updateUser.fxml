@@ -443,9 +443,6 @@
                            </rowConstraints>
                         </GridPane>
                         <Label fx:id="updateDeathDetailsErrorLabel" layoutX="14.0" layoutY="321.0" text="Error message" textFill="RED" />
-                         <Button fx:id="removeUpdateDeathDetailsButton" layoutX="270.0" layoutY="375.0"
-                                 mnemonicParsing="false" onAction="#removeUpdateDeathDetails"
-                                 text="Remove Death Details"/>
                          <Label fx:id="updateDeathDetailsOverrideWarningLabel" layoutX="22.0" layoutY="152.0"
                                 prefHeight="45.0" prefWidth="437.0"
                                 text="You cannot change the date and time of death if the user has a manually expired organ"

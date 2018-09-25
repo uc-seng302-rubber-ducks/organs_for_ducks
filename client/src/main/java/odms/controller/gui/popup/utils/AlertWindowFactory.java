@@ -57,6 +57,7 @@ public class AlertWindowFactory {
         alert.setTitle("Confirmation");
         alert.setHeaderText(null);
         alert.setContentText(message);
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
 
         return alert.showAndWait();
     }
