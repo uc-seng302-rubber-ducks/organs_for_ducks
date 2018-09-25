@@ -4,118 +4,118 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <AnchorPane prefHeight="638.0" prefWidth="503.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.popup.view.NewBloodTestViewController">
-   <children>
-      <Button fx:id="cancelBloodTest" layoutX="14.0" layoutY="601.0" mnemonicParsing="false" onAction="#cancel" text="Cancel" />
-       <Button fx:id="addBloodTest" layoutX="372.0" layoutY="601.0" mnemonicParsing="false" onAction="#addBloodTest"
-               text="Add Blood Test"/>
-       <Label layoutX="12.0" layoutY="14.0" text="Add New Blood Test">
-         <font>
-            <Font name="System Bold" size="13.0" />
-         </font>
-      </Label>
-       <GridPane layoutX="11.0" layoutY="32.0" prefHeight="549.0" prefWidth="486.0">
-         <children>
-            <TextField fx:id="redBloodCount" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <TextField fx:id="whiteBloodCount" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <TextField fx:id="heamoglobin" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <TextField fx:id="platelets" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <TextField fx:id="glucose" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-             <TextField fx:id="haematocrit" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
-             <TextField fx:id="meanCellVolume" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
-            <TextField fx:id="meanCellHaematocrit" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-            <Label text="Test Date:" />
-            <DatePicker fx:id="testDate" prefHeight="25.0" prefWidth="335.0" GridPane.columnIndex="1" />
-             <Label fx:id="dateErrorLabel" prefHeight="15.0" prefWidth="166.0" text="Please select a date"
-                    GridPane.columnIndex="1" GridPane.valignment="BOTTOM"/>
-             <Label fx:id="redBloodCellError" prefHeight="15.0" prefWidth="332.0" text="Please enter a postive number"
-                    GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="BOTTOM"/>
-             <Label fx:id="whiteBloodCellError" prefHeight="15.0" prefWidth="331.0" text="Please enter a postive number"
-                    GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM"/>
-             <Label fx:id="heamoglobinError" prefHeight="15.0" prefWidth="337.0" text="Please enter a postive number"
-                    GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.valignment="BOTTOM"/>
-             <Label fx:id="plateletsError" prefHeight="15.0" prefWidth="334.0" text="Please enter a postive number"
-                    GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.valignment="BOTTOM"/>
-             <Label fx:id="glucoseError" prefHeight="15.0" prefWidth="329.0" text="Please enter a postive number"
-                    GridPane.columnIndex="1" GridPane.rowIndex="5" GridPane.valignment="BOTTOM"/>
-             <Label fx:id="meanCellVolumeError" prefHeight="15.0" prefWidth="328.0" text="Please enter a postive number"
-                    GridPane.columnIndex="1" GridPane.rowIndex="7" GridPane.valignment="BOTTOM"/>
-             <Label fx:id="haematocritError" prefHeight="15.0" prefWidth="332.0" text="Please enter a postive number"
-                    GridPane.columnIndex="1" GridPane.rowIndex="6" GridPane.valignment="BOTTOM"/>
-             <Label fx:id="meanCellHaematocritError" prefHeight="15.0" prefWidth="336.0"
-                    text="Please enter a postive number" GridPane.columnIndex="1" GridPane.rowIndex="8"
-                    GridPane.valignment="BOTTOM"/>
-             <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="2">
-                 <children>
-                     <Label/>
-                     <Label text="White Blood Cell Count:"/>
-                     <Label text="(x10^9 cells /Litre)"/>
-                 </children>
-             </VBox>
-             <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="3">
-                 <children>
-                     <Label/>
-                     <Label text="Heamoglobin Level:"/>
-                     <Label text="(grams/Litre)"/>
-                 </children>
-             </VBox>
-             <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="4">
-                 <children>
-                     <Label/>
-                     <Label text="Platelets:"/>
-                     <Label text="(x10^9 platelets /Litre)"/>
-                 </children>
-             </VBox>
-             <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="5">
-                 <children>
-                     <Label/>
-                     <Label text="Glucose Levels:"/>
-                     <Label text="(mmol/Litre)"/>
-                 </children>
-             </VBox>
-             <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="6">
-                 <children>
-                     <Label/>
-                     <Label text="Haematocrit:"/>
-                     <Label text="(ratio)"/>
-                 </children>
-             </VBox>
-             <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="7">
-                 <children>
-                     <Label/>
-                     <Label text="Mean Cell Volume:"/>
-                     <Label text="(femtolitre)"/>
-                 </children>
-             </VBox>
-             <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="8">
-                 <children>
-                     <Label/>
-                     <Label text="Mean Cell Haematocrit:"/>
-                     <Label text="(picogram)"/>
-                 </children>
-             </VBox>
-             <VBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="172.0" GridPane.rowIndex="1">
-                 <children>
-                     <Label/>
-                     <Label text="Red Blood Cell Count:"/>
-                     <Label text="(x10^9 cells /Litre)"/>
-                 </children>
-             </VBox>
-         </children>
-         <columnConstraints>
-             <ColumnConstraints hgrow="SOMETIMES" maxWidth="210.0" minWidth="10.0" prefWidth="164.0"/>
-             <ColumnConstraints hgrow="SOMETIMES" maxWidth="329.0" minWidth="10.0" prefWidth="322.0"/>
-         </columnConstraints>
-         <rowConstraints>
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-         </rowConstraints>
-      </GridPane>
-   </children>
+    <children>
+        <Button fx:id="cancelBloodTest" layoutX="14.0" layoutY="601.0" mnemonicParsing="false" onAction="#cancel" text="Cancel" />
+        <Button fx:id="addBloodTest" layoutX="372.0" layoutY="601.0" mnemonicParsing="false" onAction="#addBloodTest"
+                text="Add Blood Test"/>
+        <Label layoutX="12.0" layoutY="14.0" text="Add New Blood Test">
+            <font>
+                <Font name="System Bold" size="13.0" />
+            </font>
+        </Label>
+        <GridPane layoutX="11.0" layoutY="32.0" prefHeight="549.0" prefWidth="486.0">
+            <children>
+                <TextField fx:id="redBloodCount" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <TextField fx:id="whiteBloodCount" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                <TextField fx:id="heamoglobin" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                <TextField fx:id="platelets" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                <TextField fx:id="glucose" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                <TextField fx:id="haematocrit" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+                <TextField fx:id="meanCellVolume" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+                <TextField fx:id="meanCellHaematocrit" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                <Label text="Test Date:" />
+                <DatePicker fx:id="testDate" prefHeight="25.0" prefWidth="335.0" GridPane.columnIndex="1" />
+                <Label fx:id="dateErrorLabel" prefHeight="15.0" prefWidth="166.0" text="Please select a date"
+                       GridPane.columnIndex="1" GridPane.valignment="BOTTOM"/>
+                <Label fx:id="redBloodCellError" prefHeight="15.0" prefWidth="332.0" text="Please enter a postive number"
+                       GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="BOTTOM"/>
+                <Label fx:id="whiteBloodCellError" prefHeight="15.0" prefWidth="331.0" text="Please enter a postive number"
+                       GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM"/>
+                <Label fx:id="heamoglobinError" prefHeight="15.0" prefWidth="337.0" text="Please enter a postive number"
+                       GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.valignment="BOTTOM"/>
+                <Label fx:id="plateletsError" prefHeight="15.0" prefWidth="334.0" text="Please enter a postive number"
+                       GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.valignment="BOTTOM"/>
+                <Label fx:id="glucoseError" prefHeight="15.0" prefWidth="329.0" text="Please enter a postive number"
+                       GridPane.columnIndex="1" GridPane.rowIndex="5" GridPane.valignment="BOTTOM"/>
+                <Label fx:id="meanCellVolumeError" prefHeight="15.0" prefWidth="328.0" text="Please enter a postive number"
+                       GridPane.columnIndex="1" GridPane.rowIndex="7" GridPane.valignment="BOTTOM"/>
+                <Label fx:id="haematocritError" prefHeight="15.0" prefWidth="332.0" text="Please enter a postive number"
+                       GridPane.columnIndex="1" GridPane.rowIndex="6" GridPane.valignment="BOTTOM"/>
+                <Label fx:id="meanCellHaematocritError" prefHeight="15.0" prefWidth="336.0"
+                       text="Please enter a postive number" GridPane.columnIndex="1" GridPane.rowIndex="8"
+                       GridPane.valignment="BOTTOM"/>
+                <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="2">
+                    <children>
+                        <Label/>
+                        <Label text="White Blood Cell Count:"/>
+                        <Label text="(x10^9 cells /Litre)"/>
+                    </children>
+                </VBox>
+                <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="3">
+                    <children>
+                        <Label/>
+                        <Label text="Heamoglobin Level:"/>
+                        <Label text="(grams/Litre)"/>
+                    </children>
+                </VBox>
+                <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="4">
+                    <children>
+                        <Label/>
+                        <Label text="Platelets:"/>
+                        <Label text="(x10^9 platelets /Litre)"/>
+                    </children>
+                </VBox>
+                <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="5">
+                    <children>
+                        <Label/>
+                        <Label text="Glucose Levels:"/>
+                        <Label text="(mmol/Litre)"/>
+                    </children>
+                </VBox>
+                <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="6">
+                    <children>
+                        <Label/>
+                        <Label text="Haematocrit:"/>
+                        <Label text="(ratio)"/>
+                    </children>
+                </VBox>
+                <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="7">
+                    <children>
+                        <Label/>
+                        <Label text="Mean Cell Volume:"/>
+                        <Label text="(femtolitre)"/>
+                    </children>
+                </VBox>
+                <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="8">
+                    <children>
+                        <Label/>
+                        <Label text="Mean Cell Haematocrit:"/>
+                        <Label text="(picogram)"/>
+                    </children>
+                </VBox>
+                <VBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="172.0" GridPane.rowIndex="1">
+                    <children>
+                        <Label/>
+                        <Label text="Red Blood Cell Count:"/>
+                        <Label text="(x10^9 cells /Litre)"/>
+                    </children>
+                </VBox>
+            </children>
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="210.0" minWidth="10.0" prefWidth="164.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="329.0" minWidth="10.0" prefWidth="322.0"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+        </GridPane>
+    </children>
 </AnchorPane>
