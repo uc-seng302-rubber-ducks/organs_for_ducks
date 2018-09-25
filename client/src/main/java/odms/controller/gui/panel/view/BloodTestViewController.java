@@ -176,6 +176,7 @@ public class BloodTestViewController {
         timeRangeAxis.setAutoRanging(false);
         timeRangeAxis.setCategories(timeRangeCategory);
         bloodTestGraph.setLegendVisible(false);
+        changeLabels();
 
         final ToggleGroup toggleGroup = new ToggleGroup();
         ObservableList<TextStringRadioButton> bloodTestProperties = FXCollections.observableList(new ArrayList<>());
@@ -187,8 +188,7 @@ public class BloodTestViewController {
         }
 
         bloodTestPropertyListView.setItems(bloodTestProperties);
-
-        timeRangeFilterOption.getSelectionModel().selectedItemProperty().addListener(a -> updateGraph());
+        timeRangeFilterOption.valueProperty().addListener(a -> updateGraph());
     }
 
     /**
@@ -394,7 +394,7 @@ public class BloodTestViewController {
                 bloodTestGraph.setTitle("Results Over the Current Week");
                 timeRangeAxis.setLabel("Time in Days");
                 timeRangeAxis.setTickLabelRotation(0);
-                DayOfWeek start = LocalDate.now().minusWeeks(1).getDayOfWeek();
+                DayOfWeek start = LocalDate.now().minusWeeks(1).plusDays(1).getDayOfWeek();
                 List<DayOfWeek> days = Arrays.asList(DayOfWeek.values());
 
                 days.sort((o1, o2) -> {
@@ -450,7 +450,7 @@ public class BloodTestViewController {
                 bloodTestGraph.setTitle("Results Over the Current Year");
                 timeRangeAxis.setLabel("Time in months");
                 timeRangeAxis.setTickLabelRotation(0);
-                Month startMonth = LocalDate.now().minusWeeks(1).getMonth();
+                Month startMonth = LocalDate.now().plusMonths(1).getMonth();
                 List<Month> months = Arrays.asList(Month.values());
 
                 months.sort((o1, o2) -> {
