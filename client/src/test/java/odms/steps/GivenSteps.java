@@ -210,7 +210,7 @@ public class GivenSteps extends ApplicationTest {
     }
 
     @Given("^The donation tab is open$")
-    public void theDonationTabIsLoaded() throws IOException {
+    public void theDonationTabIsLoaded() throws IOException, UnauthorisedException {
         when(CucumberTestModel.getClinicianBridge().getClinician(anyString(), anyString())).thenReturn(
                 new Clinician("", "0", "")
         );
