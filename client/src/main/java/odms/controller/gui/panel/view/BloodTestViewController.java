@@ -6,7 +6,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -17,6 +16,7 @@ import odms.commons.model.datamodel.BloodTest;
 import odms.commons.utils.AttributeValidation;
 import odms.controller.gui.panel.logic.BloodTestsLogicController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
+import odms.controller.gui.widget.ColoredLineChart;
 import odms.controller.gui.widget.TextStringRadioButton;
 
 import java.time.DayOfWeek;
@@ -85,7 +85,7 @@ public class BloodTestViewController {
     private ComboBox<String> timeRangeFilterOption;
 
     @FXML
-    private LineChart<String, Double> bloodTestGraph;
+    private ColoredLineChart<String, Double> bloodTestGraph;
     @FXML
     private CategoryAxis timeRangeAxis;
 
@@ -346,7 +346,37 @@ public class BloodTestViewController {
                 addAppropriateProperty(bT, series, property);
             }
             bloodTestGraph.getData().add(series);
+
+            addBounds(property);
         }
+    }
+
+    /**
+     * Creates and adds two series to the graph for the lower and upper bounds of the given blood test property
+     *
+     * @param property The selected blood test property
+     */
+    private void addBounds(BloodTestProperties property) {
+        int size = timeRangeAxis.getCategories().size();
+        String min = timeRangeAxis.getCategories().get(0);
+        String max = timeRangeAxis.getCategories().get(size - 1);
+
+        XYChart.Series<String, Double> lowerSeries = new XYChart.Series<>();
+        XYChart.Series<String, Double> higherSeries = new XYChart.Series<>();
+
+        XYChart.Data<String, Double> minLower = new XYChart.Data<>(min, property.getLowerBound());
+        XYChart.Data<String, Double> maxLower = new XYChart.Data<>(max, property.getLowerBound());
+
+        XYChart.Data<String, Double> minUpper = new XYChart.Data<>(min, property.getUpperBound());
+        XYChart.Data<String, Double> maxUpper = new XYChart.Data<>(max, property.getUpperBound());
+
+        lowerSeries.getData().add(minLower);
+        lowerSeries.getData().add(maxLower);
+        higherSeries.getData().add(minUpper);
+        higherSeries.getData().add(maxUpper);
+
+        bloodTestGraph.getData().add(lowerSeries);
+        bloodTestGraph.getData().add(higherSeries);
     }
 
     /**

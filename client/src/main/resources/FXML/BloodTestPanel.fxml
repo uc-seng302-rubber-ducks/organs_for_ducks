@@ -2,11 +2,11 @@
 
 <?import javafx.collections.FXCollections?>
 <?import javafx.scene.chart.CategoryAxis?>
-<?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
+<?import odms.controller.gui.widget.ColoredLineChart?>
 <?import java.lang.*?>
 <AnchorPane prefHeight="735.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.panel.view.BloodTestViewController">
    <children>
@@ -173,14 +173,16 @@
                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="314.0"
                    AnchorPane.topAnchor="50.0">
          <children>
-            <LineChart fx:id="bloodTestGraph" layoutX="8.0" layoutY="14.0" prefHeight="656.0" prefWidth="767.0" title="Property over the past Time Range" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="14.0">
+             <ColoredLineChart fx:id="bloodTestGraph" layoutX="8.0" layoutY="14.0" prefHeight="656.0" prefWidth="767.0"
+                               title="Property over the past Time Range" AnchorPane.bottomAnchor="15.0"
+                               AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="14.0">
               <xAxis>
                 <CategoryAxis fx:id="timeRangeAxis" label="Time range" side="BOTTOM" />
               </xAxis>
               <yAxis>
                 <NumberAxis fx:id="bloodTestPropertyAxis" label="Property (unit)" side="LEFT" />
               </yAxis>
-            </LineChart>
+             </ColoredLineChart>
          </children></AnchorPane>
        <AnchorPane fx:id="bloodTestGraphFilterPane" layoutX="886.0" layoutY="50.0" prefHeight="685.0" prefWidth="313.0"
                    visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="886.0"
