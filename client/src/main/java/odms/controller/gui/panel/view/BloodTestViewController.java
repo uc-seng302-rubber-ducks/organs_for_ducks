@@ -153,6 +153,24 @@ public class BloodTestViewController {
     }
 
     /**
+     * Changes the fields to be enabled or disabled depending on the given boolean value.
+     * The fields are disabled if no blood test is selected from the table.
+     *
+     * @param disabledValue true or false
+     */
+    private void enableFields(boolean disabledValue) {
+        bloodTestDatePicker.setDisable(disabledValue);
+        redBloodCount.setDisable(disabledValue);
+        whiteBloodCount.setDisable(disabledValue);
+        heamoglobin.setDisable(disabledValue);
+        platelets.setDisable(disabledValue);
+        glucose.setDisable(disabledValue);
+        haematocrit.setDisable(disabledValue);
+        meanCellVolume.setDisable(disabledValue);
+        meanCellHaematocrit.setDisable(disabledValue);
+    }
+
+    /**
      * Displays the given blood test in more detail
      * The details are displayed as labels for users and text fields for clinicians/admins
      *
@@ -160,6 +178,7 @@ public class BloodTestViewController {
      */
     private void displayBloodTestDetails(BloodTest selectedBloodTest) {
         if (fromClinician) {
+            enableFields(false);
             bloodTestDatePicker.setValue(selectedBloodTest.getTestDate());
             redBloodCount.setText(getString(selectedBloodTest.getRedBloodCellCount()));
             whiteBloodCount.setText(getString(selectedBloodTest.getWhiteBloodCellCount()));
@@ -207,6 +226,7 @@ public class BloodTestViewController {
      */
     private void clearDetails() {
         if (fromClinician) {
+            enableFields(true);
             bloodTestDatePicker.setValue(null);
             redBloodCount.setText("");
             whiteBloodCount.setText("");
@@ -295,6 +315,7 @@ public class BloodTestViewController {
      */
     @FXML
     private void updateBloodTest() {
+        if (bloodTestTableView.getSelectionModel().getSelectedItem() != null) {
             if (validateField()) {
                 bloodTest.setGlucoseLevels(AttributeValidation.validateDouble(glucose.getText()));
                 bloodTest.setHaematocrit(AttributeValidation.validateDouble(haematocrit.getText()));
@@ -306,8 +327,11 @@ public class BloodTestViewController {
                 bloodTest.setHaemoglobinLevel(AttributeValidation.validateDouble(heamoglobin.getText()));
                 bloodTest.setTestDate(bloodTestDatePicker.getValue());
                 logicController.updateBloodTest(bloodTest);
-                AlertWindowFactory.generateInfoWindow("Blood Test on: "+ bloodTest.getTestDate() +" updated");
+                AlertWindowFactory.generateInfoWindow("Blood Test on: " + bloodTest.getTestDate() + " updated");
             }
+        } else {
+            AlertWindowFactory.generateError("You must select a blood test to update");
+        }
     }
 
     /**
@@ -319,15 +343,12 @@ public class BloodTestViewController {
         if (bloodTestTableView.getSelectionModel().getSelectedItem() != null) {
             Optional<ButtonType> result = AlertWindowFactory.generateConfirmation("Are you sure you want to delete this blood test?");
 
-            if (!result.isPresent()) {
-            return;
-        }
-
-            if (result.get() == ButtonType.OK) {
+            if (result.isPresent() && result.get() == ButtonType.OK) {
                 logicController.deleteBloodTest(bloodTestTableView.getSelectionModel().getSelectedItem());
             }
+
         } else {
-            AlertWindowFactory.generateInfoWindow("You must select an blood test to delete");
+            AlertWindowFactory.generateError("You must select a blood test to delete");
         }
     }
 
