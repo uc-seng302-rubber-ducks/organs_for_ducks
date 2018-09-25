@@ -63,12 +63,8 @@ public class NewBloodTestViewController {
 
     public void init(User user, Stage stage, BloodTestBridge bloodTestBridge){
         this.bloodTestBridge = bloodTestBridge;
-        this.logicController = new NewBloodTestLogicController(user,stage, bloodTestBridge);
+        this.logicController = new NewBloodTestLogicController(user,stage);
         resetErrorLabels();
-
-
-
-
     }
 
     @FXML

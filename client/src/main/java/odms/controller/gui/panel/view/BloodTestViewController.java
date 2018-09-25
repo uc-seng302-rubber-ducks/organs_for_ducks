@@ -95,7 +95,7 @@ public class BloodTestViewController {
             showFields();
         }
 
-        logicController = new BloodTestsLogicController(bloodTests, user, controller);
+        logicController = new BloodTestsLogicController(bloodTests, user);
         initBloodTestTableView();
     }
 

@@ -4,6 +4,7 @@ import javafx.stage.Stage;
 import odms.bridge.BloodTestBridge;
 import odms.commons.model.User;
 import odms.commons.model.datamodel.BloodTest;
+import odms.controller.AppController;
 
 import java.time.LocalDate;
 
@@ -13,10 +14,9 @@ public class NewBloodTestLogicController {
     private BloodTestBridge bloodTestBridge;
 
 
-    public NewBloodTestLogicController(User user, Stage stage, BloodTestBridge bloodTestBridge){
+    public NewBloodTestLogicController(User user, Stage stage){
         this.user = user;
         this.stage = stage;
-        this.bloodTestBridge = bloodTestBridge;
     }
 
     /**
@@ -57,7 +57,7 @@ public class NewBloodTestLogicController {
         BloodTest bloodTest = new BloodTest(Double.parseDouble(redBloodCount),Double.parseDouble(whiteBloodCount), Double.parseDouble(heamoglobin),
                 Double.parseDouble(platelets), Double.parseDouble(glucose),Double.parseDouble(meanCellVolume),
                 Double.parseDouble(haematocrit),Double.parseDouble(meanCellHaematocrit),date);
-        bloodTestBridge.postBloodtest(bloodTest, user.getNhi());
+        AppController.getInstance().getBloodTestBridge().postBloodtest(bloodTest, user.getNhi());
         stage.close();
 
 

@@ -5,7 +5,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import odms.bridge.BloodTestBridge;
 import odms.commons.model.User;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model.datamodel.BloodTest;
@@ -26,20 +25,16 @@ public class BloodTestsLogicController implements PropertyChangeListener {
     private static final int ROWS_PER_PAGE = 30;
     private int startingIndex = 0;
     private User user;
-    private BloodTestBridge bloodTestBridge;
-
 
     /**
      * Constructor to create a new logical instance of the controller
      *
      * @param bloodTests  observable list of BloodTest to use to populate the Blood tests table
      */
-    public BloodTestsLogicController(ObservableList<BloodTest> bloodTests, User user, AppController controller) {
+    public BloodTestsLogicController(ObservableList<BloodTest> bloodTests, User user) {
         this.bloodTests = bloodTests;
         this.user = user;
-        bloodTestBridge = controller.getBloodTestBridge();
         ServerEventNotifier.getInstance().addPropertyChangeListener(this);
-
     }
 
     public void addNewBloodTest() {
@@ -50,7 +45,7 @@ public class BloodTestsLogicController implements PropertyChangeListener {
             root = newBloodTestLoader.load();
             NewBloodTestViewController newBloodTestViewController = newBloodTestLoader.getController();
             Stage bloodTestStage = new Stage();
-            newBloodTestViewController.init(user,bloodTestStage, bloodTestBridge);
+            newBloodTestViewController.init(user,bloodTestStage, AppController.getInstance().getBloodTestBridge());
             bloodTestStage.setScene(new Scene(root));
             bloodTestStage.showAndWait();
             Log.info("Successfully launched the new blood test pop-up window for user: " + user.getNhi());
@@ -62,11 +57,12 @@ public class BloodTestsLogicController implements PropertyChangeListener {
     }
 
     public void deleteBloodTest(BloodTest bloodTest) {
-        bloodTestBridge.deleteBloodtest(Integer.toString(bloodTest.getBloodTestId()), user.getNhi());
+        AppController.getInstance().getBloodTestBridge().deleteBloodtest(Integer.toString(bloodTest.getBloodTestId()),
+                user.getNhi());
     }
 
     public void updateBloodTest(BloodTest bloodTest) {
-        bloodTestBridge.patchBloodtest(bloodTest, user.getNhi());
+        AppController.getInstance().getBloodTestBridge().patchBloodtest(bloodTest, user.getNhi());
     }
 
     /**
@@ -82,11 +78,19 @@ public class BloodTestsLogicController implements PropertyChangeListener {
     }
 
     public void gotoNextPage() {
-
+        if (bloodTests.size() < ROWS_PER_PAGE) {
+            return;
+        }
+        startingIndex = startingIndex + ROWS_PER_PAGE;
+        updateTableView(startingIndex);
     }
 
     public void goToPreviousPage() {
-
+        if (startingIndex - ROWS_PER_PAGE < 0) {
+            return;
+        }
+        startingIndex = startingIndex - ROWS_PER_PAGE;
+        updateTableView(startingIndex);
     }
 
     @Override
