@@ -921,6 +921,7 @@ public class UpdateUserController {
      */
     private void invalidateTextField(Node node) {
         node.getStyleClass().add("invalid");
+        node.requestFocus();
     }
 
     private boolean checkChangedProperty(String newString, String oldString) {

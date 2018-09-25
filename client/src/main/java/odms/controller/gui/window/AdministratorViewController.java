@@ -191,7 +191,6 @@ public class AdministratorViewController implements PropertyChangeListener, User
         stage.setMaximized(true);
         userTableView.setWaiting(true);
         userBridge.getUsers(userStartIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), genderComboBox.getValue(), appController.getToken(), userTableView);
-        clinicianBridge.getClinicians(clinicianStartIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), appController.getToken(), clinicianTableView);
 
         adminUndoButton.setDisable(true);
         adminRedoButton.setDisable(true);
