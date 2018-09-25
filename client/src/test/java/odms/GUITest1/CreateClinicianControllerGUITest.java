@@ -6,6 +6,7 @@ import odms.App;
 import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
 import odms.bridge.*;
+import odms.commons.exception.UnauthorisedException;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
 import odms.controller.AppController;
@@ -51,7 +52,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
     }
 
     @Before
-    public void setUpCreateScene() throws TimeoutException, IOException {
+    public void setUpCreateScene() throws TimeoutException, IOException, UnauthorisedException {
         AppController.setInstance(application);
         when(application.getCountriesBridge()).thenReturn(countriesBridge);
         when(application.getUserBridge()).thenReturn(bridge);
