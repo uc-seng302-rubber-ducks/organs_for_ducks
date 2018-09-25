@@ -31,10 +31,10 @@ public class BloodTestBridge extends Bifrost {
      * @param bloodTest blood test to post
      * @param nhi nhi of the user to post the blood test for
      */
-    public void postBloodtest(BloodTest bloodTest, String nhi){
+    public void postBloodTest(BloodTest bloodTest, String nhi, String token) {
         String url = ip + "/" + USER + nhi + "/bloodTest";
         RequestBody requestBody = RequestBody.create(json, new Gson().toJson(bloodTest));
-        Request request = new Request.Builder().post(requestBody).url(url).build();
+        Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).post(requestBody).build();
         client.newCall(request).enqueue(CommonMethods.loggedCallback("POST", url));
     }
 
@@ -44,10 +44,10 @@ public class BloodTestBridge extends Bifrost {
      * @param bloodTest blood test to patch
      * @param nhi nhi of the user to patch the blood test for
      */
-    public void patchBloodtest(BloodTest bloodTest, String nhi){
+    public void patchBloodTest(BloodTest bloodTest, String nhi, String token) {
         String url = ip + "/" + USER + nhi +"/bloodTest/"+bloodTest.getBloodTestId();
         RequestBody requestBody = RequestBody.create(json, new Gson().toJson(bloodTest));
-        Request request = new Request.Builder().patch(requestBody).url(url).build();
+        Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).patch(requestBody).build();
         client.newCall(request).enqueue(CommonMethods.loggedCallback("PATCH", url));
     }
 
@@ -57,9 +57,9 @@ public class BloodTestBridge extends Bifrost {
      * @param bloodTestId blood test id to delete
      * @param nhi nhi of the user to delete the blood test for
      */
-    public void deleteBloodtest(String bloodTestId , String nhi){
+    public void deleteBloodTest(String bloodTestId, String nhi, String token) {
         String url = ip +"/" + USER + nhi +" /bloodTest/"+ bloodTestId;
-        Request request = new Request.Builder().delete().url(url).build();
+        Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).delete().build();
         client.newCall(request).enqueue(CommonMethods.loggedCallback("DELETE", url));
     }
 
@@ -87,7 +87,7 @@ public class BloodTestBridge extends Bifrost {
     /**
      * Gets all  blood tests for a specified user
      *
-     * @param nhi nhi of the user associated with the bloodtests
+     * @param nhi nhi of the user associated with the blood tests
      */
     public void getBloodTests(String nhi, String startDate, String endDate, int count, int startIndex, ObservableList<BloodTest> observableBloodTests) {
         String url = String.format("%s/%s%s/bloodTests?startDate=%s&endDate=%s&count=%d&startIndex=%d", ip, USER, nhi, startDate, endDate, count, startIndex);
@@ -119,10 +119,8 @@ public class BloodTestBridge extends Bifrost {
      * @param lowValues      List containing blood test properties that are below their lower bound
      */
     private void checkLower(BloodTestProperties btProperty, double bloodTestValue, List<BloodTestProperties> lowValues) {
-        if (!AttributeValidation.checkAboveLowerBound(btProperty.getLowerBound(), bloodTestValue)) {
-            if (bloodTestValue != 0.0) {
-                lowValues.add(btProperty);
-            }
+        if (!AttributeValidation.checkAboveLowerBound(btProperty.getLowerBound(), bloodTestValue) && bloodTestValue != 0.0) {
+            lowValues.add(btProperty);
         }
     }
 

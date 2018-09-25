@@ -51,7 +51,7 @@ public class BloodTestControllerTest {
         bloodTestBridge = mock(BloodTestBridge.class);
 
         when(controller.getToken()).thenReturn("token");
-        doNothing().when(bloodTestBridge).postBloodtest(any(BloodTest.class), anyString());
+        //doNothing().when(bloodTestBridge).postBloodtest(any(BloodTest.class), anyString(), anyString());
         when(controller.getBloodTestBridge()).thenReturn(bloodTestBridge);
         when(client.newCall(any(Request.class))).thenReturn(call);
         doNothing().when(call).enqueue(any(Callback.class));
@@ -88,24 +88,24 @@ public class BloodTestControllerTest {
 
     @Test
     public void testDeleteBloodTest() {
-        doNothing().when(bloodTestBridge).deleteBloodtest(anyString(), anyString());
+        doNothing().when(bloodTestBridge).deleteBloodTest(anyString(), anyString(), anyString());
         BloodTest bloodTest = new BloodTest();
         bloodTest.setBloodTestId(1);
         bloodTests.add(bloodTest);
 
         bloodTestsLogicController.deleteBloodTest(bloodTest);
-        verify(bloodTestBridge, times(1)).deleteBloodtest(Integer.toString(bloodTest.getBloodTestId()), testUser.getNhi());
+        verify(bloodTestBridge, times(1)).deleteBloodTest(Integer.toString(bloodTest.getBloodTestId()), testUser.getNhi(), "token");
     }
 
     @Test
     public void updateBloodTest() {
-        doNothing().when(bloodTestBridge).patchBloodtest(any(BloodTest.class), anyString());
+        doNothing().when(bloodTestBridge).patchBloodTest(any(BloodTest.class), anyString(), anyString());
         BloodTest bloodTest = new BloodTest();
         bloodTest.setBloodTestId(1);
         bloodTest.setRedBloodCellCount(1.0);
 
         bloodTestsLogicController.updateBloodTest(bloodTest);
-        verify(bloodTestBridge, times(1)).patchBloodtest(bloodTest, testUser.getNhi());
+        verify(bloodTestBridge, times(1)).patchBloodTest(bloodTest, testUser.getNhi(), "token");
     }
 
     @Test

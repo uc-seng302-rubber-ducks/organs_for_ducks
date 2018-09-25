@@ -65,10 +65,10 @@ public class NewBloodTestControllerTest {
 
     @Test
     public void testAddNewBloodTest(){
-        doNothing().when(bloodTestBridge).postBloodtest(any(BloodTest.class), anyString());
+        doNothing().when(bloodTestBridge).postBloodTest(any(BloodTest.class), anyString(), anyString());
         BloodTest bloodTest = new BloodTest(1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,LocalDate.now());
         newBloodTestLogicController.addBloodTest(LocalDate.now(),"1.0","1.0","1.0","1.0","1.0","1.0","1.0","1.0");
-        verify(bloodTestBridge, times(1)).postBloodtest(bloodTest, testUser.getNhi());
+        verify(bloodTestBridge, times(1)).postBloodTest(bloodTest, testUser.getNhi(), "token");
 
 
     }

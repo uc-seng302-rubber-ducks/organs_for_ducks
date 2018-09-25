@@ -69,7 +69,8 @@ public class NewBloodTestLogicController {
         BloodTest bloodTest = new BloodTest(Double.parseDouble(redBloodCount),Double.parseDouble(whiteBloodCount), Double.parseDouble(heamoglobin),
                 Double.parseDouble(platelets), Double.parseDouble(glucose),Double.parseDouble(meanCellVolume),
                 Double.parseDouble(haematocrit),Double.parseDouble(meanCellHaematocrit),date);
-        AppController.getInstance().getBloodTestBridge().postBloodtest(bloodTest, user.getNhi());
+        AppController appController = AppController.getInstance();
+        appController.getBloodTestBridge().postBloodTest(bloodTest, user.getNhi(), appController.getToken());
         stage.close();
 
 

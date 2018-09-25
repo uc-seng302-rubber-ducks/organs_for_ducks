@@ -64,8 +64,9 @@ public class BloodTestsLogicController implements PropertyChangeListener {
      * @param bloodTest the blood test to be deleted
      */
     public void deleteBloodTest(BloodTest bloodTest) {
-        AppController.getInstance().getBloodTestBridge().deleteBloodtest(Integer.toString(bloodTest.getBloodTestId()),
-                user.getNhi());
+        AppController appController = AppController.getInstance();
+        appController.getBloodTestBridge().deleteBloodTest(Integer.toString(bloodTest.getBloodTestId()),
+                user.getNhi(), appController.getToken());
     }
 
     /**
@@ -73,7 +74,8 @@ public class BloodTestsLogicController implements PropertyChangeListener {
      * @param bloodTest the blood test to be updated
      */
     public void updateBloodTest(BloodTest bloodTest) {
-        AppController.getInstance().getBloodTestBridge().patchBloodtest(bloodTest, user.getNhi());
+        AppController appController = AppController.getInstance();
+        appController.getBloodTestBridge().patchBloodTest(bloodTest, user.getNhi(), appController.getToken());
     }
 
     /**

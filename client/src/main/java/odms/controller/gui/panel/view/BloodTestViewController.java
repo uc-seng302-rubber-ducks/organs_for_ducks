@@ -11,7 +11,6 @@ import odms.commons.model.User;
 import odms.commons.model._enum.BloodTestProperties;
 import odms.commons.model.datamodel.BloodTest;
 import odms.commons.utils.AttributeValidation;
-import odms.controller.AppController;
 import odms.controller.gui.panel.logic.BloodTestsLogicController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 
@@ -85,7 +84,7 @@ public class BloodTestViewController {
      *
      * @param user The current user
      */
-    public void init(AppController controller, User user, boolean fromClinician) {
+    public void init(User user, boolean fromClinician) {
         this.fromClinician = fromClinician;
         bloodTests.addListener((ListChangeListener<? super BloodTest>) observable -> {
             populateTable();
