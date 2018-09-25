@@ -49,6 +49,7 @@ import odms.controller.gui.popup.AlertUnclosedWindowsController;
 import odms.controller.gui.popup.CountrySelectionController;
 import odms.controller.gui.popup.DeletedUserController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
+import odms.controller.gui.widget.LoadingTableView;
 import odms.socket.ServerEventNotifier;
 import odms.view.CLI;
 
@@ -76,17 +77,17 @@ public class AdministratorViewController implements PropertyChangeListener, User
     private static final String ERROR = "error";
     public static final String FAILED_TO_GET_USER_OVERVIEWS_FROM_SERVER = "failed to get user overviews from server";
     @FXML
-    private TableView<UserOverview> userTableView;
+    private LoadingTableView<UserOverview> userTableView;
     @FXML
     private Label adminLastNameLabel;
     @FXML
     private CheckBox allCheckBox;
     @FXML
-    private TableView<Clinician> clinicianTableView;
+    private LoadingTableView<Clinician> clinicianTableView;
     @FXML
     private TextField cliInputTextField;
     @FXML
-    private TableView<Administrator> adminTableView;
+    private LoadingTableView<Administrator> adminTableView;
     @FXML
     private TextArea adminCliTextArea;
     @FXML
@@ -188,8 +189,9 @@ public class AdministratorViewController implements PropertyChangeListener, User
         availableOrgansViewController.init(this);
         ServerEventNotifier.getInstance().addPropertyChangeListener(this);
         stage.setMaximized(true);
-
-        userBridge.getUsers(userStartIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), genderComboBox.getValue(), appController.getToken());
+        userTableView.setWaiting(true);
+        userBridge.getUsers(userStartIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), genderComboBox.getValue(), appController.getToken(), userTableView);
+        clinicianBridge.getClinicians(clinicianStartIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), appController.getToken(), clinicianTableView);
 
         adminUndoButton.setDisable(true);
         adminRedoButton.setDisable(true);
@@ -421,7 +423,9 @@ public class AdministratorViewController implements PropertyChangeListener, User
      */
     private void populateUserSearchTable(int startIndex, int count, String name, String region, String gender) {
         appController.getUserOverviews().clear();
-        userBridge.getUsers(startIndex, count, name, region, gender, appController.getToken());
+        userTableView.setItems(FXCollections.observableArrayList(appController.getUserOverviews()));
+        userTableView.setWaiting(true);
+        userBridge.getUsers(startIndex, count, name, region, gender, appController.getToken(), userTableView);
 
         displayUserSearchTable();
     }
@@ -436,12 +440,10 @@ public class AdministratorViewController implements PropertyChangeListener, User
 
         if (!appController.getUserOverviews().isEmpty()) {
             userTableView.setItems(sUsers);
-        } else {
-            userTableView.setItems(null);
-            Platform.runLater(() -> userTableView.setPlaceholder(new Label("No users match this criteria"))); // Do this to prevent threading issues when this method is not called on an FX thread
         }
 
         setTableOnClickBehaviour(User.class, userTableView);
+        userTableView.refresh();
     }
 
     private void setTableOnClickBehaviour(Type type, TableView tv) {
@@ -1219,7 +1221,9 @@ public class AdministratorViewController implements PropertyChangeListener, User
      */
     private void populateClinicianSearchTable(int startIndex, int rowsPerPage, String name, String region) {
         appController.getClinicians().clear();
-        clinicianBridge.getClinicians(startIndex, rowsPerPage, name, region, appController.getToken());
+        clinicianTableView.setItems(FXCollections.observableArrayList(appController.getClinicians()));
+        clinicianTableView.setWaiting(true);
+        clinicianBridge.getClinicians(startIndex, rowsPerPage, name, region, appController.getToken(), clinicianTableView);
 
         displayClinicianSearchTable();
     }
@@ -1235,10 +1239,6 @@ public class AdministratorViewController implements PropertyChangeListener, User
 
         if (!appController.getClinicians().isEmpty()) {
             clinicianTableView.setItems(sClinicians);
-        } else {
-            clinicianTableView.setItems(null);
-            // Do this to prevent threading issues when this method is not called on an FX thread
-            Platform.runLater(() -> clinicianTableView.setPlaceholder(new Label("No clinicians to show")));
         }
 
         setTableOnClickBehaviour(Clinician.class, clinicianTableView);
@@ -1261,7 +1261,8 @@ public class AdministratorViewController implements PropertyChangeListener, User
      */
     private void populateAdminSearchTable(int startIndex, int rowsPerPage, String name) {
         appController.getAdmins().clear();
-        adminBridge.getAdmins(startIndex, rowsPerPage, name, appController.getToken());
+        adminTableView.setWaiting(true);
+        adminBridge.getAdmins(startIndex, rowsPerPage, name, appController.getToken(), adminTableView);
 
         displayAdminSearchTable();
     }
@@ -1273,10 +1274,6 @@ public class AdministratorViewController implements PropertyChangeListener, User
 
         if (!appController.getClinicians().isEmpty()) {
             adminTableView.setItems(sAdmins);
-        } else {
-            adminTableView.setItems(null);
-            // Do this to prevent threading issues when this method is not called on an FX thread
-            Platform.runLater(() -> adminTableView.setPlaceholder(new Label("No admins to show")));
         }
 
         setTableOnClickBehaviour(Administrator.class, adminTableView);

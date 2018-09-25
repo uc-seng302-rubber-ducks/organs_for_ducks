@@ -2,11 +2,13 @@ package odms.bridge;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import javafx.application.Platform;
 import odms.commons.exception.ApiException;
 import odms.commons.model.Administrator;
 import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
+import odms.controller.gui.widget.LoadingWidget;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -20,7 +22,7 @@ public class AdministratorBridge extends RoleBridge {
         super(client);
     }
 
-    public void getAdmins(int startIndex, int count, String name, String token) {
+    public void getAdmins(int startIndex, int count, String name, String token, LoadingWidget adminTableView) {
         String url = ip + "/admins?startIndex=" + startIndex + "&count=" + count + "&q=" + name;
         Request request = new Request.Builder().url(url).addHeader("x-auth-token", token).build();
         client.newCall(request).enqueue(new Callback() {
@@ -35,6 +37,9 @@ public class AdministratorBridge extends RoleBridge {
                 }.getType());
                 for (Administrator administrator : administrators) {
                     AppController.getInstance().addAdmin(administrator);
+                }
+                if (adminTableView != null) {
+                    Platform.runLater(() -> adminTableView.setWaiting(false));
                 }
                 response.close();
             }
