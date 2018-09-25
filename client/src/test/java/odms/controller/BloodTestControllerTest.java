@@ -118,12 +118,4 @@ public class BloodTestControllerTest {
     }
 
 
-//    @Test
-//    public void adsfasdfadsf() {
-//        PropertyChangeEvent propertyChangeEvent =  new PropertyChangeEvent();
-//
-//        bloodTestsLogicController.propertyChange(propertyChangeEvent);
-//    }
-
-
 }

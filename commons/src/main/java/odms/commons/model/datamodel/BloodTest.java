@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Class to store the Blood Test information of a user
+ */
 public class BloodTest {
 
     private int bloodTestId;
