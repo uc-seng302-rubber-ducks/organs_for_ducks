@@ -88,7 +88,8 @@
                        <TextField fx:id="glucose" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5" />
                        <TextField fx:id="haematocrit" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="6" />
                        <TextField fx:id="meanCellVolume" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="7" />
-                       <TextField fx:id="meanCellHaematocrit" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="8"/>
+                       <TextField fx:id="meanCellHaematocrit" visible="false" GridPane.columnIndex="1"
+                                  GridPane.columnSpan="2" GridPane.rowIndex="8"/>
                        <Label text="Date Of Blood Test:" />
                        <Label fx:id="bloodTestDateLabel" GridPane.columnIndex="2" />
                        <Label fx:id="bloodTestRCCountLabel" GridPane.columnIndex="2" GridPane.rowIndex="1" />
@@ -163,10 +164,12 @@
                        <Font name="System Bold" size="14.0" />
                    </font>
                </Label>
-               <Button fx:id="deleteBloodTest" layoutX="10.0" layoutY="613.0" mnemonicParsing="false" onAction="#deleteBloodTest"
-                       text="Delete Blood test" AnchorPane.bottomAnchor="47.0" AnchorPane.leftAnchor="10.0"/>
-               <Button fx:id="updateBloodTest" layoutX="241.0" layoutY="613.0" mnemonicParsing="false" onAction="#updateBloodTest"
-                       text="Update Blood Test" AnchorPane.bottomAnchor="47.0" AnchorPane.rightAnchor="28.0"/>
+               <Button fx:id="deleteBloodTest" layoutX="10.0" layoutY="613.0" mnemonicParsing="false"
+                       onAction="#deleteBloodTest" text="Delete Blood test" AnchorPane.bottomAnchor="47.0"
+                       AnchorPane.leftAnchor="10.0"/>
+               <Button fx:id="updateBloodTest" layoutX="241.0" layoutY="613.0" mnemonicParsing="false"
+                       onAction="#updateBloodTest" text="Update Blood Test" AnchorPane.bottomAnchor="47.0"
+                       AnchorPane.rightAnchor="28.0"/>
            </children>
        </AnchorPane>
        <AnchorPane fx:id="bloodTestGraphViewPane" layoutY="13.0" prefHeight="685.0" prefWidth="886.0" visible="false"
@@ -176,30 +179,39 @@
              <ColoredLineChart fx:id="bloodTestGraph" layoutX="8.0" layoutY="14.0" prefHeight="656.0" prefWidth="767.0"
                                title="Property over the past Time Range" AnchorPane.bottomAnchor="15.0"
                                AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="14.0">
-              <xAxis>
-                <CategoryAxis fx:id="timeRangeAxis" label="Time range" side="BOTTOM" />
-              </xAxis>
-              <yAxis>
-                <NumberAxis fx:id="bloodTestPropertyAxis" label="Property (unit)" side="LEFT" />
-              </yAxis>
+                 <xAxis>
+                     <CategoryAxis fx:id="timeRangeAxis" label="Time range" side="BOTTOM"/>
+                 </xAxis>
+                 <yAxis>
+                     <NumberAxis fx:id="bloodTestPropertyAxis" label="Property (unit)" side="LEFT"/>
+                 </yAxis>
              </ColoredLineChart>
-         </children></AnchorPane>
+         </children>
+       </AnchorPane>
        <AnchorPane fx:id="bloodTestGraphFilterPane" layoutX="886.0" layoutY="50.0" prefHeight="685.0" prefWidth="313.0"
                    visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="886.0"
                    AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="50.0">
          <children>
-             <GridPane layoutX="73.0" layoutY="57.0" prefHeight="388.0" prefWidth="227.0" AnchorPane.rightAnchor="13.0"
-                       AnchorPane.topAnchor="57.0">
+             <GridPane layoutX="73.0" layoutY="57.0" prefHeight="388.0" prefWidth="227.0" AnchorPane.bottomAnchor="13.0"
+                       AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="57.0">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints/>
               </columnConstraints>
               <rowConstraints>
                   <RowConstraints maxHeight="64.0" minHeight="10.0" prefHeight="64.0" vgrow="SOMETIMES"/>
                   <RowConstraints maxHeight="44.0" minHeight="10.0" prefHeight="24.0" vgrow="SOMETIMES"/>
                   <RowConstraints maxHeight="96.0" minHeight="10.0" prefHeight="32.0" vgrow="SOMETIMES"/>
                   <RowConstraints maxHeight="96.0" minHeight="10.0" prefHeight="22.0" vgrow="SOMETIMES"/>
-                  <RowConstraints maxHeight="135.0" minHeight="10.0" prefHeight="29.0" vgrow="SOMETIMES"/>
-                  <RowConstraints maxHeight="299.0" minHeight="10.0" prefHeight="217.0" vgrow="SOMETIMES"/>
+                  <RowConstraints maxHeight="135.0" minHeight="10.0" prefHeight="33.0" vgrow="SOMETIMES"/>
+                  <RowConstraints maxHeight="299.0" minHeight="10.0" prefHeight="266.0" vgrow="SOMETIMES"/>
+                  <RowConstraints maxHeight="299.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
+                  <RowConstraints maxHeight="299.0" minHeight="10.0" prefHeight="51.0" vgrow="SOMETIMES"/>
+                  <RowConstraints maxHeight="299.0" minHeight="10.0" prefHeight="123.0" vgrow="SOMETIMES"/>
+                  <RowConstraints/>
+                  <RowConstraints/>
+                  <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0"/>
+                  <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0"/>
               </rowConstraints>
                <children>
                   <Label text="Filter Time Range:" GridPane.rowIndex="1" />
@@ -224,6 +236,9 @@
                   </Label>
                    <ListView fx:id="bloodTestPropertyListView" prefHeight="215.0" prefWidth="227.0"
                              GridPane.rowIndex="5"/>
+                   <HBox GridPane.rowIndex="6" alignment="CENTER">
+                       <Label fx:id="bloodTestGraphPlaceHolder"/>
+                   </HBox>
                </children>
             </GridPane>
          </children></AnchorPane>

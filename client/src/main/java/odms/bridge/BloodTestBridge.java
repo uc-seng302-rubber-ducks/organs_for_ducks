@@ -7,10 +7,7 @@ import odms.commons.model._enum.BloodTestProperties;
 import odms.commons.model.datamodel.BloodTest;
 import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.Log;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import okhttp3.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -92,22 +89,28 @@ public class BloodTestBridge extends Bifrost {
     public void getBloodTests(String nhi, String startDate, String endDate, int count, int startIndex, ObservableList<BloodTest> observableBloodTests) {
         String url = String.format("%s/%s%s/bloodTests?startDate=%s&endDate=%s&count=%d&startIndex=%d", ip, USER, nhi, startDate, endDate, count, startIndex);
         Request request = new Request.Builder().get().url(url).build();
-        try (Response response = client.newCall(request).execute()) {
-            if (response.isSuccessful()) {
-                String bodyString = response.body().string();
-                Collection<BloodTest> bloodTests = handler.decodeBloodTests(bodyString);
-                for (BloodTest bt : bloodTests) {
-                    checkBounds(bt);
-                }
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
 
-                Platform.runLater(() -> {
-                    observableBloodTests.clear();
-                    observableBloodTests.addAll(bloodTests);
-                });
             }
-        } catch (IOException e) {
-            Log.warning("Could not GET from " + url, e);
-        }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String bodyString = response.body().string();
+                    Collection<BloodTest> bloodTests = handler.decodeBloodTests(bodyString);
+                    for (BloodTest bt : bloodTests) {
+                        checkBounds(bt);
+                    }
+
+                    Platform.runLater(() -> {
+                        observableBloodTests.clear();
+                        observableBloodTests.addAll(bloodTests);
+                    });
+                }
+            }
+        });
     }
 
     /**

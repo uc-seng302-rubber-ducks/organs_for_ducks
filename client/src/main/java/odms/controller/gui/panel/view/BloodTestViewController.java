@@ -1,5 +1,7 @@
 package odms.controller.gui.panel.view;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -10,6 +12,7 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import odms.commons.model.User;
 import odms.commons.model._enum.BloodTestProperties;
 import odms.commons.model.datamodel.BloodTest;
@@ -27,6 +30,8 @@ import java.util.*;
 
 public class BloodTestViewController {
 
+    @FXML
+    private Control bloodTestGraphPlaceHolder;
     @FXML
     private Button requestNewBloodTest;
     @FXML
@@ -111,6 +116,7 @@ public class BloodTestViewController {
     private ObservableList<BloodTest> graphBloodTests = FXCollections.observableList(new ArrayList<>());
     private ObservableList<String> timeRangeCategory = FXCollections.observableList(new ArrayList<>());
     private BloodTestsLogicController logicController;
+    private BooleanProperty waiting;
     private boolean fromClinician;
     private BloodTest bloodTest;
 
@@ -127,15 +133,45 @@ public class BloodTestViewController {
 
         graphBloodTests.addListener((ListChangeListener<? super BloodTest>) observable -> {
             populateGraph();
+            setWaiting(false);
         });
 
         if (fromClinician) {
             showFields();
         }
 
+        waitingProperty().addListener(((observable, oldValue, newValue) -> {
+            if (newValue) {
+                ProgressIndicator temp = new ProgressIndicator(ProgressIndicator.INDETERMINATE_PROGRESS);
+                ((Pane) bloodTestGraphPlaceHolder.getParent()).getChildren().replaceAll(node -> node.equals(bloodTestGraphPlaceHolder) ? temp : node);
+                bloodTestGraphPlaceHolder = temp;
+                bloodTestGraphPlaceHolder.setVisible(newValue);
+            } else {
+                Label temp = new Label("There is no data to show");
+                ((Pane) bloodTestGraphPlaceHolder.getParent()).getChildren().replaceAll(node -> node.equals(bloodTestGraphPlaceHolder) ? temp : node);
+                bloodTestGraphPlaceHolder = temp;
+                bloodTestGraphPlaceHolder.setVisible(graphBloodTests.isEmpty());
+            }
+        }));
+
         logicController = new BloodTestsLogicController(bloodTests, graphBloodTests, user);
         initBloodTestTableView();
         initGraphView();
+    }
+
+    private BooleanProperty waitingProperty() {
+        if (waiting == null) {
+            waiting = new SimpleBooleanProperty(false);
+        }
+        return waiting;
+    }
+
+    private boolean getWaiting() {
+        return waitingProperty().get();
+    }
+
+    private void setWaiting(boolean waiting) {
+        waitingProperty().set(waiting);
     }
 
     /**
@@ -319,6 +355,7 @@ public class BloodTestViewController {
      */
     private void updateGraph() {
         changeLabels();
+        setWaiting(true);
         logicController.updateGraph(timeRangeFilterOption.getValue());
     }
 
