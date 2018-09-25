@@ -72,42 +72,4 @@ public class DonatingOrgansController extends BaseController {
         }
         return new ResponseEntity(HttpStatus.CREATED);
     }
-
-//    @IsClinician
-//    @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/disqualified")
-//    public Collection<OrgansWithDisqualification> getDisqualifiedOrgans(@PathVariable String nhi) {
-//        try (Connection connection = driver.getConnection()) {
-//            return disqualifiedOrgansHandler.getDisqualifiedOrgans(connection, nhi);
-//        } catch (SQLException ex) {
-//            Log.severe("could not get disqualified organs for user " + nhi, ex);
-//            throw new ServerDBException(ex);
-//        }
-//    }
-//
-//    @IsClinician
-//    @RequestMapping(method = RequestMethod.POST, value = "/users/{nhi}/disqualified")
-//    public ResponseEntity postDisqualifiedOrgan(@PathVariable String nhi,
-//                                             @RequestBody Collection<OrgansWithDisqualification> disqualified) {
-//        try (Connection connection = driver.getConnection()) {
-//            disqualifiedOrgansHandler.postDisqualifiedOrgan(connection, disqualified, nhi);
-//        } catch (SQLException ex) {
-//            Log.severe("Could not post disqualified organs to user " + nhi, ex);
-//            throw new ServerDBException(ex);
-//        }
-//        return new ResponseEntity(HttpStatus.CREATED);
-//    }
-//
-//    @IsClinician
-//    @RequestMapping(method = RequestMethod.DELETE, value = "/users/{nhi}/disqualified")
-//    public ResponseEntity deleteDisqualifiedOrgan(@PathVariable String nhi,
-//                                                  @RequestBody Collection<OrgansWithDisqualification> disqualified) {
-//        try (Connection connection = driver.getConnection()) {
-//
-//            disqualifiedOrgansHandler.deleteDisqualifiedOrgan(connection, disqualified);
-//        } catch (SQLException ex) {
-//            Log.severe("Could not delete disqualified organs for user " + nhi, ex);
-//            throw new ServerDBException(ex);
-//        }
-//        return new ResponseEntity(HttpStatus.I_AM_A_TEAPOT);
-//    }
 }
