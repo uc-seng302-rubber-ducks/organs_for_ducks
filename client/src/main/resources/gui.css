@@ -437,7 +437,6 @@
 }
 
 .toggle-button {
-
     -fx-border-style: solid;
     -fx-font-size: 12px;
     -fx-font-weight: bold;
@@ -483,4 +482,19 @@
     -fx-stroke: #B2C8D2;
 }
 
+.chart-series-line {
+    -fx-stroke-width: 2px;
+}
 
+.default-color0.chart-series-line {
+    -fx-stroke-width: 3px;
+    -fx-stroke: #004a6c;
+}
+
+.default-color1.chart-series-line {
+    -fx-stroke: rgba(100%, 25%, 21%, 0.5);
+}
+
+.default-color2.chart-series-line {
+    -fx-stroke: rgba(100%, 25%, 21%, 0.5);
+}
