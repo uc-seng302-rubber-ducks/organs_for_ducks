@@ -22,6 +22,7 @@ public class AppControllerMocker {
         OrgansBridge organsBridge = mock(OrgansBridge.class);
         TransplantBridge transplantBridge = mock(TransplantBridge.class);
         AppointmentsBridge appointmentsBridge = mock(AppointmentsBridge.class);
+        BloodTestBridge bloodTestBridge = mock(BloodTestBridge.class);
         OdmsSocketHandler socketHandler = mock(OdmsSocketHandler.class);
 
 
@@ -32,6 +33,7 @@ public class AppControllerMocker {
         when(application.getOrgansBridge()).thenReturn(organsBridge);
         when(application.getTransplantBridge()).thenReturn(transplantBridge);
         when(application.getAppointmentsBridge()).thenReturn(appointmentsBridge);
+        when(application.getBloodTestBridge()).thenReturn(bloodTestBridge);
         when(application.getSocketHandler()).thenReturn(socketHandler);
         when(application.getToken()).thenReturn("tokenGoesHere");
 
