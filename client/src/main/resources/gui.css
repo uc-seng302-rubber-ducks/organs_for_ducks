@@ -471,6 +471,8 @@
 
 .chart-plot-background {
     -fx-background-color: WHITE;
+    -fx-border-color: #B2C8D2;
+    -fx-border-width: 2px;
 }
 
 .chart-vertical-grid-lines {
