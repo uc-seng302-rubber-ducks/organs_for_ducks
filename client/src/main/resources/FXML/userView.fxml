@@ -119,7 +119,6 @@
               <menus>
                   <Menu fx:id="fileMenuUser" mnemonicParsing="false" text="File">
                   <items>
-                      <MenuItem fx:id="refreshUser" mnemonicParsing="false" text="Refresh" />
                       <MenuItem fx:id="saveUserMenuItem" mnemonicParsing="false" onAction="#save" text="Save" />
                       <MenuItem fx:id="logoutUser" mnemonicParsing="false" text="Log Out" />
                   </items>
