@@ -171,10 +171,6 @@ public class AvailableOrganDetail implements Listenable, Expirable {
         pcs.firePropertyChange(event);
     }
 
-    public void setExpiryReason(ExpiryReason reason) {
-        expiryReason = reason;
-    }
-
     @Override
     public boolean getExpired() {
         return false;
