@@ -145,8 +145,6 @@ public class NewBloodTestViewController {
             } else {
                 AlertWindowFactory.generateAlertWindow("You must have provided at least one blood field property.");
             }
-        } else {
-            AlertWindowFactory.generateAlertWindow("You must have provided at least one blood field property.");
         }
     }
 }
