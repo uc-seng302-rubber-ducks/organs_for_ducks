@@ -152,6 +152,7 @@ public class BloodTestViewController implements LoadingWidget {
      * Initializes the blood test tab on the given users profile
      *
      * @param user The current user
+     * @param fromClinician if the user viewing this is a clinician
      */
     public void init(User user, boolean fromClinician) {
         this.fromClinician = fromClinician;

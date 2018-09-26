@@ -22,6 +22,7 @@ public class LoginBridge extends Bifrost{
      *             see UserRole in the server project
      * @return token if request is successful
      * @throws ApiException if any response other than the expected token is returned
+     * @throws UnauthorisedException if the token is invalid
      */
     public String loginToServer(String wanted, String password, String role) throws ApiException, UnauthorisedException {
         Response response;

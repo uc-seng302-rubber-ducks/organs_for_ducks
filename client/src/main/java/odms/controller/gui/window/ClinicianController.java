@@ -169,6 +169,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
      * @param appController the applications controller.
      * @param clinician     The current clinician.
      * @param parentListeners The listeners of the parent controller that created this
+     * @param fromAdmin     If the user opening the clinician is from an admin
      */
     public void init(Stage stage, AppController appController, Clinician clinician, boolean fromAdmin,
                      Collection<PropertyChangeListener> parentListeners) {

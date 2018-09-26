@@ -81,6 +81,7 @@ public class ReceiverTabController {
      * @param user          the current user
      * @param fromClinician boolean value indication if from clinician view
      * @param parent        the UserController class this belongs to
+     * @param stage         stage that this tab is on
      */
     public void init(AppController controller, Stage stage, User user, boolean fromClinician,
                      UserController parent) {
@@ -237,6 +238,7 @@ public class ReceiverTabController {
 
     /**
      * Populates the receiver list of the user
+     * @param user user to populate the receiver lists with
      */
     public void populateReceiverLists(User user) {
         currentUser = user;

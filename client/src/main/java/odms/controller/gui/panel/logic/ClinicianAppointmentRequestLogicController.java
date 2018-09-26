@@ -54,6 +54,7 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
      * @param controller           instance of appController to be used
      * @param clinician            host clinician to use
      * @param availableTimes       list of times when the clinician is available
+     * @param tableView widget to stop loading when any call has finished
      */
     public ClinicianAppointmentRequestLogicController(ObservableList<Appointment> availableAppointment, AppController controller, Clinician clinician, ObservableList<LocalTime> availableTimes, LoadingWidget tableView) {
         this.loadingWidget = tableView;
@@ -166,7 +167,7 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
     /**
      * Creates a confirmation alert pop-up with the given message
      * Extracted for easier testability
-     *
+     * @param message message to put in the alert window
      * @return the confirmation alert window result
      */
     public Optional<ButtonType> confirmOption(String message) {
@@ -187,6 +188,7 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
     /**
      * gets all the times the clinician is booked for the given date and add
      * @param wantedDate the date for the appointment
+     * @param appointment the currently selected appointment
      */
     public void refreshClinicianAvailableTimes(LocalDate wantedDate, Appointment appointment) {
         AppointmentsBridge appointmentsbridge = appController.getAppointmentsBridge();
@@ -205,6 +207,11 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
      * Updates / accepts the given appointment with the given values
      *
      * @param appointment Appointment to be updated
+     * @param category category of the appointment
+     * @param date date of the appointment
+     * @param time time of the appointment
+     * @param description description of the appointment
+     * @param pending whether the appointment is still pending
      */
     public void updateAppointment(Appointment appointment, AppointmentCategory category, LocalDate date, String time, String description, boolean pending) {
         String[] timeParts = time.split(":");

@@ -150,6 +150,7 @@ public class UserController implements PropertyChangeListener {
      * @param user          the current user
      * @param stage         the application stage
      * @param fromClinician boolean value indication if from clinician view
+     * @param parentListeners property change listeners from the parent window
      */
     public void init(AppController controller, User user, Stage stage, boolean fromClinician,
                      Collection<PropertyChangeListener> parentListeners) {

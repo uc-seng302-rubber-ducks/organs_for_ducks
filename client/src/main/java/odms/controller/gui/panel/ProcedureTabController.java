@@ -130,6 +130,7 @@ public class ProcedureTabController {
 
     /**
      * Updates the procedure tables and ensure that the selected item is not changed.
+     * @param user user to update the tables with
      */
     public void updateProcedureTables(User user) {
         currentUser = user;

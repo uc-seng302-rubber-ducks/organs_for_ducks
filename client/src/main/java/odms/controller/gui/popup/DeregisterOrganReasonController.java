@@ -67,6 +67,7 @@ public class DeregisterOrganReasonController {
      * @param userController class
      * @param controller     The applications controller.
      * @param stage          The applications stage.
+     * @param user user to deregister the organ from
      */
     public void init(Organs organ, UserController userController, User user,
                      AppController controller, Stage stage) {

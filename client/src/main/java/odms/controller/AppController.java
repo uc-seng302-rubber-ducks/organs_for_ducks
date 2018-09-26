@@ -501,7 +501,7 @@ public class AppController {
      * The clinician is saved to the database by a put request if the entry is found, otherwise by a post request.
      *
      * @param clinician Clinician to be saved
-     * @throws IOException
+     * @throws IOException if the clinician cannot be saved
      */
     public void saveClinician(Clinician clinician) throws IOException {
         try {

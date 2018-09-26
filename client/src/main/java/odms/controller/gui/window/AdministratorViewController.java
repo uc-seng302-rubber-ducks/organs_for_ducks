@@ -174,6 +174,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
      * @param administrator administrator to view
      * @param appController appController instance to get data from
      * @param stage         stage to display on
+     * @param owner         if it is the owner of the account
      */
     public void init(Administrator administrator, AppController appController, Stage stage, boolean owner) {
         this.stage = stage;

@@ -669,6 +669,7 @@ public class DBHandler {
      * @param name       name of the clinicians
      * @param region     region the clinician resides in
      * @return the Collection of clinicians
+     * @throws SQLException if the query cannot be executed correctly
      */
     public Collection<Clinician> loadClinicians(Connection connection, int startIndex, int count, String name, String region) throws SQLException {
         Collection<Clinician> clinicians = new ArrayList<>();
@@ -1051,6 +1052,7 @@ public class DBHandler {
      * @return list of transplant details matching the above criteria
      * @throws SQLException exception thrown during the transaction
      * @see TransplantDetails
+     * @param organ organ to filter by
      */
     public TransplantDetails getTransplantDetailsByNhi(Connection conn, String nhi, String organ) throws SQLException {
         String queryString = "SELECT U.nhi, U.firstName, U.middleName, U.lastName, U.dob, O.organName, Dates.dateRegistered, Q.region, DD.momentOfDeath,H.bloodType FROM OrganAwaiting " +
@@ -1139,6 +1141,7 @@ public class DBHandler {
      * @param connection   connection to the target database
      * @param <T>          generic for type of the user
      * @throws SQLException exception thrown during the transaction
+     * @param imageType    type of the image being stored
      */
     public <T> void updateProfilePhoto(Class<T> role, String roleId, InputStream profilePhoto, String imageType, Connection connection) throws SQLException {
         String update_stmt;
@@ -1375,6 +1378,7 @@ public class DBHandler {
      * @param connection  Connection to the target database
      * @param appointment Appointment that the unique identifier is from
      * @throws SQLException If the entry does not exist or the connection is invalid
+     * @return the appointment id
      */
     public int getAppointmentId(Connection connection, Appointment appointment) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SELECT_APPTMT_ID)) {
@@ -1450,7 +1454,9 @@ public class DBHandler {
      * @param id       unique identifier of the user
      * @param statusId integer value of the status type
      * @param role     specifies if the given user type is a user or a clinician
+     * @param connection a non null connection to the database
      * @return true if an appointment is found with the given status, false otherwise
+     * @throws SQLException if the statement cannot be executed
      */
     public boolean checkAppointmentStatusExists(Connection connection, String id, int statusId, UserType role) throws SQLException {
         String checkStatusExists = null;

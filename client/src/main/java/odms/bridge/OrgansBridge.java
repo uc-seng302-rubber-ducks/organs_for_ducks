@@ -31,7 +31,7 @@ public class OrgansBridge extends Bifrost {
      * @param city           if specified, return only organs in that city
      * @param country        if specified, return only organs in that country
      * @param observableList observable list to populate.
-     * @param widget
+     * @param widget widget to stop loading if the call is finished
      */
     public void getAvailableOrgansList(int startIndex, int count, String organ, String region, String bloodType, String city, String country, ObservableList<AvailableOrganDetail> observableList, LoadingWidget widget) {
         StringBuilder url = new StringBuilder(ip);
@@ -96,6 +96,7 @@ public class OrgansBridge extends Bifrost {
      * @param donorNhi user who is donating the organ
      * @param organToDonate Available organ detail to identify the map entry of the response
      * @param observableList the observable list to populate the potential matches with
+     * @param widget widget to stop loading if the call is finished
      */
     public void getMatchingOrgansList(int startIndex, int count, String donorNhi, AvailableOrganDetail organToDonate,
                                       ObservableList<TransplantDetails> observableList, LoadingWidget widget) {

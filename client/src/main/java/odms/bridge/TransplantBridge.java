@@ -29,6 +29,8 @@ public class TransplantBridge extends Bifrost {
      * @param name       name (or partial name) to search by
      * @param region     region to search by
      * @param organs     only return results for the selected organs
+     * @param observableList observable list to populate when the call is successful
+     * @param widget widget to stop loading when the call is finished
      */
     public void getWaitingList(int startIndex, int count, String name, String region, Collection<Organs> organs, ObservableList<TransplantDetails> observableList, LoadingWidget widget) {
         StringBuilder url = new StringBuilder(ip);

@@ -107,7 +107,7 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
     /**
      * Creates a confirmation alert pop-up with the given message
      * Extracted for easier testability
-     *
+     * @param message message to display in the alert window
      * @return the confirmation alert window result
      */
     public Optional<ButtonType> confirmOption(String message) {
@@ -116,6 +116,7 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
 
     /**
      * Calls the database to get updated appointment entries
+     * @param startIndex how many entries to skip before returning
      */
     public void updateTable(int startIndex) {
         appointments.clear();

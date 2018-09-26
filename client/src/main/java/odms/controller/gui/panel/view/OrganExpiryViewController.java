@@ -41,6 +41,7 @@ public class OrganExpiryViewController {
      * @param user                      the current user
      * @param stage                     a new stage
      * @param donationTabPageController the donation tab which holds tables that need to be refreshed
+     * @param isExpiry                  whether it is because the organ was expired or disqualified
      */
     @FXML
     public void init(AppController appController, Organs organs, ExpiryReason expiryReason, User user, Stage stage, DonationTabPageController donationTabPageController, boolean isExpiry) {

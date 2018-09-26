@@ -17,6 +17,7 @@ public class DisqualifyOrganReasonLogicController {
      * Initializes the DisqualifyOrganReasonLogicController
      *
      * @param user          Current user
+     * @param disqualifiedOrgans organs of the user which have been disqualified
      */
     public DisqualifyOrganReasonLogicController(User user, ObservableList<OrgansWithDisqualification> disqualifiedOrgans) {
         this.user = user;
@@ -28,6 +29,8 @@ public class DisqualifyOrganReasonLogicController {
      *
      * @param eligibleDate date which user is eligible to donate the organ again
      * @param description reason for disqualifying the organ
+     * @param disqualifiedOrgan disqualified organ to remove disqualification from
+     * @param staffId staff id of staff undisqualifying organ
      */
     public void confirm(Organs disqualifiedOrgan, LocalDate eligibleDate, String description, String  staffId) {
         Boolean updateMode = false;

@@ -17,8 +17,6 @@ import java.time.LocalDate;
 
 /**
  * controller class for creating new disease.
- *
- * @author acb116
  */
 public class NewDiseaseController {
     @FXML
@@ -54,6 +52,8 @@ public class NewDiseaseController {
      * @param user       the current user.
      * @param controller The applications controller.
      * @param stage      The applications stage.
+     * @param disease    disease to show
+     * @param userController parent of this window
      */
     public void init(User user, AppController controller, Stage stage, Disease disease,
                      UserController userController) {

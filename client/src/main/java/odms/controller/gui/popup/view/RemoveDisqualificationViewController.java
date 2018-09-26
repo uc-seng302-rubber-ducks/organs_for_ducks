@@ -33,6 +33,9 @@ public class RemoveDisqualificationViewController {
      *
      * @param user          Current user
      * @param stage         The applications stage.
+     *  @param disqualifiedOrgan organ being undisqualified
+     * @param disqualifiedOrgans all the organs of the user that have been disqualified
+     * @param controller    parent controller of this window
      */
     public void init(OrgansWithDisqualification disqualifiedOrgan, User user, Stage stage, ObservableList<OrgansWithDisqualification> disqualifiedOrgans, DonationTabPageController controller) {
         stage.setResizable(false);

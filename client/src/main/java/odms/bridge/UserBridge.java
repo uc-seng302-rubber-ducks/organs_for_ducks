@@ -370,6 +370,7 @@ public class UserBridge extends RoleBridge {
      * Asks the server to get the preferred clinician for the specified user
      * @param nhi of the user to get the preferred clinician for.
      * @return comboBoxClinician representing the preferred clinician
+     * @throws IOException if the call cannot be made
      */
     public ComboBoxClinician getPreferredClinician(String nhi) throws IOException{
         ComboBoxClinician clinician = null;

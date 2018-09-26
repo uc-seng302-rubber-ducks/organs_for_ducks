@@ -26,7 +26,6 @@ public class BloodTestHandler {
      * @param connection Connection to the target database
      * @param bloodTest  The blood test to be saved
      * @param nhi        The unique identifier of the user
-     * @return           Unique identifier of the blood test
      * @throws SQLException If there is an error storing the blood test into the database or the connection is invalid
      */
     public void postBloodTest(Connection connection, BloodTest bloodTest, String nhi) throws SQLException {

@@ -42,6 +42,10 @@ public class DisqualifyOrganReasonViewController {
      *
      * @param user          Current user
      * @param stage         The applications stage.
+     * @param staffId       StaffID of the user disqualifying the organ
+     * @param disqualifiedOrgans all the disqualified organs of the user
+     * @param controller   Parent controller this window is tied to
+     * @param disqualifiedOrgan organ being disqualified
      */
     public void init(Organs disqualifiedOrgan, User user, Stage stage, String staffId, ObservableList<OrgansWithDisqualification> disqualifiedOrgans, DonationTabPageController controller) {
         stage.setResizable(false);

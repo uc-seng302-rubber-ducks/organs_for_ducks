@@ -36,6 +36,8 @@ public class BloodTestsLogicController implements PropertyChangeListener {
      * Constructor to create a new logical instance of the controller
      *
      * @param bloodTests  observable list of BloodTest to use to populate the Blood tests table
+     * @param graphBloodTests observable list of blood tests used for graphing
+     * @param user the user to fetch blood tests from
      */
     public BloodTestsLogicController(ObservableList<BloodTest> bloodTests, ObservableList<BloodTest> graphBloodTests, User user) {
         this.bloodTests = bloodTests;
@@ -158,6 +160,7 @@ public class BloodTestsLogicController implements PropertyChangeListener {
      * Calls the database to retrieve blood test entries with the filter options to populate the graph
      *
      * @param timeRange The time range to display blood test results from on the graph
+     * @param widget widget to stop loading when the call has finished
      */
     public void updateGraph(String timeRange, LoadingWidget widget) {
         String startDate = findStartDate(timeRange);

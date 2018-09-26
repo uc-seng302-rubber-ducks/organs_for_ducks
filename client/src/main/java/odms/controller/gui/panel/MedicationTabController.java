@@ -71,6 +71,7 @@ public class MedicationTabController {
      * @param controller    the application controller
      * @param user          the current user
      * @param fromClinician boolean value indication if from clinician view
+     * @param parent        Usercontroller window it is tied to
      */
     public void init(AppController controller, User user, boolean fromClinician, UserController parent) {
 
