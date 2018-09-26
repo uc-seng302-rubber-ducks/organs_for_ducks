@@ -364,6 +364,9 @@ public class BloodTestViewController {
                 bloodTest.setTestDate(bloodTestDatePicker.getValue());
                 logicController.updateBloodTest(bloodTest);
                 AlertWindowFactory.generateInfoWindow("Blood Test on: " + bloodTest.getTestDate() + " updated");
+                resetErrorLabels();
+            } else {
+                AlertWindowFactory.generateError("You have invalid fields. Make sure at least one blood test property is present.");
             }
         } else {
             AlertWindowFactory.generateError("You must select a blood test to update");
