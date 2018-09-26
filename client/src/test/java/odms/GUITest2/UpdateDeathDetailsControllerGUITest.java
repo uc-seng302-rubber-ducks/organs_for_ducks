@@ -133,6 +133,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         clickOn("#deathtab");
+        clickOn("#userDead");
 
         setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now().plusDays(1));
         setTextField(this, "#updateDeathDetailsTimeTextField", LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
@@ -146,6 +147,9 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         clickOn("#deathtab");
+
+        clickOn("#userDead");
+
         setDateValue(this, "#updateDeathDetailsDatePicker", testUser.getDateOfBirth().minusDays(1));
         setTextField(this, "#updateDeathDetailsTimeTextField", LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
         clickOnButton(this, "#updateProfileButton");
@@ -159,6 +163,9 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         clickOn("#deathtab");
+
+        clickOn("#userDead");
+
         setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now()); //Make sure date is not invalid
         //Doing multiple in one test to speed up tests
         setTextField(this, "#updateDeathDetailsTimeTextField", "12:30pm");
@@ -180,6 +187,9 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         clickOn("#deathtab");
+
+        clickOn("#userDead");
+
         setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now());
         setTextField(this, "#updateDeathDetailsTimeTextField", LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
         setTextField(this, "#updateDeathDetailsCityTextField", "Atlantis");
@@ -198,6 +208,9 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         clickOn("#deathtab");
+
+        clickOn("#userDead");
+
         setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now());
         setTextField(this, "#updateDeathDetailsTimeTextField", LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
         setTextField(this, "#updateDeathDetailsCityTextField", "Atlantis");
@@ -235,8 +248,8 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         setTextField(this, "#updateDeathDetailsTimeTextField", timeString);
         setTextField(this, "#updateDeathDetailsCityTextField", "Atlantis");
         setTextField(this, "#updateDeathDetailsRegionTextField", "Atlantic");
-        clickOnButton(this, "#removeUpdateDeathDetailsButton");
-        clickOnButton(this, "#cancelRemoveDeathDetailsButton");
+        clickOn("#userDead");
+        clickOn("#cancelButton");
 
         verifyThat("#updateDeathDetailsTimeTextField", TextInputControlMatchers.hasText(timeString));
         verifyThat("#updateDeathDetailsCityTextField", TextInputControlMatchers.hasText("Atlantis"));
@@ -255,8 +268,8 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         clickOn("#deathtab");
-        clickOnButton(this, "#removeUpdateDeathDetailsButton");
-        clickOnButton(this, "#confirmRemoveDeathDetailsButton");
+        clickOn("#userDead");
+        clickOn("#okButton");
         clickOnButton(this, "#updateProfileButton");
 
         verifyThat("#DODValue", LabeledMatchers.hasText(""));
@@ -279,7 +292,6 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         verifyThat("#updateDeathDetailsOverrideWarningLabel", Node::isVisible);
         verifyThat("#updateDeathDetailsTimeTextField", Node::isDisabled);
         verifyThat("#updateDeathDetailsDatePicker", Node::isDisabled);
-        verifyThat("#removeUpdateDeathDetailsButton", Node::isDisabled);
     }
 
     @Test
@@ -291,6 +303,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         clickOn("#deathtab");
+        clickOn("#userDead");
         setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now());
         setTextField(this, "#updateDeathDetailsTimeTextField", inputTime);
         clickOn( "#updateProfileButton");
@@ -308,6 +321,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         clickOn("#deathtab");
+        clickOn("#userDead");
         LocalDate stableNow = LocalDate.now();
         setDateValue(this, "#updateDeathDetailsDatePicker", stableNow);
         setTextField(this, "#updateDeathDetailsTimeTextField", inputTime);
