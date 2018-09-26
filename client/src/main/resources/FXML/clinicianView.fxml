@@ -6,11 +6,10 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<?import javafx.scene.text.Font?>
 <?import odms.controller.gui.widget.LoadingTableView?>
 <?import java.lang.String?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="800.0" prefWidth="1200.0" stylesheets="@../gui.css"
-            xmlns="http://javafx.com/javafx/8" fx:controller="odms.controller.gui.window.ClinicianController">
+            xmlns="http://javafx.com/javafx/8.0.121" fx:controller="odms.controller.gui.window.ClinicianController">
     <children>
         <MenuBar prefHeight="37.0" prefWidth="619.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <menus>
@@ -70,7 +69,8 @@
                                                 <Font size="18.0" />
                                             </font>
                                         </Label>
-                                        <Label styleClass="label-title" fx:id="asdf" text="Region:" GridPane.rowIndex="2">
+                                        <Label fx:id="asdf" styleClass="label-title" text="Region:"
+                                               GridPane.rowIndex="2">
                                             <font>
                                                 <Font size="18.0" />
                                             </font>
@@ -112,7 +112,9 @@
                                         </Label>
                                     </children>
                                 </GridPane>
-                                <Label layoutX="19.0" layoutY="343.0" text="Work Address Details" GridPane.columnIndex="3" GridPane.valignment="BOTTOM">
+                                <Label layoutX="19.0" layoutY="343.0" styleClass="label-sub-title"
+                                       text="Work Address Details" GridPane.columnIndex="3"
+                                       GridPane.valignment="BOTTOM">
                                     <font>
                                         <Font size="24.0" />
                                     </font>
@@ -120,7 +122,9 @@
                                         <Insets bottom="5.0" />
                                     </GridPane.margin>
                                 </Label>
-                                <Label layoutX="19.0" layoutY="343.0" text="Personal Details" AnchorPane.rightAnchor="479.0" GridPane.columnIndex="1" GridPane.valignment="BOTTOM">
+                                <Label layoutX="19.0" layoutY="343.0" styleClass="label-sub-title"
+                                       text="Personal Details" AnchorPane.rightAnchor="479.0" GridPane.columnIndex="1"
+                                       GridPane.valignment="BOTTOM">
                                     <font>
                                         <Font size="24.0" />
                                     </font>
@@ -130,8 +134,10 @@
                                 </Label>
                                 <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.rowSpan="2">
                                     <columnConstraints>
-                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="359.0" minWidth="10.0" prefWidth="314.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="208.0" minWidth="10.0" prefWidth="134.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="359.0" minWidth="10.0"
+                                                           prefWidth="302.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="208.0" minWidth="10.0"
+                                                           prefWidth="162.0"/>
                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="251.0" minWidth="10.0" prefWidth="245.0" />
                                     </columnConstraints>
                                     <rowConstraints>
@@ -142,7 +148,9 @@
                                         <RowConstraints maxHeight="245.0" minHeight="10.0" prefHeight="173.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
-                                        <ImageView fx:id="profileImage" fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" GridPane.rowSpan="2" GridPane.valignment="TOP" />
+                                        <ImageView fx:id="profileImage" fitHeight="267.0" fitWidth="267.0"
+                                                   pickOnBounds="true" preserveRatio="true" GridPane.rowSpan="2"
+                                                   GridPane.valignment="TOP"/>
                                         <Label styleClass="label-title" text="First Name:" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                             <font>
                                                 <Font size="18.0" />
@@ -269,8 +277,11 @@
               <Font size="20.0" />
           </font>
       </Label>
-        <Button onAction="#save" AnchorPane.rightAnchor="70.0" AnchorPane.topAnchor="2.0" styleClass="button-secondary, save-button" text="">
-            <tooltip><Tooltip text="Save"/></tooltip>
+        <Button onAction="#save" styleClass="button-secondary, save-button" text="" AnchorPane.rightAnchor="70.0"
+                AnchorPane.topAnchor="2.0">
+            <tooltip>
+                <Tooltip text="Save"/>
+            </tooltip>
         </Button>
         <Button fx:id="undoButton" layoutX="481.0" layoutY="5.0" mnemonicParsing="false" onAction="#undo"
                 styleClass="button-secondary, undo-button" text="Undo" AnchorPane.rightAnchor="38.0"
