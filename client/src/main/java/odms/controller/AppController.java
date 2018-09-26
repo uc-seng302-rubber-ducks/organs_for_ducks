@@ -354,6 +354,16 @@ public class AppController {
         }
     }
 
+    public void addUserOverviews(Collection<UserOverview> overviews) {
+        this.overviews.addAll(overviews);
+        if (clinicianController != null) {
+            clinicianController.refreshTables();
+        }
+        if (administratorViewController != null) {
+            administratorViewController.refreshTables();
+        }
+    }
+
     /**
      * @param users An array list of users.
      */
