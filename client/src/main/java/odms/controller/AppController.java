@@ -354,6 +354,16 @@ public class AppController {
         }
     }
 
+    public void addUserOverviews(Collection<UserOverview> overviews) {
+        this.overviews.addAll(overviews);
+        if (clinicianController != null) {
+            clinicianController.refreshTables();
+        }
+        if (administratorViewController != null) {
+            administratorViewController.refreshTables();
+        }
+    }
+
     /**
      * Method to update the user of any changes passed in by the gui. Removes the old entry of the
      * user from the list and then adds the updated entry If the user is not already in the list it is

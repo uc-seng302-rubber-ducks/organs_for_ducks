@@ -8,6 +8,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableView;
 import odms.App;
 import odms.TestUtils.AppControllerMocker;
+import odms.TestUtils.CommonTestMethods;
 import odms.bridge.*;
 import odms.commons.exception.UnauthorisedException;
 import odms.commons.model.Clinician;
@@ -48,7 +49,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        //CommonTestMethods.runMethods();
+        CommonTestMethods.runMethods();
     }
 
     @Before
@@ -140,7 +141,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest {
         setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now().plusDays(1));
         setTextField(this, "#updateDeathDetailsTimeTextField", LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
         clickOnButton(this, "#updateProfileButton");
-        verifyThat("#updateDeathDetailsErrorLabel", LabeledMatchers.hasText(dateNotInFutureText));
+        verifyThat("#updateDeathDetailsErrorLabel", LabeledMatchers.hasText("The time of death cannot be in the future"));
     }
 
     @Test
@@ -219,14 +220,9 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest {
         setTextField(this, "#updateDeathDetailsRegionTextField", "Atlantic");
 
         Optional<ButtonType> result = Optional.of(ButtonType.YES);
-//        try {
         Alert alert = mock(Alert.class);
         doReturn(result).when(alert.showAndWait());
-        //doReturn(result).when(Alert.class.getMethod("showAndWait"));
-//        }
-//        } catch (NoSuchMethodException e) {
-//            Log.error("The method showAndWait in Alert does not exist", e);
-//        }
+
 
         clickOnButton(this, "#UserCancelButton");
 
