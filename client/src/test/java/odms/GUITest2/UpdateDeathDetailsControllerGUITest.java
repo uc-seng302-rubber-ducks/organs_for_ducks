@@ -41,6 +41,7 @@ import static org.testfx.api.FxAssert.verifyThat;
 public class UpdateDeathDetailsControllerGUITest extends ApplicationTest {
 
     private final String dateErrorText = "There is an error with your Date of Death";
+    private final String dateNotInFutureText = "The time of death cannot be in the future";
     private DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private User testUser = new User("Aa", LocalDate.parse("2000-01-20", sdf), "ABC1244");
     private Collection<UserOverview> overviews = Collections.singletonList(UserOverview.fromUser(testUser));
@@ -139,7 +140,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest {
         setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now().plusDays(1));
         setTextField(this, "#updateDeathDetailsTimeTextField", LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
         clickOnButton(this, "#updateProfileButton");
-        verifyThat("#updateDeathDetailsErrorLabel", LabeledMatchers.hasText(dateErrorText));
+        verifyThat("#updateDeathDetailsErrorLabel", LabeledMatchers.hasText(dateNotInFutureText));
     }
 
     @Test
