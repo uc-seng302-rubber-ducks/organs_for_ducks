@@ -288,8 +288,10 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     }
 
     /**
-     * @param user
-     * @param connection
+     * Replaces the receiving organs in the database for the given user
+     *
+     * @param user          The user to be updated
+     * @param connection    Connection to the target database
      */
     private void updateUserReceivingOrgans(User user, Connection connection) throws SQLException {
         deleteFieldsOfUser("OrganAwaiting", user.getNhi(), connection);
