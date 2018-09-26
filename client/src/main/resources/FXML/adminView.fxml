@@ -199,6 +199,11 @@
                 </Tab>
             </tabs>
         </TabPane>
+        <Label alignment="CENTER" layoutX="199.0" text="Administrator" AnchorPane.leftAnchor="199.0" AnchorPane.rightAnchor="236.0" AnchorPane.topAnchor="0.0">
+            <font>
+                <Font size="24.0" />
+            </font>
+        </Label>
         <Button onAction="#saveClicked" AnchorPane.rightAnchor="70.0" AnchorPane.topAnchor="2.0" styleClass="button-secondary, save-button" text="">
             <tooltip><Tooltip text="Save"/></tooltip>
         </Button>
