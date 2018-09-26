@@ -109,7 +109,6 @@ public class DisqualifyOrganReasonViewController {
      */
     @FXML
     public void disqualifyOrganConfirm() {
-        //This is the best way I can think of editing the labels without the logic controller knowing about them, but keeping the least amount of logic in the view-controller
         boolean validDate = validateEligibleTime(); //Split up so the second one will run if the first one is false.
         boolean validDescription = validateDescription();
         if (validDate && validDescription) {

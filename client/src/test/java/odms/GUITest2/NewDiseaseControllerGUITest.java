@@ -172,7 +172,6 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
         Assert.assertNull(getCellValue("#currentDiseaseTableView", 0, 0));
     }
 
-    //Only other things I can think of testing are the ordering
     @Test
     public void deletedChronicDiseaseShouldNotBeDeletedFromCurrentDiseases() {
         clickOn(getCell("#currentDiseaseTableView", 0, 0));

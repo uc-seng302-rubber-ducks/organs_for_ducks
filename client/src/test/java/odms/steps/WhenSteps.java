@@ -215,7 +215,6 @@ public class WhenSteps extends ApplicationTest {
 
     @When("^the app is closed and reopened$")
     public void the_app_is_closed_and_reopened() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);
         clickOn("#userIDTextField");
@@ -225,19 +224,16 @@ public class WhenSteps extends ApplicationTest {
 
     @When("^the cache is cleared$")
     public void the_cache_is_cleared() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
         CucumberTestModel.getMedicationInteractionCache().removeOlderThan(LocalDateTime.now());
     }
 
     @When("^all data before \"([^\"]*)\" is removed$")
     public void all_data_before_is_removed(String date) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
         CucumberTestModel.getMedicationInteractionCache().removeOlderThan(LocalDateTime.now().minusDays(2));
     }
 
     @When("^the interactions between \"([^\"]*)\" and \"([^\"]*)\" are requested$")
     public void the_interactions_between_and_are_requested(String drugA, String drugB) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
         CucumberTestModel.getHttpRequester().getDrugInteractions(drugA, drugB);
     }
 
@@ -285,7 +281,6 @@ public class WhenSteps extends ApplicationTest {
 
     @And("^then i open the user details$")
     public void thenIOpenTheUserDetails() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         clickOn("#deathtab");

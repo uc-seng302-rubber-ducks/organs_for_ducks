@@ -113,27 +113,23 @@ public class ThenSteps extends ApplicationTest {
 
     @Then("^an entry for \"([^\"]*)\" and \"([^\"]*)\" should be in the cache$")
     public void an_entry_for_and_should_be_in_the_cache(String drugA, String drugB) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
         String key = drugA + "-" + drugB;
         assertTrue(CucumberTestModel.getMedicationInteractionCache().containsKey(key));
     }
 
     @Then("^the cache should not contain an entry with key \"([^\"]*)\"$")
     public void the_cache_should_not_contain_an_entry_with_key(String key) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
         assertFalse(CucumberTestModel.getMedicationInteractionCache().containsKey(key));
     }
 
 
     @Then("^the cache should be empty$")
     public void the_cache_should_be_empty() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
         assertTrue(CucumberTestModel.getMedicationInteractionCache().isEmpty());
     }
 
     @Then("^I should see the disqualified organ in the table$")
     public void iShouldSeeTheDisqualifiedOrganInTheTable() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
         Organs organ = (Organs) getCellValue("#userDisqualifiedOrgansTable", 0, 0);
         Assert.assertEquals(Organs.BONE_MARROW, organ);
     }

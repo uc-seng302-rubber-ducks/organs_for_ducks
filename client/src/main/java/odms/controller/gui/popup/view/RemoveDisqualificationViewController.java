@@ -2,7 +2,6 @@ package odms.controller.gui.popup.view;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextFormatter;
@@ -70,6 +69,9 @@ public class RemoveDisqualificationViewController {
         }
     }
 
+    /**
+     * Calls the logic controller to remove the disqualification and update the description of the organ
+     */
     @FXML
     public void removeDisqualificationConfirm() {
         if (validateDescription()) {

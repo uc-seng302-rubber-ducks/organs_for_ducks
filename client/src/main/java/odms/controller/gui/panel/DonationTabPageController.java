@@ -129,7 +129,7 @@ public class DonationTabPageController {
         expiryReasonColumn.setCellValueFactory(new PropertyValueFactory<>("reason"));
         manualExpiryTimeColumn.setCellValueFactory(new PropertyValueFactory<>("expiryTime"));
         organExpiryColumn.setCellValueFactory(new PropertyValueFactory<>("progressTask"));
-        expiryStaffIdColumn.setCellValueFactory(new PropertyValueFactory<>("staffID"));
+        expiryStaffIdColumn.setCellValueFactory(new PropertyValueFactory<>("ID"));
         currentlyDonating.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         currentlyDonating.setVisible(false);
         currentlyDonating.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -269,16 +269,16 @@ public class DonationTabPageController {
             //user is alive, only show disqualified table
 
             //Hide expiry things
-            currentlyDonating.setVisible(false); // Hide the table
-            expireOrganButton.setVisible(false); // Hide the expire button
-            removeExpiryReasonButton.setVisible(false); //Hide the remove expiry button
+            currentlyDonating.setVisible(false);
+            expireOrganButton.setVisible(false);
+            removeExpiryReasonButton.setVisible(false);
 
             //Show disqualification things
-            disqualifiedOrgansTableLabel.setVisible(true); //Show label for disqualified organs table
-            userDisqualifiedOrgansTable.setVisible(true); //Show the disqualified table
-            disqualifyOrganButton.setVisible(true); // Show the disqualify button
-            updateDisqualifiedOrgan.setVisible(true); //Show the update button
-            removeDisqualificationButton.setVisible(true); //Show the remove button
+            disqualifiedOrgansTableLabel.setVisible(true);
+            userDisqualifiedOrgansTable.setVisible(true);
+            disqualifyOrganButton.setVisible(true);
+            updateDisqualifiedOrgan.setVisible(true);
+            removeDisqualificationButton.setVisible(true);
 
             //Show donating things
             donatingOrgansTableLabel.setText("Currently Donating");
@@ -287,20 +287,20 @@ public class DonationTabPageController {
 
         } else {
             //Hide disqualification things
-            disqualifiedOrgansTableLabel.setVisible(false); //Hide label for disqualified organs table
-            userDisqualifiedOrgansTable.setVisible(false); //Hide disqualified table
-            disqualifyOrganButton.setVisible(false); //Hide button to disqualify organs
-            updateDisqualifiedOrgan.setVisible(false); //Hide the update button
-            removeDisqualificationButton.setVisible(false); //Hide the remove button
+            disqualifiedOrgansTableLabel.setVisible(false);
+            userDisqualifiedOrgansTable.setVisible(false);
+            disqualifyOrganButton.setVisible(false);
+            updateDisqualifiedOrgan.setVisible(false);
+            removeDisqualificationButton.setVisible(false);
 
             //Hide donating things
             donatingOrgansTableLabel.setText("Expired Organs");
             currentOrgans.setVisible(false);
 
             //Show expiry things
-            currentlyDonating.setVisible(true); // Show the table
-            expireOrganButton.setVisible(true); // Show the expire button
-            removeExpiryReasonButton.setVisible(true); //Show the remove expiry button
+            currentlyDonating.setVisible(true);
+            expireOrganButton.setVisible(true);
+            removeExpiryReasonButton.setVisible(true);
 
         }
     }
@@ -609,6 +609,7 @@ public class DonationTabPageController {
             }
 
             disqualifyOrganReasonStage.setScene(new Scene(root));
+            disqualifyOrganReasonStage.setTitle("");
             disqualifyOrganReasonStage.initModality(Modality.APPLICATION_MODAL);
             disqualifyOrganReasonStage.show();
             refreshCurrentlyDonating();
@@ -638,6 +639,7 @@ public class DonationTabPageController {
             removeDisqualificationViewController.init(userDisqualifiedOrgansTable.getSelectionModel().getSelectedItem(), currentUser, removeDisqualifiedStage, observableDisqualifiedOrgans);
 
             removeDisqualifiedStage.setScene(new Scene(root));
+            removeDisqualifiedStage.setTitle("");
             removeDisqualifiedStage.initModality(Modality.APPLICATION_MODAL);
             removeDisqualifiedStage.show();
             refreshCurrentlyDonating();
