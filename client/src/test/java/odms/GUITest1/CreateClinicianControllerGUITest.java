@@ -4,6 +4,7 @@ import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import odms.App;
 import odms.TestUtils.AppControllerMocker;
+import odms.TestUtils.CommonTestMethods;
 import odms.bridge.*;
 import odms.commons.exception.UnauthorisedException;
 import odms.commons.model.Administrator;
@@ -47,7 +48,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        //CommonTestMethods.runMethods();
+        CommonTestMethods.runMethods();
     }
 
     @Before
