@@ -4,7 +4,6 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.Collections;
 
 /**
  * Class for storing and generating tokens to allow secure access to the application
@@ -42,6 +41,7 @@ public class AuthToken extends AbstractAuthenticationToken {
 
     /**
      * creates a bad token on bad login
+     *
      * @param token bad token passed in
      */
     public AuthToken(String token) {
@@ -54,10 +54,11 @@ public class AuthToken extends AbstractAuthenticationToken {
 
     /**
      * Generates a random unique token
-
-        System.out.println("Password hash " + passwordHash);
-        System.out.println("expected " + expectedHash);
-        System.out.println(passwordHash.equals(expectedHash)); *
+     * <p>
+     * System.out.println("Password hash " + passwordHash);
+     * System.out.println("expected " + expectedHash);
+     * System.out.println(passwordHash.equals(expectedHash)); *
+     *
      * @return A token of our appreciation
      */
     public static String generateToken() {
@@ -68,7 +69,7 @@ public class AuthToken extends AbstractAuthenticationToken {
         return sb.toString();
     }
 
-    void renew(){
+    void renew() {
         LocalDateTime now = LocalDateTime.now();
         this.expiryTime = now.plusMinutes(TOKEN_TTL);
     }
@@ -86,7 +87,7 @@ public class AuthToken extends AbstractAuthenticationToken {
     }
 
 
-    public boolean isTokenAlive(){
+    public boolean isTokenAlive() {
         return LocalDateTime.now().isBefore(expiryTime);
     }
 

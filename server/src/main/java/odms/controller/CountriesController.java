@@ -34,8 +34,8 @@ public class CountriesController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/countries")
-    public Set getAllowedCountries(){
-        try (Connection connection =  driver.getConnection()){
+    public Set getAllowedCountries() {
+        try (Connection connection = driver.getConnection()) {
             return handler.getAllowedCountries(connection);
         } catch (SQLException e) {
             Log.severe("Could not get countries", e);
@@ -45,10 +45,10 @@ public class CountriesController extends BaseController {
 
     @IsAdmin
     @RequestMapping(method = RequestMethod.PUT, value = "/countries")
-    public ResponseEntity putCountries(@RequestBody Set<String> countries){
-        try(Connection connection = driver.getConnection()) {
+    public ResponseEntity putCountries(@RequestBody Set<String> countries) {
+        try (Connection connection = driver.getConnection()) {
             handler.putAllowedCountries(connection, countries);
-            socketHandler.broadcast(EventTypes.COUNTRY_UPDATE,"","");
+            socketHandler.broadcast(EventTypes.COUNTRY_UPDATE, "", "");
 
         } catch (SQLException e) {
             Log.severe("Could not update countries", e);

@@ -2,6 +2,7 @@ package odms.commons.model.dto;
 
 /**
  * minimal holder for first, middle, and last names to fit api
+ *
  * @see UserOverview
  */
 public class Name {
@@ -15,29 +16,29 @@ public class Name {
         this.lastName = lastName;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
     public void setFirstName(String firstName) {
 
         this.firstName = firstName;
-    }
-
-    public void setMiddleNames(String middleNames) {
-        this.middleNames = middleNames;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getFirstName() {
-        return firstName;
     }
 
     public String getMiddleNames() {
         return middleNames;
     }
 
+    public void setMiddleNames(String middleNames) {
+        this.middleNames = middleNames;
+    }
+
     public String getLastName() {
         return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     @Override

@@ -13,7 +13,6 @@ public class CacheManager {
     private MedicationInteractionCache interactionCache;
 
     /**
-     *
      * instantiate and load all the caches on first start-up
      */
     private CacheManager() {

@@ -20,6 +20,7 @@ public class SocketHandler extends TextWebSocketHandler {
 
     /**
      * for testing only
+     *
      * @return current sessions
      */
     public static List<WebSocketSession> getSessions() {
@@ -28,6 +29,7 @@ public class SocketHandler extends TextWebSocketHandler {
 
     /**
      * for testing
+     *
      * @param sessions1 desired list of (mock) sessions
      */
     public static void setSessions(List<WebSocketSession> sessions1) {
@@ -50,6 +52,7 @@ public class SocketHandler extends TextWebSocketHandler {
 
     /**
      * adds the newly connected session to a list of existing sessions that will be used to broadcast messages
+     *
      * @param session new session that has been established
      */
     @Override
@@ -60,7 +63,8 @@ public class SocketHandler extends TextWebSocketHandler {
 
     /**
      * sends a message to all connected sessions. if a connection is encountered that is no longer active, it will be removed from the list
-     * @param type the role of user that has been changed
+     *
+     * @param type          the role of user that has been changed
      * @param newIdentifier the new nhi/staff id/username of the user. this may be the same as the old identifier
      * @param oldIdentifier the old nhi/staff id/username of the user.
      * @throws IOException exception thrown if the message cannot be sent or serialised

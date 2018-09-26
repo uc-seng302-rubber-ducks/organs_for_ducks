@@ -22,7 +22,7 @@ public class SQLScriptRunner {
 
     private static String RESET_DATABASE_SCRIPT_FILEPATH = "client/src/main/resources/sqlScripts/createDataBase.sql";
     private static String RESAMPLE_DATABASE_SCRIPT_FILEPATH = "client/src/main/resources/sqlScripts/sampleDatabaseData.sql";
-    private static String INSERT_COUNTRIES_STMT= "INSERT INTO Countries(countryName) VALUES (?)";
+    private static String INSERT_COUNTRIES_STMT = "INSERT INTO Countries(countryName) VALUES (?)";
 
     /**
      * Opens a file based on filePath given, reads the file and execute the
@@ -32,13 +32,13 @@ public class SQLScriptRunner {
      *
      * @param filePath location of the SQL script
      * @throws SQLException if any SQL error occurs
-     * @throws IOException if any errors with reading the file occurs
+     * @throws IOException  if any errors with reading the file occurs
      */
-    public static void runSqlScript(String filePath, Connection connection) throws SQLException, IOException{
+    public static void runSqlScript(String filePath, Connection connection) throws SQLException, IOException {
 
 
         String absolutePath = new File("./").getAbsolutePath();
-        absolutePath = absolutePath.substring(0, absolutePath.length()-1); //remove the full stop
+        absolutePath = absolutePath.substring(0, absolutePath.length() - 1); //remove the full stop
         String scriptFilePath = absolutePath + filePath;
 
         String SQLString = "";
@@ -51,7 +51,7 @@ public class SQLScriptRunner {
                 // execute query
                 if (line.endsWith(";")) { //every SQL statement must end with semi-colon (;)
                     SQLString += line;
-                    try(PreparedStatement statement = connection.prepareStatement(SQLString)) {
+                    try (PreparedStatement statement = connection.prepareStatement(SQLString)) {
                         statement.execute();
                     }
                     SQLString = "";
@@ -64,7 +64,7 @@ public class SQLScriptRunner {
 
     }
 
-    public static void populateCountriesTable(Connection connection) throws SQLException{
+    public static void populateCountriesTable(Connection connection) throws SQLException {
         List<String> allCountries = new ArrayList<>();
         String[] locales = Locale.getISOCountries();
 
@@ -75,7 +75,7 @@ public class SQLScriptRunner {
         allCountries.sort(String.CASE_INSENSITIVE_ORDER);
 
         for (String country : allCountries) {
-            try(PreparedStatement statement = connection.prepareStatement(INSERT_COUNTRIES_STMT)) {
+            try (PreparedStatement statement = connection.prepareStatement(INSERT_COUNTRIES_STMT)) {
                 statement.setString(1, country);
                 statement.execute();
             }

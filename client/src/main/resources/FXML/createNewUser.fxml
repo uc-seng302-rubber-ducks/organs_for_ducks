@@ -7,356 +7,497 @@
 <?import java.lang.*?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="508.0" prefWidth="694.0" stylesheets="@../gui.css"
             xmlns="http://javafx.com/javafx/8.0.121" fx:controller="odms.controller.gui.window.NewUserController">
-   <children>
-       <TabPane layoutY="46.0" prefHeight="421.0" prefWidth="711.0" tabClosingPolicy="UNAVAILABLE">
-        <tabs>
-          <Tab text="User Details">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="167.0" prefWidth="336.0">
-                     <children>
-                         <GridPane hgap="10.0" layoutY="33.0" prefHeight="330.0" prefWidth="395.0">
-                           <children>
-                               <TextField fx:id="newUserNhiInput" prefHeight="25.0" prefWidth="131.0" GridPane.columnIndex="1" />
-                              <TextField fx:id="fNameInput" prefHeight="25.0" prefWidth="162.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <TextField fx:id="preferredFNameTextField" layoutX="136.0" layoutY="56.0" prefHeight="25.0" prefWidth="162.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <TextField fx:id="mNameInput" prefHeight="25.0" prefWidth="367.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <TextField fx:id="lNameInput" prefHeight="25.0" prefWidth="178.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                               <DatePicker fx:id="dobInput" prefHeight="27.0" prefWidth="203.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                              <Label styleClass="label-title" text="NHI*:" />
-                              <Label styleClass="label-title" text="First Name*:" GridPane.rowIndex="1" />
-                              <Label styleClass="label-title" text="Middle Name:" GridPane.rowIndex="3" />
-                              <Label styleClass="label-title" text="Last Name:" GridPane.rowIndex="4" />
-                              <Label styleClass="label-title" text="Date of Birth*:" GridPane.rowIndex="5" />
-                              <Label styleClass="label-title" text="Preferred First Name:" GridPane.rowIndex="2" />
-                               <Label fx:id="nhiErrorLabel" styleClass="label-error" visible="false" GridPane.columnIndex="1" GridPane.valignment="BOTTOM" />
-                               <Label fx:id="fNameErrorLabel" styleClass="label-error" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
-                               <Label fx:id="pFNameErrorLabel" styleClass="label-error" text="Only alphanumeric characters are allowed" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
-                               <Label fx:id="mNameErrorLabel" styleClass="label-error" text="Only alphanumeric characters are allowed" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.valignment="BOTTOM" />
-                               <Label fx:id="lNameErrorLabel" styleClass="label-error" text="Only alphanumeric characters are allowed" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.valignment="BOTTOM" />
-                               <Label fx:id="dobErrorLabel" styleClass="label-error" text="Only alphanumeric characters are allowed" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="5" GridPane.valignment="BOTTOM" />
-                           </children>
-                           <columnConstraints>
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="286.0" minWidth="10.0" prefWidth="144.0" />
-                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="471.0" minWidth="10.0" prefWidth="185.0" />
-                           </columnConstraints>
-                           <padding>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                           </padding>
-                           <rowConstraints>
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                           </rowConstraints>
-                        </GridPane>
-                         <Separator layoutY="30.0" prefHeight="9.0" prefWidth="711.0" />
-                        <Label layoutX="7.0" layoutY="7.0" styleClass="label-sub-title" text="User Details" />
-                     </children>
-                  </AnchorPane>
-            </content>
-          </Tab>
-          <Tab fx:id="userHealth" text="Health Details">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <GridPane hgap="10.0" layoutX="8.0" layoutY="44.0" prefHeight="258.0" prefWidth="675.0">
-                           <children>
-                               <ComboBox fx:id="birthGenderComboBox" prefHeight="27.0" prefWidth="185.0" value="" GridPane.columnIndex="1">
-                                 <items>
-                                    <FXCollections fx:factory="observableArrayList">
-                                       <String fx:value="" />
-                                       <String fx:value="Female" />
-                                       <String fx:value="Male" />
-                                       <String fx:value="Non Binary" />
-                                    </FXCollections>
-                                 </items>
-                              </ComboBox>
-                               <ComboBox fx:id="genderIdComboBox" layoutX="141.0" layoutY="23.0" prefHeight="27.0" prefWidth="185.0" value="" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                 <items>
-                                    <FXCollections fx:factory="observableArrayList">
-                                       <String fx:value="" />
-                                       <String fx:value="Female" />
-                                       <String fx:value="Male" />
-                                       <String fx:value="Non Binary" />
-                                    </FXCollections>
-                                 </items>
-                              </ComboBox>
-                               <TextField fx:id="heightInput" prefHeight="25.0" prefWidth="185.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <TextField fx:id="weightInput" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                               <ComboBox fx:id="bloodComboBox" prefHeight="27.0" prefWidth="168.0" GridPane.columnIndex="3">
-                                 <items>
-                                    <FXCollections fx:factory="observableArrayList">
-                                       <String fx:value="" />
-                                       <String fx:value="AB+" />
-                                       <String fx:value="AB-" />
-                                       <String fx:value="A+" />
-                                       <String fx:value="A-" />
-                                       <String fx:value="B+" />
-                                       <String fx:value="B-" />
-                                       <String fx:value="O+" />
-                                       <String fx:value="O-" />
-                                    </FXCollections>
-                                 </items>
-                              </ComboBox>
-                              <Label prefHeight="20.0" prefWidth="100.0" styleClass="label-title" text="Birth Gender:">
-                                 <padding>
-                                    <Insets left="5.0" />
-                                 </padding></Label>
-                              <Label prefHeight="15.0" prefWidth="128.0" styleClass="label-title" text="Height (m):" GridPane.rowIndex="2">
-                                 <padding>
-                                    <Insets left="5.0" />
-                                 </padding></Label>
-                              <Label prefHeight="15.0" prefWidth="124.0" styleClass="label-title" text="Weight (kg):" GridPane.rowIndex="3">
-                                 <padding>
-                                    <Insets left="5.0" />
-                                 </padding></Label>
-                              <Label styleClass="label-title" text="Blood Type:" GridPane.columnIndex="2">
-                                 <padding>
-                                    <Insets left="5.0" />
-                                 </padding></Label>
-                               <ComboBox fx:id="alcoholComboBox" prefHeight="27.0" prefWidth="157.0" value="None" GridPane.columnIndex="3" GridPane.rowIndex="1">
-                                 <items>
-                                    <FXCollections fx:factory="observableArrayList">
-                                       <String fx:value="None" />
-                                       <String fx:value="Low" />
-                                       <String fx:value="Normal" />
-                                       <String fx:value="High" />
-                                    </FXCollections>
-                                 </items>
-                              </ComboBox>
-                              <Label styleClass="label-title" text="Smoker:" GridPane.columnIndex="2" GridPane.rowIndex="2">
-                                 <padding>
-                                    <Insets left="5.0" />
-                                 </padding></Label>
-                              <Label styleClass="label-title" text="Alcohol Consumption:" GridPane.columnIndex="2" GridPane.rowIndex="1">
-                                 <padding>
-                                    <Insets left="5.0" />
-                                 </padding></Label>
-                              <Label styleClass="label-title" text="Gender Identity:" GridPane.rowIndex="1">
-                                 <padding>
-                                    <Insets left="5.0" />
-                                 </padding></Label>
-                              <CheckBox fx:id="smokerCheckBox" mnemonicParsing="false" text="Yes" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                               <Label fx:id="heightErrorLabel" styleClass="label-error" text="Only numbers are allowed" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
-                               <Label fx:id="weightErrorLabel" styleClass="label-error" text="Only numbers are allowed" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.valignment="BOTTOM" />
-                           </children>
-                           <columnConstraints>
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="279.0" minWidth="10.0" prefWidth="121.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="475.0" minWidth="10.0" prefWidth="185.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="475.0" minWidth="10.0" prefWidth="155.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="475.0" minWidth="10.0" prefWidth="153.0" />
-                           </columnConstraints>
-                           <padding>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                           </padding>
-                           <rowConstraints>
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                           </rowConstraints>
-                        </GridPane>
-                         <Separator layoutY="34.0" prefHeight="9.0" prefWidth="711.0" />
-                        <Label layoutX="9.0" layoutY="9.0" styleClass="label-sub-title" text="Health Details" />
-                     </children>
-                  </AnchorPane>
-            </content>
-          </Tab>
-            <Tab fx:id="userContact" text="Contact Details">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="463.0" prefWidth="694.0">
-                     <children>
-                         <GridPane layoutY="29.0" prefHeight="321.0" prefWidth="682.0">
-                           <children>
-                              <TextField fx:id="phone" GridPane.columnIndex="1" />
-                              <TextField fx:id="cell" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <TextField fx:id="streetNumber" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <TextField fx:id="street" prefHeight="7.0" prefWidth="183.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <TextField fx:id="neighborhood" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                               <TextField fx:id="city" GridPane.columnIndex="4" />
-                               <TextField fx:id="regionInput" visible="false" GridPane.columnIndex="4"
-                                          GridPane.rowIndex="1"/>
-                               <ComboBox fx:id="regionSelector" prefHeight="27.0" prefWidth="204.0" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-                               <TextField fx:id="zipCode" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-                               <ComboBox fx:id="countrySelector" onAction="#countrySelectorListener" prefHeight="27.0" prefWidth="207.0" GridPane.columnIndex="4" GridPane.rowIndex="3" />
-                               <TextField fx:id="email" GridPane.columnIndex="4" GridPane.rowIndex="4" />
-                              <Label styleClass="label-title" text="Home Phone:">
-                                 <padding>
-                                    <Insets left="5.0" />
-                                 </padding>
-                              </Label>
-                              <Label styleClass="label-title" text="Cell Phone:" GridPane.rowIndex="1">
-                                 <padding>
-                                    <Insets left="5.0" />
-                                 </padding>
-                              </Label>
-                              <Label styleClass="label-title" text="Street Number:" GridPane.rowIndex="2">
-                                 <padding>
-                                    <Insets left="5.0" />
-                                 </padding>
-                              </Label>
-                               <Label alignment="CENTER" styleClass="label-title" text="Region:" GridPane.columnIndex="3" GridPane.rowIndex="1">
-                                 <GridPane.margin>
-                                    <Insets left="5.0" />
-                                 </GridPane.margin>
-                              </Label>
-                               <Label alignment="CENTER" styleClass="label-title" text="Email:" GridPane.columnIndex="3" GridPane.rowIndex="4">
-                                 <padding>
-                                    <Insets left="5.0" />
-                                 </padding>
-                              </Label>
-                               <Label alignment="CENTER" styleClass="label-title" text="Country:" GridPane.columnIndex="3" GridPane.rowIndex="3">
-                                 <padding>
-                                    <Insets left="5.0" />
-                                 </padding>
-                              </Label>
-                               <Label alignment="CENTER" styleClass="label-title" text="Zip Code:" GridPane.columnIndex="3" GridPane.rowIndex="2">
-                                 <padding>
-                                    <Insets left="5.0" />
-                                 </padding>
-                              </Label>
-                               <Label styleClass="label-title" text="City:" GridPane.columnIndex="3">
-                                 <padding>
-                                    <Insets left="5.0" />
-                                 </padding>
-                              </Label>
-                              <Label styleClass="label-title" text="Neighborhood:" GridPane.rowIndex="4">
-                                 <padding>
-                                    <Insets left="5.0" />
-                                 </padding>
-                              </Label>
-                              <Label styleClass="label-title" text="Street Name:" GridPane.rowIndex="3">
-                                 <padding>
-                                    <Insets left="5.0" />
-                                 </padding>
-                              </Label>
-                               <Label fx:id="homePhoneErrorLabel" styleClass="label-error" text="Only numbers are allowed" visible="false" GridPane.columnIndex="1" GridPane.valignment="BOTTOM" />
-                               <Label fx:id="cellPhoneErrorLabel" styleClass="label-error" text="Only numbers are allowed" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
-                               <Label fx:id="streetNumberErrorLabel" styleClass="label-error" text="Only alphanumeric characters are allowed" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
-                               <Label fx:id="streetNameErrorLabel" styleClass="label-error" text="Only alphanumeric characters are allowed" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.valignment="BOTTOM" />
-                               <Label fx:id="neighborhoodErrorLabel" styleClass="label-error" text="Only alphanumeric characters are allowed" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.valignment="BOTTOM" />
-                               <Label fx:id="cityErrorLabel" styleClass="label-error" text="Only alphanumeric characters are allowed" visible="false" GridPane.columnIndex="4" GridPane.valignment="BOTTOM" />
-                               <Label fx:id="regionErrorLabel" styleClass="label-error" text="Only alphanumeric characters are allowed" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
-                               <Label fx:id="zipCodeErrorLabel" styleClass="label-error" text="Only alphanumeric characters are allowed" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
-                               <Label fx:id="emailErrorLabel" styleClass="label-error" text="Only alphanumeric characters are allowed" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="4" GridPane.valignment="BOTTOM" />
-                           </children>
-                           <columnConstraints>
-                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="139.0" minWidth="10.0" prefWidth="124.0" />
-                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="216.0" minWidth="10.0" prefWidth="200.0" />
-                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="189.0" minWidth="10.0" prefWidth="41.0" />
-                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="189.0" minWidth="10.0" prefWidth="85.0" />
-                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="213.0" minWidth="10.0" prefWidth="200.0" />
-                           </columnConstraints>
-                           <padding>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                           </padding>
-                           <rowConstraints>
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                           </rowConstraints>
-                        </GridPane>
-                        <Label layoutX="14.0" layoutY="9.0" styleClass="label-sub-title" text="Contact Details" />
-                         <Separator layoutX="-13.0" layoutY="31.0" prefHeight="10.0" prefWidth="724.0" />
-                     </children></AnchorPane>
-              </content>
-            </Tab>
-            <Tab text="Emergency Contact">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                         <GridPane layoutY="26.0" prefHeight="366.0" prefWidth="704.0">
-                           <children>
-                              <TextField fx:id="ecName" GridPane.columnIndex="1" />
-                              <TextField fx:id="ecPhone" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <TextField fx:id="ecCellPhone" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <TextField fx:id="ecStreetNumber" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <TextField fx:id="ecStreet" prefHeight="15.0" prefWidth="187.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                              <TextField fx:id="ecNeighborhood" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                               <TextField fx:id="ecCity" GridPane.columnIndex="4" />
-                               <TextField fx:id="ecRegionInput" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-                               <ComboBox fx:id="ecRegionSelector" prefHeight="27.0" prefWidth="203.0" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-                               <TextField fx:id="ecZipCode" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-                               <ComboBox fx:id="ecCountrySelector" onAction="#ecCountrySelectorListener" prefHeight="27.0" prefWidth="204.0" GridPane.columnIndex="4" GridPane.rowIndex="3" />
-                               <TextField fx:id="ecEmail" GridPane.columnIndex="4" GridPane.rowIndex="4" />
-                               <TextField fx:id="ecRelationship" GridPane.columnIndex="4" GridPane.rowIndex="5" />
-                              <Label styleClass="label-title" text="Home Phone:" GridPane.rowIndex="1" />
-                              <Label styleClass="label-title" text="Street Number:" GridPane.rowIndex="3" />
-                              <Label styleClass="label-title" text="Street Name:" GridPane.rowIndex="4" />
-                               <Label styleClass="label-title" text="Region:" GridPane.columnIndex="3" GridPane.rowIndex="1">
-                                 <padding>
-                                    <Insets left="5.0" />
-                                 </padding>
-                              </Label>
-                               <Label styleClass="label-title" text="Email:" GridPane.columnIndex="3" GridPane.rowIndex="4">
-                                 <padding>
-                                    <Insets left="5.0" />
-                                 </padding>
-                              </Label>
-                               <Label styleClass="label-title" text="Relationship:" GridPane.columnIndex="3" GridPane.rowIndex="5">
-                                 <padding>
-                                    <Insets left="5.0" />
-                                 </padding>
-                              </Label>
-                              <Label styleClass="label-title" text="Name:" />
-                              <Label styleClass="label-title" text="Cell Phone:" GridPane.rowIndex="2" />
-                              <Label styleClass="label-title" text="Neighborhood:" GridPane.rowIndex="5" />
-                               <Label styleClass="label-title" text="City:" GridPane.columnIndex="3" />
-                               <Label styleClass="label-title" text="Zip Code:" GridPane.columnIndex="3" GridPane.rowIndex="2">
-                                 <padding>
-                                    <Insets left="5.0" />
-                                 </padding>
-                              </Label>
-                               <Label styleClass="label-title" text="Country:" GridPane.columnIndex="3" GridPane.rowIndex="3">
-                                 <padding>
-                                    <Insets left="5.0" />
-                                 </padding>
-                              </Label>
-                               <Label fx:id="eNameErrorLabel" styleClass="label-error" text="Only alphanumeric characters are allowed" visible="false" GridPane.columnIndex="1" GridPane.valignment="BOTTOM" />
-                               <Label fx:id="eHomePhoneErrorLabel" styleClass="label-error" text="Only numbers are allowed" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
-                               <Label fx:id="eCellPhoneErrorLabel" styleClass="label-error" text="Only numbers are allowed" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
-                               <Label fx:id="eStreetNumberErrorLabel" styleClass="label-error" text="Only alphanumeric characters are allowed" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.valignment="BOTTOM" />
-                               <Label fx:id="eStreetNameErrorLabel" styleClass="label-error" text="Only alphanumeric characters are allowed" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.valignment="BOTTOM" />
-                               <Label fx:id="eNeighborhoodErrorLabel" styleClass="label-error" text="Only alphanumeric characters are allowed" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="5" GridPane.valignment="BOTTOM" />
-                               <Label fx:id="eCityErrorLabel" styleClass="label-error" text="Only alphanumeric characters are allowed" visible="false" GridPane.columnIndex="4" GridPane.valignment="BOTTOM" />
-                               <Label fx:id="eRegionErrorLabel" styleClass="label-error" text="Only alphanumeric characters are allowed" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
-                               <Label fx:id="eZipCodeErrorLabel" styleClass="label-error" text="Only numbers are allowed" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
-                               <Label fx:id="eEmailErrorLabel" styleClass="label-error" text="Only alphanumeric characters are allowed" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="4" GridPane.valignment="BOTTOM" />
-                               <Label fx:id="eRelationshipErrorLabel" styleClass="label-error" text="Only alphanumeric characters are allowed" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="5" GridPane.valignment="BOTTOM" />
-                           </children>
-                           <columnConstraints>
-                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="141.0" minWidth="10.0" prefWidth="118.0" />
-                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="210.0" minWidth="10.0" prefWidth="200.0" />
-                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="53.0" />
-                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="95.0" />
-                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="202.0" minWidth="10.0" prefWidth="200.0" />
-                           </columnConstraints>
-                           <padding>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                           </padding>
-                           <rowConstraints>
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                           </rowConstraints>
-                        </GridPane>
-                         <Separator layoutY="29.0" prefHeight="9.0" prefWidth="711.0" />
-                        <Label layoutX="7.0" layoutY="7.0" styleClass="label-sub-title" text="Emergency Contact" />
-                     </children></AnchorPane>
-              </content>
-            </Tab>
-        </tabs>
-      </TabPane>
-      <Label fx:id="headerLabel" layoutX="11.0" layoutY="10.0" styleClass="label-sub-title" text="Create New User" />
-      <Button fx:id="cancelButton" layoutX="12.0" layoutY="470.0" mnemonicParsing="false" onAction="#cancelCreation" text="Cancel" />
-      <Button fx:id="confirmButton" layoutX="606.0" layoutY="471.0" mnemonicParsing="false" onAction="#confirmCreation" text="Create Profile" />
-      <Separator layoutX="1.0" layoutY="464.0" prefHeight="4.0" prefWidth="710.0" />
-   </children>
+    <children>
+        <TabPane layoutY="46.0" prefHeight="421.0" prefWidth="711.0" tabClosingPolicy="UNAVAILABLE">
+            <tabs>
+                <Tab text="User Details">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="167.0" prefWidth="336.0">
+                            <children>
+                                <GridPane hgap="10.0" layoutY="33.0" prefHeight="330.0" prefWidth="395.0">
+                                    <children>
+                                        <TextField fx:id="newUserNhiInput" prefHeight="25.0" prefWidth="131.0"
+                                                   GridPane.columnIndex="1"/>
+                                        <TextField fx:id="fNameInput" prefHeight="25.0" prefWidth="162.0"
+                                                   GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                        <TextField fx:id="preferredFNameTextField" layoutX="136.0" layoutY="56.0"
+                                                   prefHeight="25.0" prefWidth="162.0" GridPane.columnIndex="1"
+                                                   GridPane.rowIndex="2"/>
+                                        <TextField fx:id="mNameInput" prefHeight="25.0" prefWidth="367.0"
+                                                   GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                                        <TextField fx:id="lNameInput" prefHeight="25.0" prefWidth="178.0"
+                                                   GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                                        <DatePicker fx:id="dobInput" prefHeight="27.0" prefWidth="203.0"
+                                                    GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+                                        <Label styleClass="label-title" text="NHI*:"/>
+                                        <Label styleClass="label-title" text="First Name*:" GridPane.rowIndex="1"/>
+                                        <Label styleClass="label-title" text="Middle Name:" GridPane.rowIndex="3"/>
+                                        <Label styleClass="label-title" text="Last Name:" GridPane.rowIndex="4"/>
+                                        <Label styleClass="label-title" text="Date of Birth*:" GridPane.rowIndex="5"/>
+                                        <Label styleClass="label-title" text="Preferred First Name:"
+                                               GridPane.rowIndex="2"/>
+                                        <Label fx:id="nhiErrorLabel" styleClass="label-error" visible="false"
+                                               GridPane.columnIndex="1" GridPane.valignment="BOTTOM"/>
+                                        <Label fx:id="fNameErrorLabel" styleClass="label-error" visible="false"
+                                               GridPane.columnIndex="1" GridPane.rowIndex="1"
+                                               GridPane.valignment="BOTTOM"/>
+                                        <Label fx:id="pFNameErrorLabel" styleClass="label-error"
+                                               text="Only alphanumeric characters are allowed" visible="false"
+                                               GridPane.columnIndex="1" GridPane.rowIndex="2"
+                                               GridPane.valignment="BOTTOM"/>
+                                        <Label fx:id="mNameErrorLabel" styleClass="label-error"
+                                               text="Only alphanumeric characters are allowed" visible="false"
+                                               GridPane.columnIndex="1" GridPane.rowIndex="3"
+                                               GridPane.valignment="BOTTOM"/>
+                                        <Label fx:id="lNameErrorLabel" styleClass="label-error"
+                                               text="Only alphanumeric characters are allowed" visible="false"
+                                               GridPane.columnIndex="1" GridPane.rowIndex="4"
+                                               GridPane.valignment="BOTTOM"/>
+                                        <Label fx:id="dobErrorLabel" styleClass="label-error"
+                                               text="Only alphanumeric characters are allowed" visible="false"
+                                               GridPane.columnIndex="1" GridPane.rowIndex="5"
+                                               GridPane.valignment="BOTTOM"/>
+                                    </children>
+                                    <columnConstraints>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="286.0" minWidth="10.0"
+                                                           prefWidth="144.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="471.0" minWidth="10.0"
+                                                           prefWidth="185.0"/>
+                                    </columnConstraints>
+                                    <padding>
+                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                                    </padding>
+                                    <rowConstraints>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                    </rowConstraints>
+                                </GridPane>
+                                <Separator layoutY="30.0" prefHeight="9.0" prefWidth="711.0"/>
+                                <Label layoutX="7.0" layoutY="7.0" styleClass="label-sub-title" text="User Details"/>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <Tab fx:id="userHealth" text="Health Details">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                            <children>
+                                <GridPane hgap="10.0" layoutX="8.0" layoutY="44.0" prefHeight="258.0" prefWidth="675.0">
+                                    <children>
+                                        <ComboBox fx:id="birthGenderComboBox" prefHeight="27.0" prefWidth="185.0"
+                                                  value="" GridPane.columnIndex="1">
+                                            <items>
+                                                <FXCollections fx:factory="observableArrayList">
+                                                    <String fx:value=""/>
+                                                    <String fx:value="Female"/>
+                                                    <String fx:value="Male"/>
+                                                    <String fx:value="Non Binary"/>
+                                                </FXCollections>
+                                            </items>
+                                        </ComboBox>
+                                        <ComboBox fx:id="genderIdComboBox" layoutX="141.0" layoutY="23.0"
+                                                  prefHeight="27.0" prefWidth="185.0" value="" GridPane.columnIndex="1"
+                                                  GridPane.rowIndex="1">
+                                            <items>
+                                                <FXCollections fx:factory="observableArrayList">
+                                                    <String fx:value=""/>
+                                                    <String fx:value="Female"/>
+                                                    <String fx:value="Male"/>
+                                                    <String fx:value="Non Binary"/>
+                                                </FXCollections>
+                                            </items>
+                                        </ComboBox>
+                                        <TextField fx:id="heightInput" prefHeight="25.0" prefWidth="185.0"
+                                                   GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                                        <TextField fx:id="weightInput" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                                        <ComboBox fx:id="bloodComboBox" prefHeight="27.0" prefWidth="168.0"
+                                                  GridPane.columnIndex="3">
+                                            <items>
+                                                <FXCollections fx:factory="observableArrayList">
+                                                    <String fx:value=""/>
+                                                    <String fx:value="AB+"/>
+                                                    <String fx:value="AB-"/>
+                                                    <String fx:value="A+"/>
+                                                    <String fx:value="A-"/>
+                                                    <String fx:value="B+"/>
+                                                    <String fx:value="B-"/>
+                                                    <String fx:value="O+"/>
+                                                    <String fx:value="O-"/>
+                                                </FXCollections>
+                                            </items>
+                                        </ComboBox>
+                                        <Label prefHeight="20.0" prefWidth="100.0" styleClass="label-title"
+                                               text="Birth Gender:">
+                                            <padding>
+                                                <Insets left="5.0"/>
+                                            </padding>
+                                        </Label>
+                                        <Label prefHeight="15.0" prefWidth="128.0" styleClass="label-title"
+                                               text="Height (m):" GridPane.rowIndex="2">
+                                            <padding>
+                                                <Insets left="5.0"/>
+                                            </padding>
+                                        </Label>
+                                        <Label prefHeight="15.0" prefWidth="124.0" styleClass="label-title"
+                                               text="Weight (kg):" GridPane.rowIndex="3">
+                                            <padding>
+                                                <Insets left="5.0"/>
+                                            </padding>
+                                        </Label>
+                                        <Label styleClass="label-title" text="Blood Type:" GridPane.columnIndex="2">
+                                            <padding>
+                                                <Insets left="5.0"/>
+                                            </padding>
+                                        </Label>
+                                        <ComboBox fx:id="alcoholComboBox" prefHeight="27.0" prefWidth="157.0"
+                                                  value="None" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                                            <items>
+                                                <FXCollections fx:factory="observableArrayList">
+                                                    <String fx:value="None"/>
+                                                    <String fx:value="Low"/>
+                                                    <String fx:value="Normal"/>
+                                                    <String fx:value="High"/>
+                                                </FXCollections>
+                                            </items>
+                                        </ComboBox>
+                                        <Label styleClass="label-title" text="Smoker:" GridPane.columnIndex="2"
+                                               GridPane.rowIndex="2">
+                                            <padding>
+                                                <Insets left="5.0"/>
+                                            </padding>
+                                        </Label>
+                                        <Label styleClass="label-title" text="Alcohol Consumption:"
+                                               GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                            <padding>
+                                                <Insets left="5.0"/>
+                                            </padding>
+                                        </Label>
+                                        <Label styleClass="label-title" text="Gender Identity:" GridPane.rowIndex="1">
+                                            <padding>
+                                                <Insets left="5.0"/>
+                                            </padding>
+                                        </Label>
+                                        <CheckBox fx:id="smokerCheckBox" mnemonicParsing="false" text="Yes"
+                                                  GridPane.columnIndex="3" GridPane.rowIndex="2"/>
+                                        <Label fx:id="heightErrorLabel" styleClass="label-error"
+                                               text="Only numbers are allowed" visible="false" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="2" GridPane.valignment="BOTTOM"/>
+                                        <Label fx:id="weightErrorLabel" styleClass="label-error"
+                                               text="Only numbers are allowed" visible="false" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="3" GridPane.valignment="BOTTOM"/>
+                                    </children>
+                                    <columnConstraints>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="279.0" minWidth="10.0"
+                                                           prefWidth="121.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="475.0" minWidth="10.0"
+                                                           prefWidth="185.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="475.0" minWidth="10.0"
+                                                           prefWidth="155.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="475.0" minWidth="10.0"
+                                                           prefWidth="153.0"/>
+                                    </columnConstraints>
+                                    <padding>
+                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                                    </padding>
+                                    <rowConstraints>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                    </rowConstraints>
+                                </GridPane>
+                                <Separator layoutY="34.0" prefHeight="9.0" prefWidth="711.0"/>
+                                <Label layoutX="9.0" layoutY="9.0" styleClass="label-sub-title" text="Health Details"/>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <Tab fx:id="userContact" text="Contact Details">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="463.0" prefWidth="694.0">
+                            <children>
+                                <GridPane layoutY="29.0" prefHeight="321.0" prefWidth="682.0">
+                                    <children>
+                                        <TextField fx:id="phone" GridPane.columnIndex="1"/>
+                                        <TextField fx:id="cell" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                        <TextField fx:id="streetNumber" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                                        <TextField fx:id="street" prefHeight="7.0" prefWidth="183.0"
+                                                   GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                                        <TextField fx:id="neighborhood" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                                        <TextField fx:id="city" GridPane.columnIndex="4"/>
+                                        <TextField fx:id="regionInput" visible="false" GridPane.columnIndex="4"
+                                                   GridPane.rowIndex="1"/>
+                                        <ComboBox fx:id="regionSelector" prefHeight="27.0" prefWidth="204.0"
+                                                  GridPane.columnIndex="4" GridPane.rowIndex="1"/>
+                                        <TextField fx:id="zipCode" GridPane.columnIndex="4" GridPane.rowIndex="2"/>
+                                        <ComboBox fx:id="countrySelector" onAction="#countrySelectorListener"
+                                                  prefHeight="27.0" prefWidth="207.0" GridPane.columnIndex="4"
+                                                  GridPane.rowIndex="3"/>
+                                        <TextField fx:id="email" GridPane.columnIndex="4" GridPane.rowIndex="4"/>
+                                        <Label styleClass="label-title" text="Home Phone:">
+                                            <padding>
+                                                <Insets left="5.0"/>
+                                            </padding>
+                                        </Label>
+                                        <Label styleClass="label-title" text="Cell Phone:" GridPane.rowIndex="1">
+                                            <padding>
+                                                <Insets left="5.0"/>
+                                            </padding>
+                                        </Label>
+                                        <Label styleClass="label-title" text="Street Number:" GridPane.rowIndex="2">
+                                            <padding>
+                                                <Insets left="5.0"/>
+                                            </padding>
+                                        </Label>
+                                        <Label alignment="CENTER" styleClass="label-title" text="Region:"
+                                               GridPane.columnIndex="3" GridPane.rowIndex="1">
+                                            <GridPane.margin>
+                                                <Insets left="5.0"/>
+                                            </GridPane.margin>
+                                        </Label>
+                                        <Label alignment="CENTER" styleClass="label-title" text="Email:"
+                                               GridPane.columnIndex="3" GridPane.rowIndex="4">
+                                            <padding>
+                                                <Insets left="5.0"/>
+                                            </padding>
+                                        </Label>
+                                        <Label alignment="CENTER" styleClass="label-title" text="Country:"
+                                               GridPane.columnIndex="3" GridPane.rowIndex="3">
+                                            <padding>
+                                                <Insets left="5.0"/>
+                                            </padding>
+                                        </Label>
+                                        <Label alignment="CENTER" styleClass="label-title" text="Zip Code:"
+                                               GridPane.columnIndex="3" GridPane.rowIndex="2">
+                                            <padding>
+                                                <Insets left="5.0"/>
+                                            </padding>
+                                        </Label>
+                                        <Label styleClass="label-title" text="City:" GridPane.columnIndex="3">
+                                            <padding>
+                                                <Insets left="5.0"/>
+                                            </padding>
+                                        </Label>
+                                        <Label styleClass="label-title" text="Neighborhood:" GridPane.rowIndex="4">
+                                            <padding>
+                                                <Insets left="5.0"/>
+                                            </padding>
+                                        </Label>
+                                        <Label styleClass="label-title" text="Street Name:" GridPane.rowIndex="3">
+                                            <padding>
+                                                <Insets left="5.0"/>
+                                            </padding>
+                                        </Label>
+                                        <Label fx:id="homePhoneErrorLabel" styleClass="label-error"
+                                               text="Only numbers are allowed" visible="false" GridPane.columnIndex="1"
+                                               GridPane.valignment="BOTTOM"/>
+                                        <Label fx:id="cellPhoneErrorLabel" styleClass="label-error"
+                                               text="Only numbers are allowed" visible="false" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="1" GridPane.valignment="BOTTOM"/>
+                                        <Label fx:id="streetNumberErrorLabel" styleClass="label-error"
+                                               text="Only alphanumeric characters are allowed" visible="false"
+                                               GridPane.columnIndex="1" GridPane.rowIndex="2"
+                                               GridPane.valignment="BOTTOM"/>
+                                        <Label fx:id="streetNameErrorLabel" styleClass="label-error"
+                                               text="Only alphanumeric characters are allowed" visible="false"
+                                               GridPane.columnIndex="1" GridPane.rowIndex="3"
+                                               GridPane.valignment="BOTTOM"/>
+                                        <Label fx:id="neighborhoodErrorLabel" styleClass="label-error"
+                                               text="Only alphanumeric characters are allowed" visible="false"
+                                               GridPane.columnIndex="1" GridPane.rowIndex="4"
+                                               GridPane.valignment="BOTTOM"/>
+                                        <Label fx:id="cityErrorLabel" styleClass="label-error"
+                                               text="Only alphanumeric characters are allowed" visible="false"
+                                               GridPane.columnIndex="4" GridPane.valignment="BOTTOM"/>
+                                        <Label fx:id="regionErrorLabel" styleClass="label-error"
+                                               text="Only alphanumeric characters are allowed" visible="false"
+                                               GridPane.columnIndex="4" GridPane.rowIndex="1"
+                                               GridPane.valignment="BOTTOM"/>
+                                        <Label fx:id="zipCodeErrorLabel" styleClass="label-error"
+                                               text="Only alphanumeric characters are allowed" visible="false"
+                                               GridPane.columnIndex="4" GridPane.rowIndex="2"
+                                               GridPane.valignment="BOTTOM"/>
+                                        <Label fx:id="emailErrorLabel" styleClass="label-error"
+                                               text="Only alphanumeric characters are allowed" visible="false"
+                                               GridPane.columnIndex="4" GridPane.rowIndex="4"
+                                               GridPane.valignment="BOTTOM"/>
+                                    </children>
+                                    <columnConstraints>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="139.0" minWidth="10.0"
+                                                           prefWidth="124.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="216.0" minWidth="10.0"
+                                                           prefWidth="200.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="189.0" minWidth="10.0"
+                                                           prefWidth="41.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="189.0" minWidth="10.0"
+                                                           prefWidth="85.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="213.0" minWidth="10.0"
+                                                           prefWidth="200.0"/>
+                                    </columnConstraints>
+                                    <padding>
+                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                                    </padding>
+                                    <rowConstraints>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                    </rowConstraints>
+                                </GridPane>
+                                <Label layoutX="14.0" layoutY="9.0" styleClass="label-sub-title"
+                                       text="Contact Details"/>
+                                <Separator layoutX="-13.0" layoutY="31.0" prefHeight="10.0" prefWidth="724.0"/>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <Tab text="Emergency Contact">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                            <children>
+                                <GridPane layoutY="26.0" prefHeight="366.0" prefWidth="704.0">
+                                    <children>
+                                        <TextField fx:id="ecName" GridPane.columnIndex="1"/>
+                                        <TextField fx:id="ecPhone" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                        <TextField fx:id="ecCellPhone" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                                        <TextField fx:id="ecStreetNumber" GridPane.columnIndex="1"
+                                                   GridPane.rowIndex="3"/>
+                                        <TextField fx:id="ecStreet" prefHeight="15.0" prefWidth="187.0"
+                                                   GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                                        <TextField fx:id="ecNeighborhood" GridPane.columnIndex="1"
+                                                   GridPane.rowIndex="5"/>
+                                        <TextField fx:id="ecCity" GridPane.columnIndex="4"/>
+                                        <TextField fx:id="ecRegionInput" GridPane.columnIndex="4"
+                                                   GridPane.rowIndex="1"/>
+                                        <ComboBox fx:id="ecRegionSelector" prefHeight="27.0" prefWidth="203.0"
+                                                  GridPane.columnIndex="4" GridPane.rowIndex="1"/>
+                                        <TextField fx:id="ecZipCode" GridPane.columnIndex="4" GridPane.rowIndex="2"/>
+                                        <ComboBox fx:id="ecCountrySelector" onAction="#ecCountrySelectorListener"
+                                                  prefHeight="27.0" prefWidth="204.0" GridPane.columnIndex="4"
+                                                  GridPane.rowIndex="3"/>
+                                        <TextField fx:id="ecEmail" GridPane.columnIndex="4" GridPane.rowIndex="4"/>
+                                        <TextField fx:id="ecRelationship" GridPane.columnIndex="4"
+                                                   GridPane.rowIndex="5"/>
+                                        <Label styleClass="label-title" text="Home Phone:" GridPane.rowIndex="1"/>
+                                        <Label styleClass="label-title" text="Street Number:" GridPane.rowIndex="3"/>
+                                        <Label styleClass="label-title" text="Street Name:" GridPane.rowIndex="4"/>
+                                        <Label styleClass="label-title" text="Region:" GridPane.columnIndex="3"
+                                               GridPane.rowIndex="1">
+                                            <padding>
+                                                <Insets left="5.0"/>
+                                            </padding>
+                                        </Label>
+                                        <Label styleClass="label-title" text="Email:" GridPane.columnIndex="3"
+                                               GridPane.rowIndex="4">
+                                            <padding>
+                                                <Insets left="5.0"/>
+                                            </padding>
+                                        </Label>
+                                        <Label styleClass="label-title" text="Relationship:" GridPane.columnIndex="3"
+                                               GridPane.rowIndex="5">
+                                            <padding>
+                                                <Insets left="5.0"/>
+                                            </padding>
+                                        </Label>
+                                        <Label styleClass="label-title" text="Name:"/>
+                                        <Label styleClass="label-title" text="Cell Phone:" GridPane.rowIndex="2"/>
+                                        <Label styleClass="label-title" text="Neighborhood:" GridPane.rowIndex="5"/>
+                                        <Label styleClass="label-title" text="City:" GridPane.columnIndex="3"/>
+                                        <Label styleClass="label-title" text="Zip Code:" GridPane.columnIndex="3"
+                                               GridPane.rowIndex="2">
+                                            <padding>
+                                                <Insets left="5.0"/>
+                                            </padding>
+                                        </Label>
+                                        <Label styleClass="label-title" text="Country:" GridPane.columnIndex="3"
+                                               GridPane.rowIndex="3">
+                                            <padding>
+                                                <Insets left="5.0"/>
+                                            </padding>
+                                        </Label>
+                                        <Label fx:id="eNameErrorLabel" styleClass="label-error"
+                                               text="Only alphanumeric characters are allowed" visible="false"
+                                               GridPane.columnIndex="1" GridPane.valignment="BOTTOM"/>
+                                        <Label fx:id="eHomePhoneErrorLabel" styleClass="label-error"
+                                               text="Only numbers are allowed" visible="false" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="1" GridPane.valignment="BOTTOM"/>
+                                        <Label fx:id="eCellPhoneErrorLabel" styleClass="label-error"
+                                               text="Only numbers are allowed" visible="false" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="2" GridPane.valignment="BOTTOM"/>
+                                        <Label fx:id="eStreetNumberErrorLabel" styleClass="label-error"
+                                               text="Only alphanumeric characters are allowed" visible="false"
+                                               GridPane.columnIndex="1" GridPane.rowIndex="3"
+                                               GridPane.valignment="BOTTOM"/>
+                                        <Label fx:id="eStreetNameErrorLabel" styleClass="label-error"
+                                               text="Only alphanumeric characters are allowed" visible="false"
+                                               GridPane.columnIndex="1" GridPane.rowIndex="4"
+                                               GridPane.valignment="BOTTOM"/>
+                                        <Label fx:id="eNeighborhoodErrorLabel" styleClass="label-error"
+                                               text="Only alphanumeric characters are allowed" visible="false"
+                                               GridPane.columnIndex="1" GridPane.rowIndex="5"
+                                               GridPane.valignment="BOTTOM"/>
+                                        <Label fx:id="eCityErrorLabel" styleClass="label-error"
+                                               text="Only alphanumeric characters are allowed" visible="false"
+                                               GridPane.columnIndex="4" GridPane.valignment="BOTTOM"/>
+                                        <Label fx:id="eRegionErrorLabel" styleClass="label-error"
+                                               text="Only alphanumeric characters are allowed" visible="false"
+                                               GridPane.columnIndex="4" GridPane.rowIndex="1"
+                                               GridPane.valignment="BOTTOM"/>
+                                        <Label fx:id="eZipCodeErrorLabel" styleClass="label-error"
+                                               text="Only numbers are allowed" visible="false" GridPane.columnIndex="4"
+                                               GridPane.rowIndex="2" GridPane.valignment="BOTTOM"/>
+                                        <Label fx:id="eEmailErrorLabel" styleClass="label-error"
+                                               text="Only alphanumeric characters are allowed" visible="false"
+                                               GridPane.columnIndex="4" GridPane.rowIndex="4"
+                                               GridPane.valignment="BOTTOM"/>
+                                        <Label fx:id="eRelationshipErrorLabel" styleClass="label-error"
+                                               text="Only alphanumeric characters are allowed" visible="false"
+                                               GridPane.columnIndex="4" GridPane.rowIndex="5"
+                                               GridPane.valignment="BOTTOM"/>
+                                    </children>
+                                    <columnConstraints>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="141.0" minWidth="10.0"
+                                                           prefWidth="118.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="210.0" minWidth="10.0"
+                                                           prefWidth="200.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0"
+                                                           prefWidth="53.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0"
+                                                           prefWidth="95.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="202.0" minWidth="10.0"
+                                                           prefWidth="200.0"/>
+                                    </columnConstraints>
+                                    <padding>
+                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                                    </padding>
+                                    <rowConstraints>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                    </rowConstraints>
+                                </GridPane>
+                                <Separator layoutY="29.0" prefHeight="9.0" prefWidth="711.0"/>
+                                <Label layoutX="7.0" layoutY="7.0" styleClass="label-sub-title"
+                                       text="Emergency Contact"/>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+        <Label fx:id="headerLabel" layoutX="11.0" layoutY="10.0" styleClass="label-sub-title" text="Create New User"/>
+        <Button fx:id="cancelButton" layoutX="12.0" layoutY="470.0" mnemonicParsing="false" onAction="#cancelCreation"
+                text="Cancel"/>
+        <Button fx:id="confirmButton" layoutX="606.0" layoutY="471.0" mnemonicParsing="false"
+                onAction="#confirmCreation" text="Create Profile"/>
+        <Separator layoutX="1.0" layoutY="464.0" prefHeight="4.0" prefWidth="710.0"/>
+    </children>
 </AnchorPane>

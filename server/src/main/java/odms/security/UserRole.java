@@ -14,11 +14,6 @@ public enum UserRole implements GrantedAuthority {
     @SerializedName("user")
     USER;
 
-    @Override
-    public String getAuthority() {
-        return name();
-    }
-
     /**
      * Allows admins to have clinician access without explicitly listing it
      *
@@ -47,5 +42,10 @@ public enum UserRole implements GrantedAuthority {
             return null;
         }
         return roles;
+    }
+
+    @Override
+    public String getAuthority() {
+        return name();
     }
 }

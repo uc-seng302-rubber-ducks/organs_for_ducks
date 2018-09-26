@@ -38,7 +38,7 @@ public class UserControllerTest {
     private ComboBoxClinician testComboBoxClinician;
 
     @Before
-    public void setUp() throws SQLException{
+    public void setUp() throws SQLException {
         connection = mock(Connection.class);
         manager = mock(DBManager.class);
         handler = mock(DBHandler.class);
@@ -66,7 +66,7 @@ public class UserControllerTest {
     }
 
     @Test(expected = ServerDBException.class)
-    public void getUsersShouldThrowExceptionWhenNoConnection() throws SQLException{
+    public void getUsersShouldThrowExceptionWhenNoConnection() throws SQLException {
         when(driver.getConnection()).thenThrow(new SQLException());
 
         //should throw an exception here
@@ -82,26 +82,26 @@ public class UserControllerTest {
     }
 
     @Test(expected = ServerDBException.class)
-    public void postUserShouldThrowExceptionWhenNoConnection() throws SQLException{
+    public void postUserShouldThrowExceptionWhenNoConnection() throws SQLException {
         when(driver.getConnection()).thenThrow(new SQLException());
         controller.postUser(testUser);
 
     }
 
     @Test(expected = ServerDBException.class)
-    public void getUserShouldThrowExceptionWhenNoConnection() throws SQLException{
+    public void getUserShouldThrowExceptionWhenNoConnection() throws SQLException {
         when(driver.getConnection()).thenThrow(new SQLException());
         controller.getUser("ABC1234");
     }
 
     @Test(expected = NotFoundException.class)
-    public void getUserShouldReturnNotFoundWhenNoUserFound() throws SQLException{
+    public void getUserShouldReturnNotFoundWhenNoUserFound() throws SQLException {
         when(handler.getOneUser(any(Connection.class), anyString())).thenReturn(null);
         controller.getUser("ABC1234");
     }
 
     @Test
-    public void getUserShouldReturnUserIfExists() throws  SQLException{
+    public void getUserShouldReturnUserIfExists() throws SQLException {
         when(handler.getOneUser(any(Connection.class), anyString())).thenReturn(testUser);
         Assert.assertEquals(testUser, controller.getUser("ABC1234"));
     }

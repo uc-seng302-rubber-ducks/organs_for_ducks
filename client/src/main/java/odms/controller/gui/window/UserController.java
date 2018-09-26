@@ -178,21 +178,21 @@ public class UserController implements PropertyChangeListener {
         // Sets the button to be disabled
         updateUndoRedoButtons();
 
-            if (fromClinician) {
-                logoutUser.setText("Go Back");
-                logoutUser.setOnAction(e -> closeWindow());
-                try {
-                    // ༼ つ ◕ ◕ ༽つ FIX APP ༼ つ ◕ ◕ ༽つ
-                    currentUser.setProfilePhotoFilePath(application.getUserBridge().getProfilePicture(user.getNhi()));
-                } catch (IOException e) {
-                    ClassLoader classLoader = getClass().getClassLoader();
-                    File inFile = new File(classLoader.getResource("default-profile-picture.jpg").getFile());
-                    user.setProfilePhotoFilePath(inFile.getPath());
-                }
-            } else {
-                logoutUser.setText("Log Out");
-                logoutUser.setOnAction(e -> logout());
+        if (fromClinician) {
+            logoutUser.setText("Go Back");
+            logoutUser.setOnAction(e -> closeWindow());
+            try {
+                // ༼ つ ◕ ◕ ༽つ FIX APP ༼ つ ◕ ◕ ༽つ
+                currentUser.setProfilePhotoFilePath(application.getUserBridge().getProfilePicture(user.getNhi()));
+            } catch (IOException e) {
+                ClassLoader classLoader = getClass().getClassLoader();
+                File inFile = new File(classLoader.getResource("default-profile-picture.jpg").getFile());
+                user.setProfilePhotoFilePath(inFile.getPath());
             }
+        } else {
+            logoutUser.setText("Log Out");
+            logoutUser.setOnAction(e -> logout());
+        }
 
         if (user.getNhi() != null) {
             showUser(currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
@@ -213,8 +213,6 @@ public class UserController implements PropertyChangeListener {
         userAppointmentAlertController.setAppController(controller);
         userAppointmentAlertController.checkForUnseenUpdates(user.getNhi());
     }
-
-
 
 
     /**

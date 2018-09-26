@@ -74,13 +74,14 @@ import static odms.commons.utils.PhotoHelper.displayImage;
  */
 public class ClinicianController implements PropertyChangeListener, UserLauncher {
 
+    private static final int ROWS_PER_PAGE = 30;
+    @FXML
+    Tab appointmentsTab;
     //<editor-fold desc="FXML declarations">
     @FXML
     private Button undoButton;
-
     @FXML
     private Button backButton;
-
     @FXML
     private Label staffIdLabel;
     @FXML
@@ -101,14 +102,10 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
     private Label countryLabel;
     @FXML
     private TextField searchTextField;
-
-
     @FXML
     private Tooltip searchToolTip;
     @FXML
     private LoadingTableView<UserOverview> searchTableView;
-
-
     @FXML
     private Label searchCountLabel;
     @FXML
@@ -137,16 +134,12 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
     private MenuItem deleteClinician;
     @FXML
     private MenuItem logoutMenuClinician;
-
     @FXML
     private ImageView profileImage;
-    @FXML
-    private StatusBarController statusBarPageController;
-
-    @FXML Tab appointmentsTab;
 
     //</editor-fold>
-
+    @FXML
+    private StatusBarController statusBarPageController;
     private Stage stage;
     private AppController appController;
     private Clinician clinician;
@@ -156,11 +149,9 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
     private PauseTransition pause = new PauseTransition(Duration.millis(300));
     private ClinicianBridge clinicianBridge;
     private StackPane notificationBadge = new StackPane();
-
     //Initiliase table columns as class level so it is accessible for sorting in pagination methods
     private TableColumn<UserOverview, String> lNameColumn;
     private boolean filterVisible = false;
-    private static final int ROWS_PER_PAGE = 30;
     private int startIndex = 0;
     private int endIndex;
     private int searchCount;
@@ -243,18 +234,17 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
 
     /**
      * Finds the nmber of pending appointments for a clinician and shows it to them
-     *
+     * <p>
      * Will show 9+ for notifications over 10 due to size constraints
-     *
      */
     private void showAppointmentNotifications() {
 
-        int notificationsPending = appointmentsBridge.getPendingAppointments(clinician.getStaffId(),appController.getToken());
+        int notificationsPending = appointmentsBridge.getPendingAppointments(clinician.getStaffId(), appController.getToken());
         String notifications;
         Text numberOfNotifications = new Text();
-        if(notificationsPending <= 0 ){
+        if (notificationsPending <= 0) {
             return;
-        } else if(notificationsPending > 9){
+        } else if (notificationsPending > 9) {
             notifications = "9+";
             numberOfNotifications.setFont(new Font(8));
         } else {
@@ -475,7 +465,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
     /**
      * Method to add the predicate trough the listener
      *
-     * @param checkBox   checkBox object to add the listener to
+     * @param checkBox checkBox object to add the listener to
      */
     private void setCheckBoxListener(CheckBox checkBox) {
         checkBox.selectedProperty()
@@ -702,7 +692,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
             transplantWaitListTabPageController.populateWaitListTable();
             transplantWaitListTabPageController.displayWaitListTable();
             availableOrgansViewController.search();
-        } else if (event.getType().equals(EventTypes.CLINICIAN_UPDATE) && clinician.getStaffId().equals(event.getOldIdentifier())){
+        } else if (event.getType().equals(EventTypes.CLINICIAN_UPDATE) && clinician.getStaffId().equals(event.getOldIdentifier())) {
             String newStaffId = event.getNewIdentifier();
             try {
                 this.clinician = clinicianBridge.getClinician(newStaffId, appController.getToken());

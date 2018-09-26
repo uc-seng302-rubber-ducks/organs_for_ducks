@@ -42,77 +42,61 @@ import java.util.Comparator;
 
 public class ClinicianAppointmentRequestViewController implements Converter {
 
+    private static final double TITLE_CONTROL_FORM_PREF_WIDTH = 218.0;
+    private static final double TITLE_CONTROL_PREF_HEIGHT = 15.0;
+    private static final double TITLE_CONTROL_TOP_ANCHOR = 109.0;
+    private static final double TITLE_CONTROL_RIGHT_ANCHOR = 49;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm");
     @FXML
     private LoadingTableView<Appointment> clinicianAppointmentsRequestView;
-
     @FXML
     private DatePicker appointmentRequestDate;
-
     @FXML
     private TextArea appointmentRequestDescription;
-
     @FXML
     private ComboBox<AppointmentCategory> appointmentRequestCategory;
-
     @FXML
     private ComboBox<LocalTime> appointmentRequestTime;
-
     @FXML
     private Label appointmentRequestStatus;
-
     @FXML
     private Control appointmentRequestUserNhi;
-
     @FXML
     private Button rejectAppointmentButton;
-
     @FXML
     private Button acceptAppointmentButton;
-
     @FXML
     private TableColumn<Appointment, String> clinicianAppointmentUserIdColumn = new TableColumn<>();
-
     @FXML
     private TableColumn<Appointment, AppointmentStatus> clinicianAppointmentStatusColumn = new TableColumn<>();
-
     @FXML
     private TableColumn<Appointment, AppointmentCategory> clinicianAppointmentCategoryColumn = new TableColumn<>();
-
     @FXML
     private TableColumn<Appointment, String> clinicianAppointmentDateColumn = new TableColumn<>();
-
     @FXML
     private AnchorPane tableViewPane;
-
     @FXML
     private AnchorPane calendarViewPane;
-
     @FXML
     private Toggle calendarViewToggle;
     @FXML
     private Toggle tableViewToggle;
     @FXML
     private Label appointmentDetailsNhiLabel;
-
     @FXML
     private AnchorPane formPane;
-
     private CalendarWidget calendarView;
-
-
     private ObservableList<Appointment> availableAppointments = FXCollections.observableList(new ArrayList<>());
     private ObservableList<LocalTime> availableTimes = FXCollections.observableList(new ArrayList<>());
     private ClinicianAppointmentRequestLogicController logicController;
-
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm");
     private ChangeListener<String> titleChangeListener;
     private Entry<Appointment> selectedEntry;
     private ObjectProperty<Appointment> selectedAppointment;
-
-    private static final double TITLE_CONTROL_FORM_PREF_WIDTH = 218.0;
-    private static final double TITLE_CONTROL_PREF_HEIGHT = 15.0;
-    private static final double TITLE_CONTROL_TOP_ANCHOR = 109.0;
-    private static final double TITLE_CONTROL_RIGHT_ANCHOR = 49;
+    /**
+     * Compares the appointment status value so that when applied to the table view, pending appointments will be
+     * displayed at the top of the table
+     */
+    private Comparator<AppointmentStatus> statusComparator = Comparator.comparingInt(AppointmentStatus::getDbValue);
 
     /**
      * Initialises the panel
@@ -158,12 +142,6 @@ public class ClinicianAppointmentRequestViewController implements Converter {
     private void datePickerListener(DatePicker dp) {
         dp.valueProperty().addListener((observable, oldValue, newValue) -> populateClinicianTimes());
     }
-
-    /**
-     * Compares the appointment status value so that when applied to the table view, pending appointments will be
-     * displayed at the top of the table
-     */
-    private Comparator<AppointmentStatus> statusComparator = Comparator.comparingInt(AppointmentStatus::getDbValue);
 
     /**
      * Populates the table view of appointments for the specified clinician
@@ -354,7 +332,7 @@ public class ClinicianAppointmentRequestViewController implements Converter {
         }
         boolean valid = true;
 
-        if (appointmentRequestTime.getSelectionModel().getSelectedItem() == null){
+        if (appointmentRequestTime.getSelectionModel().getSelectedItem() == null) {
             valid = false;
             AlertWindowFactory.generateInfoWindow("please pick a time");
         } else {
@@ -391,7 +369,7 @@ public class ClinicianAppointmentRequestViewController implements Converter {
      * @see ClinicianAppointmentRequestLogicController refreshClinicianAvailableTimes
      */
     @FXML
-    private void populateClinicianTimes(){
+    private void populateClinicianTimes() {
         if (appointmentRequestDate.getValue() != null && getSelectedAppointment() != null) {
             LocalTime localTime = getSelectedAppointment().getRequestedDate().toLocalTime();
             logicController.refreshClinicianAvailableTimes(appointmentRequestDate.getValue(), getSelectedAppointment());
@@ -412,6 +390,13 @@ public class ClinicianAppointmentRequestViewController implements Converter {
     }
 
     /**
+     * @param selectedAppointment Appointment to set the selected appointment property to
+     */
+    public void setSelectedAppointment(Appointment selectedAppointment) {
+        selectedAppointmentProperty().set(selectedAppointment);
+    }
+
+    /**
      * Removes the property change listener on logout so user appointment events do not trigger the
      * clinician tables to update.
      */
@@ -421,11 +406,11 @@ public class ClinicianAppointmentRequestViewController implements Converter {
 
     @FXML
     private void tableCalendarViewToggle() {
-        if(calendarViewToggle.isSelected()){
+        if (calendarViewToggle.isSelected()) {
             calendarViewPane.setVisible(true);
             tableViewPane.setVisible(false);
 
-        } else if(tableViewToggle.isSelected()) {
+        } else if (tableViewToggle.isSelected()) {
             calendarViewPane.setVisible(false);
             tableViewPane.setVisible(true);
         }
@@ -472,12 +457,5 @@ public class ClinicianAppointmentRequestViewController implements Converter {
             selectedAppointment = new SimpleObjectProperty<>(null);
         }
         return selectedAppointment;
-    }
-
-    /**
-     * @param selectedAppointment Appointment to set the selected appointment property to
-     */
-    public void setSelectedAppointment(Appointment selectedAppointment) {
-        selectedAppointmentProperty().set(selectedAppointment);
     }
 }

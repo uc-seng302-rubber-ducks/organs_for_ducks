@@ -26,6 +26,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class PhotoControllerTest {
+    private static final String JPG_PHOTO_TEST_FILE_PATH = "src/test/resources/images/duck_jpg.jpg";
+    private static final String PNG_PHOTO_TEST_FILE_PATH = "src/test/resources/images/duck_png.png";
+    private static final String NOT_PHOTO_TEST_FILE_PATH = "src/test/resources/images/not_image.txt";
+    private static final String THREE_MB_PHOTO_TEST_FILE_PATH = "src/test/resources/images/3mb_image.jpg";
     private PhotoController controller;
     private Connection connection;
     private JDBCDriver driver;
@@ -34,10 +38,6 @@ public class PhotoControllerTest {
     private SocketHandler socketHandler;
     private User testUser;
     private Clinician testClinician;
-    private static final String JPG_PHOTO_TEST_FILE_PATH = "src/test/resources/images/duck_jpg.jpg";
-    private static final String PNG_PHOTO_TEST_FILE_PATH = "src/test/resources/images/duck_png.png";
-    private static final String NOT_PHOTO_TEST_FILE_PATH = "src/test/resources/images/not_image.txt";
-    private static final String THREE_MB_PHOTO_TEST_FILE_PATH = "src/test/resources/images/3mb_image.jpg";
 
     @Before
     public void setUp() throws SQLException {
@@ -60,7 +60,7 @@ public class PhotoControllerTest {
 
 
         byte[] multipartFile = PhotoHelper.getBytesFromImage(JPG_PHOTO_TEST_FILE_PATH);
-        ResponseEntity res = controller.putUserProfilePhoto("ABC1234", multipartFile,"image/jpeg");
+        ResponseEntity res = controller.putUserProfilePhoto("ABC1234", multipartFile, "image/jpeg");
         Assert.assertEquals(HttpStatus.CREATED, res.getStatusCode());
     }
 
@@ -69,7 +69,7 @@ public class PhotoControllerTest {
         when(handler.getOneUser(any(Connection.class), anyString())).thenReturn(testUser);
 
         byte[] multipartFile = PhotoHelper.getBytesFromImage(PNG_PHOTO_TEST_FILE_PATH);
-        ResponseEntity res = controller.putUserProfilePhoto("ABC1234", multipartFile,"image/png");
+        ResponseEntity res = controller.putUserProfilePhoto("ABC1234", multipartFile, "image/png");
         Assert.assertEquals(HttpStatus.CREATED, res.getStatusCode());
     }
 
@@ -78,7 +78,7 @@ public class PhotoControllerTest {
         when(handler.getOneUser(any(Connection.class), anyString())).thenReturn(null);
 
         byte[] multipartFile = PhotoHelper.getBytesFromImage(JPG_PHOTO_TEST_FILE_PATH);
-        ResponseEntity res = controller.putUserProfilePhoto("ZZZ1111", multipartFile,"image/jpeg");
+        ResponseEntity res = controller.putUserProfilePhoto("ZZZ1111", multipartFile, "image/jpeg");
         Assert.assertEquals(HttpStatus.NOT_FOUND, res.getStatusCode());
     }
 
@@ -87,7 +87,7 @@ public class PhotoControllerTest {
         when(handler.getOneUser(any(Connection.class), anyString())).thenReturn(testUser);
 
         byte[] multipartFile = PhotoHelper.getBytesFromImage(NOT_PHOTO_TEST_FILE_PATH);
-        ResponseEntity res = controller.putUserProfilePhoto("ABC1234", multipartFile,"image/jpeg");
+        ResponseEntity res = controller.putUserProfilePhoto("ABC1234", multipartFile, "image/jpeg");
         Assert.assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
     }
 
@@ -96,7 +96,7 @@ public class PhotoControllerTest {
         when(handler.getOneUser(any(Connection.class), anyString())).thenReturn(testUser);
 
         byte[] multipartFile = PhotoHelper.getBytesFromImage(THREE_MB_PHOTO_TEST_FILE_PATH);
-        ResponseEntity res = controller.putUserProfilePhoto("ABC1234", multipartFile,"image/jpeg");
+        ResponseEntity res = controller.putUserProfilePhoto("ABC1234", multipartFile, "image/jpeg");
         Assert.assertEquals(HttpStatus.PAYLOAD_TOO_LARGE, res.getStatusCode());
     }
 
@@ -104,7 +104,7 @@ public class PhotoControllerTest {
     public void putClinicianProfilePhotoJpgShouldReturnCreated() throws SQLException, IOException {
         when(handler.getOneClinician(any(Connection.class), anyString())).thenReturn(testClinician);
         byte[] multipartFile = PhotoHelper.getBytesFromImage(JPG_PHOTO_TEST_FILE_PATH);
-        ResponseEntity res = controller.putClinicianProfilePhoto("12", multipartFile,"image/jpeg");
+        ResponseEntity res = controller.putClinicianProfilePhoto("12", multipartFile, "image/jpeg");
         Assert.assertEquals(HttpStatus.CREATED, res.getStatusCode());
     }
 
@@ -112,15 +112,15 @@ public class PhotoControllerTest {
     public void putClinicianProfilePhotoPngShouldReturnCreated() throws SQLException, IOException {
         when(handler.getOneClinician(any(Connection.class), anyString())).thenReturn(testClinician);
         byte[] multipartFile = PhotoHelper.getBytesFromImage(PNG_PHOTO_TEST_FILE_PATH);
-        ResponseEntity res = controller.putClinicianProfilePhoto("12", multipartFile,"image/png");
+        ResponseEntity res = controller.putClinicianProfilePhoto("12", multipartFile, "image/png");
         Assert.assertEquals(HttpStatus.CREATED, res.getStatusCode());
     }
 
     @Test
-    public void putClinicianProfilePhotoClinicianShouldReturnNotFoundWhenNoClinicianFound() throws SQLException, IOException{
+    public void putClinicianProfilePhotoClinicianShouldReturnNotFoundWhenNoClinicianFound() throws SQLException, IOException {
         when(handler.getOneClinician(any(Connection.class), anyString())).thenReturn(null);
         byte[] multipartFile = PhotoHelper.getBytesFromImage(JPG_PHOTO_TEST_FILE_PATH);
-        ResponseEntity res = controller.putClinicianProfilePhoto("787979", multipartFile,"image/jpeg");
+        ResponseEntity res = controller.putClinicianProfilePhoto("787979", multipartFile, "image/jpeg");
         Assert.assertEquals(HttpStatus.NOT_FOUND, res.getStatusCode());
     }
 
@@ -128,7 +128,7 @@ public class PhotoControllerTest {
     public void putClinicianProfilePhotoInvalidFileShouldReturnBadRequest() throws SQLException, IOException {
         when(handler.getOneClinician(any(Connection.class), anyString())).thenReturn(testClinician);
         byte[] multipartFile = PhotoHelper.getBytesFromImage(NOT_PHOTO_TEST_FILE_PATH);
-        ResponseEntity res = controller.putClinicianProfilePhoto("12", multipartFile,"image/jpeg");
+        ResponseEntity res = controller.putClinicianProfilePhoto("12", multipartFile, "image/jpeg");
         Assert.assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
     }
 
@@ -138,7 +138,7 @@ public class PhotoControllerTest {
 
         Path path = Paths.get(THREE_MB_PHOTO_TEST_FILE_PATH);
         byte[] multipartFile = PhotoHelper.getBytesFromImage(THREE_MB_PHOTO_TEST_FILE_PATH);
-        ResponseEntity res = controller.putClinicianProfilePhoto("12", multipartFile,"image/jpeg");
+        ResponseEntity res = controller.putClinicianProfilePhoto("12", multipartFile, "image/jpeg");
         Assert.assertEquals(HttpStatus.PAYLOAD_TOO_LARGE, res.getStatusCode());
     }
 }

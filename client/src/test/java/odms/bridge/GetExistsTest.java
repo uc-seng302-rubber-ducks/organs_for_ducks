@@ -21,18 +21,14 @@ import static org.mockito.Mockito.when;
 @RunWith(Parameterized.class)
 public class GetExistsTest extends BridgeTestBase {
     private static OkHttpClient mockClient = mock(OkHttpClient.class);
-
+    @Parameterized.Parameter
+    public RoleBridge bridge;
 
     @Parameterized.Parameters
     public static Collection<RoleBridge> data() {
         staticBefore();
         return new ArrayList<>(Arrays.asList(new AdministratorBridge(mockClient), new ClinicianBridge(mockClient), new UserBridge(mockClient)));
     }
-
-    @Parameterized.Parameter
-    public RoleBridge bridge;
-
-
 
     @Test
     public void getExistsReturnsTrueWhenAdminExists() throws IOException {

@@ -48,8 +48,8 @@ public class DeleteUserGUITest extends ApplicationTest {
         AppController.getInstance().getUsers().add(testUser);
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class, "--testConfig=true");
-        setTextField(this,"#userIDTextField","ABC1234");
-        clickOnButton(this,"#loginUButton");
+        setTextField(this, "#userIDTextField", "ABC1234");
+        clickOnButton(this, "#loginUButton");
     }
 
     @After
@@ -63,8 +63,8 @@ public class DeleteUserGUITest extends ApplicationTest {
         clickOn("#editMenuUser");
         clickOn("#deleteUser");
         clickOn("OK");
-        setTextField(this,"#userIDTextField", "ABC1234");
-        clickOnButton(this,"#loginUButton");
+        setTextField(this, "#userIDTextField", "ABC1234");
+        clickOnButton(this, "#loginUButton");
         verifyThat("#userWarningLabel", LabeledMatchers
                 .hasText("User was not found. \nTo register a new user, please click sign up."));
     }

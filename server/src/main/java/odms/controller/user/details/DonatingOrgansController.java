@@ -41,7 +41,7 @@ public class DonatingOrgansController extends BaseController {
             if (toModify == null) {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
-            for (Map.Entry<Organs, ExpiryReason> entry: donating.entrySet()) {
+            for (Map.Entry<Organs, ExpiryReason> entry : donating.entrySet()) {
                 toModify.getDonorDetails().addOrgan(entry.getKey(), entry.getValue());
             }
             handler.saveUser(toModify, connection);

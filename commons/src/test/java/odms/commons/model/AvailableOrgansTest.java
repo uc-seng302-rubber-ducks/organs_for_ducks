@@ -14,18 +14,18 @@ public class AvailableOrgansTest {
     private LocalDateTime time;
 
     @Before
-    public void beforeTest(){
+    public void beforeTest() {
         time = LocalDateTime.of(2018, 9, 8, 14, 43);
-        organDetail = new AvailableOrganDetail(Organs.LIVER, "abc1234", time, "", "" , 30);
+        organDetail = new AvailableOrganDetail(Organs.LIVER, "abc1234", time, "", "", 30);
     }
 
     @Test
-    public void testValidOrgan(){
+    public void testValidOrgan() {
         Assert.assertTrue(organDetail.isOrganStillValid(time.plusSeconds(1)));
     }
 
     @Test
-    public void testInvalidOrganJustInvalid(){
+    public void testInvalidOrganJustInvalid() {
         Assert.assertFalse(organDetail.isOrganStillValid(time.plusSeconds(Organs.LIVER.getUpperBoundSeconds())));
     }
 

@@ -36,8 +36,8 @@ public class AppointmentPickerViewController {
     /**
      * Initializes the AppointmentPickerViewController
      *
-     * @param user          Current user
-     * @param stage         The applications stage.
+     * @param user  Current user
+     * @param stage The applications stage.
      */
     public void init(User user, Stage stage) {
         this.logicController = new AppointmentPickerLogicController(user, stage);
@@ -52,6 +52,7 @@ public class AppointmentPickerViewController {
     /**
      * Calls the server to get the users preferred clinicians and a list of clinicians available for the user to select
      * from when making an appointment (available clinicians are ones in the same region as the user)
+     *
      * @param user User to get available and preferred clinician for
      */
     private void loadPreferredClinicians(User user) {
@@ -64,8 +65,8 @@ public class AppointmentPickerViewController {
             Log.severe("Unable to get preferred clinicians.", e);
         }
 
-        if (comboBoxClinicians.isEmpty()){
-            ComboBoxClinician defaultClinician = new ComboBoxClinician( "default", "0");
+        if (comboBoxClinicians.isEmpty()) {
+            ComboBoxClinician defaultClinician = new ComboBoxClinician("default", "0");
             appointmentBookingPrefClinicianInput.getItems().add(defaultClinician);
         } else {
             for (ComboBoxClinician clinician : comboBoxClinicians) {

@@ -9,24 +9,25 @@ import okhttp3.*;
 
 import java.io.IOException;
 
-public class LoginBridge extends Bifrost{
+public class LoginBridge extends Bifrost {
     public LoginBridge(OkHttpClient client) {
         super(client);
     }
 
     /**
      * requests to log in as the specified role with details, returning the token if successful
-     * @param wanted username/id to attempt to use
+     *
+     * @param wanted   username/id to attempt to use
      * @param password plaintext attempted password
-     * @param role desired role (admin or clinician)
-     *             see UserRole in the server project
+     * @param role     desired role (admin or clinician)
+     *                 see UserRole in the server project
      * @return token if request is successful
      * @throws ApiException if any response other than the expected token is returned
      */
     public String loginToServer(String wanted, String password, String role) throws ApiException, UnauthorisedException {
         Response response;
         JsonObject body = new JsonObject();
-        body.addProperty("username" , wanted);
+        body.addProperty("username", wanted);
         body.addProperty("password", password);
         body.addProperty("role", role);
 
@@ -44,7 +45,7 @@ public class LoginBridge extends Bifrost{
             throw new ApiException(0, "null value return when making the login request");
         }
         int responseCode = response.code();
-        if(responseCode == 404 || responseCode == 401 || responseCode == 403) {
+        if (responseCode == 404 || responseCode == 401 || responseCode == 403) {
             throw new UnauthorisedException("could not log in as the requested user");
         } else if (responseCode == 500 || responseCode == 400) {
             Log.warning("An Error occurred. code returned: " + responseCode);

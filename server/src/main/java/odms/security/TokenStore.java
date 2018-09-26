@@ -2,6 +2,7 @@ package odms.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,7 +22,7 @@ public class TokenStore {
 
     /**
      * Checks to see if a valid token is requested
-     *
+     * <p>
      * A timed out token will return the same as a token that does not exist
      * and will be removed from the set of known tokens
      *
@@ -30,7 +31,7 @@ public class TokenStore {
      */
     AuthToken get(String token) {
         for (AuthToken t : knownAuthTokens) {
-            if (t.getToken().equals(token)){
+            if (t.getToken().equals(token)) {
                 return t;
             }
         }

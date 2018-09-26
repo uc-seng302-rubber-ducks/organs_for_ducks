@@ -27,8 +27,8 @@ public class Administrator extends Undoable<Administrator> implements Listenable
     private String middleName;
     @Expose
     private String lastName;
-    private  String password;
-    private  String salt;
+    private String password;
+    private String salt;
     @Expose
     private LocalDateTime dateCreated;
     @Expose
@@ -74,6 +74,21 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         this.dateLastModified = LocalDateTime.now();
     }
 
+    /**
+     * Could this and changeInto be combined somehow?
+     */
+    public static Administrator clone(Administrator admin) {
+        Administrator newAdmin = new Administrator();
+        newAdmin.userName = admin.userName;
+        newAdmin.firstName = admin.firstName;
+        newAdmin.middleName = admin.middleName;
+        newAdmin.lastName = admin.lastName;
+        newAdmin.password = admin.password;
+        newAdmin.salt = admin.salt;
+        newAdmin.dateCreated = admin.dateCreated;
+        newAdmin.dateLastModified = admin.dateLastModified;
+        return newAdmin;
+    }
 
     @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -195,17 +210,18 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         addChange(new Change("Update password"));
     }
 
+    public String getSalt() {
+        return salt;
+    }
+
     /**
      * Contract pre conditions:
      * Password must already be changed to the desired password
+     *
      * @param salt new salt
      */
-    public void setSalt(String salt){
+    public void setSalt(String salt) {
         this.salt = salt;
-    }
-
-    public String getSalt() {
-        return salt;
     }
 
     public List<Change> getChanges() {
@@ -245,7 +261,6 @@ public class Administrator extends Undoable<Administrator> implements Listenable
     public boolean isPasswordCorrect(String passwordAttempt) {
         return PasswordManager.isExpectedPassword(passwordAttempt, salt, getPassword());
     }
-
 
     private void saveStateForUndo() {
         //attempt to find out who called this method
@@ -306,23 +321,6 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         getUndoStack().push(new Memento<>(clone(this)));
         Memento<Administrator> memento = getRedoStack().pop();
         this.changeInto(memento.getState());
-    }
-
-
-    /**
-     * Could this and changeInto be combined somehow?
-     */
-    public static Administrator clone(Administrator admin) {
-        Administrator newAdmin = new Administrator();
-        newAdmin.userName = admin.userName;
-        newAdmin.firstName = admin.firstName;
-        newAdmin.middleName = admin.middleName;
-        newAdmin.lastName = admin.lastName;
-        newAdmin.password = admin.password;
-        newAdmin.salt = admin.salt;
-        newAdmin.dateCreated = admin.dateCreated;
-        newAdmin.dateLastModified = admin.dateLastModified;
-        return newAdmin;
     }
 
     /**

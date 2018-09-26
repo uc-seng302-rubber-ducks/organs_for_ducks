@@ -24,6 +24,7 @@ import java.util.List;
 public class CSVHandler extends DataHandler {
 
     private int malformed = 0;
+
     /**
      * Takes a CSV file, opened by the file handler
      * and reads the file into a list separated by record

@@ -1,27 +1,16 @@
 package odms.bridge;
 
 import com.google.gson.Gson;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import odms.TestUtils.CommonTestMethods;
 import odms.commons.config.ConfigPropertiesSession;
-import odms.commons.model.Appointment;
 import odms.commons.model.Clinician;
 import odms.commons.model.datamodel.ComboBoxClinician;
-import odms.commons.model.User;
-import odms.commons.model._enum.AppointmentCategory;
-import odms.commons.model._enum.AppointmentStatus;
 import okhttp3.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.testfx.api.FxToolkit;
 
 import java.io.IOException;
-import java.util.List;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;

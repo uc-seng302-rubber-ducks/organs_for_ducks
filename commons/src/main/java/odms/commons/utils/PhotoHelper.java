@@ -65,20 +65,19 @@ public final class PhotoHelper {
         try {
             Image image = new Image(url.openStream());
             imageView.setImage(image);
-        } catch (IOException o){
+        } catch (IOException o) {
             //no
         }
     }
 
     /**
      * for deleting temp folder directory
-     *
      */
     public static void deleteTempDirectory() throws IOException {
         File f = new File(String.valueOf(Directory.TEMP));
         if (f.isDirectory()) {
             File[] fileList = f.listFiles();
-            if(fileList == null){
+            if (fileList == null) {
                 return;
             }
             for (File file : fileList) {
@@ -103,7 +102,7 @@ public final class PhotoHelper {
     }
 
     public static byte[] getBytesFromImage(String filepath) throws IOException {
-        if(filepath.equals("")) return new byte[0];
+        if (filepath.equals("")) return new byte[0];
         return Files.readAllBytes(Paths.get(filepath));
     }
 }

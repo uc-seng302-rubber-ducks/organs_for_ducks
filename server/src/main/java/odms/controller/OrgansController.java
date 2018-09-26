@@ -44,7 +44,7 @@ public class OrgansController extends BaseController {
                                                          @RequestParam(value = "country", defaultValue = "", required = false) String country) {
         try (Connection connection = driver.getConnection()) {
             Log.info("Getting all available organs");
-            return handler.getAvailableOrgans(startIndex, count, organ,  bloodType, region,connection);
+            return handler.getAvailableOrgans(startIndex, count, organ, bloodType, region, connection);
         } catch (SQLException e) {
             Log.error("Unable to retrieve organs from Db", e);
             throw new ServerDBException(e);
@@ -54,20 +54,20 @@ public class OrgansController extends BaseController {
     @IsClinician
     @RequestMapping(method = RequestMethod.GET, value = "/matchingOrgans")
     public List<TransplantDetails> getMatchingOrgans(@RequestParam(value = "startIndex") int startIndex,
-                                                                                @RequestParam(value = "count") int count,
-                                                                                @RequestParam(value = "donorNhi") String donorNhi,
-                                                                                @RequestParam(value = "organ") String organ) {
+                                                     @RequestParam(value = "count") int count,
+                                                     @RequestParam(value = "donorNhi") String donorNhi,
+                                                     @RequestParam(value = "organ") String organ) {
         try (Connection connection = driver.getConnection()) {
             Log.info("Getting all matching organs");
             List<TransplantDetails> sortedMatches = new ArrayList<>();
 
             AvailableOrganDetail availableOrganDetail = handler.getAvailableOrgansByNhi(organ, donorNhi, connection);
 
-            if(availableOrganDetail == null){
+            if (availableOrganDetail == null) {
                 return sortedMatches;
             }
             String[] organs = {organ};
-            List<TransplantDetails> transplantDetails = handler.getTransplantDetails(connection,0, Integer.MAX_VALUE, "" , "", organs);
+            List<TransplantDetails> transplantDetails = handler.getTransplantDetails(connection, 0, Integer.MAX_VALUE, "", "", organs);
             OrganRanker organRanker = new OrganRanker();
             Map<AvailableOrganDetail, List<TransplantDetails>> matches = organRanker.matchOrgansToReceivers(availableOrganDetail, transplantDetails);
             for (Map.Entry<AvailableOrganDetail, List<TransplantDetails>> value : matches.entrySet()) {

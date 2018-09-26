@@ -26,7 +26,7 @@ public class CountriesBridge extends Bifrost {
         String url = ip + "/countries";
         Request request = new Request.Builder().get().url(url).build();
         Response response = client.newCall(request).execute();
-        if(response.isSuccessful()){
+        if (response.isSuccessful()) {
             return handler.decodeCountries(response);
         }
         response.close();
@@ -38,9 +38,9 @@ public class CountriesBridge extends Bifrost {
      * Puts the set of allowed countries onto the database
      *
      * @param countries set of allowed countries
-     * @param token authentication token
+     * @param token     authentication token
      */
-    public void putAllowedCountries(Set countries, String token){
+    public void putAllowedCountries(Set countries, String token) {
         String url = ip + "/countries";
         RequestBody body = RequestBody.create(json, new Gson().toJson(countries));
         Request request = new Request.Builder().addHeader(tokenHeader, token).put(body).url(url).build();
@@ -52,7 +52,7 @@ public class CountriesBridge extends Bifrost {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if(!response.isSuccessful()){
+                if (!response.isSuccessful()) {
                     throw new IOException("Failed to put to the countries endpoint");
                 }
                 response.close();

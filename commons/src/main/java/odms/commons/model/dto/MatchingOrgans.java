@@ -11,7 +11,7 @@ import java.util.Map;
 public class MatchingOrgans {
     private Map<Integer, TransplantDetails> matchingOrgansRanking;
 
-    public MatchingOrgans(Map<Integer, TransplantDetails> matchingOrgansRanking){
+    public MatchingOrgans(Map<Integer, TransplantDetails> matchingOrgansRanking) {
         this.matchingOrgansRanking = matchingOrgansRanking;
     }
 

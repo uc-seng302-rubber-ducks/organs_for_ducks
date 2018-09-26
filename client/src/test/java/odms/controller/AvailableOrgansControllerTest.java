@@ -35,7 +35,7 @@ public class AvailableOrgansControllerTest {
     public void setUp() {
         availableOrganDetails = FXCollections.observableList(new ArrayList<>());
         transplantDetails = FXCollections.observableList(new ArrayList<>());
-        availableOrgansLogicController = new AvailableOrgansLogicController(availableOrganDetails,transplantDetails);
+        availableOrgansLogicController = new AvailableOrgansLogicController(availableOrganDetails, transplantDetails);
         OrgansBridge bridge = new OrgansBridge(client);
         when(controller.getOrgansBridge()).thenReturn(bridge);
         when(client.newCall(any(Request.class))).thenReturn(call);
@@ -50,7 +50,7 @@ public class AvailableOrgansControllerTest {
     @Test
     public void testNextPageNoPages() {
         doNothing().when(call).enqueue(any(Callback.class));
-        availableOrganDetails.add(new AvailableOrganDetail(Organs.BONE, "ABC1234", LocalDateTime.now(), "Hutt Valley", "A+",0));
+        availableOrganDetails.add(new AvailableOrganDetail(Organs.BONE, "ABC1234", LocalDateTime.now(), "Hutt Valley", "A+", 0));
         availableOrgansLogicController.goNextPage(null);
         assertTrue(availableOrganDetails.size() == 1);
         verify(controller, times(0)).getOrgansBridge();

@@ -188,6 +188,7 @@ public class CalendarWidgetFactory {
                     calendarView.setTime(LocalTime.now());
                 } catch (InterruptedException e) {
                     Log.info("Thread interrupted. Message:" + e.getMessage());
+                    Thread.currentThread().interrupt();
                 }
 
             }

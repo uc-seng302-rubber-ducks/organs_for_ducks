@@ -22,6 +22,7 @@ import java.util.Collection;
 @OdmsController
 public class AdminController extends BaseController {
 
+    private static final String DEFAULT = "default";
     private JDBCDriver driver;
     private DBHandler handler;
     private SocketHandler socketHandler;
@@ -31,8 +32,8 @@ public class AdminController extends BaseController {
         driver = super.getDriver();
         handler = super.getHandler();
         this.socketHandler = socketHandler;
-        if (!handler.getExists(driver.getConnection(), Administrator.class, "default")) {
-            Administrator administrator = new Administrator("default", "default", "", "", "admin");
+        if (!handler.getExists(driver.getConnection(), Administrator.class, DEFAULT)) {
+            Administrator administrator = new Administrator(DEFAULT, DEFAULT, "", "", "admin");
             handler.saveAdministrator(administrator, driver.getConnection());
         }
 
@@ -45,7 +46,7 @@ public class AdminController extends BaseController {
                                                       @RequestParam("count") int count,
                                                       @RequestParam(value = "q", required = false) String name) {
         try (Connection connection = driver.getConnection()) {
-            return handler.loadAdmins(connection,startIndex, count,name);
+            return handler.loadAdmins(connection, startIndex, count, name);
         } catch (SQLException ex) {
             Log.severe("could not get admins", ex);
             throw new ServerDBException(ex);

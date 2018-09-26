@@ -219,7 +219,7 @@ public class UpdateUserController {
 
 
         boolean hasOverridedExpiry = false;
-        for (Map.Entry<Organs, ExpiryReason> pair: currentUser.getDonorDetails().getOrganMap().entrySet()) {
+        for (Map.Entry<Organs, ExpiryReason> pair : currentUser.getDonorDetails().getOrganMap().entrySet()) {
             try {
                 sleep(10);
             } catch (InterruptedException e) {
@@ -508,6 +508,7 @@ public class UpdateUserController {
     /**
      * Checks if the entry fields are of a valid format and sensible time (death date after birth date)
      * Combobox entries automatically validates country and region if from New Zealand
+     *
      * @return True if fields are valid.
      */
     private boolean validateDeathDetailsFields() {
@@ -1121,7 +1122,6 @@ public class UpdateUserController {
 
         return changed;
     }
-
 
 
     /**

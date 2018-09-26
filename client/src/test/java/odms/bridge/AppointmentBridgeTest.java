@@ -92,7 +92,7 @@ public class AppointmentBridgeTest extends BridgeTestBase {
         when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
         when(mockCall.execute()).thenThrow(new IOException());
 
-        appointmentsBridge.getClinicianAppointments(0,1,"0", "asdf", testList);
+        appointmentsBridge.getClinicianAppointments(0, 1, "0", "asdf", testList);
         Assert.assertTrue(testList.isEmpty());
     }
 
@@ -103,7 +103,7 @@ public class AppointmentBridgeTest extends BridgeTestBase {
         when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
         when(mockCall.execute()).thenReturn(null);
 
-        appointmentsBridge.getClinicianAppointments(0,1,"0", "asdf", testList);
+        appointmentsBridge.getClinicianAppointments(0, 1, "0", "asdf", testList);
         Assert.assertTrue(testList.isEmpty());
     }
 

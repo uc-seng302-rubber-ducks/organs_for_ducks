@@ -65,12 +65,12 @@ public class CucumberTestModel {
         return controller;
     }
 
-    public static void setUserNhi(String nhi) {
-        userNhi = nhi;
-    }
-
     public static String getUserNhi() {
         return userNhi;
+    }
+
+    public static void setUserNhi(String nhi) {
+        userNhi = nhi;
     }
 
     public static boolean isClinicianLogin() {
@@ -121,12 +121,12 @@ public class CucumberTestModel {
         CucumberTestModel.transplantBridge = transplantBridge;
     }
 
-    public static void setUser(User user) {
-        CucumberTestModel.user = user;
-    }
-
     public static User getUser() {
         return user;
+    }
+
+    public static void setUser(User user) {
+        CucumberTestModel.user = user;
     }
 
     public static ConfigPropertiesSession getSession() {

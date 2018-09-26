@@ -62,7 +62,7 @@ public class NewDiseaseController {
         this.userController = userController;
         currentUser = user;
         editableDisease = disease;
-        if(disease != null) {
+        if (disease != null) {
             String diseaseName = disease.getName();
             LocalDate date = disease.getDiagnosisDate();
             boolean isCured = disease.getIsCured();
@@ -156,7 +156,7 @@ public class NewDiseaseController {
         }
 
         if (isValid) {
-            if(editableDisease == null){
+            if (editableDisease == null) {
                 editableDisease = new Disease();
             }
             //this if/if else ensures that cured diseases can only be in pastDiseases[] and chronic diseases can only be in currentDiseases[]
@@ -179,8 +179,8 @@ public class NewDiseaseController {
                 editableDisease.setIsCured(isCured);
                 editableDisease.setIsChronic(isChronic);
             } else {
-                if(!currentUser.getCurrentDiseases().contains(editableDisease) && !currentUser.getPastDiseases().contains(editableDisease)) {
-                    if(isCured){
+                if (!currentUser.getCurrentDiseases().contains(editableDisease) && !currentUser.getPastDiseases().contains(editableDisease)) {
+                    if (isCured) {
                         currentUser.addPastDisease(editableDisease);
                     } else {
                         currentUser.addCurrentDisease(editableDisease);

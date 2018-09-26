@@ -29,11 +29,11 @@ import java.util.List;
 @OdmsController
 public class AppointmentController extends BaseController {
 
+    private static final String BAD_DB_RESPONSE = "Got bad response from DB. SQL error code: ";
     private Mailer mailer;
     private DBHandler handler;
     private JDBCDriver driver;
     private SocketHandler socketHandler;
-    private static final String BAD_DB_RESPONSE = "Got bad response from DB. SQL error code: ";
 
     @Autowired
     public AppointmentController(DBManager manager, SocketHandler socketHandler, Mailer mailer) {
@@ -46,7 +46,7 @@ public class AppointmentController extends BaseController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/appointments/exists")
     public boolean userAppointmentStatusExists(@PathVariable(name = "nhi") String nhi,
-                                 @RequestParam(name = "status") int statusId) {
+                                               @RequestParam(name = "status") int statusId) {
         try (Connection connection = driver.getConnection()) {
             return handler.checkAppointmentStatusExists(connection, nhi, statusId, UserType.USER);
         } catch (SQLException e) {
@@ -57,7 +57,7 @@ public class AppointmentController extends BaseController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/clinicians/{staffId}/appointments/exists")
     public boolean clinicianAppointmentStatusExists(@PathVariable(name = "staffId") String staffId,
-                                 @RequestParam(name = "status") int statusId) {
+                                                    @RequestParam(name = "status") int statusId) {
         try (Connection connection = driver.getConnection()) {
             return handler.checkAppointmentStatusExists(connection, staffId, statusId, UserType.CLINICIAN);
         } catch (SQLException e) {
@@ -68,8 +68,8 @@ public class AppointmentController extends BaseController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/appointments")
     public Collection<Appointment> getUserAppointments(@RequestParam(name = "count") int count,
-                                                   @RequestParam(name = "startIndex") int start,
-                                                   @PathVariable(name = "nhi") String nhi) {
+                                                       @RequestParam(name = "startIndex") int start,
+                                                       @PathVariable(name = "nhi") String nhi) {
         try (Connection connection = driver.getConnection()) {
             return handler.getAppointments(connection, nhi, UserType.USER, count, start);
         } catch (SQLException e) {
@@ -81,12 +81,12 @@ public class AppointmentController extends BaseController {
     @IsClinician
     @RequestMapping(method = RequestMethod.GET, value = "/clinicians/{staffId}/appointments")
     public Collection<Appointment> getClinicianAppointments(@RequestParam(name = "count") int count,
-                                                   @RequestParam(name = "startIndex") int start,
-                                                   @PathVariable(name = "staffId") String staffId) {
+                                                            @RequestParam(name = "startIndex") int start,
+                                                            @PathVariable(name = "staffId") String staffId) {
         try (Connection connection = driver.getConnection()) {
             return handler.getAppointments(connection, staffId, UserType.CLINICIAN, count, start);
         } catch (SQLException e) {
-            Log.severe("Unable to get clinician requested appointments with staff id: "+staffId+". SQL error code: " + e.getErrorCode(), e);
+            Log.severe("Unable to get clinician requested appointments with staff id: " + staffId + ". SQL error code: " + e.getErrorCode(), e);
             throw new ServerDBException(e);
         }
     }
@@ -116,11 +116,11 @@ public class AppointmentController extends BaseController {
     @IsClinician
     @RequestMapping(method = RequestMethod.GET, value = "/clinicians/{staffId}/appointmentsTimes")
     public Collection<LocalDateTime> getClinicianAppointmentsTimes(@PathVariable(name = "staffId") String staffid,
-                                                                  @RequestParam(name = "startDateTime") String startDate,
-                                                                  @RequestParam(name = "endDateTime") String endDate
-                                                                  ){
+                                                                   @RequestParam(name = "startDateTime") String startDate,
+                                                                   @RequestParam(name = "endDateTime") String endDate
+    ) {
         try (Connection connection = driver.getConnection()) {
-            return handler.getBookedAppointmentDateTimes(connection, staffid,startDate,endDate);
+            return handler.getBookedAppointmentDateTimes(connection, staffid, startDate, endDate);
         } catch (SQLException e) {
             Log.severe(BAD_DB_RESPONSE + e.getErrorCode(), e);
             throw new ServerDBException(e);
@@ -166,7 +166,6 @@ public class AppointmentController extends BaseController {
             } else {
                 Log.warning("A user tried to update an appointment status that they are not allowed to.");
             }
-            // TODO: still needs the client side broadcast implementation
         } catch (SQLException e) {
             Log.severe("Cannot patch appointment status to database", e);
             throw new ServerDBException(e);
@@ -178,7 +177,8 @@ public class AppointmentController extends BaseController {
 
     /**
      * If the appointment status is being changed to rejected seen, this function deletes that appointment from the database
-     * @param statusId Id of the status the appointment is being changed to. The function will do nothing if this is not 7
+     *
+     * @param statusId      Id of the status the appointment is being changed to. The function will do nothing if this is not 7
      * @param appointmentId Id of the appointment to delete id the status is correct
      */
     private void deleteRejectedSeen(Connection connection, AppointmentUpdateStrategy appointmentUpdateStrategy, int statusId, int appointmentId) {
@@ -312,7 +312,7 @@ public class AppointmentController extends BaseController {
      * c) date and time must be between 8am-5pm
      * d) date and time must not clash with accepted appointment bookings date and time.
      *
-     * @param staffId of clinician
+     * @param staffId           of clinician
      * @param requestedDateTime of requested appointment booking
      * @return true if validation passes based on rules stated above, false otherwise.
      * @throws SQLException if there are any database errors.
@@ -338,7 +338,7 @@ public class AppointmentController extends BaseController {
         try (Connection connection = driver.getConnection()) {
             bookedAppointmentTimes = handler.getBookedAppointmentTimes(connection, staffId);
             for (LocalDateTime bookedAppointmentTime : bookedAppointmentTimes) {
-                if(bookedAppointmentTime.isEqual(requestedDateTime)) {
+                if (bookedAppointmentTime.isEqual(requestedDateTime)) {
                     return false;
                 }
             }

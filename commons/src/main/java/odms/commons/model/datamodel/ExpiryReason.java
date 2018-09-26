@@ -29,28 +29,28 @@ public class ExpiryReason {
         return id;
     }
 
-    public LocalDateTime getTimeOrganExpired() {
-        return timeOrganExpired;
-    }
-
-    public String getReason() {
-        return reason;
-    }
-
-    public String getName() {
-        return name;
-    }
-
     public void setId(String id) {
         this.id = id;
+    }
+
+    public LocalDateTime getTimeOrganExpired() {
+        return timeOrganExpired;
     }
 
     public void setTimeOrganExpired(LocalDateTime timeOrganExpired) {
         this.timeOrganExpired = timeOrganExpired;
     }
 
+    public String getReason() {
+        return reason;
+    }
+
     public void setReason(String reason) {
         this.reason = reason;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {

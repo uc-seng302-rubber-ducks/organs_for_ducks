@@ -10,8 +10,8 @@ import picocli.CommandLine.Option;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.List;
 import java.time.LocalTime;
+import java.util.List;
 
 @Command(name = "details", description = "The current NHI is required to identify the the user. All other tags will update values")
 public class UpdateUserDetails implements Runnable {
@@ -179,9 +179,15 @@ public class UpdateUserDetails implements Runnable {
 
         if (smoker != null) {
             switch (smoker) {
-                case "0": user.setSmoker(false); break;
-                case "1": user.setSmoker(true); break;
-                default: IoHelper.display("Invalid smoker value"); return;
+                case "0":
+                    user.setSmoker(false);
+                    break;
+                case "1":
+                    user.setSmoker(true);
+                    break;
+                default:
+                    IoHelper.display("Invalid smoker value");
+                    return;
             }
         }
 
@@ -286,11 +292,11 @@ public class UpdateUserDetails implements Runnable {
         if (changed) {
             controller.update(user);
             controller.saveUser(user);
-            IoHelper.display("Successfully updated user:"+ originalNhi);
+            IoHelper.display("Successfully updated user:" + originalNhi);
         }
     }
 
-    public void setAppController(AppController appController){
+    public void setAppController(AppController appController) {
         this.controller = appController;
     }
 }

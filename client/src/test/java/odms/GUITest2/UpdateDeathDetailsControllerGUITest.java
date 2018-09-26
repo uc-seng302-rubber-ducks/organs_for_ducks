@@ -38,12 +38,12 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.testfx.api.FxAssert.verifyThat;
 
-public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
+public class UpdateDeathDetailsControllerGUITest extends ApplicationTest {
 
+    private final String dateErrorText = "There is an error with your Date of Death";
     private DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private User testUser = new User("Aa", LocalDate.parse("2000-01-20", sdf), "ABC1244");
     private Collection<UserOverview> overviews = Collections.singletonList(UserOverview.fromUser(testUser));
-    private final String dateErrorText = "There is an error with your Date of Death";
 
     @BeforeClass
     public static void initialization() {
@@ -75,7 +75,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         doNothing().when(userController).showUser(any(User.class));
 
         when(application.getTransplantList()).thenReturn(new ArrayList<>());
-        when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
+        when(loginBridge.loginToServer(anyString(), anyString(), anyString())).thenReturn("lsdjfksd");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(clinician);
         doNothing().when(application).addUserOverview(any(UserOverview.class));
 
@@ -86,7 +86,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         when(application.getUsername()).thenReturn("erson");
 
         when(application.getOrgansBridge()).thenReturn(organsBridge);
-        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(),anyInt(),anyString(),anyString(),
+        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(),
                 anyString(), anyString(), anyString(), any(ObservableList.class), eq(null));
 
         FxToolkit.registerPrimaryStage();
@@ -107,9 +107,9 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
     private void loginAsClinician() {
         //Use default clinician
         clickOn("#clinicianTab");
-        setTextField(this,"#staffIdTextField" ,"0");
-        setTextField(this, "#staffPasswordField","admin");
-        clickOnButton(this,"#loginCButton");
+        setTextField(this, "#staffIdTextField", "0");
+        setTextField(this, "#staffPasswordField", "admin");
+        clickOnButton(this, "#loginCButton");
         clickOn("#searchTab");
         interact(() -> {
             lookup("#searchTableView").queryAs(TableView.class).setItems(FXCollections.observableList(Collections.singletonList(UserOverview.fromUser(testUser))));
@@ -118,10 +118,11 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         doubleClickOn(getCell("#searchTableView", 0, 0));
     }
 
-    @Test @Ignore //Using css to make the tab invisible makes the test unable to find it
+    @Test
+    @Ignore //Using css to make the tab invisible makes the test unable to find it
     public void testUserCannotEditDeathDetails() {
-        setTextField(this,"#userIDTextField", "ABC1244");
-        clickOnButton(this,"#loginUButton");
+        setTextField(this, "#userIDTextField", "ABC1244");
+        clickOnButton(this, "#loginUButton");
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         verifyThat("#deathtab", Node::isDisabled);
@@ -218,16 +219,15 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
 
         Optional<ButtonType> result = Optional.of(ButtonType.YES);
 //        try {
-            Alert alert = mock(Alert.class);
-            doReturn(result).when(alert.showAndWait());
-            //doReturn(result).when(Alert.class.getMethod("showAndWait"));
+        Alert alert = mock(Alert.class);
+        doReturn(result).when(alert.showAndWait());
+        //doReturn(result).when(Alert.class.getMethod("showAndWait"));
 //        }
 //        } catch (NoSuchMethodException e) {
 //            Log.error("The method showAndWait in Alert does not exist", e);
 //        }
 
         clickOnButton(this, "#UserCancelButton");
-
 
 
         verifyThat("#DODValue", LabeledMatchers.hasText(""));
@@ -306,7 +306,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         clickOn("#userDead");
         setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now());
         setTextField(this, "#updateDeathDetailsTimeTextField", inputTime);
-        clickOn( "#updateProfileButton");
+        clickOn("#updateProfileButton");
 
         verifyThat("#updateDeathDetailsErrorLabel", LabeledMatchers.hasText("The time of death cannot be in the future"));
 

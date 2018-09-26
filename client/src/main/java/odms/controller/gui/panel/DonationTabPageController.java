@@ -95,14 +95,14 @@ public class DonationTabPageController {
         currentlyDonating.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         populateOrganLists(user);
         updateButton();
-        currentlyDonating.getSelectionModel().selectedItemProperty().addListener(a-> {
-            if(currentlyDonating.getSelectionModel().getSelectedItem() == null){
+        currentlyDonating.getSelectionModel().selectedItemProperty().addListener(a -> {
+            if (currentlyDonating.getSelectionModel().getSelectedItem() == null) {
                 return;
             }
-            if (!currentlyDonating.getSelectionModel().getSelectedItem().getExpired()){
+            if (!currentlyDonating.getSelectionModel().getSelectedItem().getExpired()) {
                 removeExpiryReasonButton.setDisable(true);
                 expireOrganButton.setText("Expire Organ");
-            } else{
+            } else {
                 removeExpiryReasonButton.setDisable(false);
                 expireOrganButton.setText("Edit Expiry Details");
             }
