@@ -91,7 +91,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
 
 
     @Test
-    public void multipleChangesSummedInMainWindow() {
+    public void multipleChangesNotSummedInMainWindow() {
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         setTextField(this,"#mNameInput","geoff");
@@ -105,6 +105,6 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
         clickOnButton(this,"#undoButton");
 
         verifyThat("#smokerValue", LabeledMatchers.hasText("No"));
-        verifyThat("#mNameValue", LabeledMatchers.hasText(""));
+        verifyThat("#mNameValue", LabeledMatchers.hasText("geoff"));
     }
 }
