@@ -1,3 +1,5 @@
+DROP EVENT IF EXISTS qualifyOrgans;
+DROP TABLE IF EXISTS DisqualifiedOrgans;
 DROP TABLE IF EXISTS BloodTestDetails;
 DROP TABLE IF EXISTS PreferredClinician;
 DROP TABLE IF EXISTS AppointmentDetails;
@@ -28,6 +30,7 @@ DROP TABLE IF EXISTS Administrator;
 DROP TABLE IF EXISTS Clinician;
 DROP TABLE IF EXISTS User;
 
+SET GLOBAL event_scheduler = TRUE ;
 
 CREATE TABLE User (
   uniqueId       INT AUTO_INCREMENT PRIMARY KEY,
@@ -321,6 +324,26 @@ CREATE TABLE AppointmentDetails (
     ON UPDATE CASCADE
 );
 
+CREATE TABLE DisqualifiedOrgans(
+  disqualifiedId          INT AUTO_INCREMENT PRIMARY KEY,
+  fkUserNhi               VARCHAR(7),
+  description             TEXT,
+  fkOrgan                 SMALLINT,
+  fkStaffId               VARCHAR(255),
+  dateDisqualified        DATE,
+  dateEligible            DATE,
+  isCurrentlyDisqualified BOOL,
+  FOREIGN KEY (fkUserNhi) REFERENCES User(nhi)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  FOREIGN KEY (fkOrgan) REFERENCES Organ(organId)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE,
+  FOREIGN KEY (fkStaffId) REFERENCES Clinician(staffId)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE
+);
+
 CREATE TABLE PreferredClinician (
   fkUserNhi VARCHAR(7) PRIMARY KEY,
   fkStaffId VARCHAR(255),
@@ -331,6 +354,14 @@ CREATE TABLE PreferredClinician (
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
+
+CREATE DEFINER=`seng302-team100`@`%` EVENT `qualifyOrgans`
+  ON SCHEDULE EVERY 1 DAY ON COMPLETION PRESERVE
+DISABLE DO
+  UPDATE DisqualifiedOrgans
+  set isCurrentlyDisqulifed = 0
+  WHERE dateEligable <= CURDATE()
+
 
 CREATE TABLE BloodTestDetails(
   bloodTestId         INT AUTO_INCREMENT PRIMARY KEY,

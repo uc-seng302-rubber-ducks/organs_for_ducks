@@ -4,19 +4,15 @@ import odms.commons.model.Disease;
 import odms.commons.model.MedicalProcedure;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
-import odms.commons.model.datamodel.ContactDetails;
-import odms.commons.model.datamodel.ExpiryReason;
-import odms.commons.model.datamodel.Medication;
-import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
+import odms.commons.model.datamodel.*;
 import odms.commons.utils.Log;
 import odms.database.DBUtils;
+import odms.database.DisqualifiedOrgansHandler;
 
 import java.sql.*;
+import java.sql.Date;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class UserUpdateStrategy extends AbstractUpdateStrategy {
 
@@ -277,6 +273,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             updateUserDiseases(user, connection);
             updateMedications(user, connection);
             updateDeathDetails(user, connection);
+            updateDisqualifiedOrgans(user, connection);
             connection.commit();
         } catch (SQLException sqlEx) {
             Log.severe("A fatal error in deletion, cancelling operation", sqlEx);
@@ -288,8 +285,28 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     }
 
     /**
-     * @param user
-     * @param connection
+     * Stores all disqualified organs for the given user in the database
+     *
+     * @param user          The user containing disqualified organs
+     * @param connection    Connection to the target database
+     * @throws SQLException if there is an error with the database, or the connection is invalid
+     */
+    private void updateDisqualifiedOrgans(User user, Connection connection) throws SQLException {
+        DisqualifiedOrgansHandler disqualifiedOrgansHandler = new DisqualifiedOrgansHandler();
+        deleteFieldsOfUser("DisqualifiedOrgans", user.getNhi(), connection);
+        List<OrgansWithDisqualification> organs = new ArrayList<>(user.getDonorDetails().getDisqualifiedOrgans());
+        disqualifiedOrgansHandler.postDisqualifiedOrgan(connection, organs, user.getNhi());
+        disqualifiedOrgansHandler.getDisqualifiedOrgans(connection, user.getNhi()); //Get the newly created disqualifiedIds
+        disqualifiedOrgansHandler.updateDisqualifiedOrgan(connection, organs);
+        disqualifiedOrgansHandler.deleteDisqualifiedOrgan(connection, organs);
+    }
+
+    /**
+     * Stores all the organs the user is currently receiving in the database
+     *
+     * @param user          The user containing the receiver details to be stored
+     * @param connection    Connection to the target database
+     * @throws SQLException if there is an error with the database, or the connection is invalid
      */
     private void updateUserReceivingOrgans(User user, Connection connection) throws SQLException {
         deleteFieldsOfUser("OrganAwaiting", user.getNhi(), connection);

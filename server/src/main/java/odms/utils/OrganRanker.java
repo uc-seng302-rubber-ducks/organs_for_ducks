@@ -63,6 +63,9 @@ public class OrganRanker {
             if (!organAvailable.getBloodType().equalsIgnoreCase(transplantDetail.getBloodType())) {
                 continue;
             }
+            if(transplantDetail.getRegion() == null || organAvailable.getRegion() == null){
+                continue;
+            }
 
             if (regionsWithDistance.contains(transplantDetail.getRegion()) && regionsWithDistance.contains(organAvailable.getRegion())) {
                 double distanceBetweenDonorAndReceiver = distanceCalculator.distanceBetweenRegions(

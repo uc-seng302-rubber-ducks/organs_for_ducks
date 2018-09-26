@@ -38,8 +38,12 @@ public class TableViewsMethod extends TableViews {
      * @return the content of a cell
      */
     public static Object getCellValue(String tableName, int column, int row) {
-        TableView<?> table = getTableView(tableName);
-        return table.getColumns().get(column).getCellObservableValue(row).getValue();
+        try {
+            TableView<?> table = getTableView(tableName);
+            return table.getColumns().get(column).getCellObservableValue(row).getValue();
+        } catch (NullPointerException n) {
+            return null;
+        }
     }
 
     /**

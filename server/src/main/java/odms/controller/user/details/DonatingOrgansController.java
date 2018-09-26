@@ -7,6 +7,7 @@ import odms.commons.utils.Log;
 import odms.controller.BaseController;
 import odms.controller.OdmsController;
 import odms.database.DBHandler;
+import odms.database.DisqualifiedOrgansHandler;
 import odms.database.JDBCDriver;
 import odms.exception.ServerDBException;
 import odms.utils.DBManager;
@@ -25,11 +26,13 @@ import java.util.Map;
 public class DonatingOrgansController extends BaseController {
     private JDBCDriver driver;
     private DBHandler handler;
+    private DisqualifiedOrgansHandler disqualifiedOrgansHandler;
 
     public DonatingOrgansController(DBManager manager) {
         super(manager);
         driver = super.getDriver();
         handler = super.getHandler();
+        disqualifiedOrgansHandler = new DisqualifiedOrgansHandler();
     }
 
 

@@ -14,6 +14,7 @@ import odms.controller.AppController;
 import odms.controller.gui.popup.view.NewBloodTestViewController;
 import odms.controller.gui.widget.LoadingWidget;
 import odms.socket.ServerEventNotifier;
+import utils.StageIconLoader;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -58,6 +59,8 @@ public class BloodTestsLogicController implements PropertyChangeListener {
             bloodTestStage.setScene(new Scene(root));
             bloodTestStage.setResizable(false);
             bloodTestStage.setTitle("Add New Blood Test");
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            bloodTestStage.getIcons().add(stageIconLoader.getIconImage());
             bloodTestStage.showAndWait();
             Log.info("Successfully launched the new blood test pop-up window for user: " + user.getNhi());
 

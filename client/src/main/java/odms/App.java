@@ -17,6 +17,7 @@ import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.window.LoginController;
 import utils.AppConfigurator;
+import utils.StageIconLoader;
 
 import java.io.IOException;
 import java.net.URL;
@@ -93,6 +94,8 @@ public class App extends Application {
 
 
         loginController.init(controller, primaryStage);
+        StageIconLoader stageIconLoader = new StageIconLoader();
+        primaryStage.getIcons().add(stageIconLoader.getIconImage());
         primaryStage.show();
     }
 
