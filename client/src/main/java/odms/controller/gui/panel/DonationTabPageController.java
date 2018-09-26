@@ -480,6 +480,7 @@ public class DonationTabPageController {
         }
         currentlyDonating.refresh();
         parent.refreshCurrentlyReceivingList();
+        parent.refreshHistoryTable();
     }
 
     /**
@@ -553,6 +554,7 @@ public class DonationTabPageController {
         }
         refreshCurrentlyDonating();
         parent.refreshCurrentlyReceivingList();
+        parent.refreshHistoryTable();
     }
 
     /**

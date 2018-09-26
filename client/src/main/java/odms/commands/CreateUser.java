@@ -107,7 +107,7 @@ public class CreateUser implements Runnable {
         }
 
         LocalDate dob = IoHelper.readDate(dobString);
-        if (!AttributeValidation.validateDateOfBirth(dob)) {
+        if (!AttributeValidation.validateDateBeforeTomorrow(dob)) {
             IoHelper.display("Invalid Date of birth");
             return;
         }

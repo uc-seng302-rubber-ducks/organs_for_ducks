@@ -73,7 +73,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
     }
 
     @Test
-    public void ChangesResetWhenCancelButtonClicked() {
+    public void changesResetWhenCancelButtonClicked() {
         //Dont change me to the new methods ill break
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
@@ -91,7 +91,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
 
 
     @Test
-    public void MultipleChangesSummedInMainWindow() {
+    public void multipleChangesNotSummedInMainWindow() {
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         setTextField(this,"#mNameInput","geoff");
@@ -105,6 +105,6 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
         clickOnButton(this,"#undoButton");
 
         verifyThat("#smokerValue", LabeledMatchers.hasText("No"));
-        verifyThat("#mNameValue", LabeledMatchers.hasText(""));
+        verifyThat("#mNameValue", LabeledMatchers.hasText("geoff"));
     }
 }

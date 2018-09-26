@@ -6,6 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -25,6 +26,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextBoundsType;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import odms.bridge.AppointmentsBridge;
 import odms.bridge.ClinicianBridge;
@@ -101,8 +103,6 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
     private TextField searchTextField;
 
 
-    @FXML
-    private Tooltip searchToolTip;
     @FXML
     private LoadingTableView<UserOverview> searchTableView;
 
@@ -218,7 +218,12 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
             logoutMenuClinician.setOnAction(e -> logout());
         }
 
-        stage.setOnCloseRequest(e -> availableOrgansViewController.shutdownThreads());
+        EventHandler<WindowEvent> closeEvent = stage.getOnCloseRequest();
+        stage.setOnCloseRequest(e -> {
+            availableOrgansViewController.shutdownThreads();
+            closeEvent.handle(e);
+
+        });
 
         displayImage(profileImage, clinician.getProfilePhotoFilePath());
         if (ConfigPropertiesSession.getInstance().getProperty("testConfig", "false").equals("false")) {

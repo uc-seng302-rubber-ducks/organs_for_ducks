@@ -7,6 +7,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -22,6 +24,7 @@ import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 
 import java.io.IOException;
+import java.net.URL;
 
 /**
  * Class for the login functionality of the application
@@ -54,6 +57,11 @@ public class LoginController {
     private Label adminWarningLabel;
     @FXML
     private TabPane loginTabPane;
+    @FXML
+    private ImageView logoImageView;
+    @FXML
+    private Label poweredByLabel;
+
     private Stage helpStage = null;
     private AppController appController;
     private Stage stage;
@@ -70,9 +78,13 @@ public class LoginController {
         userWarningLabel.setText("");
         clinicianWarningLabel.setText("");
         adminWarningLabel.setText("");
+//        poweredByLabel.setText("Powered by Rubber Duck Software\u2122");
+        poweredByLabel.setText("Powered by Rubber Duck Software Group");
+//        poweredByLabel.setText("Powered by Quacks\u2122");
         this.appController = appController;
         this.stage = stage;
         stage.setTitle("Login");
+        stage.setResizable(false);
         appController.setUsername("");
         appController.setName("");
         Scene scene = stage.getScene();
@@ -89,6 +101,23 @@ public class LoginController {
                 }
             }
         });
+
+        loadLogoImage();
+    }
+
+    private void loadLogoImage() {
+        URL url = getClass().getResource("/logos/LoveDuck.png");
+//        URL url = getClass().getResource("/logos/HeartDuck.png");
+        if (url == null) {
+            Log.warning("Could not load the icon for the taskbar. Check that the filepath is correct");
+        } else {
+            try {
+                javafx.scene.image.Image image = new Image(url.openStream());
+                logoImageView.setImage(image);
+            } catch (IOException io) {
+                Log.warning("Could not the logo image for the login controller", io);
+            }
+        }
     }
 
     /**

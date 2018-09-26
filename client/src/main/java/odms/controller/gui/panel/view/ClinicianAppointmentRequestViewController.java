@@ -42,6 +42,7 @@ import java.util.Comparator;
 
 public class ClinicianAppointmentRequestViewController implements Converter {
 
+
     @FXML
     private LoadingTableView<Appointment> clinicianAppointmentsRequestView;
 
@@ -353,20 +354,20 @@ public class ClinicianAppointmentRequestViewController implements Converter {
             return;
         }
         boolean valid = true;
-
+        resetAppointmentFields();
         if (appointmentRequestTime.getSelectionModel().getSelectedItem() == null){
             valid = false;
             AlertWindowFactory.generateInfoWindow("please pick a time");
         } else {
 
-            if (!AttributeValidation.validateTimeString(appointmentRequestTime.getValue().toString())) {
-                appointmentRequestTime.setStyle("-fx-background-color: rgba(100%, 0%, 0%, 0.25); -fx-border-color: RED");
+            if (!AttributeValidation.validateTimeString(appointmentRequestTime.getValue().toString()) || appointmentRequestTime.getValue().toString().equals("00:00")) {
+                appointmentRequestTime.getStyleClass().add("invalid");
                 valid = false;
             }
         }
 
         if (!AttributeValidation.validateDateOfAppointment(appointmentRequestDate.getValue())) {
-            appointmentRequestDate.setStyle("-fx-background-color: rgba(100%, 0%, 0%, 0.25); -fx-border-color: RED");
+            appointmentRequestDate.getStyleClass().add("invalid");
             valid = false;
         }
 
@@ -385,6 +386,13 @@ public class ClinicianAppointmentRequestViewController implements Converter {
         }
 
 
+    }
+
+    private void resetAppointmentFields() {
+
+
+        appointmentRequestDate.getStyleClass().remove("invalid");
+        appointmentRequestTime.getStyleClass().remove("invalid");
     }
 
     /**
