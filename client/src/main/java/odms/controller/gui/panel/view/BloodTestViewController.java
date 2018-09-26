@@ -499,15 +499,16 @@ public class BloodTestViewController implements LoadingWidget {
                 timeRangeAxis.setTickLabelRotation(0);
                 DayOfWeek start = LocalDate.now().minusWeeks(1).plusDays(1).getDayOfWeek();
                 List<DayOfWeek> days = Arrays.asList(DayOfWeek.values());
+                int numDaysInAWeek = 7;
 
                 days.sort((o1, o2) -> {
                     int o1Value = o1.getValue();
                     if (o1Value < start.getValue()) {
-                        o1Value += 7;
+                        o1Value += numDaysInAWeek;
                     }
                     int o2Value = o2.getValue();
                     if (o2Value < start.getValue()) {
-                        o2Value += 7;
+                        o2Value += numDaysInAWeek;
                     }
 
                     return Integer.compare(o1Value, o2Value);
@@ -554,15 +555,16 @@ public class BloodTestViewController implements LoadingWidget {
                 timeRangeAxis.setTickLabelRotation(0);
                 Month startMonth = LocalDate.now().plusMonths(1).getMonth();
                 List<Month> months = Arrays.asList(Month.values());
+                int numMonthsInAYear = 12;
 
                 months.sort((o1, o2) -> {
                     int o1Value = o1.getValue();
                     if (o1Value < startMonth.getValue()) {
-                        o1Value += 12;
+                        o1Value += numMonthsInAYear;
                     }
                     int o2Value = o2.getValue();
                     if (o2Value < startMonth.getValue()) {
-                        o2Value += 12;
+                        o2Value += numMonthsInAYear;
                     }
 
                     return Integer.compare(o1Value, o2Value);

@@ -94,7 +94,7 @@ public class BloodTestBridge extends Bifrost {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-
+                Log.severe("Could not get all blood tests for " + nhi, e);
             }
 
             @Override
