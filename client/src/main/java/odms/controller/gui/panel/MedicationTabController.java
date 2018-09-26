@@ -19,6 +19,7 @@ import odms.controller.gui.popup.MedicationsTimeController;
 import odms.controller.gui.window.UserController;
 import okhttp3.OkHttpClient;
 import org.controlsfx.control.textfield.TextFields;
+import utils.StageIconLoader;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -341,6 +342,8 @@ public class MedicationTabController {
             MedicationsTimeController medicationsTimeController = medicationTimeViewLoader
                     .getController();
             medicationsTimeController.init(currentUser, stage, med);
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            stage.getIcons().add(stageIconLoader.getIconImage());
             stage.show();
             Log.info("successfully launched Medications Time view window for User NHI: " + currentUser.getNhi());
         } catch (IOException e) {

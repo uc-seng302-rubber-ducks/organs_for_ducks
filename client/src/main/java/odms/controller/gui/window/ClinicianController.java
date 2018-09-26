@@ -52,6 +52,7 @@ import odms.controller.gui.popup.DeletedUserController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.controller.gui.widget.LoadingTableView;
 import odms.socket.ServerEventNotifier;
+import utils.StageIconLoader;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -424,10 +425,11 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
             UserController userController = userLoader.getController();
             AppController.getInstance().setUserController(userController);
             userController.init(AppController.getInstance(), user, userStage, true, parentListeners);
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            userStage.getIcons().add(stageIconLoader.getIconImage());
             userStage.show();
             Log.info("Clinician " + clinician.getStaffId()
                     + " successfully launched user overview window");
-            userStage.show();
         } catch (IOException e) {
             Log.severe("Clinician " + clinician.getStaffId() + " Failed to load user overview window", e);
             AlertWindowFactory.generateError(e);
@@ -552,6 +554,8 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
             root = loader.load();
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            newStage.getIcons().add(stageIconLoader.getIconImage());
             newStage.show();
             stage.close();
             availableOrgansViewController.shutdownThreads();
@@ -605,6 +609,8 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
             newStage.setScene(new Scene(root));
             updateClinicianController.init(clinician, appController, stage, false, newStage);
             newStage.initModality(Modality.APPLICATION_MODAL); // background window is no longer selectable
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            newStage.getIcons().add(stageIconLoader.getIconImage());
             newStage.showAndWait();
             showClinician(clinician);
             Log.info("Clinician " + clinician.getStaffId() + " successfully launched update clinician window");
@@ -649,6 +655,8 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
             stage.setScene(new Scene(root));
             deletedUserController.init(false);
             stage.initModality(Modality.APPLICATION_MODAL);
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            stage.getIcons().add(stageIconLoader.getIconImage());
             stage.showAndWait();
             Log.info("Clinician " + clinician.getStaffId() + " successfully launched delete user window");
         } catch (IOException e) {

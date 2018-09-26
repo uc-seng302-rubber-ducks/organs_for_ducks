@@ -23,6 +23,7 @@ import odms.controller.AppController;
 import odms.controller.gui.panel.view.OrganExpiryViewController;
 import odms.controller.gui.widget.ProgressBarTableCellFactory;
 import odms.controller.gui.window.UserController;
+import utils.StageIconLoader;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -269,6 +270,8 @@ public class DonationTabPageController {
                     updateStage.initModality(Modality.APPLICATION_MODAL);
                     updateStage.setScene(new Scene(root));
                     organExpiryViewController.init(this.application, currentlyDonating.getSelectionModel().getSelectedItem().getOrganType(), expir, currentUser, updateStage, this);
+                    StageIconLoader stageIconLoader = new StageIconLoader();
+                    updateStage.getIcons().add(stageIconLoader.getIconImage());
                     updateStage.show();
                     Log.info("Successfully launched organ expiry window for User NHI: " + currentUser.getNhi());
 

@@ -225,7 +225,7 @@ public class ProcedureTabController {
             procedureModificationViewController.init(procedure, stage, currentUser, this);
             stage.setScene(new Scene(root));
             StageIconLoader stageIconLoader = new StageIconLoader();
-            stageIconLoader.setStageIcon(stage);
+            stage.getIcons().add(stageIconLoader.getIconImage());
             stage.show();
             Log.info("successfully launched add procedures pop-up window for User NHI: " + currentUser.getNhi());
         } catch (IOException e) {

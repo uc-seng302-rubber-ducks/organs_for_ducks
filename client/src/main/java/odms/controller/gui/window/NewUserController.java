@@ -18,6 +18,7 @@ import odms.commons.model._enum.Regions;
 import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
+import utils.StageIconLoader;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -653,6 +654,8 @@ public class NewUserController {
         root = userLoader.load();
         Stage userStage = new Stage();
         userStage.setScene(new Scene(root));
+        StageIconLoader stageIconLoader = new StageIconLoader();
+        userStage.getIcons().add(stageIconLoader.getIconImage());
         userStage.show();
         UserController userController = userLoader.getController();
         AppController.getInstance().setUserController(userController);

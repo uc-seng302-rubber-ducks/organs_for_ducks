@@ -23,6 +23,7 @@ import odms.controller.AppController;
 import odms.controller.gui.popup.DeregisterOrganReasonController;
 import odms.controller.gui.popup.ReceiverOrganDateController;
 import odms.controller.gui.window.UserController;
+import utils.StageIconLoader;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -224,6 +225,8 @@ public class ReceiverTabController {
                 Stage stage = new Stage();
                 deregisterOrganReasonController.init(toDeRegister.getOrganName(), parent, currentUser, application, stage);
                 stage.setScene(new Scene(root));
+                StageIconLoader stageIconLoader = new StageIconLoader();
+                stage.getIcons().add(stageIconLoader.getIconImage());
                 stage.show();
                 Log.info("Successfully launched deregister organ reason window for receiver NHI: " + currentUser.getNhi());
             } catch (IOException e) {
@@ -327,6 +330,8 @@ public class ReceiverTabController {
             ReceiverOrganDateController receiverOrganDateController = receiverOrganDateViewLoader
                     .getController();
             receiverOrganDateController.init(currentUser, stage, organs);
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            stage.getIcons().add(stageIconLoader.getIconImage());
             stage.show();
             Log.info("Successfully launched register and deregister time table window for receiver NHI: " + currentUser.getNhi());
         } catch (IOException e) {

@@ -22,6 +22,7 @@ import odms.commons.model._enum.UserType;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
+import utils.StageIconLoader;
 
 import java.io.IOException;
 import java.net.URL;
@@ -303,6 +304,8 @@ public class LoginController {
             newStage.initModality(Modality.APPLICATION_MODAL);
             newStage.setScene(new Scene(root));
             newStage.setTitle("Create New User Profile");
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            newStage.getIcons().add(stageIconLoader.getIconImage());
             newStage.show();
             NewUserController userController = userLoader.getController();
             Log.info("Opening new user window");
