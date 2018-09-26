@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -94,6 +95,8 @@ public class BloodTestViewController implements LoadingWidget {
     private ColoredLineChart<String, Double> bloodTestGraph;
     @FXML
     private CategoryAxis timeRangeAxis;
+    @FXML
+    private NumberAxis bloodTestPropertyAxis;
 
     @FXML
     private AnchorPane bloodTestTableViewPane;
@@ -221,6 +224,7 @@ public class BloodTestViewController implements LoadingWidget {
             radioButton.setToggleGroup(toggleGroup);
         }
 
+        toggleGroup.selectToggle(toggleGroup.getToggles().get(0));
         bloodTestPropertyListView.setItems(bloodTestProperties);
         timeRangeFilterOption.valueProperty().addListener(a -> updateGraph());
     }
@@ -427,20 +431,28 @@ public class BloodTestViewController implements LoadingWidget {
 
         if (property == BloodTestProperties.RED_BLOOD_CELL) {
             value = bT.getRedBloodCellCount();
+            bloodTestPropertyAxis.setLabel("Red Blood Cell Count (x10^9 cells/Litre)");
         } else if (property == BloodTestProperties.WHITE_BLOOD_CELL) {
             value = bT.getWhiteBloodCellCount();
+            bloodTestPropertyAxis.setLabel("White Blood Cell Count (x10^9 cells/Litre)");
         } else if (property == BloodTestProperties.GLUCOSE) {
             value = bT.getGlucoseLevels();
+            bloodTestPropertyAxis.setLabel("Glucose Levels (mmol/Litre)");
         } else if (property == BloodTestProperties.HAEMATOCRIT) {
             value = bT.getHaematocrit();
+            bloodTestPropertyAxis.setLabel("Haematocrit Levels (ratio)");
         } else if (property == BloodTestProperties.HAEMOGLOBIN) {
             value = bT.getHaemoglobinLevel();
+            bloodTestPropertyAxis.setLabel("Haemoglobin Levels (grams/Litre)");
         } else if (property == BloodTestProperties.MEAN_CELL_HAEMATOCRIT) {
             value = bT.getMeanCellHaematocrit();
+            bloodTestPropertyAxis.setLabel("Mean Cell Haematocrit Levels (picogram)");
         } else if (property == BloodTestProperties.MEAN_CELL_VOLUME) {
             value = bT.getMeanCellVolume();
+            bloodTestPropertyAxis.setLabel("Mean Cell Volume Levels (femtolitre)");
         } else if (property == BloodTestProperties.PLATELETS) {
             value = bT.getPlatelets();
+            bloodTestPropertyAxis.setLabel("Platelet Count (x10^9 platelets/Litre)");
         }
 
         if (value != 0.0) {
@@ -456,7 +468,7 @@ public class BloodTestViewController implements LoadingWidget {
         Collection<String> timeRange;
         switch (timeRangeFilterOption.getValue()) {
             case "Week":
-                bloodTestGraph.setTitle("Results Over the Current Week");
+                bloodTestGraph.setTitle("Results Over the Past Week");
                 timeRangeAxis.setLabel("Time in Days");
                 timeRangeAxis.setTickLabelRotation(0);
                 DayOfWeek start = LocalDate.now().minusWeeks(1).plusDays(1).getDayOfWeek();
@@ -482,7 +494,7 @@ public class BloodTestViewController implements LoadingWidget {
                 break;
 
             case "Fortnight":
-                bloodTestGraph.setTitle("Results Over the Current Fortnight");
+                bloodTestGraph.setTitle("Results Over the Past Fortnight");
                 timeRangeAxis.setLabel("Time in Days");
                 timeRangeAxis.setTickLabelRotation(-45);
                 timeRange = new ArrayList<>();
@@ -497,7 +509,6 @@ public class BloodTestViewController implements LoadingWidget {
                 break;
 
             case "Month":
-                timeRangeAxis.setVisible(false);
                 bloodTestGraph.setTitle("Results Over the Past Month");
                 timeRangeAxis.setLabel("Time in Days");
                 timeRangeAxis.setTickLabelRotation(-45);
@@ -512,8 +523,8 @@ public class BloodTestViewController implements LoadingWidget {
                 break;
 
             case "Year":
-                bloodTestGraph.setTitle("Results Over the Current Year");
-                timeRangeAxis.setLabel("Time in months");
+                bloodTestGraph.setTitle("Results Over the Past Year");
+                timeRangeAxis.setLabel("Time in Months");
                 timeRangeAxis.setTickLabelRotation(0);
                 Month startMonth = LocalDate.now().plusMonths(1).getMonth();
                 List<Month> months = Arrays.asList(Month.values());
