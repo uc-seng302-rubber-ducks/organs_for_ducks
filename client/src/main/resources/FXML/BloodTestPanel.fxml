@@ -13,23 +13,25 @@
        <AnchorPane layoutX="800.0" prefHeight="50.0" prefWidth="406.0" AnchorPane.leftAnchor="794.0"
                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
            <children>
-               <ToggleButton fx:id="bloodTestTableToggle" layoutX="197.0" layoutY="13.0" mnemonicParsing="false"
+               <ToggleButton fx:id="bloodTestTableToggle" layoutX="289.0" layoutY="13.0" mnemonicParsing="false"
                              onAction="#bloodTestTableGraphToggle" selected="true" text="Table View"
-                             AnchorPane.rightAnchor="119.0" AnchorPane.topAnchor="13.0">
+                             AnchorPane.rightAnchor="27.0" AnchorPane.topAnchor="13.0">
                    <toggleGroup>
                        <ToggleGroup fx:id="bloodTestTableGraphToggleGroup"/>
                    </toggleGroup>
                </ToggleButton>
-               <ToggleButton fx:id="bloodTestGraphToggle" layoutX="303.0" layoutY="13.0" mnemonicParsing="false"
+               <ToggleButton fx:id="bloodTestGraphToggle" layoutX="197.0" layoutY="13.0" mnemonicParsing="false"
                              onAction="#bloodTestTableGraphToggle" text="Graph View"
-                             toggleGroup="$bloodTestTableGraphToggleGroup" AnchorPane.rightAnchor="26.0"
+                             toggleGroup="$bloodTestTableGraphToggleGroup" AnchorPane.rightAnchor="115.0"
                              AnchorPane.topAnchor="13.0"/>
            </children>
        </AnchorPane>
       <AnchorPane prefHeight="50.0" prefWidth="786.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="414.0" AnchorPane.topAnchor="0.0">
          <children>
                <Button fx:id="requestNewBloodTest" layoutX="648.0" layoutY="13.0" mnemonicParsing="false" onAction="#addNewBloodTest" text="Add New Blood Test" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="13.0" />
-               <Label fx:id="bloodTestTitle" layoutX="25.0" layoutY="11.0" prefHeight="24.0" prefWidth="355.0" text="Blood Test Entries" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="11.0">
+             <Label fx:id="bloodTestTitle" layoutX="25.0" layoutY="11.0" prefHeight="24.0" prefWidth="355.0"
+                    styleClass="label-main-title" text="Blood Test Entries" AnchorPane.leftAnchor="25.0"
+                    AnchorPane.topAnchor="11.0">
                    <font>
                        <Font name="System Bold" size="19.0" />
                    </font>
@@ -158,8 +160,8 @@
                        </VBox>
                    </children>
                </GridPane>
-               <Label layoutX="10.0" layoutY="8.0" text="Blood Test Details" AnchorPane.leftAnchor="10.0"
-                      AnchorPane.topAnchor="8.0">
+               <Label layoutX="10.0" layoutY="8.0" styleClass="label-sub-title" text="Blood Test Details"
+                      AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="8.0">
                    <font>
                        <Font name="System Bold" size="14.0" />
                    </font>
@@ -204,8 +206,8 @@
                   <RowConstraints maxHeight="96.0" minHeight="10.0" prefHeight="32.0" vgrow="SOMETIMES"/>
                   <RowConstraints maxHeight="96.0" minHeight="10.0" prefHeight="22.0" vgrow="SOMETIMES"/>
                   <RowConstraints maxHeight="135.0" minHeight="10.0" prefHeight="33.0" vgrow="SOMETIMES"/>
-                  <RowConstraints maxHeight="299.0" minHeight="10.0" prefHeight="266.0" vgrow="SOMETIMES"/>
-                  <RowConstraints maxHeight="299.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
+                  <RowConstraints maxHeight="299.0" minHeight="10.0" prefHeight="246.0" vgrow="SOMETIMES"/>
+                  <RowConstraints maxHeight="299.0" minHeight="10.0" prefHeight="46.0" vgrow="SOMETIMES"/>
                   <RowConstraints maxHeight="299.0" minHeight="10.0" prefHeight="51.0" vgrow="SOMETIMES"/>
                   <RowConstraints maxHeight="299.0" minHeight="10.0" prefHeight="123.0" vgrow="SOMETIMES"/>
                   <RowConstraints/>
@@ -214,7 +216,7 @@
                   <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0"/>
               </rowConstraints>
                <children>
-                  <Label text="Filter Time Range:" GridPane.rowIndex="1" />
+                   <Label styleClass="label-title" text="Filter Time Range:" GridPane.rowIndex="1"/>
                    <ComboBox fx:id="timeRangeFilterOption" prefHeight="25.0" prefWidth="217.0" GridPane.rowIndex="2">
                        <items>
                            <FXCollections fx:factory="observableArrayList">
@@ -228,16 +230,19 @@
                            <String fx:value="Week" />
                        </value>
                    </ComboBox>
-                   <Label text="Filter Blood Test Properties:" GridPane.columnSpan="2" GridPane.rowIndex="4"/>
-                  <Label text="Filter Options">
+                   <Label styleClass="label-title" text="Filter Blood Test Properties:" GridPane.columnSpan="2"
+                          GridPane.rowIndex="4"/>
+                   <Label styleClass="label-sub-title" text="Filter Options">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </Label>
                    <ListView fx:id="bloodTestPropertyListView" prefHeight="215.0" prefWidth="227.0"
                              GridPane.rowIndex="5"/>
-                   <HBox GridPane.rowIndex="6" alignment="CENTER">
-                       <Label fx:id="bloodTestGraphPlaceHolder"/>
+                   <HBox alignment="CENTER" GridPane.rowIndex="7">
+                       <children>
+                           <Label fx:id="bloodTestGraphPlaceHolder"/>
+                       </children>
                    </HBox>
                </children>
             </GridPane>

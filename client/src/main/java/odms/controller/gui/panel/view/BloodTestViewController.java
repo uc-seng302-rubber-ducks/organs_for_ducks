@@ -134,6 +134,7 @@ public class BloodTestViewController {
         graphBloodTests.addListener((ListChangeListener<? super BloodTest>) observable -> {
             populateGraph();
             setWaiting(false);
+            bloodTestGraphPlaceHolder.setVisible(graphBloodTests.isEmpty());
         });
 
         if (fromClinician) {
@@ -150,7 +151,6 @@ public class BloodTestViewController {
                 Label temp = new Label("There is no data to show");
                 ((Pane) bloodTestGraphPlaceHolder.getParent()).getChildren().replaceAll(node -> node.equals(bloodTestGraphPlaceHolder) ? temp : node);
                 bloodTestGraphPlaceHolder = temp;
-                bloodTestGraphPlaceHolder.setVisible(graphBloodTests.isEmpty());
             }
         }));
 

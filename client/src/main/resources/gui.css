@@ -492,9 +492,11 @@
 }
 
 .default-color1.chart-series-line {
-    -fx-stroke: rgba(100%, 25%, 21%, 0.5);
+    /*-fx-stroke: rgba(100%, 25%, 21%, 0.5);*/
+    -fx-stroke: rgba(0%, 100%, 0%, 0.1);
 }
 
 .default-color2.chart-series-line {
-    -fx-stroke: rgba(100%, 25%, 21%, 0.5);
+    /*-fx-stroke: rgba(100%, 25%, 21%, 0.5);*/
+    -fx-stroke: rgba(0%, 100%, 0%, 0.1);
 }
