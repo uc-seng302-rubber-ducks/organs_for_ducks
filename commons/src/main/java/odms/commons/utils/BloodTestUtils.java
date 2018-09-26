@@ -12,6 +12,11 @@ public class BloodTestUtils {
 
     private static boolean assigned;
 
+    /**
+     * Applies error css to the given node
+     *
+     * @param node The node to be invalidated
+     */
     public static void invalidateNode(Node node) {
         node.getStyleClass().add("invalid");
     }
