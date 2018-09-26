@@ -8,8 +8,8 @@ import com.google.gson.reflect.TypeToken;
 import odms.commons.model.*;
 import odms.commons.model._enum.Directory;
 import odms.commons.model.datamodel.AvailableOrganDetail;
-import odms.commons.model.datamodel.OrgansWithDisqualification;
 import odms.commons.model.datamodel.BloodTest;
+import odms.commons.model.datamodel.OrgansWithDisqualification;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.model.dto.LoginResponse;
 import okhttp3.Response;
@@ -356,6 +356,8 @@ public class JsonHandler extends DataHandler {
      *
      * @param response response to decode
      * @return all valid TransplantDetails objects. will return empty list if none
+     *
+     * @throws IOException on undecodable json
      */
     public List<TransplantDetails> decodeTransplantList(Response response) throws IOException {
         return new Gson().fromJson(response.body().string(), new TypeToken<List<TransplantDetails>>() {
@@ -393,6 +395,7 @@ public class JsonHandler extends DataHandler {
      *
      * @param response response to decode
      * @return a map of matching organs. will return empty map if none
+     * @throws IOException on undecodable json
      */
     public List<TransplantDetails> decodeMatchingOrgansList(Response response) throws IOException {
         return new Gson().fromJson(response.body().string(), new TypeToken<List<TransplantDetails>>() {

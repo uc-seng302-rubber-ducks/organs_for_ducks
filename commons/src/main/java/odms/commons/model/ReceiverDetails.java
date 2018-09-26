@@ -52,6 +52,12 @@ public class ReceiverDetails {
     }
 
 
+    /**
+     * Get s the dates associated with waiting for an organ
+     *
+     * @param organ organ in question
+     * @return the dates
+     */
     public List<LocalDate> getOrganDates(Organs organ) {
         ArrayList<ReceiverOrganDetailsHolder> holderList = organs.get(organ);
         ArrayList<LocalDate> dates = new ArrayList<>();
@@ -119,6 +125,7 @@ public class ReceiverDetails {
      * if the user is currently waiting for an organ, adds a timestamp and reason to the list
      *
      * @param organ organ to stop waiting for
+     * @param reason  reason the organ is no longer being waited for
      * @return true if the collection was modified.
      */
     public boolean stopWaitingForOrgan(Organs organ, OrganDeregisterReason reason) {

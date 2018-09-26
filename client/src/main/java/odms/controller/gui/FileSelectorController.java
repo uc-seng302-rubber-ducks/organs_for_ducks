@@ -19,6 +19,7 @@ public class FileSelectorController {
      * Opens a file selector
      *
      * @param stage stage to open file selector on
+     * @param extensions list of extension that can be selected from
      * @return the file path of the file
      */
     public String getFileSelector(final Stage stage, Collection<String> extensions) {
@@ -38,6 +39,7 @@ public class FileSelectorController {
     /**
      * Customizes configuration of a file chooser
      *
+     * @param allowedExtensions list of extension that can be selected from
      * @param fileChooser fileChooser to configure
      */
     private void configureFileChooser(final FileChooser fileChooser, Collection<String> allowedExtensions) {

@@ -31,6 +31,8 @@ public class Log {
 
     /**
      * Sets up the Logger to start logging stuff
+     *
+     * @param env environment that the application is running in
      */
     public static void setup(Environments env) {
         Logger logger = Logger.getLogger("ODMS");

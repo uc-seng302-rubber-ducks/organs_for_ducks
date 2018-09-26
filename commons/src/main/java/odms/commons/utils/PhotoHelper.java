@@ -61,6 +61,13 @@ public final class PhotoHelper {
         }
     }
 
+
+    /**
+     *Displays an image in a javafx image view
+     *
+     * @param imageView image view to place the image in
+     * @param url location of the file
+     */
     public static void displayImage(ImageView imageView, URL url) {
         try {
             Image image = new Image(url.openStream());
@@ -72,6 +79,8 @@ public final class PhotoHelper {
 
     /**
      * for deleting temp folder directory
+     *
+     * @throws IOException on file not found
      */
     public static void deleteTempDirectory() throws IOException {
         File f = new File(String.valueOf(Directory.TEMP));
@@ -86,6 +95,15 @@ public final class PhotoHelper {
         }
     }
 
+    /**
+     * Creates a temp file to hold an image
+     *
+     * @param image image to place into the file
+     * @param userId id of the user who owns the photo
+     * @param format format of the file
+     * @return location of the temp file
+     * @throws IOException on unable to decode file
+     */
     public static String createTempImageFile(byte[] image, String userId, String format) throws IOException {
 
         Files.createDirectories(Paths.get(TEMP.directory() + Directory.IMAGES));
@@ -101,6 +119,12 @@ public final class PhotoHelper {
         return outFile.getPath();
     }
 
+    /**
+     * Takes an image and returns the bytes contained by it
+     * @param filepath location of the image to be converted
+     * @return the bytes in the image
+     * @throws IOException on file not found
+     */
     public static byte[] getBytesFromImage(String filepath) throws IOException {
         if (filepath.equals("")) return new byte[0];
         return Files.readAllBytes(Paths.get(filepath));

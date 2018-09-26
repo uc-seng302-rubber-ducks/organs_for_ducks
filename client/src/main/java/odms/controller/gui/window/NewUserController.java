@@ -176,6 +176,7 @@ public class NewUserController {
      *
      * @param controller The applications controller.
      * @param stage      The applications stage.
+     * @param ownStage   The scenes stage.
      */
     public void init(AppController controller, Stage stage, Stage ownStage) {
         this.controller = controller;
