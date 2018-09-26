@@ -7,10 +7,8 @@ import odms.commons.model._enum.BloodTestProperties;
 import odms.commons.model.datamodel.BloodTest;
 import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.Log;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import odms.controller.gui.widget.LoadingWidget;
+import okhttp3.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -88,26 +86,36 @@ public class BloodTestBridge extends Bifrost {
      * Gets all  blood tests for a specified user
      *
      * @param nhi nhi of the user associated with the blood tests
+     * @param widget spinning wheel widget to give feedback that the graph is loading
      */
-    public void getBloodTests(String nhi, String startDate, String endDate, int count, int startIndex, ObservableList<BloodTest> observableBloodTests) {
+    public void getBloodTests(String nhi, String startDate, String endDate, int count, int startIndex, ObservableList<BloodTest> observableBloodTests, LoadingWidget widget) {
         String url = String.format("%s/%s%s/bloodTests?startDate=%s&endDate=%s&count=%d&startIndex=%d", ip, USER, nhi, startDate, endDate, count, startIndex);
         Request request = new Request.Builder().get().url(url).build();
-        try (Response response = client.newCall(request).execute()) {
-            if (response.isSuccessful()) {
-                String bodyString = response.body().string();
-                Collection<BloodTest> bloodTests = handler.decodeBloodTests(bodyString);
-                for (BloodTest bt : bloodTests) {
-                    checkBounds(bt);
-                }
-
-                Platform.runLater(() -> {
-                    observableBloodTests.clear();
-                    observableBloodTests.addAll(bloodTests);
-                });
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.severe("Could not get all blood tests for " + nhi, e);
             }
-        } catch (IOException e) {
-            Log.warning("Could not GET from " + url, e);
-        }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String bodyString = response.body().string();
+                    Collection<BloodTest> bloodTests = handler.decodeBloodTests(bodyString);
+                    for (BloodTest bt : bloodTests) {
+                        checkBounds(bt);
+                    }
+
+                    Platform.runLater(() -> {
+                        observableBloodTests.clear();
+                        observableBloodTests.addAll(bloodTests);
+                        if (widget != null) {
+                            widget.setWaiting(false);
+                        }
+                    });
+                }
+            }
+        });
     }
 
     /**
@@ -145,8 +153,8 @@ public class BloodTestBridge extends Bifrost {
         List<BloodTestProperties> lowValues = new ArrayList<>();
         List<BloodTestProperties> highValues = new ArrayList<>();
 
-        checkLower(BloodTestProperties.RBC, bloodTest.getRedBloodCellCount(), lowValues);
-        checkLower(BloodTestProperties.WBC, bloodTest.getWhiteBloodCellCount(), lowValues);
+        checkLower(BloodTestProperties.RED_BLOOD_CELL, bloodTest.getRedBloodCellCount(), lowValues);
+        checkLower(BloodTestProperties.WHITE_BLOOD_CELL, bloodTest.getWhiteBloodCellCount(), lowValues);
         checkLower(BloodTestProperties.HAEMOGLOBIN, bloodTest.getHaemoglobinLevel(), lowValues);
         checkLower(BloodTestProperties.PLATELETS, bloodTest.getPlatelets(), lowValues);
         checkLower(BloodTestProperties.GLUCOSE, bloodTest.getGlucoseLevels(), lowValues);
@@ -154,8 +162,8 @@ public class BloodTestBridge extends Bifrost {
         checkLower(BloodTestProperties.MEAN_CELL_VOLUME, bloodTest.getMeanCellVolume(), lowValues);
         checkLower(BloodTestProperties.MEAN_CELL_HAEMATOCRIT, bloodTest.getMeanCellHaematocrit(), lowValues);
 
-        checkHigher(BloodTestProperties.RBC, bloodTest.getRedBloodCellCount(), highValues);
-        checkHigher(BloodTestProperties.WBC, bloodTest.getWhiteBloodCellCount(), highValues);
+        checkHigher(BloodTestProperties.RED_BLOOD_CELL, bloodTest.getRedBloodCellCount(), highValues);
+        checkHigher(BloodTestProperties.WHITE_BLOOD_CELL, bloodTest.getWhiteBloodCellCount(), highValues);
         checkHigher(BloodTestProperties.HAEMOGLOBIN, bloodTest.getHaemoglobinLevel(), highValues);
         checkHigher(BloodTestProperties.PLATELETS, bloodTest.getPlatelets(), highValues);
         checkHigher(BloodTestProperties.GLUCOSE, bloodTest.getGlucoseLevels(), highValues);
