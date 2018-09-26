@@ -28,7 +28,9 @@
        </AnchorPane>
       <AnchorPane prefHeight="50.0" prefWidth="786.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="414.0" AnchorPane.topAnchor="0.0">
          <children>
-               <Button fx:id="requestNewBloodTest" layoutX="648.0" layoutY="13.0" mnemonicParsing="false" onAction="#addNewBloodTest" text="Add New Blood Test" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="13.0" />
+             <Button fx:id="requestNewBloodTest" visible="false" layoutX="648.0" layoutY="13.0" mnemonicParsing="false"
+                     onAction="#addNewBloodTest" text="Add New Blood Test" AnchorPane.rightAnchor="13.0"
+                     AnchorPane.topAnchor="13.0"/>
              <Label fx:id="bloodTestTitle" layoutX="25.0" layoutY="11.0" prefHeight="24.0" prefWidth="355.0"
                     styleClass="label-main-title" text="Blood Test Entries" AnchorPane.leftAnchor="25.0"
                     AnchorPane.topAnchor="11.0">
@@ -38,9 +40,8 @@
                </Label>
          </children>
       </AnchorPane>
-       <AnchorPane fx:id="bloodTestTableViewPane" prefHeight="685.0" prefWidth="786.0" visible="false"
-                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="414.0"
-                   AnchorPane.topAnchor="50.0">
+       <AnchorPane fx:id="bloodTestTableViewPane" prefHeight="685.0" prefWidth="786.0" AnchorPane.bottomAnchor="0.0"
+                   AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="414.0" AnchorPane.topAnchor="50.0">
            <children>
                <TableView fx:id="bloodTestTableView" layoutX="23.0" layoutY="6.0" prefHeight="630.0" prefWidth="752.0" AnchorPane.bottomAnchor="49.0" AnchorPane.leftAnchor="23.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="6.0">
                    <columns>
@@ -61,8 +62,7 @@
            </children>
        </AnchorPane>
        <AnchorPane fx:id="bloodTestDetailsPane" layoutX="800.0" layoutY="50.0" prefHeight="685.0" prefWidth="407.0"
-                   visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                   AnchorPane.topAnchor="50.0">
+                   AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
            <children>
                <GridPane layoutX="10.0" layoutY="26.0" prefHeight="549.0" prefWidth="369.0"
                          AnchorPane.bottomAnchor="110.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="28.0"
@@ -176,15 +176,15 @@
                        <Font name="System Bold" size="14.0" />
                    </font>
                </Label>
-               <Button fx:id="deleteBloodTest" layoutX="10.0" layoutY="613.0" mnemonicParsing="false"
+               <Button fx:id="deleteBloodTest" visible="false" layoutX="10.0" layoutY="613.0" mnemonicParsing="false"
                        onAction="#deleteBloodTest" text="Delete Blood test" AnchorPane.bottomAnchor="47.0"
                        AnchorPane.leftAnchor="10.0"/>
-               <Button fx:id="updateBloodTest" layoutX="241.0" layoutY="613.0" mnemonicParsing="false"
+               <Button fx:id="updateBloodTest" visible="false" layoutX="241.0" layoutY="613.0" mnemonicParsing="false"
                        onAction="#updateBloodTest" text="Update Blood Test" AnchorPane.bottomAnchor="47.0"
                        AnchorPane.rightAnchor="28.0"/>
            </children>
        </AnchorPane>
-       <AnchorPane fx:id="bloodTestGraphViewPane" layoutY="13.0" prefHeight="685.0" prefWidth="886.0"
+       <AnchorPane fx:id="bloodTestGraphViewPane" layoutY="13.0" prefHeight="685.0" prefWidth="886.0" visible="false"
                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="314.0"
                    AnchorPane.topAnchor="50.0">
          <children>
@@ -201,8 +201,8 @@
          </children>
        </AnchorPane>
        <AnchorPane fx:id="bloodTestGraphFilterPane" layoutX="886.0" layoutY="50.0" prefHeight="685.0" prefWidth="313.0"
-                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="886.0" AnchorPane.rightAnchor="1.0"
-                   AnchorPane.topAnchor="50.0">
+                   visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="886.0"
+                   AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="50.0">
          <children>
              <GridPane layoutX="62.0" layoutY="56.0" prefHeight="581.0" prefWidth="227.0" AnchorPane.bottomAnchor="48.0"
                        AnchorPane.rightAnchor="24.0" AnchorPane.topAnchor="56.0">

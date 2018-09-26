@@ -153,6 +153,7 @@ public class BloodTestViewController implements LoadingWidget {
                 Label temp = new Label("There is no data to show");
                 ((Pane) bloodTestGraphPlaceHolder.getParent()).getChildren().replaceAll(node -> node.equals(bloodTestGraphPlaceHolder) ? temp : node);
                 bloodTestGraphPlaceHolder = temp;
+                bloodTestGraphPlaceHolder.setVisible(graphBloodTests.isEmpty());
             }
         }));
 
@@ -227,7 +228,10 @@ public class BloodTestViewController implements LoadingWidget {
 
         toggleGroup.selectToggle(toggleGroup.getToggles().get(0));
         bloodTestPropertyListView.setItems(bloodTestProperties);
-        timeRangeFilterOption.valueProperty().addListener(a -> updateGraph());
+        timeRangeFilterOption.valueProperty().addListener(a -> {
+            bloodTestGraphPlaceHolder.setVisible(false);
+            updateGraph();
+        });
     }
 
     /**
@@ -360,7 +364,9 @@ public class BloodTestViewController implements LoadingWidget {
             bloodTestGraphViewPane.setVisible(false);
             bloodTestDetailsPane.setVisible(true);
             bloodTestTableViewPane.setVisible(true);
-            requestNewBloodTest.setVisible(true);
+            if (fromClinician) {
+                requestNewBloodTest.setVisible(true);
+            }
 
         } else if (bloodTestGraphToggle.isSelected()) {
             bloodTestTitle.setText("Blood Test Statistics");
