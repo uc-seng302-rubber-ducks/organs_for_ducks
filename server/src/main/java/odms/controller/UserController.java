@@ -125,6 +125,7 @@ public class UserController extends BaseController {
     public ResponseEntity deleteUser(@PathVariable("nhi") String nhi) {
         try (Connection connection = driver.getConnection()) {
             handler.deleteUser(connection, nhi);
+            socketHandler.broadcast(EventTypes.USER_DELETE, nhi, nhi);
             socketHandler.broadcast(EventTypes.USER_UPDATE, nhi, nhi);
         } catch (SQLException ex) {
             Log.severe("cannot delete user " + nhi, ex);
@@ -132,6 +133,7 @@ public class UserController extends BaseController {
         } catch (IOException ex) {
             Log.warning("failed to broadcast update when deleting user", ex);
         }
+
         return new ResponseEntity(HttpStatus.OK);
     }
 
