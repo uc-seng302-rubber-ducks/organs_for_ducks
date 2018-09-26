@@ -164,7 +164,8 @@
                   </Tab>
                   </tabs>
               </TabPane>
-              <AnchorPane fx:id="StatusBar" AnchorPane.bottomAnchor="-5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="814.0" AnchorPane.topAnchor="649.0">
+             <AnchorPane fx:id="StatusBar" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                         AnchorPane.rightAnchor="0.0">
                   <children>
                       <fx:include fx:id="statusBarPage" source="statusBar.fxml" />
                   </children>
