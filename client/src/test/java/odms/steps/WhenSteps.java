@@ -288,7 +288,7 @@ public class WhenSteps extends ApplicationTest {
 
     @And("^then i mark the user dead$")
     public void thenIMarkTheUserDead() throws Throwable {
-        setTextField(this, "#updateDeathDetailsCityTextField", "Greymouth");
+        clickOn("#userDead");
         clickOn("#updateProfileButton");
     }
 
