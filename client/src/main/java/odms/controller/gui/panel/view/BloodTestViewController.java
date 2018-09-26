@@ -126,7 +126,12 @@ public class BloodTestViewController {
         meanCellHaematocrit.setVisible(true);
     }
 
-    private void resetErrorLabels(){
+
+    /**
+     * Hides the error labels and removes the invalid css for the blood test update fields
+     * when a different blood test is selected.
+     */
+    private void resetErrorLabels() {
         bloodTestDateLabel.setVisible(false);
         bloodTestRCCountLabel.setVisible(false);
         bloodTestWCCountLabel.setVisible(false);
@@ -145,8 +150,6 @@ public class BloodTestViewController {
         removeInvalid(platelets);
         removeInvalid(glucose);
         bloodTestDatePicker.getStyleClass().remove("Invalid");
-
-
     }
 
 
@@ -284,8 +287,6 @@ public class BloodTestViewController {
         }
     }
 
-
-
     /**
      * check that all blood test properties are valid
      * @return returns true if all properties are valid
@@ -306,7 +307,6 @@ public class BloodTestViewController {
             fieldValid = false;
         }
         return fieldValid;
-
     }
 
     /**
@@ -352,12 +352,18 @@ public class BloodTestViewController {
         }
     }
 
+    /**
+     * @see BloodTestsLogicController goNextPage()
+     */
     @FXML
     private void goToNextPage() {
         logicController.gotoNextPage();
 
     }
 
+    /**
+     * @see BloodTestsLogicController goToPreviousPage()
+     */
     @FXML
     private void goToPreviousPage() {
         logicController.goToPreviousPage();
@@ -365,7 +371,7 @@ public class BloodTestViewController {
     }
 
     /**
-     *  see logicController.addNewBloodTest
+     *  @see BloodTestsLogicController addNewBloodTest()
      */
     @FXML
     private void addNewBloodTest() {
