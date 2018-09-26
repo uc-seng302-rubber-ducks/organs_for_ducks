@@ -123,10 +123,6 @@ public class BloodTestsLogicController implements PropertyChangeListener {
     private String findStartDate(String timeRange) {
         String startDate = "";
         switch (timeRange) {
-            case "Day":
-                startDate = LocalDate.now().minusDays(1).toString();
-                break;
-
             case "Week":
                 startDate = LocalDate.now().minusWeeks(1).toString();
                 break;
