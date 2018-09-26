@@ -45,6 +45,11 @@
     -fx-text-fill: #C63636;
 }
 
+.label-powered {
+    -fx-font-size: 10px;
+    -fx-text-fill: 	#A9A9A9;
+}
+
 /****************************************
 *                                       *
 * COMBO_BOX & CHOICE_BOX                *
