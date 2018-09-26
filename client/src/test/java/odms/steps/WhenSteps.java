@@ -122,7 +122,7 @@ public class WhenSteps extends ApplicationTest {
     @When("^clicked on Create Button$")
     public void clickedOnCreateButton() throws IOException {
         when(CucumberTestModel.getUserBridge().getUser(anyString())).thenReturn(CucumberTestModel.getUser());
-        clickOn("#createButton");
+        clickOn("#addDiseaseButton");
     }
 
     @When("^I clicked on Login As Clinician Button$")

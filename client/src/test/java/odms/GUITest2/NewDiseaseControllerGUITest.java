@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.scene.control.TableView;
 import odms.App;
 import odms.TestUtils.AppControllerMocker;
+import odms.TestUtils.CommonTestMethods;
 import odms.bridge.*;
 import odms.commons.exception.UnauthorisedException;
 import odms.commons.model.Clinician;
@@ -47,7 +48,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        //CommonTestMethods.runMethods();
+        CommonTestMethods.runMethods();
     }
 
     @Before
@@ -171,8 +172,8 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
         getCellValue("#currentDiseaseTableView", 0, 0);
     }
 
-    @Ignore
-    @Test
+
+    @Test @Ignore // TODO: Bad things happen that cause TestFX to die at line 183 - 184
     public void deletedChronicDiseaseShouldNotBeDeletedFromCurrentDiseases() {
         //testfx wont click in the ok button despite all efforts jb 27/9
         clickOn(getCell("#currentDiseaseTableView", 0, 0));
@@ -180,8 +181,8 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
         clickOn("#chronicRadioButton");
         clickOn("#createButton");
         clickOn(getCell("#currentDiseaseTableView", 0, 0));
-        clickOnButton(this,"#deleteDiseaseButton");
-        clickOnButton(this,"#okButton");
+        clickOnButton(this, "#deleteDiseaseButton");
+        clickOn("OK");
         assertEquals("A0", getCellValue("#currentDiseaseTableView", 1, 0).toString());
 
     }
