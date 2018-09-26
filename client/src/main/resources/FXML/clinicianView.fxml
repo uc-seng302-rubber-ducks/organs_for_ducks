@@ -133,9 +133,6 @@
                                                 <TableColumn prefWidth="75.0" text="C1" />
                                                 <TableColumn prefWidth="75.0" text="C2" />
                                             </columns>
-                                            <tooltip>
-                                                <Tooltip fx:id="searchToolTip" text="Empty Tooltip" />
-                                            </tooltip>
                                         </LoadingTableView>
                                         <Label fx:id="searchCountLabel" layoutX="14.0" layoutY="336.0" text="" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" />
                                         <HBox alignment="CENTER" layoutX="269.0" layoutY="244.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
