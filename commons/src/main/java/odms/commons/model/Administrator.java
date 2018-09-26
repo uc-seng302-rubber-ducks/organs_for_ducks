@@ -310,7 +310,9 @@ public class Administrator extends Undoable<Administrator> implements Listenable
 
 
     /**
-     * Could this and changeInto be combined somehow?
+     * Returns the clone of the administrator
+     * @param admin administrator to clone
+     * @return a deep copy of the administrator given
      */
     public static Administrator clone(Administrator admin) {
         Administrator newAdmin = new Administrator();
