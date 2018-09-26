@@ -20,6 +20,7 @@ import odms.commons.utils.AttributeValidation;
 import odms.controller.gui.panel.logic.BloodTestsLogicController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.controller.gui.widget.ColoredLineChart;
+import odms.controller.gui.widget.LoadingWidget;
 import odms.controller.gui.widget.TextStringRadioButton;
 
 import java.time.DayOfWeek;
@@ -28,7 +29,7 @@ import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.*;
 
-public class BloodTestViewController {
+public class BloodTestViewController implements LoadingWidget {
 
     @FXML
     private Control bloodTestGraphPlaceHolder;
@@ -127,13 +128,10 @@ public class BloodTestViewController {
      */
     public void init(User user, boolean fromClinician) {
         this.fromClinician = fromClinician;
-        bloodTests.addListener((ListChangeListener<? super BloodTest>) observable -> {
-            populateTable();
-        });
+        bloodTests.addListener((ListChangeListener<? super BloodTest>) observable -> populateTable());
 
         graphBloodTests.addListener((ListChangeListener<? super BloodTest>) observable -> {
             populateGraph();
-            setWaiting(false);
             bloodTestGraphPlaceHolder.setVisible(graphBloodTests.isEmpty());
         });
 
@@ -170,7 +168,7 @@ public class BloodTestViewController {
         return waitingProperty().get();
     }
 
-    private void setWaiting(boolean waiting) {
+    public void setWaiting(boolean waiting) {
         waitingProperty().set(waiting);
     }
 
@@ -356,7 +354,7 @@ public class BloodTestViewController {
     private void updateGraph() {
         changeLabels();
         setWaiting(true);
-        logicController.updateGraph(timeRangeFilterOption.getValue());
+        logicController.updateGraph(timeRangeFilterOption.getValue(), this);
     }
 
     /**
@@ -377,7 +375,7 @@ public class BloodTestViewController {
      * Creates a series containing the specified property and the time frame to populate the graph
      */
     private void createGraphSeries(BloodTestProperties property) {
-        if (graphBloodTests.size() != 0) {
+        if (!graphBloodTests.isEmpty()) {
             XYChart.Series<String, Double> series = new XYChart.Series<>();
             for (BloodTest bT : graphBloodTests) {
                 addAppropriateProperty(bT, series, property);

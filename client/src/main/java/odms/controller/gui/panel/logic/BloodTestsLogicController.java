@@ -13,6 +13,7 @@ import odms.commons.model.event.UpdateNotificationEvent;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.popup.view.NewBloodTestViewController;
+import odms.controller.gui.widget.LoadingWidget;
 import odms.socket.ServerEventNotifier;
 
 import java.beans.PropertyChangeEvent;
@@ -83,7 +84,7 @@ public class BloodTestsLogicController implements PropertyChangeListener {
         bloodTests.clear();
         String startDate = LocalDate.now().minusYears(100).toString();
         String endDate = LocalDate.now().toString();
-        AppController.getInstance().getBloodTestBridge().getBloodTests(user.getNhi(), startDate, endDate, ROWS_PER_PAGE, start, bloodTests);
+        AppController.getInstance().getBloodTestBridge().getBloodTests(user.getNhi(), startDate, endDate, ROWS_PER_PAGE, start, bloodTests, null);
     }
 
     public void gotoNextPage() {
@@ -150,11 +151,10 @@ public class BloodTestsLogicController implements PropertyChangeListener {
      *
      * @param timeRange The time range to display blood test results from on the graph
      */
-    public void updateGraph(String timeRange) {
-        graphBloodTests.clear();
+    public void updateGraph(String timeRange, LoadingWidget widget) {
         String startDate = findStartDate(timeRange);
         String endDate = LocalDate.now().toString();
-        AppController.getInstance().getBloodTestBridge().getBloodTests(user.getNhi(), startDate, endDate, RESULTS_ON_GRAPH, 0, graphBloodTests);
+        AppController.getInstance().getBloodTestBridge().getBloodTests(user.getNhi(), startDate, endDate, RESULTS_ON_GRAPH, 0, graphBloodTests, widget);
     }
 
     /**
