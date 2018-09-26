@@ -43,24 +43,22 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
      * @param connection Connection ot the target database
      */
     private void executeUpdate(Administrator admin, Connection connection) throws SQLException {
-        boolean autoCommit = connection.getAutoCommit();
         try {
-            connection.setAutoCommit(false);
-
-            updateAdminDetails(admin, connection);
-            if (!admin.isPasswordCorrect("")) {
-                updateAdminPassword(admin, connection);
+            connection.prepareStatement("START TRANSACTION").execute();
+            try {
+                updateAdminDetails(admin, connection);
+                if (!admin.isPasswordCorrect("")) {
+                    updateAdminPassword(admin, connection);
+                }
+            } catch (SQLException sqlEx) {
+                connection.prepareStatement("ROLLBACK").execute();
             }
-
-            connection.commit();
+            connection.prepareStatement("COMMIT").execute();
         } catch (SQLException sqlEx) {
-
-            connection.rollback();
             Log.warning("Error in connection to database", sqlEx);
             throw sqlEx;
-        } finally {
-            connection.setAutoCommit(autoCommit);
         }
+
     }
 
     /**
@@ -71,20 +69,20 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
      * @param admin      admin object to update the database with
      * @param connection Connection to the target database
      */
-    private void executeCreation(Administrator admin, Connection connection) throws SQLException {
-        boolean autoCommit = connection.getAutoCommit();
+    private void executeCreation(Administrator admin, Connection connection) {
         try {
-            connection.setAutoCommit(false);
-            createAdmin(admin, connection);
-            createPassword(admin, connection);
-
-            connection.commit();
+            connection.prepareStatement("START TRANSACTION").execute();
+            try {
+                createAdmin(admin, connection);
+                createPassword(admin, connection);
+            } catch (SQLException sqlEx) {
+                connection.prepareStatement("ROLLBACK").execute();
+                throw sqlEx;
+            }
+            connection.prepareStatement("COMMIT").execute();
         } catch (SQLException sqlEx) {
-            connection.rollback();
             Log.warning("Error in connection to database", sqlEx);
-            throw sqlEx;
-        } finally {
-            connection.setAutoCommit(autoCommit);
+            System.out.println("Error connecting to database");
         }
     }
 
@@ -183,22 +181,27 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
      * @param admin      The admin associated with the entry to be deleted
      * @param connection Connection to the target database
      */
-    private void deleteRole(Administrator admin, Connection connection) throws SQLException {
+    private void deleteRole(Administrator admin, Connection connection) {
         String identifier;
-        boolean autoCommit = connection.getAutoCommit();
-        try (PreparedStatement stmt = connection.prepareStatement(DELETE_ADMIN_STMT)) {
-            connection.setAutoCommit(false);
-            identifier = admin.getUserName();
-            stmt.setString(1, identifier);
-            stmt.executeUpdate();
+        String sql;
+        try {
+            connection.prepareStatement("START TRANSACTION").execute();
+            try {
+                identifier = admin.getUserName();
+                sql = DELETE_ADMIN_STMT;
+                PreparedStatement stmt = connection.prepareStatement(sql);
+                stmt.setString(1, identifier);
 
-            connection.commit();
+                stmt.executeUpdate();
+            } catch (SQLException sqlEx) {
+                Log.severe("A fatal error in deletion, cancelling operation", sqlEx);
+                connection.prepareStatement("ROLLBACK").execute();
+            }
+
+            connection.prepareStatement("COMMIT").execute();
         } catch (SQLException sqlEx) {
-            Log.severe("A fatal error in deletion, cancelling operation", sqlEx);
-            connection.rollback();
-            throw sqlEx;
-        } finally {
-            connection.setAutoCommit(autoCommit);
+            Log.warning("Error in connection to database", sqlEx);
+            System.out.println("Error connecting to database");
         }
     }
 }

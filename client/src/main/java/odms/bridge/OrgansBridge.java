@@ -23,8 +23,7 @@ public class OrgansBridge extends Bifrost {
 
     /**
      * Gets all the organs available for donation by making a request to the server and populating the observable list.
-     *
-     * @param startIndex     the position to start obtaining items from
+     *  @param startIndex     the position to start obtaining items from
      * @param count          how many entries to obtain
      * @param organ          if specified, return only organs of that type
      * @param region         if specified, return only organs located within that region
@@ -55,7 +54,7 @@ public class OrgansBridge extends Bifrost {
             url.append("&city=").append(city);
         }
 
-        if (!StringUtils.isNullOrEmpty(country)) {
+        if (!StringUtils.isNullOrEmpty(country)){
             url.append("&country=").append(country);
         }
         Request request = new Request.Builder().get()
@@ -70,7 +69,7 @@ public class OrgansBridge extends Bifrost {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (200 < response.code() || response.code() > 299) {
-                    throw new ApiException(response.code(), "got response with code outside of 200 range, Code: " + response.code());
+                    throw new ApiException(response.code(), "got response with code outside of 200 range, Code: "+ response.code());
                 }
 
                 List<AvailableOrganDetail> availableOrgansDetails = handler.decodeAvailableOrgansList(response);
@@ -79,7 +78,7 @@ public class OrgansBridge extends Bifrost {
                         detail.generateProgressTask();
                     }
                 }
-                Platform.runLater(() -> {
+                Platform.runLater(()-> {
                     if (widget != null) {
                         widget.setWaiting(false);
                     }
@@ -92,11 +91,10 @@ public class OrgansBridge extends Bifrost {
 
     /**
      * Gets the potential matches list from the server by firing a HTTP request.
-     *
-     * @param startIndex     the position to start obtaining items from
-     * @param count          how many entries to obtain
-     * @param donorNhi       user who is donating the organ
-     * @param organToDonate  Available organ detail to identify the map entry of the response
+     * @param startIndex the position to start obtaining items from
+     * @param count how many entries to obtain
+     * @param donorNhi user who is donating the organ
+     * @param organToDonate Available organ detail to identify the map entry of the response
      * @param observableList the observable list to populate the potential matches with
      */
     public void getMatchingOrgansList(int startIndex, int count, String donorNhi, AvailableOrganDetail organToDonate,
@@ -125,13 +123,13 @@ public class OrgansBridge extends Bifrost {
 
                 List<TransplantDetails> matchingTransplants = handler.decodeMatchingOrgansList(response);
 
-                Platform.runLater(() -> {
+                Platform.runLater(() ->{
                     if (widget != null) {
                         widget.setWaiting(false);
                     }
                     observableList.clear();
-                    observableList.addAll(OrganSorter.sortOrgansIntoRankedOrder(organToDonate, matchingTransplants));
-                });
+                    observableList.addAll( OrganSorter.sortOrgansIntoRankedOrder(organToDonate, matchingTransplants));
+                } );
 
             }
         });

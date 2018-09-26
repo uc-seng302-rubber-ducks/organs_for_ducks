@@ -3,14 +3,6 @@ package odms.commons.model.dto;
 public class OutputMessage {
 
     private String from;
-    private String message;
-    private String time;
-
-    public OutputMessage(String from, String message, String time) {
-        this.from = from;
-        this.message = message;
-        this.time = time;
-    }
 
     public String getFrom() {
         return from;
@@ -33,6 +25,14 @@ public class OutputMessage {
     }
 
     public void setTime(String time) {
+        this.time = time;
+    }
+
+    private String message;
+    private String time;
+    public OutputMessage(String from, String message, String time) {
+        this.from = from;
+        this.message = message;
         this.time = time;
     }
 }

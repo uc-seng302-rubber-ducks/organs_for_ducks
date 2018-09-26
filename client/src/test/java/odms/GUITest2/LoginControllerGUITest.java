@@ -113,7 +113,7 @@ public class LoginControllerGUITest extends ApplicationTest {
     public void clinicianInvalidClinician() throws IOException, UnauthorisedException {
         when(loginBridge.loginToServer(anyString(), anyString(), anyString())).thenReturn("FeelsGoodMan");
         clickOn("#clinicianTab");
-        setTextField(this, "#staffIdTextField", "-1000");
+        setTextField(this,"#staffIdTextField", "-1000");
         setTextField(this, "#staffPasswordField", "admin");
         clickOnButton(this, "#loginCButton");
         verifyThat("#clinicianWarningLabel", LabeledMatchers.hasText("The Clinician does not exist"));
@@ -123,9 +123,9 @@ public class LoginControllerGUITest extends ApplicationTest {
     public void clinicianWrongPassword() throws IOException, UnauthorisedException {
         when(loginBridge.loginToServer(anyString(), anyString(), anyString())).thenThrow(new ApiException(401, ""));
         clickOn("#clinicianTab");
-        setTextField(this, "#staffIdTextField", "0");
+        setTextField(this,"#staffIdTextField", "0");
         setTextField(this, "#staffPasswordField", "garbledo");
-        clickOnButton(this, "#loginCButton");
+        clickOnButton(this,"#loginCButton");
         verifyThat("#clinicianWarningLabel", LabeledMatchers.hasText("An error occurred. Please try again later."));
     }
 
@@ -141,7 +141,7 @@ public class LoginControllerGUITest extends ApplicationTest {
     public void invalidAdminLogin() throws IOException, UnauthorisedException {
         when(loginBridge.loginToServer(anyString(), anyString(), anyString())).thenThrow(new ApiException(404, "Not found"));
         clickOn("#administratorTab");
-        setTextField(this, "#adminUsernameTextField", "therock");
+        setTextField(this,"#adminUsernameTextField", "therock");
         setTextField(this, "#adminPasswordField", "password");
         clickOnButton(this, "#loginAButton");
         verifyThat("#adminWarningLabel", LabeledMatchers.hasText("An unspecified error occurred. Please try again or contact your IT department."));
@@ -152,7 +152,7 @@ public class LoginControllerGUITest extends ApplicationTest {
         when(loginBridge.loginToServer(anyString(), anyString(), anyString())).thenThrow(new ApiException(401, "Unauthorized"));
         clickOn("#administratorTab");
         setTextField(this, "#adminUsernameTextField", "default");
-        setTextField(this, "#adminPasswordField", "notpassword");
+        setTextField(this, "#adminPasswordField","notpassword");
         clickOnButton(this, "#loginAButton");
         verifyThat("#adminWarningLabel", LabeledMatchers.hasText("An unspecified error occurred. Please try again or contact your IT department."));
     }

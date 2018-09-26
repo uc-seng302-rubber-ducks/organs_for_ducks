@@ -21,7 +21,6 @@ public class UserAppointmentAlertController {
 
     /**
      * Asks the server if there is an appointment with an unseen update for the specified user
-     *
      * @param userId Id of the user to check for unseen updates for
      */
     public void checkForUnseenUpdates(String userId) {
@@ -47,7 +46,6 @@ public class UserAppointmentAlertController {
 
     /**
      * Generates an alert window. Is split up in this way to assist testing this class
-     *
      * @param message to be displayed on the alert window
      */
     public void generateAlertWindow(String message) {
@@ -56,7 +54,6 @@ public class UserAppointmentAlertController {
 
     /**
      * Creates a message to go in the alert window. The contents change based on the category, time, and status of the appointment
-     *
      * @param appointment Appointment to create the message about
      * @return A string describing the update to the requested appointment
      */
@@ -82,7 +79,6 @@ public class UserAppointmentAlertController {
 
     /**
      * Updates the status of an appointment to _SEEN based on whether is was accepted or rejected.
-     *
      * @param appointment Appointment to update the status of
      */
     private void updateAppointmentSeenStatus(Appointment appointment) {

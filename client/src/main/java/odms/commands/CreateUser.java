@@ -122,10 +122,10 @@ public class CreateUser implements Runnable {
 
         try {
             if (userBridge.getUser(user.getNhi()) != null) {
-                IoHelper.display("User with this nhi " + user.getNhi() + " already exists");
+                IoHelper.display("User with this nhi "+user.getNhi()+" already exists");
                 return;
             }
-        } catch (IOException e) {
+        } catch (IOException e){
             Log.warning("Unable to get user " + user.getNhi(), e);
         }
 

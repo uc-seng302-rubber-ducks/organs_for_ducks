@@ -6,6 +6,7 @@ Feature: Create a profile
     Then The user should be stored within the application
 
 
+
   Scenario: I attempt to add two users with identical names
     Given I have started the CLI
     And There are no users in the system

@@ -33,11 +33,11 @@ public enum Organs {
     @SerializedName("Connective Tissue")
     CONNECTIVE_TISSUE("Connective Tissue", 12, 24 * 365 * 3, 24 * 365 * 10),
     @SerializedName("Test Organ")
-    TEST_ORGAN("Test Organ", 13, 0.5, 1);// An oran to test progress bars and tests
+    TEST_ORGAN("Test Organ", 13, 0.5,1);// An oran to test progress bars and tests
 
-    private static final int HOURS_TO_SECONDS = 3600;
     private String organName;
     private int dbValue;
+    private static final int HOURS_TO_SECONDS = 3600;
     private double lowerBoundSeconds;
     private long upperBoundSeconds;
 
@@ -52,11 +52,10 @@ public enum Organs {
 
     /**
      * Takes a string argument for an organ and returns the organ if it exists
-     *
      * @param organName organ in the enum to make
      * @return organ as an object
      */
-    public static Organs fromString(String organName) {
+    public static Organs fromString(String organName){
         return Organs.valueOf(organName.replaceAll(" ", "_").toUpperCase());
     }
 

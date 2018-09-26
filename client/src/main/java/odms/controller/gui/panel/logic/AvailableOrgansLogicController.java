@@ -12,9 +12,9 @@ import java.beans.PropertyChangeListener;
 
 public class AvailableOrgansLogicController implements PropertyChangeListener {
 
-    private static final int ROWS_PER_PAGE = 30;
     private int startingIndex = 0;
     private int startingIndexMatches = 0;
+    private static final int ROWS_PER_PAGE = 30;
     private String organ = "";
     private String region = "";
     private ObservableList<AvailableOrganDetail> availableOrganDetails;
@@ -34,10 +34,9 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
 
     /**
      * Sends a search request to the server to populate the observable list
-     *
      * @param startIndex the number of entries to skip
-     * @param organ      the organ to filter by
-     * @param region     the region to filter by
+     * @param organ the organ to filter by
+     * @param region the region to filter by
      */
     public void search(int startIndex, String organ, String region, LoadingWidget widget) {
         shutdownThreads();
@@ -90,7 +89,7 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
      * Goes to the next page of the potential matches table
      */
     public void goNextPageMatches(LoadingWidget widget) {
-        if (transplantDetails.size() < ROWS_PER_PAGE) {
+        if(transplantDetails.size() < ROWS_PER_PAGE){
             return;
         }
         startingIndexMatches += ROWS_PER_PAGE;
@@ -100,11 +99,10 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
 
     /**
      * Provides pagination functionality for the matches table
-     *
      * @param startingIndexMatches how many entries to skip before returning
      */
     private void searchMatches(int startingIndexMatches, LoadingWidget widget) {
-        if (availableOrgan == null) {
+        if(availableOrgan == null){
             return;
         }
         transplantDetails.clear();
@@ -127,7 +125,6 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
 
     /**
      * Populates the potential matches for a selected organ
-     *
      * @param selectedItem selected item in the available organs list
      */
     public void showMatches(AvailableOrganDetail selectedItem, LoadingWidget widget) {

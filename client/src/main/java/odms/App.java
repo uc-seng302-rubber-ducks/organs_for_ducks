@@ -33,6 +33,7 @@ public class App extends Application {
     }
 
 
+
     @Override
     public void start(Stage primaryStage) throws Exception {
 
@@ -85,6 +86,7 @@ public class App extends Application {
         });
 
         URL url = getClass().getResource("/logos/LoveDuck.png");
+//        URL url = getClass().getResource("/logos/HeartDuck.png");
         if (url == null) {
             Log.warning("Could not load the icon for the taskbar. Check that the filepath is correct");
         } else {

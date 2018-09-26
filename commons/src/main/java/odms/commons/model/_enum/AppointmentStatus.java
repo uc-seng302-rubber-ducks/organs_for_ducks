@@ -15,7 +15,7 @@ public enum AppointmentStatus {
     private final String name;
     private final int dbValue;
 
-    AppointmentStatus(String s, int i) {
+    AppointmentStatus(String s, int i)  {
         name = s;
         dbValue = i;
     }

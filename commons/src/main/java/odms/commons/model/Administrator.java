@@ -27,8 +27,8 @@ public class Administrator extends Undoable<Administrator> implements Listenable
     private String middleName;
     @Expose
     private String lastName;
-    private String password;
-    private String salt;
+    private  String password;
+    private  String salt;
     @Expose
     private LocalDateTime dateCreated;
     @Expose
@@ -195,18 +195,17 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         addChange(new Change("Update password"));
     }
 
-    public String getSalt() {
-        return salt;
-    }
-
     /**
      * Contract pre conditions:
      * Password must already be changed to the desired password
-     *
      * @param salt new salt
      */
-    public void setSalt(String salt) {
+    public void setSalt(String salt){
         this.salt = salt;
+    }
+
+    public String getSalt() {
+        return salt;
     }
 
     public List<Change> getChanges() {

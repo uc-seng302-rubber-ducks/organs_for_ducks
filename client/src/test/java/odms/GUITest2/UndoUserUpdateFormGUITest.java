@@ -62,7 +62,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
         FxToolkit.setupApplication(App.class, "--testConfig=true");
 
 
-        setTextField(this, "#userIDTextField", "ABC1234");
+        setTextField(this, "#userIDTextField","ABC1234");
         clickOnButton(this, "#loginUButton");
     }
 
@@ -94,15 +94,15 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
     public void multipleChangesNotSummedInMainWindow() {
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
-        setTextField(this, "#mNameInput", "geoff");
+        setTextField(this,"#mNameInput","geoff");
         clickOn("#healthDetailsTab");
         clickOn("#smokerCheckBox");
-        clickOnButton(this, "#updateProfileButton");
+        clickOnButton(this,"#updateProfileButton");
 
         verifyThat("#smokerValue", LabeledMatchers.hasText("Yes"));
         verifyThat("#mNameValue", LabeledMatchers.hasText("geoff"));
 
-        clickOnButton(this, "#undoButton");
+        clickOnButton(this,"#undoButton");
 
         verifyThat("#smokerValue", LabeledMatchers.hasText("No"));
         verifyThat("#mNameValue", LabeledMatchers.hasText("geoff"));

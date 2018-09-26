@@ -223,7 +223,7 @@ public class NewUserController {
      */
     private void textFieldListener(TextField field) {
         field.textProperty().addListener((observable, oldValue, newValue) -> {
-            field.getStyleClass().remove("invalid");
+                field.getStyleClass().remove("invalid");
         });
 
     }
@@ -252,7 +252,7 @@ public class NewUserController {
      * @param event from GUI
      */
     @FXML
-    private void ecCountrySelectorListener(ActionEvent event) {
+    private void ecCountrySelectorListener(ActionEvent event){
         controller.countrySelectorEventHandler(ecCountrySelector, ecRegionSelector, ecRegionInput, null, null);
     }
 
@@ -513,8 +513,8 @@ public class NewUserController {
     /**
      * Sets all the valid fields to the newly created user
      *
-     * @param newUser Newly created user to set fields to
-     * @param fName   First name of the newly created user
+     * @param newUser   Newly created user to set fields to
+     * @param fName     First name of the newly created user
      */
     private boolean setFields(User newUser, String fName) {
         newUser.setMiddleName(mNameInput.getText());
@@ -566,11 +566,11 @@ public class NewUserController {
      * Saves the user created and loads their overview from either the login screen,
      * or the administrator screen.
      *
-     * @param newUser User to be saved and loaded
-     * @param nhi     Unique identifier of the newly created user
-     * @throws IOException if fxml cannot be read.
+     * @param newUser   User to be saved and loaded
+     * @param nhi       Unique identifier of the newly created user
+     * @throws  IOException if fxml cannot be read.
      */
-    private void saveAndLoad(User newUser, String nhi) throws IOException {
+    private void saveAndLoad(User newUser, String nhi) throws IOException  {
         // add the new user to the list of users and save them
         controller.saveUser(newUser);
 
@@ -619,7 +619,7 @@ public class NewUserController {
     /**
      * Helper function to Load a user onto a new scene
      *
-     * @param nhi     Users NHI
+     * @param nhi Users NHI
      * @param newUser User to be displayed
      */
     private void loadUserScene(String nhi, User newUser) {
@@ -645,8 +645,8 @@ public class NewUserController {
     /**
      * Launches a given FXML user scene
      *
-     * @param nhi        nuhi of User
-     * @param newUser    User to launch
+     * @param nhi nuhi of User
+     * @param newUser User to launch
      * @param userLoader loader to be launched
      * @throws IOException when user loader is incorrectly passed and controller can not be found
      */

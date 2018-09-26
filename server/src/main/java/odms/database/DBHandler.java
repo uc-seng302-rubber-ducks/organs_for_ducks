@@ -24,8 +24,6 @@ public class DBHandler {
     public static final String START_TRANSACTION = "START TRANSACTION";
     public static final String ROLLBACK = "ROLLBACK";
     public static final String COMMIT = "COMMIT";
-    public static final String GET_APPOINTMENTS_TIME = "SELECT fkStaffId, fkUserNhi, requestedTime FROM AppointmentDetails WHERE apptId = ? ";
-    public static final String GET_APPOINTMENTS_ON_DATE = "SELECT fkStaffId, fkUserNhi, requestedTime FROM AppointmentDetails WHERE DATE(requestedTime) = ? ";
     /**
      * SQL commands for select
      * SELECT_USER_ONE_TO_ONE_INFO_STMT is for getting all info that follows one-to-one relationship. eg: 1 user can only have 1 address.
@@ -132,6 +130,9 @@ public class DBHandler {
             "WHERE fkUserNhi = ?";
     private static final String INSERT_ELSE_UPDATE_PREFERRED_CLINICIAN = "INSERT INTO PreferredClinician (fkUserNhi, fkStaffId) " +
             "VALUES (?, ?) ON DUPLICATE KEY UPDATE fkUserNhi=?, fkStaffId=?";
+    public static final String GET_APPOINTMENTS_TIME = "SELECT fkStaffId, fkUserNhi, requestedTime FROM AppointmentDetails WHERE apptId = ? ";
+    public static final String GET_APPOINTMENTS_ON_DATE = "SELECT fkStaffId, fkUserNhi, requestedTime FROM AppointmentDetails WHERE DATE(requestedTime) = ? ";
+
     private AbstractUpdateStrategy updateStrategy;
     private AbstractFetchAppointmentStrategy fetchAppointmentStrategy;
 
@@ -1162,6 +1163,7 @@ public class DBHandler {
      * queries the database as to whether an end-user* exists or not
      * * end-user meaning Admin, Clinician, or User
      * functionality has been moved.
+     * @see DBUtils
      *
      * @param conn       connection to the target database
      * @param type       type of the end-user as defined above
@@ -1169,7 +1171,6 @@ public class DBHandler {
      *                   The staff id, while in string form must be a valid integer
      * @return true if the identifier can be found in the relevant table
      * @throws SQLException exception thrown during the transaction
-     * @see DBUtils
      */
     public boolean getExists(Connection conn, Type type, String identifier) throws SQLException {
         return DBUtils.getExists(conn, type, identifier);
@@ -1391,10 +1392,10 @@ public class DBHandler {
         List<LocalDateTime> bookedAppointmnetDateTimes = new ArrayList<>();
         try (PreparedStatement preparedStatement = connection.prepareStatement(SELECT_AVAILABLE_APPOINTMENT_TIME_STMT)) {
             preparedStatement.setString(1, staffId);
-            preparedStatement.setString(2, startDateTime);
-            preparedStatement.setString(3, endDateTime);
+            preparedStatement.setString(2,startDateTime);
+            preparedStatement.setString(3,endDateTime);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet != null && resultSet.next()) {
+                while (resultSet !=null && resultSet.next()) {
                     bookedAppointmnetDateTimes.add(resultSet.getTimestamp("requestedTime").toLocalDateTime());
                 }
             }
@@ -1576,17 +1577,17 @@ public class DBHandler {
     /**
      * Gets the appointments scheduled for the given date
      *
-     * @param connection    connection to the database
+     * @param connection connection to the database
      * @param requestedDate Date to get appointments for
      * @return collection of the appointments
      * @throws SQLException sql db has gone wrong
      */
     public Collection<AppointmentWithPeople> getAppointmentsForDate(Connection connection, LocalDate requestedDate) throws SQLException {
         List<AppointmentWithPeople> results = new ArrayList<>();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(GET_APPOINTMENTS_ON_DATE)) {
+        try(PreparedStatement preparedStatement  = connection.prepareStatement(GET_APPOINTMENTS_ON_DATE)){
             preparedStatement.setDate(1, Date.valueOf(requestedDate));
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
+                while (resultSet.next()){
                     String nhi = resultSet.getString("fkUserNhi");
                     String id = resultSet.getString("fkStaffId");
                     LocalDateTime appointmentTime = resultSet.getTimestamp("requestedTime").toLocalDateTime();
@@ -1606,17 +1607,16 @@ public class DBHandler {
     /**
      * Gets the appointment for a specific person
      *
-     * @param connection    connection to the database
+     * @param connection connection to the database
      * @param appointmentId appointment to get
      * @return collection of the appointments
      * @throws SQLException sql db has gone wrong
      */
     public AppointmentWithPeople getAppointmentWithPeople(Connection connection, int appointmentId) throws SQLException {
-
-        try( PreparedStatement preparedStatement = connection.prepareStatement(GET_APPOINTMENTS_TIME)) {
+        try(PreparedStatement preparedStatement  = connection.prepareStatement(GET_APPOINTMENTS_TIME)){
             preparedStatement.setInt(1, appointmentId);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (resultSet.next()) { //should only ever be a single result in the set
+                if(resultSet.next()){ //should only ever be a single result in the set
                     String nhi = resultSet.getString("fkUserNhi");
                     String id = resultSet.getString("fkStaffId");
                     LocalDateTime appointmentTime = resultSet.getTimestamp("requestedTime").toLocalDateTime();

@@ -14,7 +14,7 @@ public class UndoClinicianTest {
     @Before
     public void setUp() {
         testUser = new Clinician("Staff1", "password", "John", "Angus", "McGurkinshaw");
-        Address workAddress = new Address("20", "Kirkwood Ave", "", "", "Canterbury", "", "");
+        Address workAddress =  new Address("20", "Kirkwood Ave", "", "", "Canterbury", "", "");
         testUser.setWorkContactDetails(new ContactDetails("", "", workAddress, ""));
     }
 

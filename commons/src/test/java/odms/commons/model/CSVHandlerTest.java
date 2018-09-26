@@ -57,7 +57,7 @@ public class CSVHandlerTest {
         CSVHandler csvHandler = new CSVHandler();
         List<CSVRecord> records = csvHandler.parseCSV(inFile);
 
-        Assert.assertTrue(records.size() == 4);
+        Assert.assertTrue (records.size() == 4);
     }
 
     @Test
@@ -67,21 +67,21 @@ public class CSVHandlerTest {
         Collection<User> users = csvHandler.decodeUsersFromCSV(records);
         List<User> usersList = new ArrayList<>(users);
         User actual = usersList.get(2);
-        Assert.assertTrue(actual.getNhi().equals(expected.getNhi()));
-        Assert.assertTrue(actual.getFirstName().equals(expected.getFirstName()));
-        Assert.assertTrue(actual.getLastName().equals(expected.getLastName()));
-        Assert.assertTrue(actual.getDateOfBirth().equals(expected.getDateOfBirth()));
-        Assert.assertTrue(actual.getDateOfDeath().equals(expected.getDateOfDeath()));
-        Assert.assertTrue(actual.getBirthGender().equals(expected.getBirthGender()));
-        Assert.assertTrue(actual.getGenderIdentity().equals(expected.getGenderIdentity()));
+        Assert.assertTrue (actual.getNhi().equals(expected.getNhi()));
+        Assert.assertTrue (actual.getFirstName().equals(expected.getFirstName()));
+        Assert.assertTrue (actual.getLastName().equals(expected.getLastName()));
+        Assert.assertTrue (actual.getDateOfBirth().equals(expected.getDateOfBirth()));
+        Assert.assertTrue (actual.getDateOfDeath().equals(expected.getDateOfDeath()));
+        Assert.assertTrue (actual.getBirthGender().equals(expected.getBirthGender()));
+        Assert.assertTrue (actual.getGenderIdentity().equals(expected.getGenderIdentity()));
         Assert.assertTrue(Objects.equals(actual.getHeight(), expected.getHeight()));
         Assert.assertTrue(Objects.equals(actual.getWeight(), expected.getWeight()));
-        Assert.assertTrue(actual.getRegion().equals(expected.getRegion()));
-        Assert.assertTrue(actual.getHomePhone().equals(expected.getHomePhone()));
-        Assert.assertTrue(actual.getStreetNumber().equals(expected.getStreetNumber()));
-        Assert.assertTrue(actual.getStreetName().equals(expected.getStreetName()));
-        Assert.assertTrue(actual.getNeighborhood().equals(expected.getNeighborhood()));
-        Assert.assertTrue(actual.getCity().equals(expected.getCity()));
+        Assert.assertTrue (actual.getRegion().equals(expected.getRegion()));
+        Assert.assertTrue (actual.getHomePhone().equals(expected.getHomePhone()));
+        Assert.assertTrue (actual.getStreetNumber().equals(expected.getStreetNumber()));
+        Assert.assertTrue (actual.getStreetName().equals(expected.getStreetName()));
+        Assert.assertTrue (actual.getNeighborhood().equals(expected.getNeighborhood()));
+        Assert.assertTrue (actual.getCity().equals(expected.getCity()));
 
     }
 
@@ -89,7 +89,7 @@ public class CSVHandlerTest {
     public void testInvalidCsvReturnsNoDataInLoadUsers() throws FileNotFoundException {
         CSVHandler csvHandler = new CSVHandler();
         ArrayList<User> users = (ArrayList<User>) csvHandler.loadUsers("src/test/resources/csvData/invalidCSV.csv");
-        Assert.assertTrue(users.size() == 0);
+        Assert.assertTrue (users.size() == 0);
     }
 
 }

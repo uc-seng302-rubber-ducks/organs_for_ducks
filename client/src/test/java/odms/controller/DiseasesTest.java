@@ -17,11 +17,11 @@ import static org.mockito.Mockito.when;
 
 public class DiseasesTest {
 
+    private AppController controller;
     ArrayList<Disease> baseOrder = new ArrayList<Disease>(8);
     ArrayList<Disease> orderedDate = new ArrayList<Disease>(8);
     ArrayList<Disease> orderedName = new ArrayList<Disease>(8);
     ArrayList<Disease> orderedChronic = new ArrayList<Disease>(8);
-    private AppController controller;
 
     @Before
     public void resetUsers() {
@@ -93,7 +93,6 @@ public class DiseasesTest {
             fail("Error setting up before test");
         }
     }
-
     @After
     public void tearDown() {
         AppController.setInstance(null);

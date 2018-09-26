@@ -50,7 +50,7 @@ public class ProcedureModificationViewController {
      * @param currentUser            user related to the procedure
      * @param procedureTabController parent controller from which this was called
      */
-    public void init(MedicalProcedure procedure, Stage stage, User currentUser, ProcedureTabController procedureTabController) {
+    public void init(MedicalProcedure procedure, Stage stage, User currentUser, ProcedureTabController procedureTabController){
         this.stage = stage;
         this.user = currentUser;
         this.procedureTabController = procedureTabController;
@@ -58,7 +58,7 @@ public class ProcedureModificationViewController {
         setupOrgans();
         titleLabel.setText("Edit Procedure");
         newProcedureConfirm.setText("Update");
-        if (procedure != null) {
+        if(procedure != null){
             newProcedureConfirm.setText("Confirm");
             titleLabel.setText("Add New Procedure");
             showProcedureToEdit(procedure);
@@ -79,15 +79,14 @@ public class ProcedureModificationViewController {
 
     /**
      * displays the selected procedure
-     *
      * @param procedure procedure to be displayed
      */
     private void showProcedureToEdit(MedicalProcedure procedure) {
         procedureTextField.setText(procedure.getSummary());
         procedureDateSelector.setValue(procedure.getProcedureDate());
         descriptionTextArea.setText(procedure.getDescription());
-        for (TextStringCheckBox organ : organsAffectedByProcedureListView.getItems()) {
-            if (procedure.getOrgansAffected().contains(Organs.fromString(organ.toString()))) {
+        for(TextStringCheckBox organ : organsAffectedByProcedureListView.getItems()){
+            if(procedure.getOrgansAffected().contains(Organs.fromString(organ.toString()))){
                 organ.setSelected(true);
             }
         }
@@ -125,7 +124,7 @@ public class ProcedureModificationViewController {
             return;
         }
         user.saveStateForUndo();
-        if (procedure == null) {
+        if(procedure == null) {
             procedure = new MedicalProcedure(procedureDate, procedureName,
                     descriptionTextArea.getText(), new ArrayList<>());
             user.addMedicalProcedure(procedure);
@@ -136,7 +135,7 @@ public class ProcedureModificationViewController {
             procedure.setOrgansAffected(new ArrayList<>());
         }
         for (TextStringCheckBox cb : organsAffectedByProcedureListView.getItems()) {
-            if (cb.isSelected()) {
+            if(cb.isSelected()){
                 procedure.addOrgan(Organs.fromString(cb.toString()));
             }
 

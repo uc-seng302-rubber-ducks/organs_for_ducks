@@ -15,7 +15,7 @@ public class MailHandlerTest {
     private MailSender mockMailSender;
 
     @Before
-    public void setUp() {
+    public void setUp(){
         testMailHandler = new MailHandler();
         mockMailSender = mock(JavaMailSenderImpl.class);
         testMailHandler.setMailSender(mockMailSender);
@@ -23,13 +23,13 @@ public class MailHandlerTest {
 
 
     @Test
-    public void testValidEmailSends() {
+    public void testValidEmailSends(){
         testMailHandler.sendMail("jbu71@uclive.ac.nz", "", "");
         verify(mockMailSender, times(1)).send(any(SimpleMailMessage.class));
     }
 
     @Test
-    public void testInvalidEmailFailsWithoutExceptions() {
+    public void testInvalidEmailFailsWithoutExceptions(){
         testMailHandler.sendMail("j4856564564", "", "");
         verify(mockMailSender, times(1)).send(any(SimpleMailMessage.class));
     }

@@ -72,6 +72,38 @@ public class EmergencyContact extends ContactDetails {
         this.name = name;
     }
 
+    public String getHomePhoneNumber() {
+        return super.getHomePhoneNumber();
+    }
+
+    public void setHomePhoneNumber(String homePhoneNumber) {
+        super.setHomePhoneNumber(homePhoneNumber);
+    }
+
+    public String getCellPhoneNumber() {
+        return super.getCellPhoneNumber();
+    }
+
+    public void setCellPhoneNumber(String cellPhoneNumber) {
+        super.setCellPhoneNumber(cellPhoneNumber);
+    }
+
+    public Address getAddress() {
+        return super.getAddress();
+    }
+
+    public void setAddress(Address address) {
+        super.setAddress(address);
+    }
+
+    public String getEmail() {
+        return super.getEmail();
+    }
+
+    public void setEmail(String email) {
+        super.setEmail(email);
+    }
+
     public String getRelationship() {
         return relationship;
     }
@@ -88,6 +120,16 @@ public class EmergencyContact extends ContactDetails {
         this.attachedUser = attachedUser;
     }
 
+    public String toString() {
+        return String.format("Emergency Contact Details: \n" +
+                "Name: %s\n" +
+                "Home Phone: %s\n" +
+                "Cell Phone: %s\n" +
+                "Address: %s\n" +
+                "Region: %s\n" +
+                "Email: %s\n" +
+                "Relationship: %s\n", name, super.getHomePhoneNumber(), super.getCellPhoneNumber(), super.getAddress(), getRegion(), super.getEmail(), relationship);
+    }
 
     /**
      * Compares strings

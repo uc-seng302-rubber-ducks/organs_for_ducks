@@ -13,9 +13,8 @@ public class ComboBoxClinician {
 
     /**
      * Constructor for the comboBoxClinicians
-     *
      * @param name Clinician's name
-     * @param id   Clinician's id
+     * @param id Clinician's id
      */
     public ComboBoxClinician(String name, String id) {
         this.name = name;

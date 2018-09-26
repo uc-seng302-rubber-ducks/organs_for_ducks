@@ -9,8 +9,9 @@ import java.util.concurrent.Executors;
  */
 public class CachedThreadPool {
 
-    private static CachedThreadPool pool = null;
     private ExecutorService executor;
+
+    private static CachedThreadPool pool = null;
 
     /**
      * Private constructor to prevent multiple instances being created
@@ -33,7 +34,6 @@ public class CachedThreadPool {
 
     /**
      * Gets the executor service
-     *
      * @return the service to execute tasks on
      */
     public ExecutorService getExecutor() {

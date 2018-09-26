@@ -76,7 +76,7 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
         when(application.getCountriesBridge()).thenReturn(countriesBridge);
         when(application.getOrgansBridge()).thenReturn(organsBridge);
 
-        when(loginBridge.loginToServer(anyString(), anyString(), anyString())).thenReturn("OMEGALUL");
+        when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("OMEGALUL");
         when(countriesBridge.getAllowedCountries()).thenReturn(new HashSet());
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(c);
         when(application.getTransplantList()).thenReturn(new ArrayList<>());
@@ -115,7 +115,7 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
     public void testEditFromClinician() {
         verifyThat("#titleLabel", LabeledMatchers.hasText("Update Clinician"));
         verifyThat("#confirmButton", LabeledMatchers.hasText("Save Changes"));
-        clickOnButton(this, "#cancelButton");
+        clickOnButton(this,"#cancelButton");
     }
 
     @Test

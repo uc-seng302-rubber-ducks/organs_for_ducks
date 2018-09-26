@@ -129,9 +129,8 @@ public class JsonHandler extends DataHandler {
 
     /**
      * Takes a get user response and then decodes it into a valid user
-     * <p>
-     * The response passed must be a from the /getUsers/{nhi} endpoint
      *
+     * The response passed must be a from the /getUsers/{nhi} endpoint
      * @param response repsonse to be parsed
      * @return the user contained in the response
      * @throws IOException Thrown if response body cannot be read
@@ -173,7 +172,6 @@ public class JsonHandler extends DataHandler {
 
     /**
      * Returns a decoded clinician from the response received from "/clinicians/{staffId}
-     *
      * @param response response to be parsed
      * @return clinician contained in the Json
      * @throws IOException If the response body cannot be read
@@ -183,6 +181,7 @@ public class JsonHandler extends DataHandler {
                 .create();
         return gson.fromJson(response.body().string(), Clinician.class);
     }
+
 
 
     /**
@@ -353,36 +352,31 @@ public class JsonHandler extends DataHandler {
 
     /**
      * converts a raw response into a list of transplant details
-     *
      * @param response response to decode
      * @return all valid TransplantDetails objects. will return empty list if none
      *
      * @throws IOException on undecodable json
      */
-    public List<TransplantDetails> decodeTransplantList(Response response) throws IOException {
-        return new Gson().fromJson(response.body().string(), new TypeToken<List<TransplantDetails>>() {
-        }.getType());
+    public List<TransplantDetails> decodeTransplantList(Response response) throws IOException{
+        return new Gson().fromJson(response.body().string(), new TypeToken<List<TransplantDetails>>() {}.getType());
     }
 
     public String decodeProfilePicture(ResponseBody body, String userId, String format) throws IOException {
-        return PhotoHelper.createTempImageFile(body.bytes(), userId, format);
+        return PhotoHelper.createTempImageFile(body.bytes(),userId, format);
 
     }
 
 
     public Set decodeCountries(Response response) throws IOException {
-        return new Gson().fromJson(response.body().string(), new TypeToken<HashSet<String>>() {
-        }.getType());
+        return new Gson().fromJson(response.body().string(), new TypeToken<HashSet<String>>() {}.getType());
     }
 
     public Collection<Clinician> decodeClinicians(String response) {
-        return new Gson().fromJson(response, new TypeToken<Collection<Clinician>>() {
-        }.getType());
+        return new Gson().fromJson(response, new TypeToken<Collection<Clinician>>(){}.getType());
     }
 
     public List<String> decodeQueryResult(ResponseBody body) throws IOException {
-        return new Gson().fromJson(body.string(), new TypeToken<ArrayList<String>>() {
-        }.getType());
+        return new Gson().fromJson(body.string(), new TypeToken<ArrayList<String>>(){}.getType());
     }
 
     public List<AvailableOrganDetail> decodeAvailableOrgansList(Response response) throws IOException {
@@ -392,7 +386,6 @@ public class JsonHandler extends DataHandler {
 
     /**
      * converts a raw response into a list of matching organs
-     *
      * @param response response to decode
      * @return a map of matching organs. will return empty map if none
      * @throws IOException on undecodable json
@@ -415,7 +408,6 @@ public class JsonHandler extends DataHandler {
 
     /**
      * Decodes raw json string into an appointment object
-     *
      * @param bodyString raw json string
      * @return an appointment object
      */
@@ -431,7 +423,7 @@ public class JsonHandler extends DataHandler {
      * @return a collection of LocalDateTimes
      */
     public Collection<LocalDateTime> decodeDateTimes(String bodyString) {
-        return new Gson().fromJson(bodyString, new TypeToken<Collection<LocalDateTime>>() {
+        return new Gson().fromJson(bodyString, new TypeToken<Collection<LocalDateTime>>(){
 
         }.getType());
     }

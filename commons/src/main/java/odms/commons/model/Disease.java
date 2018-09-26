@@ -14,30 +14,12 @@ public class Disease extends Deletable {
 
     @Expose
     private String name;
-    public transient Comparator<Disease> diseaseNameComparator = (o1, o2) -> {
-        String diseaseName1 = o1.getName();
-        String diseaseName2 = o2.getName();
-
-        return diseaseName1.compareTo(diseaseName2);
-    };
     @Expose
     private boolean isChronic;
-    public transient Comparator<Disease> diseaseChronicComparator = (o1, o2) -> {
-        boolean diseaseChronic1 = o1.getIsChronic();
-        boolean diseaseChronic2 = o2.getIsChronic();
-
-        return (diseaseChronic1 != diseaseChronic2) ? (diseaseChronic1) ? -1 : 1 : 0;
-    };
     @Expose
     private boolean isCured;
     @Expose
     private LocalDate diagnosisDate;
-    public transient Comparator<Disease> diseaseDateComparator = (o1, o2) -> {
-        LocalDate diseaseDate1 = o1.getDiagnosisDate();
-        LocalDate diseaseDate2 = o2.getDiagnosisDate();
-
-        return diseaseDate1.compareTo(diseaseDate2);
-    };
 
     /**
      * Disease constructor that exposes
@@ -57,6 +39,27 @@ public class Disease extends Deletable {
 
     public Disease() {
     }
+
+    public transient Comparator<Disease> diseaseDateComparator = (o1, o2) -> {
+        LocalDate diseaseDate1 = o1.getDiagnosisDate();
+        LocalDate diseaseDate2 = o2.getDiagnosisDate();
+
+        return diseaseDate1.compareTo(diseaseDate2);
+    };
+
+    public transient Comparator<Disease> diseaseChronicComparator = (o1, o2) -> {
+        boolean diseaseChronic1 = o1.getIsChronic();
+        boolean diseaseChronic2 = o2.getIsChronic();
+
+        return (diseaseChronic1 != diseaseChronic2) ? (diseaseChronic1) ? -1 : 1 : 0;
+    };
+
+    public transient Comparator<Disease> diseaseNameComparator = (o1, o2) -> {
+        String diseaseName1 = o1.getName();
+        String diseaseName2 = o2.getName();
+
+        return diseaseName1.compareTo(diseaseName2);
+    };
 
     @Override
     public String toString() {

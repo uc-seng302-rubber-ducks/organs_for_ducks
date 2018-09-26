@@ -26,8 +26,7 @@ public class UpdateNotificationEvent extends PropertyChangeEvent {
     /**
      * Creates an event based on a notification. note that the default oldValue and newValue are set to a constant
      * as these must be different for the event to fire properly.
-     *
-     * @param source       the bean that fired the event
+     * @param source the bean that fired the event
      * @param notification object containing old and new id's, and event type
      */
     public UpdateNotificationEvent(Object source, UpdateNotification notification) {

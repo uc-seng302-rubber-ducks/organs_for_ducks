@@ -40,7 +40,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
     private AppController application = AppControllerMocker.getFullMock();
     private UserBridge bridge = mock(UserBridge.class);
     private ClinicianBridge clinicianBridge = mock(ClinicianBridge.class);
-    private AdministratorBridge administratorBridge = mock(AdministratorBridge.class);
+    private AdministratorBridge administratorBridge  = mock(AdministratorBridge.class);
     private LoginBridge loginBridge = mock(LoginBridge.class);
     private TransplantBridge transplantBridge = mock(TransplantBridge.class);
     private CountriesBridge countriesBridge = mock(CountriesBridge.class);
@@ -66,7 +66,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         countries.add("New Zealand");
         when(countriesBridge.getAllowedCountries()).thenReturn(countries);
         when(application.getTransplantList()).thenReturn(new ArrayList<>());
-        when(loginBridge.loginToServer(anyString(), anyString(), anyString())).thenReturn("lsdjfksd");
+        when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
         doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any(), eq(null));
         when(application.getToken()).thenReturn("fakeToken");
         when(administratorBridge.getAdmin(anyString(), anyString())).thenReturn(new Administrator("default", "", "", "", ""));
@@ -79,8 +79,8 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         clickOn("#administratorTab");
         setTextField(this, "#adminUsernameTextField", "default");
         setTextField(this, "#adminPasswordField", "admin");
-        clickOnButton(this, "#loginAButton");
-        clickOnButton(this, "#addClinicianButton");
+        clickOnButton(this,"#loginAButton");
+        clickOnButton(this,"#addClinicianButton");
     }
 
     @After
@@ -115,11 +115,11 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         lookup("#firstNameTextField").queryAs(TextField.class).setText("Affie");
         setComboBox(this, "#countrySelector", "New Zealand");
         setComboBox(this, "#regionSelector", "Christchurch");
-        clickOnButton(this, "#confirmButton");
+        clickOnButton(this,"#confirmButton");
         // return to the creation screen
         clickOn("#fileMenuClinician");
         clickOn("#logoutMenuClinician");
-        clickOnButton(this, "#addClinicianButton");
+        clickOnButton(this,"#addClinicianButton");
         when(application.getClinician(anyString())).thenReturn(new Clinician("Affie", "Staff1", "any"));
         // create a new clinician with the same staff ID
         lookup("#staffIDTextField").queryAs(TextField.class).setText("Staff1");
@@ -127,7 +127,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         setTextField(this, "#confirmPasswordField", "secure");
         setTextField(this, "#firstNameTextField", "Addie");
         setTextField(this, "#regionTextField", "Wellington");
-        clickOnButton(this, "#confirmButton");
+        clickOnButton(this,"#confirmButton");
         verifyThat("#staffIdErrorLabel", Node::isVisible);
         verifyThat("#staffIdErrorLabel", LabeledMatchers.hasText("Staff ID already in use"));
     }
@@ -139,7 +139,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         lookup("#passwordField").queryAs(TextField.class).setText("secure");
         lookup("#firstNameTextField").queryAs(TextField.class).setText("Affie");
         lookup("#regionTextField").queryAs(TextField.class).setText("Christchurch");
-        clickOnButton(this, "#confirmButton");
+        clickOnButton(this,"#confirmButton");
         verifyThat("#passwordErrorLabel", Node::isVisible);
     }
 
@@ -151,7 +151,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         lookup("#confirmPasswordField").queryAs(TextField.class).setText("not secure");
         lookup("#firstNameTextField").queryAs(TextField.class).setText("Affie");
         lookup("#regionTextField").queryAs(TextField.class).setText("Christchurch");
-        clickOnButton(this, "#confirmButton");
+        clickOnButton(this,"#confirmButton");
         verifyThat("#confirmPasswordErrorLabel", Node::isVisible);
     }
 }
