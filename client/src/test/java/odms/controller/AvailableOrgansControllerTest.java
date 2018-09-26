@@ -11,6 +11,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,11 +42,16 @@ public class AvailableOrgansControllerTest {
 
     }
 
+    @After
+    public void tearDown() {
+        AppController.setInstance(null);
+    }
+
     @Test
     public void testNextPageNoPages() {
         doNothing().when(call).enqueue(any(Callback.class));
         availableOrganDetails.add(new AvailableOrganDetail(Organs.BONE, "ABC1234", LocalDateTime.now(), "Hutt Valley", "A+",0));
-        availableOrgansLogicController.goNextPage();
+        availableOrgansLogicController.goNextPage(null);
         assertTrue(availableOrganDetails.size() == 1);
         verify(controller, times(0)).getOrgansBridge();
 
@@ -55,7 +61,7 @@ public class AvailableOrgansControllerTest {
     public void testPrevPageNoPages() {
         doNothing().when(call).enqueue(any(Callback.class));
         availableOrganDetails.add(new AvailableOrganDetail(Organs.HEART, "DEF2314", LocalDateTime.now(), "Canterbury", "B-", 0));
-        availableOrgansLogicController.goPrevPage();
+        availableOrgansLogicController.goPrevPage(null);
         assertTrue(availableOrganDetails.size() == 1);
         verify(controller, never()).getOrgansBridge();
     }

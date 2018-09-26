@@ -8,6 +8,7 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import odms.commons.model.Appointment;
 import odms.commons.model.User;
+import odms.commons.model._enum.AppointmentStatus;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.UserType;
 import odms.commons.model.event.UpdateNotificationEvent;
@@ -47,7 +48,7 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
      * Launches the pop-up to create and view requested appointments in more detail
      */
     public void launchAppointmentPicker() {
-        if (AppController.getInstance().getAppointmentsBridge().pendingExists(user.getNhi())) {
+        if (AppController.getInstance().getAppointmentsBridge().checkAppointmentStatusExists(user.getNhi(), UserType.USER, AppointmentStatus.PENDING)) {
             alertUser("You cannot request a new appointment as you already have one pending approval.");
             return;
         }
@@ -75,7 +76,12 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
      * @param appointment The appointment to be cancelled
      */
     public void cancelAppointment(Appointment appointment) {
-        // todo: notify the clinician when a user cancels their appointment - task in story 101C
+        AppointmentStatus status = appointment.getAppointmentStatus();
+
+        if (!(status == AppointmentStatus.ACCEPTED || status == AppointmentStatus.ACCEPTED_SEEN || status == AppointmentStatus.PENDING)) {
+            alertUser("This appointment is no longer available");
+            return;
+        }
 
         if (appointment.getRequestedDate().minusDays(1).isBefore(LocalDateTime.now())) {
             alertUser("You cannot cancel this appointment as it is within 24 hours of the scheduled time");
@@ -89,7 +95,9 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
         }
 
         if (result.get() == ButtonType.OK) {
-            AppController.getInstance().getAppointmentsBridge().deleteAppointment(appointment);
+            appointment.setAppointmentStatus(AppointmentStatus.CANCELLED_BY_USER);
+            AppController.getInstance().getAppointmentsBridge().patchAppointmentStatus(appointment.getAppointmentId(),
+                    AppointmentStatus.CANCELLED_BY_USER.getDbValue());
         }
     }
 

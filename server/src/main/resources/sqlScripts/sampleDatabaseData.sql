@@ -132,19 +132,29 @@ INSERT INTO AppointmentStatus(statusId, status) VALUES
   (1, 'pending'), -- Used when clinician hasn't seen or approved it
   (2, 'accepted'), -- Used when clinician has confirmed the appointment but the user has not seen it.
   (3, 'rejected'), -- Used when the clinician has rejected the appointment but the user has not seen it.
-  (4, 'cancelled'), -- Used when the appointment is cancelled by either party
-  (5, 'updated'), -- Used when the appointment is updated by the clinician
-  (6, 'accepted_seen'), -- Used when the appointment has been accepted and seen by the user
-  (7, 'rejected_seen'), -- Used when the appointment has been rejected and seen by the user
-  (8, 'cancelled_seen'); -- Used when the appointment has been cancelled and seen by the user
+  (4, 'cancelled_by_user'), -- Used when the appointment is cancelled by a user
+  (5, 'cancelled_by_clinician'), -- Used when the appointment is cancelled by a clinician
+  (6, 'updated'), -- Used when the appointment is updated by the clinician
+  (7, 'accepted_seen'), -- Used when the appointment has been accepted and seen by the user
+  (8, 'rejected_seen'), -- Used when the appointment has been rejected and seen by the user
+  (9, 'cancelled_by_user_seen'), -- Used when the appointment has been seen by the clinician
+  (10, 'cancelled_by_clinician_seen'); -- Used when the appointment has been seen by the user
+
 
 INSERT INTO AppointmentCategory(categoryId, category) VALUES
   (1, 'Blood test'),
   (2, 'General check-up'),
   (3, 'Health advice'),
   (4, 'Prescription renewal'),
-  (5, 'Other');
+  (5, 'Other'),
+  (6, 'Personal');
 
 INSERT INTO AppointmentDetails(apptId, fkUserNhi, fkStaffId, fkCategoryId, requestedTime, fkStatusId, description) VALUES
   (1, 'DEF2314', '23', 4, '2018-01-10 16:15:01', 3, 'need stress relief due to SENG302'),
   (2, 'DEF2314', '23', 2, '2018-01-11 16:15:01', 2, 'periodic check up');
+
+INSERT INTO BloodTestDetails (bloodTestId, fkUserNhi, redBloodCellCount, whiteBloodCellCount, haemoglobinLevel, platelets,
+                              glucoseLevels, haematocrit, meanCellVolume, meanCellHaematocrit, testDate) VALUES
+  (1, 'ABC1234', 5.4, 8.5, 120.5, 300.5, 4.8, 0.35, 80.5, 25.5, '2015-09-01'),
+  (2, 'DEF2314', 6.3, 7.7, 127.6, 354.4, 5.3, 0.35, 78.5, 25.5, '2017-01-09'),
+  (3, 'XYZ1234', 5.0, 10.0, 143.0, 470.6, 11.2, 0.24, 76.0, 24.0, '2017-03-03');

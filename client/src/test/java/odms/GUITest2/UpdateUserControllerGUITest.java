@@ -75,84 +75,94 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
 
     @Test
     public void testUpdateName() {
+        clickOn("#userTab");
         setTextField(this, "#fNameInput","");
         setTextField(this, "#fNameInput","Kate");
-        clickOnButton(this, "#confirmButton");
+        clickOnButton(this, "#updateProfileButton");
         verifyThat("#fNameValue", LabeledMatchers.hasText("Kate"));
     }
 
     @Test
     public void testUpdateNothing() {
-        clickOnButton(this,"#confirmButton");
+        clickOnButton(this,"#updateProfileButton");
         verifyThat("#fNameValue", LabeledMatchers.hasText("A"));
     }
 
     @Test
     public void testUpdateDoB() {
+        clickOn("#userTab");
         setDateValue(this, "#dobInput", LocalDate.of(2018, 5, 3));
-        clickOnButton(this,"#confirmButton");
+        clickOnButton(this,"#updateProfileButton");
         verifyThat("#DOBValue", LabeledMatchers.hasText(LocalDate.of(2018, 5, 3).toString()));
     }
 
     @Test
     public void testUpdateHomePhone() {
+        clickOn("#detailsTab");
         setTextField(this,"#phone","033572996");
-        clickOnButton(this,"#confirmButton");
+        clickOnButton(this,"#updateProfileButton");
         clickOn("#detailsTab");
         verifyThat("#pHomePhone", LabeledMatchers.hasText("033572996"));
     }
 
     @Test
     public void testUpdateCellPhone() {
+        clickOn("#detailsTab");
         setTextField(this,"#cell","0224567895");
-        clickOnButton(this,"#confirmButton");
+        clickOnButton(this,"#updateProfileButton");
         clickOn("#detailsTab");
         verifyThat("#pCellPhone", LabeledMatchers.hasText("0224567895"));
     }
 
     @Test
     public void testUpdateEmail() {
+        clickOn("#detailsTab");
         setTextField(this,"#email","catface@gmail.com");
-        clickOnButton(this,"#confirmButton");
+        clickOnButton(this,"#updateProfileButton");
         clickOn("#detailsTab");
         verifyThat("#pEmail", LabeledMatchers.hasText("catface@gmail.com"));
     }
 
     @Test
     public void testUpdateBloodType() {
+        clickOn("#healthDetailsTab");
         clickOn("#bloodComboBox");
         clickOn("B+");
-        clickOnButton(this,"#confirmButton");
+        clickOnButton(this,"#updateProfileButton");
         verifyThat("#bloodTypeValue", LabeledMatchers.hasText("B+"));
     }
 
     @Test
     public void testUpdateSmokerStatus() {
+        clickOn("#healthDetailsTab");
         clickOn("#smokerCheckBox");
-        clickOnButton(this,"#confirmButton");
+        clickOnButton(this,"#updateProfileButton");
         verifyThat("#smokerValue", LabeledMatchers.hasText("Yes"));
     }
 
     @Test
     public void testUpdateAlcoholConsumption() {
+        clickOn("#healthDetailsTab");
         clickOn("#alcoholComboBox");
         clickOn("Low");
-        clickOnButton(this,"#confirmButton");
+        clickOnButton(this,"#updateProfileButton");
         verifyThat("#alcoholValue", LabeledMatchers.hasText("Low"));
     }
 
     @Test
     public void testUpdateWeight() {
+        clickOn("#healthDetailsTab");
         setTextField(this,"#weightInput","65");
-        clickOnButton(this,"#confirmButton");
+        clickOnButton(this,"#updateProfileButton");
         verifyThat("#weightValue", LabeledMatchers.hasText("65.0"));
     }
 
     @Test
     public void updateBMIAfterUpdate() {
-        setTextField(this,"#heightInput","175");
+        clickOn("#healthDetailsTab");
+        setTextField(this,"#heightInput","1.75");
         setTextField(this,"#weightInput","65");
-        clickOnButton(this,"#confirmButton");
+        clickOnButton(this,"#updateProfileButton");
         verifyThat("#bmiValue", LabeledMatchers.hasText("21.22"));
     }
 

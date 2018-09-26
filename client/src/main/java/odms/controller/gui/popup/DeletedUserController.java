@@ -10,7 +10,6 @@ import odms.commons.exception.ProfileAlreadyExistsException;
 import odms.commons.exception.ProfileNotFoundException;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
-import odms.commons.model.TooltipTableRow;
 import odms.commons.model.User;
 import odms.commons.model._abstract.Deletable;
 import odms.commons.model._enum.Organs;
@@ -131,8 +130,6 @@ public class DeletedUserController {
                 .setAll(fNameColumn, lNameColumn, dobColumn, dodColumn, ageColumn, regionColumn,
                         organsColumn);
         deletedUserTableView.setItems(oListUsers);
-        deletedUserTableView.setRowFactory(
-                searchTableView -> new TooltipTableRow<>(User::getTooltip));
     }
 
 

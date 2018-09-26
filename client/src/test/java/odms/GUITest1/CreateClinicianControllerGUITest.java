@@ -6,6 +6,7 @@ import odms.App;
 import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
 import odms.bridge.*;
+import odms.commons.exception.UnauthorisedException;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
 import odms.controller.AppController;
@@ -28,6 +29,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.eq;
 import static org.testfx.api.FxAssert.verifyThat;
 
 /**
@@ -50,7 +52,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
     }
 
     @Before
-    public void setUpCreateScene() throws TimeoutException, IOException {
+    public void setUpCreateScene() throws TimeoutException, IOException, UnauthorisedException {
         AppController.setInstance(application);
         when(application.getCountriesBridge()).thenReturn(countriesBridge);
         when(application.getUserBridge()).thenReturn(bridge);
@@ -65,7 +67,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         when(countriesBridge.getAllowedCountries()).thenReturn(countries);
         when(application.getTransplantList()).thenReturn(new ArrayList<>());
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
-        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
+        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any(), eq(null));
         when(application.getToken()).thenReturn("fakeToken");
         when(administratorBridge.getAdmin(anyString(), anyString())).thenReturn(new Administrator("default", "", "", "", ""));
 
@@ -98,10 +100,10 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
     @Test
     public void testSignUpNoInfo() {
         clickOnButton(this, "#confirmButton");
-        verifyThat("#invalidStaffIDLabel", Node::isVisible);
-        verifyThat("#invalidStaffIDLabel", LabeledMatchers.hasText("Staff ID cannot be empty"));
-        verifyThat("#emptyPasswordLabel", Node::isVisible);
-        verifyThat("#emptyFNameLabel", Node::isVisible);
+        verifyThat("#staffIdErrorLabel", Node::isVisible);
+        verifyThat("#staffIdErrorLabel", LabeledMatchers.hasText("Staff ID cannot be empty"));
+        verifyThat("#passwordErrorLabel", Node::isVisible);
+        verifyThat("#firstNameErrorLabel", Node::isVisible);
     }
 
     @Test
@@ -126,8 +128,8 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         setTextField(this, "#firstNameTextField", "Addie");
         setTextField(this, "#regionTextField", "Wellington");
         clickOnButton(this,"#confirmButton");
-        verifyThat("#invalidStaffIDLabel", Node::isVisible);
-        verifyThat("#invalidStaffIDLabel", LabeledMatchers.hasText("Staff ID already in use"));
+        verifyThat("#staffIdErrorLabel", Node::isVisible);
+        verifyThat("#staffIdErrorLabel", LabeledMatchers.hasText("Staff ID already in use"));
     }
 
 
@@ -138,7 +140,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         lookup("#firstNameTextField").queryAs(TextField.class).setText("Affie");
         lookup("#regionTextField").queryAs(TextField.class).setText("Christchurch");
         clickOnButton(this,"#confirmButton");
-        verifyThat("#emptyPasswordLabel", Node::isVisible);
+        verifyThat("#passwordErrorLabel", Node::isVisible);
     }
 
 
@@ -150,6 +152,6 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         lookup("#firstNameTextField").queryAs(TextField.class).setText("Affie");
         lookup("#regionTextField").queryAs(TextField.class).setText("Christchurch");
         clickOnButton(this,"#confirmButton");
-        verifyThat("#incorrectPasswordLabel", Node::isVisible);
+        verifyThat("#confirmPasswordErrorLabel", Node::isVisible);
     }
 }

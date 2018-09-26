@@ -2,6 +2,7 @@ package odms.bridge;
 
 import com.google.gson.JsonObject;
 import odms.commons.exception.ApiException;
+import odms.commons.exception.UnauthorisedException;
 import odms.commons.utils.HttpRequester;
 import odms.commons.utils.Log;
 import okhttp3.*;
@@ -22,7 +23,7 @@ public class LoginBridge extends Bifrost{
      * @return token if request is successful
      * @throws ApiException if any response other than the expected token is returned
      */
-    public String loginToServer(String wanted, String password, String role) throws ApiException{
+    public String loginToServer(String wanted, String password, String role) throws ApiException, UnauthorisedException {
         Response response;
         JsonObject body = new JsonObject();
         body.addProperty("username" , wanted);
@@ -43,8 +44,8 @@ public class LoginBridge extends Bifrost{
             throw new ApiException(0, "null value return when making the login request");
         }
         int responseCode = response.code();
-        if(responseCode == 404 || responseCode == 401) {
-            throw new ApiException(responseCode, "could not log in as the requested user");
+        if(responseCode == 404 || responseCode == 401 || responseCode == 403) {
+            throw new UnauthorisedException("could not log in as the requested user");
         } else if (responseCode == 500 || responseCode == 400) {
             Log.warning("An Error occurred. code returned: " + responseCode);
             throw new ApiException(responseCode, "error code recieved");

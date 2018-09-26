@@ -7,10 +7,7 @@ import odms.bridge.*;
 import odms.commons.model.User;
 import odms.controller.AppController;
 import odms.controller.gui.window.UserController;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
@@ -35,6 +32,7 @@ public class StatusBarGUITest extends ApplicationTest {
     private LoginBridge loginBridge = mock(LoginBridge.class);
     private TransplantBridge transplantBridge = mock(TransplantBridge.class);
 
+
     @BeforeClass
     public static void initialization() {
         CommonTestMethods.runMethods();
@@ -50,10 +48,12 @@ public class StatusBarGUITest extends ApplicationTest {
         when(controller.getLoginBridge()).thenReturn(loginBridge);
         when(controller.getAdministratorBridge()).thenReturn(administratorBridge);
 
+
         doCallRealMethod().when(controller).setUserController(any(UserController.class));
         doCallRealMethod().when(controller).getUserController();
 
         when(userBridge.getUser(anyString())).thenReturn(new User("A", LocalDate.now().minusDays(1000), "ABC1234"));
+
 
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class, "--testConfig=true");
@@ -68,7 +68,7 @@ public class StatusBarGUITest extends ApplicationTest {
         clickOn("#fNameInput").push(SHORTCUT, A).push(BACK_SPACE);
         clickOn("#fNameInput");
         write("Kate");
-        clickOnButton(this,"#confirmButton");
+        clickOnButton(this,"#updateProfileButton");
     }
 
     @After
@@ -77,8 +77,10 @@ public class StatusBarGUITest extends ApplicationTest {
         FxToolkit.cleanupStages();
     }
 
-    @Test
+    //TODO fix me pls 24/09/2018
+    @Test @Ignore
     public void checkStatusBarUpdates() {
+        //Told to ignore by Alanna, status bars have changed 20/9/18 - JB
         verifyThat("#statusBar", LabeledMatchers.hasText("ABC1234 Changed first name to Kate"));
     }
 

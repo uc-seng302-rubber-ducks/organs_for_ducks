@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS BloodTestDetails;
 DROP TABLE IF EXISTS PreferredClinician;
 DROP TABLE IF EXISTS AppointmentDetails;
 DROP TABLE IF EXISTS AppointmentType;
@@ -29,7 +30,8 @@ DROP TABLE IF EXISTS User;
 
 
 CREATE TABLE User(
-  nhi            varchar(7) PRIMARY KEY ,
+  uniqueId       INT AUTO_INCREMENT PRIMARY KEY,
+  nhi            varchar(7) UNIQUE NOT NULL,
   firstName      VARCHAR(255),
   middleName     VARCHAR(255),
   lastName       VARCHAR(255),
@@ -77,7 +79,7 @@ CREATE TABLE  PreviousDisease(
 
 CREATE TABLE  CurrentDisease(
   diseaseName   VARCHAR(255) NOT NULL,
-  diagnosisDate DATETIME     not NULL,
+  diagnosisDate DATETIME     NOT NULL,
   fkUserNhi     VARCHAR(7)   NOT NULL,
   isChronic     BOOLEAN,
   PRIMARY KEY (diseaseName, diagnosisDate, fkUserNhi),
@@ -258,6 +260,7 @@ CREATE TABLE AppointmentDetails (
   requestedTime DATETIME,
   fkStatusId    SMALLINT,
   description   VARCHAR(255),
+  title         VARCHAR(255),
   FOREIGN KEY (fkUserNhi) REFERENCES User (nhi)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
@@ -283,8 +286,19 @@ CREATE TABLE PreferredClinician (
     ON UPDATE CASCADE
 );
 
-CREATE TRIGGER removeZombies AFTER UPDATE ON DeathDetails
-  FOR EACH ROW
-  BEGIN
-    DELETE FROM DeathDetails WHERE DeathDetails.momentOfDeath IS NULL;
-  END;
+CREATE TABLE BloodTestDetails(
+  bloodTestId         INT AUTO_INCREMENT PRIMARY KEY,
+  fkUserNhi           VARCHAR(7),
+  redBloodCellCount   DOUBLE,
+  whiteBloodCellCount DOUBLE,
+  haemoglobinLevel    DOUBLE,
+  platelets           DOUBLE,
+  glucoseLevels       DOUBLE,
+  haematocrit         DOUBLE,
+  meanCellVolume      DOUBLE,
+  meanCellHaematocrit DOUBLE,
+  testDate            DATE,
+  FOREIGN KEY (fkUserNhi) REFERENCES User (nhi)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE
+);

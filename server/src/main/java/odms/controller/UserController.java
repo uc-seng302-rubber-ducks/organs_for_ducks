@@ -1,12 +1,12 @@
 package odms.controller;
 
-import odms.commons.database.DBHandler;
-import odms.commons.database.JDBCDriver;
 import odms.commons.model.User;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model.datamodel.ComboBoxClinician;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.Log;
+import odms.database.DBHandler;
+import odms.database.JDBCDriver;
 import odms.exception.NotFoundException;
 import odms.exception.ServerDBException;
 import odms.security.IsClinician;
@@ -49,7 +49,7 @@ public class UserController extends BaseController {
                                              @RequestParam("count") int count,
                                              @RequestParam(value = "name", required = false) String name,
                                              @RequestParam(value = "region", required = false) String region,
-                                             @RequestParam(value = "gender", required = false) String gender) {
+                                             @RequestParam(value = "gender", required = false, defaultValue = "All") String gender) {
         try (Connection connection = driver.getConnection()) {
             Collection<User> rawUsers = handler.getUsers(connection, count, startIndex, name, region, gender.equals("All") ? "" : gender);
             Log.info("Getting all user overviews...");
@@ -63,7 +63,6 @@ public class UserController extends BaseController {
         }
 
     }
-
 
     @RequestMapping(method = RequestMethod.POST, value = "/users")
     public ResponseEntity postUser(@RequestBody User newUser) {
@@ -107,7 +106,6 @@ public class UserController extends BaseController {
             throw new ServerDBException(ex);
         }
     }
-
 
     @RequestMapping(method = RequestMethod.PUT, value = "/users/{nhi}")
     public ResponseEntity putUser(@PathVariable("nhi") String nhi, @RequestBody User user) {

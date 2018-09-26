@@ -6,14 +6,16 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
+<?import javafx.scene.text.Font?>
+<?import odms.controller.gui.widget.LoadingTableView?>
 <?import java.lang.String?>
-<AnchorPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.ClinicianController">
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="800.0" prefWidth="1200.0" stylesheets="@../gui.css"
+            xmlns="http://javafx.com/javafx/8" fx:controller="odms.controller.gui.window.ClinicianController">
     <children>
         <MenuBar prefHeight="37.0" prefWidth="619.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <menus>
                 <Menu fx:id="fileMenuClinician" mnemonicParsing="false" text="File">
                     <items>
-                        <MenuItem fx:id="refreshClinician" mnemonicParsing="false" onAction="#refreshTables" text="Refresh" />
                         <MenuItem fx:id="saveUserMenuItem" mnemonicParsing="false" onAction="#save" text="Save" />
                         <MenuItem fx:id="logoutMenuClinician" mnemonicParsing="false" text="Log Out" />
                     </items>
@@ -58,27 +60,27 @@
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
-                                        <Label text="Address:">
+                                        <Label styleClass="label-title" text="Address:">
                                             <font>
                                                 <Font size="18.0" />
                                             </font>
                                         </Label>
-                                        <Label text="City:" GridPane.rowIndex="1">
+                                        <Label styleClass="label-title" text="City:" GridPane.rowIndex="1">
                                             <font>
                                                 <Font size="18.0" />
                                             </font>
                                         </Label>
-                                        <Label fx:id="asdf" text="Region:" GridPane.rowIndex="2">
+                                        <Label styleClass="label-title" fx:id="asdf" text="Region:" GridPane.rowIndex="2">
                                             <font>
                                                 <Font size="18.0" />
                                             </font>
                                         </Label>
-                                        <Label text="Country:" GridPane.rowIndex="3">
+                                        <Label styleClass="label-title" text="Country:" GridPane.rowIndex="3">
                                             <font>
                                                 <Font size="18.0" />
                                             </font>
                                         </Label>
-                                        <Label text="Zip Code:" GridPane.rowIndex="4">
+                                        <Label styleClass="label-title" text="Zip Code:" GridPane.rowIndex="4">
                                             <font>
                                                 <Font size="18.0" />
                                             </font>
@@ -141,7 +143,7 @@
                                     </rowConstraints>
                                     <children>
                                         <ImageView fx:id="profileImage" fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" GridPane.rowSpan="2" GridPane.valignment="TOP" />
-                                        <Label text="First Name:" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                        <Label styleClass="label-title" text="First Name:" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                             <font>
                                                 <Font size="18.0" />
                                             </font>
@@ -151,7 +153,7 @@
                                                 <Font size="18.0" />
                                             </font>
                                         </Label>
-                                        <Label text="Staff ID:" GridPane.columnIndex="1">
+                                        <Label styleClass="label-title" text="Staff ID:" GridPane.columnIndex="1">
                                             <font>
                                                 <Font size="18.0" />
                                             </font>
@@ -161,12 +163,12 @@
                                                 <Font size="18.0" />
                                             </font>
                                         </Label>
-                                        <Label text="Middle Name:" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                        <Label styleClass="label-title" text="Middle Name:" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                             <font>
                                                 <Font size="18.0" />
                                             </font>
                                         </Label>
-                                        <Label text="Last Name:" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                        <Label styleClass="label-title" text="Last Name:" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                             <font>
                                                 <Font size="18.0" />
                                             </font>
@@ -221,15 +223,12 @@
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="617.0">
                                     <children>
-                                        <TableView fx:id="searchTableView" prefHeight="331.0" prefWidth="600.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="2.0">
+                                        <LoadingTableView fx:id="searchTableView" prefHeight="331.0" prefWidth="600.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="2.0">
                                             <columns>
                                                 <TableColumn prefWidth="75.0" text="C1" />
                                                 <TableColumn prefWidth="75.0" text="C2" />
                                             </columns>
-                                            <tooltip>
-                                                <Tooltip fx:id="searchToolTip" text="Empty Tooltip" />
-                                            </tooltip>
-                                        </TableView>
+                                        </LoadingTableView>
                                         <Label fx:id="searchCountLabel" layoutX="14.0" layoutY="336.0" text="" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" />
                                         <HBox alignment="CENTER" layoutX="269.0" layoutY="244.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                             <children>
@@ -265,12 +264,19 @@
                 <fx:include fx:id="statusBarPage" source="statusBar.fxml" />
             </children>
         </AnchorPane>
-        <Label alignment="CENTER" layoutX="262.0" layoutY="6.0" text="Clinician" visible="false" AnchorPane.leftAnchor="262.0" AnchorPane.rightAnchor="272.0">
-            <font>
-                <Font size="20.0" />
-            </font>
-        </Label>
-        <Button fx:id="undoButton" layoutX="481.0" layoutY="5.0" mnemonicParsing="false" onAction="#undo" text="Undo" AnchorPane.rightAnchor="86.0" AnchorPane.topAnchor="5.0" />
-        <Button fx:id="redoButton" layoutX="545.0" layoutY="5.0" mnemonicParsing="false" onAction="#redo" text="Redo" AnchorPane.rightAnchor="22.0" AnchorPane.topAnchor="5.0" />
+      <Label layoutX="262.0" layoutY="6.0" text="Clinician" AnchorPane.leftAnchor="262.0" AnchorPane.rightAnchor="272.0">
+          <font>
+              <Font size="20.0" />
+          </font>
+      </Label>
+        <Button onAction="#save" AnchorPane.rightAnchor="70.0" AnchorPane.topAnchor="2.0" styleClass="button-secondary, save-button" text="">
+            <tooltip><Tooltip text="Save"/></tooltip>
+        </Button>
+        <Button fx:id="undoButton" layoutX="481.0" layoutY="5.0" mnemonicParsing="false" onAction="#undo"
+                styleClass="button-secondary, undo-button" text="Undo" AnchorPane.rightAnchor="38.0"
+                AnchorPane.topAnchor="5.0"/>
+        <Button fx:id="redoButton" layoutX="545.0" layoutY="5.0" mnemonicParsing="false" onAction="#redo"
+                styleClass="button-secondary, redo-button" text="Redo" AnchorPane.rightAnchor="6.0"
+                AnchorPane.topAnchor="5.0"/>
     </children>
 </AnchorPane>

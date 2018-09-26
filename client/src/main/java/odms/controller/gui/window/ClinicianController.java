@@ -6,6 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -25,6 +26,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextBoundsType;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import odms.bridge.AppointmentsBridge;
 import odms.bridge.ClinicianBridge;
@@ -33,8 +35,10 @@ import odms.commons.exception.ApiException;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model._abstract.UserLauncher;
+import odms.commons.model._enum.AppointmentStatus;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.Organs;
+import odms.commons.model._enum.UserType;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.model.event.UpdateNotificationEvent;
 import odms.commons.utils.Log;
@@ -46,6 +50,7 @@ import odms.controller.gui.panel.view.AvailableOrgansViewController;
 import odms.controller.gui.panel.view.ClinicianAppointmentRequestViewController;
 import odms.controller.gui.popup.DeletedUserController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
+import odms.controller.gui.widget.LoadingTableView;
 import odms.socket.ServerEventNotifier;
 
 import java.beans.PropertyChangeEvent;
@@ -95,9 +100,8 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
     @FXML
     private TextField searchTextField;
     @FXML
-    private Tooltip searchToolTip;
-    @FXML
-    private TableView<UserOverview> searchTableView;
+    private LoadingTableView<UserOverview> searchTableView;
+
     @FXML
     private Label searchCountLabel;
     @FXML
@@ -173,12 +177,14 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         this.admin = fromAdmin;
         this.appointmentsBridge = appController.getAppointmentsBridge();
         openStages = new ArrayList<>();
+        stage.setMaximized(true);
 
         ServerEventNotifier.getInstance().addPropertyChangeListener(this);
         setDefaultFilters();
         stage.setResizable(true);
         showClinician(clinician);
-        appController.getUserBridge().getUsers(0, 30, "", "", "", appController.getToken());
+        searchTableView.setWaiting(true);
+        appController.getUserBridge().getUsers(0, ROWS_PER_PAGE, "", "", "", appController.getToken(), searchTableView);
         searchCount = appController.getUserOverviews().size();
         initSearchTable();
         transplantWaitListTabPageController.init(appController, this);
@@ -206,7 +212,12 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
             logoutMenuClinician.setOnAction(e -> logout());
         }
 
-        stage.setOnCloseRequest(e -> availableOrgansViewController.shutdownThreads());
+        EventHandler<WindowEvent> closeEvent = stage.getOnCloseRequest();
+        stage.setOnCloseRequest(e -> {
+            availableOrgansViewController.shutdownThreads();
+            closeEvent.handle(e);
+
+        });
 
         displayImage(profileImage, clinician.getProfilePhotoFilePath());
         if (ConfigPropertiesSession.getInstance().getProperty("testConfig", "false").equals("false")) {
@@ -219,6 +230,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         }
 
         showAppointmentNotifications();
+        checkForCanceledAppointments();
     }
 
     /**
@@ -251,6 +263,17 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
     }
 
     /**
+     * Asks the server if there are any canceled appointments for the clinician and notifies them if there are
+     */
+    private void checkForCanceledAppointments() {
+        boolean hasCanceled = appController.getAppointmentsBridge().checkAppointmentStatusExists(clinician.getStaffId(), UserType.CLINICIAN, AppointmentStatus.CANCELLED_BY_USER);
+        if (hasCanceled) {
+            String message = "You have appointments that have been cancelled. Please check your list of appointments.";
+            AlertWindowFactory.generateAlertWindow(message);
+        }
+    }
+
+    /**
      * Closes the clinician window
      */
     @FXML
@@ -258,6 +281,8 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         checkSave();
         stage.close();
         availableOrgansViewController.shutdownThreads();
+        appointmentRequestViewController.shutdownPropertyChangeListener();
+        ServerEventNotifier.getInstance().removePropertyChangeListener(this);
         Log.info("Successfully closed update user window for Clinician StaffID: " + clinician.getStaffId());
     }
 
@@ -370,7 +395,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
 
         searchTableView.setItems(sListUsers);
         searchTableView.setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2 && !searchTableView.getSelectionModel().getSelectedItems().isEmpty()) {
                 UserOverview user = searchTableView.getSelectionModel().getSelectedItem();
                 launchUser(user.getNhi());
             }
@@ -458,7 +483,8 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
      */
     private void search() {
         appController.getUserOverviews().clear();
-        appController.getUserBridge().getUsers(startIndex, ROWS_PER_PAGE, searchTextField.getText(), regionSearchTextField.getText(), genderComboBox.getValue(), appController.getToken());
+        appController.getUserBridge().getUsers(startIndex, ROWS_PER_PAGE, searchTextField.getText(), regionSearchTextField.getText(), genderComboBox.getValue(), appController.getToken(), searchTableView);
+        searchTableView.setWaiting(true);
         appController.setUserOverviews(appController.getUserOverviews().stream().filter(p -> (p.getDonating().isEmpty() != donorFilterCheckBox.isSelected() &&
                 p.getReceiving().isEmpty() != receiverFilterCheckBox.isSelected()) || allCheckBox.isSelected()).collect(Collectors.toSet()));
         searchCount = appController.getUserOverviews().size();
@@ -523,6 +549,8 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
             newStage.show();
             stage.close();
             availableOrgansViewController.shutdownThreads();
+            appointmentRequestViewController.shutdownPropertyChangeListener();
+            ServerEventNotifier.getInstance().removePropertyChangeListener(this);
             LoginController loginController = loader.getController();
             loginController.init(AppController.getInstance(), newStage);
             deleteTempDirectory();
@@ -663,6 +691,8 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         if (event.getType().equals(EventTypes.USER_UPDATE)) {
             search();
             refreshTables();
+            transplantWaitListTabPageController.populateWaitListTable();
+            transplantWaitListTabPageController.displayWaitListTable();
             availableOrgansViewController.search();
         } else if (event.getType().equals(EventTypes.CLINICIAN_UPDATE) && clinician.getStaffId().equals(event.getOldIdentifier())){
             String newStaffId = event.getNewIdentifier();
@@ -675,8 +705,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
                 Log.warning("failed to retrieve updated clinician. response code: " + ex.getResponseCode(), ex);
                 AlertWindowFactory.generateError(("could not refresh clinician from the server. Please check your connection before trying again."));
             }
-        } else if(event.getType().equals(EventTypes.APPOINTMENT_UPDATE)){
-
+        } else if (event.getType().equals(EventTypes.APPOINTMENT_UPDATE)) {
             showAppointmentNotifications();
         }
     }

@@ -4,6 +4,7 @@ import odms.bridge.UserBridge;
 import odms.commons.model.User;
 import odms.controller.AppController;
 import odms.view.CLI;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import picocli.CommandLine;
@@ -28,6 +29,11 @@ public class DeleteUserTest {
         userBridge = mock(UserBridge.class);
         when(mockController.getUserBridge()).thenReturn(userBridge);
         command.setController(mockController);
+    }
+
+    @After
+    public void tearDown() {
+        AppController.setInstance(null);
     }
 
     @Test

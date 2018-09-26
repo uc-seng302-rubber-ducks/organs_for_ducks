@@ -26,6 +26,8 @@ public class User extends Undoable<User> implements Listenable {
 
     //<editor-fold desc="properties">
     @Expose
+    private int uniqueId; //identifier used in the database
+    @Expose
     private String nhi;
     @Expose
     private String name;
@@ -75,14 +77,10 @@ public class User extends Undoable<User> implements Listenable {
     private List<Disease> pastDiseases;
     @Expose
     private List<Disease> currentDiseases;
-
     @Expose
     private transient String profilePhotoFilePath;
     private transient List<Change> changes;
     private transient PropertyChangeSupport pcs;
-    //</editor-fold>
-
-
     /**
      * Constructor for a User
      *
@@ -123,8 +121,6 @@ public class User extends Undoable<User> implements Listenable {
         contact.setAttachedUser(this);
         this.profilePhotoFilePath = "";
     }
-
-
     /**
      * empty constructor to allow an empty user to be created for the gui
      */
@@ -161,9 +157,11 @@ public class User extends Undoable<User> implements Listenable {
         contact.setAttachedUser(this);
         this.profilePhotoFilePath = "";
     }
+    //</editor-fold>
 
     public static User clone(User user) {
         User newUser = new User();
+        newUser.uniqueId = user.uniqueId;
         newUser.nhi = user.nhi;
         newUser.dateOfBirth = user.dateOfBirth;
 
@@ -277,6 +275,14 @@ public class User extends Undoable<User> implements Listenable {
         return newUser;
     }
 
+    public int getUniqueId() {
+        return uniqueId;
+    }
+
+    public void setUniqueId(int uniqueId) {
+        this.uniqueId = uniqueId;
+    }
+
     public DeathDetails getDeathDetails() {
         return deathDetails;
     }
@@ -285,7 +291,7 @@ public class User extends Undoable<User> implements Listenable {
         this.deathDetails = deathDetails;
     }
 
-    public String getDeathCity(){
+    public String getDeathCity() {
         return deathDetails.getCity();
     }
 
@@ -594,55 +600,79 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setDateOfDeath(LocalDate dateOfDeath) {
-        this.saveStateForUndo();
-        updateLastModified();
+
         if (dateOfDeath != null) {
+            if (this.getDateOfDeath() != null && this.getDateOfDeath().equals(dateOfDeath)) {
+                return;
+            }
             this.deathDetails.setMomentOfDeath(deathDetails.createMomentOfDeath(dateOfDeath, deathDetails.getTimeOfDeath()));
             this.isDeceased = true;
+            this.saveStateForUndo();
+            updateLastModified();
         } else {
+            if (this.getDateOfDeath() == null) {
+                return;
+            }
             this.deathDetails.setMomentOfDeath(null);
             this.isDeceased = false;
+            this.saveStateForUndo();
+            updateLastModified();
         }
         addChange(new Change(isDeceased ? ("Changed moment of death to " + dateOfDeath.toString())
                 : "Removed moment of death"));
     }
 
-    public LocalDateTime getMomentDeath(){
+    public LocalDateTime getMomentDeath() {
         return deathDetails.getMomentOfDeath();
     }
 
     public void setMomentOfDeath(LocalDateTime momentOfDeath) {
-        this.saveStateForUndo();
-        updateLastModified();
+
+
         if (momentOfDeath != null) {
+            if (this.getMomentDeath() != null && this.getMomentDeath().equals(momentOfDeath)) {
+                return;
+            }
+            this.saveStateForUndo();
             this.deathDetails.setMomentOfDeath(momentOfDeath);
             this.isDeceased = true;
+            updateLastModified();
+
         } else {
+            if (this.getMomentDeath() == null) {
+                return;
+            }
+            this.saveStateForUndo();
             this.deathDetails.setMomentOfDeath(null);
             this.isDeceased = false;
+            updateLastModified();
         }
         addChange(new Change(isDeceased ? ("Changed moment of death to " + momentOfDeath.toString())
                 : "Removed moment of death"));
     }
 
-    public double getHeight() {
+    public Double getHeight() {
         return healthDetails.getHeight();
     }
 
-    public void setHeight(double height) {
-        if (healthDetails.getHeight() != height) {
+    public void setHeight(Double height) {
+        if (!healthDetails.getHeight().equals(height)) {
             this.saveStateForUndo();
             updateLastModified();
-            healthDetails.setHeight(height);
+            if (height == -1) {
+                healthDetails.setHeight(null);
+            } else {
+                healthDetails.setHeight(height);
+            }
             addChange(new Change("Changed height to " + height));
         }
     }
 
-    public double getWeight() {
+    public Double getWeight() {
         return healthDetails.getWeight();
     }
 
-    public void setWeight(double weight) {
+    public void setWeight(Double weight) {
         if (weight != healthDetails.getWeight()) {
             this.saveStateForUndo();
             updateLastModified();
@@ -656,10 +686,8 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setHeightText(String height) {
-        updateLastModified();
         if (!(healthDetails.getHeightText().equals(height))) {
             healthDetails.setHeightText(height);
-            addChange(new Change("set height to " + height));
         }
     }
 
@@ -668,10 +696,8 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setWeightText(String weight) {
-        updateLastModified();
         if (!(healthDetails.getWeightText().equals(weight))) {
             healthDetails.setWeightText(weight);
-            addChange(new Change("set weight to " + weight));
         }
     }
 
@@ -910,15 +936,15 @@ public class User extends Undoable<User> implements Listenable {
         return currentDiseases;
     }
 
+    public void setCurrentDiseases(List<Disease> currentDiseases) {
+        this.currentDiseases = currentDiseases;
+    }
+
     public void addCurrentDisease(Disease currentDisease) {
         this.saveStateForUndo();
         updateLastModified();
         currentDiseases.add(currentDisease);
         addChange(new Change("Added current disease " + currentDisease.toString()));
-    }
-
-    public void setCurrentDiseases(List<Disease> currentDiseases) {
-        this.currentDiseases = currentDiseases;
     }
 
     public List<Disease> getPastDiseases() {
@@ -1021,7 +1047,7 @@ public class User extends Undoable<User> implements Listenable {
             currentMedication.add(new Medication(medication));
         }
         addMedicationTimes(medication, currentMedication);
-        addChange(new Change("Added current medication" + medication));
+        addChange(new Change("Added current medication " + medication));
     }
 
     public void addPreviousMedication(String medication) {
@@ -1030,19 +1056,7 @@ public class User extends Undoable<User> implements Listenable {
             previousMedication.add(new Medication(medication));
         }
         addMedicationTimes(medication, previousMedication);
-        addChange(new Change("Added previous medication" + medication));
-    }
-
-    public void addCurrentMedicationSetup(String medication) {
-        updateLastModified();
-        currentMedication.add(new Medication(medication));
-        addChange(new Change("Added current medication" + medication));
-    }
-
-    public void addPreviousMedicationSetUp(String medication) {
-        updateLastModified();
-        previousMedication.add(new Medication(medication));
-        addChange(new Change("Added previous medication" + medication));
+        addChange(new Change("Added previous medication " + medication));
     }
 
     public void removeCurrentMedication(String medication) {
@@ -1052,7 +1066,7 @@ public class User extends Undoable<User> implements Listenable {
                 m.setDeleted(true);
             }
         }
-        addChange(new Change("Removed current medication" + medication));
+        addChange(new Change("Removed current medication " + medication));
     }
 
     public void removePreviousMedication(String medication) {
@@ -1062,7 +1076,7 @@ public class User extends Undoable<User> implements Listenable {
                 m.setDeleted(true);
             }
         }
-        addChange(new Change("Removed previous medication" + medication));
+        addChange(new Change("Removed previous medication " + medication));
     }
 
     /**
@@ -1102,7 +1116,7 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public List<Change> getChanges() {
-        if(changes == null)
+        if (changes == null)
             changes = new ArrayList<>();
         return changes;
     }
@@ -1130,13 +1144,13 @@ public class User extends Undoable<User> implements Listenable {
     public void addMedicalProcedure(MedicalProcedure medicalProcedure) {
         updateLastModified();
         medicalProcedures.add(medicalProcedure);
-        addChange(new Change("Added Medical Procedure" + medicalProcedure));
+        addChange(new Change("Added Medical Procedure " + medicalProcedure.getSummary()));
     }
 
     public void removeMedicalProcedure(MedicalProcedure medicalProcedure) {
         updateLastModified();
         medicalProcedures.remove(medicalProcedure);
-        addChange(new Change("Removed Medical Procedure" + medicalProcedure));
+        addChange(new Change("Removed Medical Procedure " + medicalProcedure.getSummary()));
     }
 
     @Override
@@ -1219,7 +1233,7 @@ public class User extends Undoable<User> implements Listenable {
                 ",\npreviousMedication=" + previousMedication +
                 ",\ncurrentMedication=" + currentMedication +
                 ",\nmedicalProcedures=" + medicalProcedures +
-                ",\n" +donorDetails.toString() +
+                ",\n" + donorDetails.toString() +
                 ",\n" + receiverDetails.toString() +
                 ",\ncommonOrgans=" + commonOrgans +
                 ",\npastDiseases=" + pastDiseases +
@@ -1256,6 +1270,7 @@ public class User extends Undoable<User> implements Listenable {
      * @param other other User object to convert this instance into.
      */
     private void changeInto(User other) {
+        this.uniqueId = other.uniqueId;
         this.nhi = other.nhi;
         this.dateOfBirth = other.dateOfBirth;
         this.deathDetails = other.deathDetails;
@@ -1289,8 +1304,6 @@ public class User extends Undoable<User> implements Listenable {
         this.medicalProcedures = other.medicalProcedures;
 
         this.profilePhotoFilePath = other.profilePhotoFilePath;
-
-        this.changes = other.changes;
     }
 
     @Override
