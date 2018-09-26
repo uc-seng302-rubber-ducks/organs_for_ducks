@@ -24,8 +24,8 @@ import odms.controller.gui.widget.ColoredLineChart;
 import odms.controller.gui.widget.LoadingWidget;
 import odms.controller.gui.widget.TextStringRadioButton;
 
-import java.time.DayOfWeek;
 import java.text.DecimalFormat;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.TextStyle;
@@ -623,8 +623,8 @@ public class BloodTestViewController implements LoadingWidget {
      */
     private boolean validateField() {
         boolean fieldValid = true;
-        fieldValid &= BloodTestValidation(redBloodCount,bloodTestRCCountLabel,BloodTestProperties.RBC);
-        fieldValid &= BloodTestValidation(whiteBloodCount,bloodTestWCCountLabel,BloodTestProperties.WBC);
+        fieldValid &= BloodTestValidation(redBloodCount, bloodTestRCCountLabel, BloodTestProperties.RED_BLOOD_CELL);
+        fieldValid &= BloodTestValidation(whiteBloodCount, bloodTestWCCountLabel, BloodTestProperties.WHITE_BLOOD_CELL);
         fieldValid &= BloodTestValidation(heamoglobin,bloodTestHeamoglobinLabel,BloodTestProperties.HAEMOGLOBIN);
         fieldValid &= BloodTestValidation(platelets,bloodTestPlateletsLabel,BloodTestProperties.PLATELETS);
         fieldValid &= BloodTestValidation(glucose,bloodTestGlucoseLabel,BloodTestProperties.GLUCOSE);

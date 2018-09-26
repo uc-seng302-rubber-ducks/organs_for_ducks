@@ -45,8 +45,9 @@ public class BloodTestControllerTest {
         when(mockSession.getProperty(eq("server.token.header"))).thenReturn("x-auth-token");
 
         bloodTests = FXCollections.observableList(new ArrayList<>());
+        ObservableList<BloodTest> graphBloodTests = FXCollections.observableList(new ArrayList<>());
         testUser = new User("Anna", LocalDate.now(),"AAA9999");
-        bloodTestsLogicController = spy(new BloodTestsLogicController(bloodTests,testUser));
+        bloodTestsLogicController = spy(new BloodTestsLogicController(bloodTests, graphBloodTests, testUser));
 
         bloodTestBridge = mock(BloodTestBridge.class);
 
@@ -111,10 +112,10 @@ public class BloodTestControllerTest {
     @Test
     public void testUpdateTableView() {
         ObservableList<BloodTest> bloodTests = FXCollections.observableList(new ArrayList<>());
-        doNothing().when(bloodTestBridge).getBloodTests(anyString(), anyString(),anyString(),anyInt(),anyInt(), eq(bloodTests));
+        doNothing().when(bloodTestBridge).getBloodTests(anyString(), anyString(), anyString(), anyInt(), anyInt(), eq(bloodTests), eq(null));
 
         bloodTestsLogicController.updateTableView(0);
-        verify(bloodTestBridge, times(1)).getBloodTests(testUser.getNhi(),LocalDate.now().minusYears(100).toString(),LocalDate.now().toString(),30,0,bloodTests);
+        verify(bloodTestBridge, times(1)).getBloodTests(testUser.getNhi(), LocalDate.now().minusYears(100).toString(), LocalDate.now().toString(), 30, 0, bloodTests, null);
     }
 
 

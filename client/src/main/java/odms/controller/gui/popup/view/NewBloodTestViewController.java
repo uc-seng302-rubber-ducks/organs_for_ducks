@@ -129,8 +129,8 @@ public class NewBloodTestViewController {
      */
     private boolean validateField() {
         boolean fieldValid = true;
-        fieldValid &= bloodTestValidation(redBloodCount,redBloodCellError,BloodTestProperties.RBC);
-        fieldValid &= bloodTestValidation(whiteBloodCount,whiteBloodCellError,BloodTestProperties.WBC);
+        fieldValid &= bloodTestValidation(redBloodCount, redBloodCellError, BloodTestProperties.RED_BLOOD_CELL);
+        fieldValid &= bloodTestValidation(whiteBloodCount, whiteBloodCellError, BloodTestProperties.WHITE_BLOOD_CELL);
         fieldValid &= bloodTestValidation(heamoglobin,heamoglobinError,BloodTestProperties.HAEMOGLOBIN);
         fieldValid &= bloodTestValidation(platelets,plateletsError,BloodTestProperties.PLATELETS);
         fieldValid &= bloodTestValidation(glucose,glucoseError,BloodTestProperties.GLUCOSE);
