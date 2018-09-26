@@ -67,6 +67,24 @@ public class BloodTestViewController {
     @FXML
     private Label bloodTestMCHaematocritLabel;
     @FXML
+    private Label bloodTestErrorDateLabel;
+    @FXML
+    private Label bloodTestErrorRCCountLabel;
+    @FXML
+    private Label bloodTestErrorWCCountLabel;
+    @FXML
+    private Label bloodTestErrorHeamoglobinLabel;
+    @FXML
+    private Label bloodTestErrorPlateletsLabel;
+    @FXML
+    private Label bloodTestErrorGlucoseLabel;
+    @FXML
+    private Label bloodTestErrorMCVolumeLabel;
+    @FXML
+    private Label bloodTestErrorHaematocritLabel;
+    @FXML
+    private Label bloodTestErrorMCHaematocritLabel;
+    @FXML
     private TableView<BloodTest> bloodTestTableView;
     @FXML
     private TableColumn<BloodTest, LocalDate> testDateColumn;
@@ -132,15 +150,15 @@ public class BloodTestViewController {
      * when a different blood test is selected.
      */
     private void resetErrorLabels() {
-        bloodTestDateLabel.setVisible(false);
-        bloodTestRCCountLabel.setVisible(false);
-        bloodTestWCCountLabel.setVisible(false);
-        bloodTestHeamoglobinLabel.setVisible(false);
-        bloodTestPlateletsLabel.setVisible(false);
-        bloodTestGlucoseLabel.setVisible(false);
-        bloodTestMCVolumeLabel.setVisible(false);
-        bloodTestHaematocritLabel.setVisible(false);
-        bloodTestMCHaematocritLabel.setVisible(false);
+        bloodTestErrorDateLabel.setVisible(false);
+        bloodTestErrorRCCountLabel.setVisible(false);
+        bloodTestErrorWCCountLabel.setVisible(false);
+        bloodTestErrorHeamoglobinLabel.setVisible(false);
+        bloodTestErrorPlateletsLabel.setVisible(false);
+        bloodTestErrorGlucoseLabel.setVisible(false);
+        bloodTestErrorMCVolumeLabel.setVisible(false);
+        bloodTestErrorHaematocritLabel.setVisible(false);
+        bloodTestErrorMCHaematocritLabel.setVisible(false);
         removeInvalid(redBloodCount);
         removeInvalid(whiteBloodCount);
         removeInvalid(haematocrit);
@@ -293,14 +311,14 @@ public class BloodTestViewController {
      */
     private boolean validateField() {
         boolean fieldValid = true;
-        fieldValid &= bloodTestValidation(redBloodCount,bloodTestRCCountLabel,BloodTestProperties.RBC);
-        fieldValid &= bloodTestValidation(whiteBloodCount,bloodTestWCCountLabel,BloodTestProperties.WBC);
-        fieldValid &= bloodTestValidation(heamoglobin,bloodTestHeamoglobinLabel,BloodTestProperties.HAEMOGLOBIN);
-        fieldValid &= bloodTestValidation(platelets,bloodTestPlateletsLabel,BloodTestProperties.PLATELETS);
-        fieldValid &= bloodTestValidation(glucose,bloodTestGlucoseLabel,BloodTestProperties.GLUCOSE);
-        fieldValid &= bloodTestValidation(meanCellVolume, bloodTestMCVolumeLabel, BloodTestProperties.MEAN_CELL_VOLUME);
-        fieldValid &= bloodTestValidation(haematocrit, bloodTestHaematocritLabel, BloodTestProperties.HAEMATOCRIT);
-        fieldValid &= bloodTestValidation(meanCellHaematocrit, bloodTestMCHaematocritLabel, BloodTestProperties.MEAN_CELL_HAEMATOCRIT);
+        fieldValid &= bloodTestValidation(redBloodCount, bloodTestErrorRCCountLabel, BloodTestProperties.RBC);
+        fieldValid &= bloodTestValidation(whiteBloodCount, bloodTestErrorWCCountLabel, BloodTestProperties.WBC);
+        fieldValid &= bloodTestValidation(heamoglobin, bloodTestErrorHeamoglobinLabel, BloodTestProperties.HAEMOGLOBIN);
+        fieldValid &= bloodTestValidation(platelets, bloodTestErrorPlateletsLabel, BloodTestProperties.PLATELETS);
+        fieldValid &= bloodTestValidation(glucose, bloodTestErrorGlucoseLabel, BloodTestProperties.GLUCOSE);
+        fieldValid &= bloodTestValidation(meanCellVolume, bloodTestErrorMCVolumeLabel, BloodTestProperties.MEAN_CELL_VOLUME);
+        fieldValid &= bloodTestValidation(haematocrit, bloodTestErrorHaematocritLabel, BloodTestProperties.HAEMATOCRIT);
+        fieldValid &= bloodTestValidation(meanCellHaematocrit, bloodTestErrorMCHaematocritLabel, BloodTestProperties.MEAN_CELL_HAEMATOCRIT);
         if(!AttributeValidation.validateDateBeforeTomorrow(bloodTestDatePicker.getValue())){
             bloodTestDateLabel.setVisible(true);
             invalidateNode(bloodTestDatePicker);
