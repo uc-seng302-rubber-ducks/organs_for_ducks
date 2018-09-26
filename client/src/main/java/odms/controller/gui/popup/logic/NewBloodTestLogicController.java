@@ -61,7 +61,7 @@ public class NewBloodTestLogicController {
         if (glucose.isEmpty()) {
             glucose = "0.0";
         }
-        if (meanCellVolume.isEmpty()){
+        if (meanCellVolume.isEmpty()) {
             meanCellVolume = "0.0";
         }
         if (haematocrit.isEmpty()) {

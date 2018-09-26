@@ -108,5 +108,8 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
         </GridPane>
+        <Label fx:id="noPropertyPopupErrorLabel" layoutX="176.0" layoutY="595.0" prefHeight="36.0" prefWidth="178.0"
+               styleClass="label-error" text="You must have at least one blood test property present" visible="false"
+               wrapText="true"/>
     </children>
 </AnchorPane>
