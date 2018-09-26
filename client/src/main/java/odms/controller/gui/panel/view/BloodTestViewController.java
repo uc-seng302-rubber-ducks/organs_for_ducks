@@ -146,6 +146,7 @@ public class BloodTestViewController implements LoadingWidget {
     private BooleanProperty waiting;
     private boolean fromClinician;
     private BloodTest bloodTest;
+    private final Double BOUNDLIMITMULTIPLIER = 5.0;
 
     /**
      * Initializes the blood test tab on the given users profile
@@ -672,13 +673,13 @@ public class BloodTestViewController implements LoadingWidget {
             label.setVisible(true);
             invalidateNode(textField);
             valid = false;
-        } else if (value > (bloodTestProperties.getUpperBound()) * 5.0){
-            label.setText("that number is too large the max number is " + df2.format(bloodTestProperties.getUpperBound() * 5.0));
+        } else if (value > (bloodTestProperties.getUpperBound()) * BOUNDLIMITMULTIPLIER){
+            label.setText("that number is too large the max number is " + df2.format(bloodTestProperties.getUpperBound() * BOUNDLIMITMULTIPLIER));
             label.setVisible(true);
             invalidateNode(textField);
             valid = false;
-        } else if (value < (bloodTestProperties.getLowerBound() / 5.0) && value != 0.0) {
-            label.setText("that number is too small the min number is " + df2.format(bloodTestProperties.getLowerBound() / 5.0));
+        } else if (value < (bloodTestProperties.getLowerBound() / BOUNDLIMITMULTIPLIER) && value != 0.0) {
+            label.setText("that number is too small the min number is " + df2.format(bloodTestProperties.getLowerBound() / BOUNDLIMITMULTIPLIER));
             label.setVisible(true);
             invalidateNode(textField);
             valid = false;
