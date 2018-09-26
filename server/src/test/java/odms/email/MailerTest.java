@@ -20,9 +20,8 @@ public class MailerTest {
     private Mailer testMailer;
     private AppointmentWithPeople appointment;
     private MailHandler mailHandler;
-
     @Before
-    public void setUp() {
+    public void setUp(){
 
         mailHandler = mock(MailHandler.class);
         testMailer = new Mailer();
@@ -37,7 +36,7 @@ public class MailerTest {
     }
 
     @Test
-    public void testAcceptedMessageSentOnAccepted() {
+    public void testAcceptedMessageSentOnAccepted(){
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         testMailer.sendAppointmentUpdate(AppointmentStatus.ACCEPTED.getDbValue(), appointment);
         verify(mailHandler).sendMail(anyString(), anyString(), captor.capture());
@@ -46,7 +45,7 @@ public class MailerTest {
     }
 
     @Test
-    public void testUpdatedMessageSentOnUpdated() {
+    public void testUpdatedMessageSentOnUpdated(){
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         testMailer.sendAppointmentUpdate(AppointmentStatus.UPDATED.getDbValue(), appointment);
         verify(mailHandler).sendMail(anyString(), anyString(), captor.capture());
@@ -55,7 +54,7 @@ public class MailerTest {
     }
 
     @Test
-    public void testRejectedMessageSentOnRejected() {
+    public void testRejectedMessageSentOnRejected(){
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         testMailer.sendAppointmentUpdate(AppointmentStatus.REJECTED.getDbValue(), appointment);
         verify(mailHandler).sendMail(anyString(), anyString(), captor.capture());
@@ -64,7 +63,7 @@ public class MailerTest {
     }
 
     @Test
-    public void testCancelledMessageSentOnCancelledByClinician() {
+    public void testCancelledMessageSentOnCancelledByClinician(){
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         testMailer.sendAppointmentUpdate(AppointmentStatus.CANCELLED_BY_CLINICIAN.getDbValue(), appointment);
         verify(mailHandler).sendMail(anyString(), anyString(), captor.capture());
@@ -73,7 +72,7 @@ public class MailerTest {
     }
 
     @Test
-    public void testNonMessagingUpdatedSendNoMessages() {
+    public void testNonMessagingUpdatedSendNoMessages(){
         testMailer.sendAppointmentUpdate(AppointmentStatus.CANCELLED_BY_USER.getDbValue(), appointment);
         testMailer.sendAppointmentUpdate(AppointmentStatus.CANCELLED_BY_USER_SEEN.getDbValue(), appointment);
         testMailer.sendAppointmentUpdate(AppointmentStatus.CANCELLED_BY_CLINICIAN_SEEN.getDbValue(), appointment);

@@ -110,7 +110,7 @@ public class WhenSteps extends ApplicationTest {
     @When("^clicked on user Login button$")
     public void clickedOnUserLoginButton() {
         CucumberTestModel.setIsClinicianLogin(false);
-        clickOnButton(this, "#loginUButton");
+        clickOnButton(this,"#loginUButton");
     }
 
     @When("^clicked on clinician Login button$")

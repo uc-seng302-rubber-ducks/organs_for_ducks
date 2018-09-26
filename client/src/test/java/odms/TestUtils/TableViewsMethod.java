@@ -70,7 +70,7 @@ public class TableViewsMethod extends TableViews {
     public static int getNumberOfRows(String tableName) {
         try {
             return numberOfRowsIn(tableName);
-        } catch (NullPointerException | NoNodesVisibleException e) { //NPE|NNV only gets triggered when LoadUI tries to count number of rows of empty table.
+        } catch (NullPointerException|NoNodesVisibleException e) { //NPE|NNV only gets triggered when LoadUI tries to count number of rows of empty table.
             return 0;
         }
     }

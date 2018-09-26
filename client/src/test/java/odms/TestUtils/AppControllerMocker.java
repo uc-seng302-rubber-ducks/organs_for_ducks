@@ -12,7 +12,6 @@ public class AppControllerMocker {
     /**
      * helper method that will mock appController and all the nested bridges, socket handler, etc so that the appController.get___ methods are pre-filled
      * Any of these mocks that are to be used in the test should be overwritten
-     *
      * @return full mock AppController
      */
     public static AppController getFullMock() {

@@ -26,7 +26,6 @@ public class CityDistanceCalculator {
 
     /**
      * Performs a haversine calculation to find how far away one location is from another
-     *
      * @param coordA latitude and longitude of location A
      * @param coordB latitude and longitude of location B
      * @return distance in a straight line in metres
@@ -42,7 +41,6 @@ public class CityDistanceCalculator {
 
     /**
      * Calculates the distance between regions
-     *
      * @param regionA Region A
      * @param regionB Region B
      * @return the distance between two regions in metres

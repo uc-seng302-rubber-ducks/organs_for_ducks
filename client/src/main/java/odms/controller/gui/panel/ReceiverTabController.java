@@ -247,7 +247,7 @@ public class ReceiverTabController {
         if (receiverOrgans == null) {
             receiverOrgans = new EnumMap<>(Organs.class);
         }
-        for (Organs o : receiverOrgans.keySet()) {
+        for(Organs o : receiverOrgans.keySet()){
             organs.remove(o);
         }
         currentlyRecieving = FXCollections.observableArrayList(getOrgansAndDates(user.getReceiverDetails(), true));
@@ -266,6 +266,7 @@ public class ReceiverTabController {
         if (!currentlyWaitingFor.getItems().isEmpty()) {
             openOrganFromDoubleClick(currentlyWaitingFor);
         }
+
 
 
         //if user already died, user cannot receive organs
@@ -369,7 +370,7 @@ public class ReceiverTabController {
             }
 
             if (organDeregisterationReason != OrganDeregisterReason.RECEIVER_DIED) {
-                noLongerWaitingForOrgan.getItems().add(new OrgansWithDates(toDeRegister, LocalDate.now()));
+                noLongerWaitingForOrgan.getItems().add(new OrgansWithDates(toDeRegister,LocalDate.now()));
                 currentlyWaitingFor.getItems().remove(toDeRegister);
             }
 
@@ -406,8 +407,8 @@ public class ReceiverTabController {
      *
      * @param isDead true if current user is dead, false otherwise
      */
-    private void deadMode(boolean isDead) {
-        if (isDead) {
+    private void deadMode(boolean isDead){
+        if(isDead){
             registerButton.setDisable(true);
             reRegisterButton.setDisable(true);
             deRegisterButton.setDisable(true);
@@ -452,28 +453,29 @@ public class ReceiverTabController {
     /**
      * Takes a receivers details and returns the list of latest dates associated with that organ specified by the boolean flag
      *
-     * @param organDetails          Receiver details to be dealt with
+     * @param organDetails Receiver details to be dealt with
      * @param wantCurrentlyAwaiting If we are after the current organs or previous organs
+     *
      * @return A list of the organs with the dates attached.
      */
     private List<OrgansWithDates> getOrgansAndDates(ReceiverDetails organDetails, boolean wantCurrentlyAwaiting) {
         List<OrgansWithDates> results = new ArrayList<>();
-        Set<Organs> organs = organDetails.getOrgans().keySet();
-        for (Organs o : organs) {
-            if (organDetails.isCurrentlyWaitingFor(o) == wantCurrentlyAwaiting) {
-                LocalDate latestDate = getLatestDate(organDetails, o);
-                results.add(new OrgansWithDates(o, latestDate));
+            Set<Organs> organs = organDetails.getOrgans().keySet();
+            for (Organs o : organs) {
+                if (organDetails.isCurrentlyWaitingFor(o) == wantCurrentlyAwaiting) {
+                    LocalDate latestDate = getLatestDate(organDetails, o);
+                    results.add(new OrgansWithDates(o, latestDate));
+                }
             }
-        }
 
         return results;
     }
 
-    private LocalDate getLatestDate(ReceiverDetails organDetails, Organs organ) {
+    private LocalDate getLatestDate(ReceiverDetails organDetails, Organs organ){
         List<LocalDate> organDates = organDetails.getOrganDates(organ);
         organDates.sort((o1, o2) -> {
-            if (o1.isAfter(o2)) return 1;
-            if (o1.isBefore(o2)) return -1;
+            if(o1.isAfter(o2)) return 1;
+            if(o1.isBefore(o2)) return -1;
             else return 0;
         });
         return organDates.get(0);

@@ -42,7 +42,7 @@ public class CityDistanceCalculatorTest {
 
     @Test
     public void testDistanceBetweenRegions() {
-        double testDistance = distanceCalculator.distanceBetweenRegions(testRegionA, testRegionB);
+        double testDistance = distanceCalculator.distanceBetweenRegions(testRegionA,testRegionB);
         Assert.assertEquals(493484.33925002784, testDistance, 2);
     }
 }

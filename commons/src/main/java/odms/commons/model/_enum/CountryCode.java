@@ -258,6 +258,7 @@ public enum CountryCode {
     ZW("Zimbabwe");
 
 
+
     private final String name;
 
     CountryCode(String s) {
@@ -267,7 +268,7 @@ public enum CountryCode {
     public static Set<String> getEnums() {
         Set<String> values = new HashSet<>();
 
-        for (CountryCode c : CountryCode.values()) {
+        for (CountryCode c: CountryCode.values()) {
             values.add(c.name());
         }
         return values;

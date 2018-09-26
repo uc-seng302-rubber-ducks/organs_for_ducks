@@ -33,13 +33,13 @@ public class SQLFromAdminController extends BaseController {
     }
 
     @IsAdmin
-    @RequestMapping(method = RequestMethod.POST, value = "/sql")
+    @RequestMapping(method= RequestMethod.POST, value = "/sql")
     public List<String> runSql(@RequestBody String query) throws SQLFeatureNotSupportedException {
         List<String> results;
-        if (!query.toUpperCase().startsWith("SELECT") || query.toUpperCase().contains("SLEEP(")) {
+        if(!query.toUpperCase().startsWith("SELECT") || query.toUpperCase().contains("SLEEP(")){
             throw new SQLFeatureNotSupportedException();
         }
-        try (Connection connection = driver.getConnection()) {
+        try(Connection connection = driver.getConnection()){
             results = handler.runSqlQuery(query, connection);
             return results;
         } catch (SQLException e) {

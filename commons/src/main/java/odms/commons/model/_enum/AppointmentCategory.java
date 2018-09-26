@@ -11,7 +11,7 @@ public enum AppointmentCategory {
     private final String name;
     private final int dbValue;
 
-    AppointmentCategory(String s, int i) {
+    AppointmentCategory(String s, int i)  {
         name = s;
         dbValue = i;
     }

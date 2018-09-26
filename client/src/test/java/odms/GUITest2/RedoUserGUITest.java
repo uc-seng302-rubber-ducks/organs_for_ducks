@@ -65,7 +65,7 @@ public class RedoUserGUITest extends ApplicationTest {
         AppController.getInstance().getUsers().clear();
         AppController.getInstance().getUsers().add(user);
 
-        setTextField(this, "#userIDTextField", "ABC1234");
+        setTextField(this, "#userIDTextField","ABC1234");
         clickOnButton(this, "#loginUButton");
     }
 
@@ -85,9 +85,9 @@ public class RedoUserGUITest extends ApplicationTest {
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         setTextField(this, "#lNameInput", "Jefferson");
-        clickOnButton(this, "#updateProfileButton");
-        clickOnButton(this, "#undoButton");
-        clickOnButton(this, "#redoButton");
+        clickOnButton(this,"#updateProfileButton");
+        clickOnButton(this,"#undoButton");
+        clickOnButton(this,"#redoButton");
         verifyThat("#lNameValue", LabeledMatchers.hasText("Jefferson"));
     }
 
@@ -97,33 +97,34 @@ public class RedoUserGUITest extends ApplicationTest {
         clickOn("#editDetailsUser");
 
         setTextField(this, "#lNameInput", "Jefferson");
-        clickOnButton(this, "#updateProfileButton");
+        clickOnButton(this,"#updateProfileButton");
 
         clickOn("#editMenuUser");
-        clickOn("#editDetailsUser");
-        ;
+        clickOn("#editDetailsUser");;
         setComboBox(this, "#alcoholComboBox", "Low");
-        clickOnButton(this, "#updateProfileButton");
+        clickOnButton(this,"#updateProfileButton");
 
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         setTextField(this, "#cell", "011899992");
-        clickOnButton(this, "#updateProfileButton");
+        clickOnButton(this,"#updateProfileButton");
 
-        clickOnButton(this, "#undoButton");
-        clickOnButton(this, "#redoButton");
+        clickOnButton(this,"#undoButton");
+        clickOnButton(this,"#redoButton");
 
         verifyThat("#alcoholValue", LabeledMatchers.hasText("Low"));
         verifyThat("#lNameValue", LabeledMatchers.hasText("Jefferson"));
 
         clickOn("#detailsTab");
-        clickOnButton(this, "#undoButton");
+        clickOnButton(this,"#undoButton");
 
         verifyThat("#pCellPhone", LabeledMatchers.hasText(""));
 
-        clickOnButton(this, "#redoButton");
+        clickOnButton(this,"#redoButton");
 
         verifyThat("#pCellPhone", LabeledMatchers.hasText("011899992"));
+
+
 
 
     }

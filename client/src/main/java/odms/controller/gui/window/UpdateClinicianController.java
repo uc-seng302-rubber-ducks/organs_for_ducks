@@ -39,67 +39,93 @@ import static odms.commons.utils.UndoHelpers.removeFormChanges;
  */
 public class UpdateClinicianController {
 
-    private final int MAX_FILE_SIZE = 2097152;
     //<editor-fold desc="fxml stuff">
     @FXML
     private Label staffIdErrorLabel;
+
     @FXML
     private Label passwordErrorLabel;
+
     @FXML
     private Label confirmPasswordErrorLabel;
+
     @FXML
     private Label firstNameErrorLabel;
+
     @FXML
     private Label regionErrorLabel;
+
     @FXML
     private Label clinicianGenericErrorLabel;
+
+
     @FXML
     private TextField staffIDTextField;
+
     @FXML
     private PasswordField passwordField;
+
     @FXML
     private PasswordField confirmPasswordField;
+
     @FXML
     private TextField firstNameTextField;
+
     @FXML
     private TextField middleNameTextField;
+
     @FXML
     private TextField lastNameTextField;
+
     @FXML
     private TextField streetNoTextField;
+
     @FXML
     private TextField streetNameTextField;
+
     @FXML
     private TextField neighbourhoodTextField;
+
     @FXML
     private TextField cityTextField;
+
     @FXML
     private TextField regionTextField;
     @FXML
     private ComboBox<String> regionSelector;
     @FXML
     private TextField zipCodeTextField;
+
     @FXML
     private ComboBox<String> countrySelector;
     @FXML
     private Label invalidStaffIDLabel;
+
     @FXML
     private Label emptyPasswordLabel;
+
     @FXML
     private Label incorrectPasswordLabel;
+
     @FXML
     private Label emptyFNameLabel;
+
     @FXML
     private Label emptyRegionLabel;
+
     @FXML
     private Label titleLabel;
+
     @FXML
     private Button confirmButton;
+
     @FXML
     private ImageView profileImage;
-    //</editor-fold>
+
     @FXML
     private Button resetProfileImageClinician;
+    //</editor-fold>
+
     private AppController controller;
     private Stage stage;
     private Clinician currentClinician;
@@ -109,6 +135,7 @@ public class UpdateClinicianController {
     private Stage ownStage;
     private File inFile;
     private String defaultCountry = "New Zealand";
+    private final int MAX_FILE_SIZE = 2097152;
     private String initialPath;
     private boolean Listen = true;
 
@@ -318,13 +345,13 @@ public class UpdateClinicianController {
         extensions.add("*.png");
         extensions.add("*.jpg");
         extensions.add("*.gif");
-        FileSelectorController fileSelectorController = new FileSelectorController();
+        FileSelectorController fileSelectorController =  new FileSelectorController();
         filename = fileSelectorController.getFileSelector(stage, extensions);
 
         if (filename != null) {
             inFile = new File(filename);
 
-            if (inFile.length() > MAX_FILE_SIZE) { //if more than 2MB
+            if (inFile.length() > MAX_FILE_SIZE ) { //if more than 2MB
                 Alert imageTooLargeAlert = new Alert(Alert.AlertType.WARNING, "Could not upload the image as the image size exceeded 2MB");
                 imageTooLargeAlert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
                 imageTooLargeAlert.showAndWait();
@@ -754,14 +781,15 @@ public class UpdateClinicianController {
     }
 
 
+
     /**
      * Only updates the personal detail values that have been changed.
      *
-     * @param staffID        The clinicians unique staff identifier
-     * @param fName          The clinicians first name
-     * @param mName          The clinicians middle name
-     * @param lName          The clinicians last name
-     * @param password       The clinicians account password
+     * @param staffID The clinicians unique staff identifier
+     * @param fName The clinicians first name
+     * @param mName The clinicians middle name
+     * @param lName The clinicians last name
+     * @param password The clinicians account password
      * @param updatePassword A boolean flag indicating if the password has changed or not
      */
     private void updateChanges(String staffID, String fName, String mName, String lName, String password, boolean updatePassword) {
@@ -792,13 +820,13 @@ public class UpdateClinicianController {
     /**
      * Only updates the work address values that have changed
      *
-     * @param streetNumber  Street number of the work address
-     * @param streetName    Street name that of the work address
+     * @param streetNumber Street number of the work address
+     * @param streetName Street name that of the work address
      * @param neighbourhood Neighbourhood that of the work address
-     * @param city          City the clinicians work place is located in
-     * @param region        Region the clinicians work place is located in
-     * @param zipCode       Zip code of the area the work place is located in
-     * @param country       Country that the clinicians work place is located in
+     * @param city City the clinicians work place is located in
+     * @param region Region the clinicians work place is located in
+     * @param zipCode Zip code of the area the work place is located in
+     * @param country Country that the clinicians work place is located in
      */
     private void updateWorkChanges(String streetNumber, String streetName, String neighbourhood, String city, String region, String zipCode, String country) {
         if (!currentClinician.getStreetNumber().equals(streetNumber)) {

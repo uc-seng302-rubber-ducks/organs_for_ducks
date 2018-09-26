@@ -27,26 +27,35 @@ import java.util.List;
  */
 public class DeregisterOrganReasonController {
 
-    AppController controller;
-    Stage stage;
     @FXML
     private RadioButton transplantReceivedRadioButton;
+
     @FXML
     private RadioButton registrationErrorRadioButton;
+
     @FXML
     private RadioButton diseaseCuredRadioButton;
+
     @FXML
     private RadioButton receiverDiedRadioButton;
+
     @FXML
     private DatePicker dODDatePicker;
+
     @FXML
     private Label receiverName;
+
     @FXML
     private Label organName;
+
     @FXML
     private Label invalidDateErrorMessage;
+
     @FXML
     private ComboBox<Disease> diseaseNameComboBox;
+
+    AppController controller;
+    Stage stage;
     private User currentUser;
     private UserController userController;
     private Organs toDeRegister;

@@ -41,7 +41,7 @@ public class AdministratorBridge extends RoleBridge {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.warning("failed to get admins", e);
+
             }
 
             @Override
@@ -152,7 +152,6 @@ public class AdministratorBridge extends RoleBridge {
 
     /**
      * checks whether an admin exists in the database
-     *
      * @param username username to query for
      * @return true if admin is in the database, false otherwise
      */

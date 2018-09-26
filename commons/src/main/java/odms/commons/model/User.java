@@ -81,7 +81,6 @@ public class User extends Undoable<User> implements Listenable {
     private transient String profilePhotoFilePath;
     private transient List<Change> changes;
     private transient PropertyChangeSupport pcs;
-
     /**
      * Constructor for a User
      *
@@ -122,7 +121,6 @@ public class User extends Undoable<User> implements Listenable {
         contact.setAttachedUser(this);
         this.profilePhotoFilePath = "";
     }
-
     /**
      * empty constructor to allow an empty user to be created for the gui
      */

@@ -43,13 +43,12 @@ public class Appointment {
 
     /**
      * Constructor for Appointment class. Must take every information type (except the boolean hasSeen) that is associated with an Appointment.
-     *
-     * @param requestingUserId     User requesting the appointment
+     * @param requestingUserId User requesting the appointment
      * @param requestedClinicianId clinician being requested to have the appointment with
-     * @param appointmentCategory  the generic type of the appointment
-     * @param requestedDate        date the appointment is requested to be on
-     * @param requestDescription   a more detailed description of the appointment, possibly including a reason why it was requested
-     * @param appointmentStatus    the status of the appointment. This can be pending, accepted, rejected, or cancelled.
+     * @param appointmentCategory the generic type of the appointment
+     * @param requestedDate date the appointment is requested to be on
+     * @param requestDescription a more detailed description of the appointment, possibly including a reason why it was requested
+     * @param appointmentStatus the status of the appointment. This can be pending, accepted, rejected, or cancelled.
      */
     public Appointment(String requestingUserId, String requestedClinicianId, AppointmentCategory appointmentCategory, LocalDateTime requestedDate, String requestDescription, AppointmentStatus appointmentStatus) {
         this.requestingUserId = requestingUserId;

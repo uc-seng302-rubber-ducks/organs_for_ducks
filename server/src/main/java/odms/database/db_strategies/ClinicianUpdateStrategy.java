@@ -50,22 +50,21 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
      * @param clinician  clinician to update the database with
      * @param connection Connection to the target database
      */
-    private void executeCreation(Clinician clinician, Connection connection) throws SQLException {
-        boolean autoCommit = connection.getAutoCommit();
+    private void executeCreation(Clinician clinician, Connection connection) {
         try {
-            connection.setAutoCommit(false);
-            createClinician(clinician, connection);
-            if (!PasswordManager.hash("", clinician.getSalt()).equals(clinician.getPassword())) {
-                createClinicianPassword(clinician, connection);
+            connection.prepareStatement(START_TRANSACTION).execute();
+            try {
+                createClinician(clinician, connection);
+                if (!PasswordManager.hash("", clinician.getSalt()).equals(clinician.getPassword())) {
+                    createClinicianPassword(clinician, connection);
+                }
+                createClinicianContact(clinician, connection);
+            } catch (SQLException sqlEx) {
+                connection.prepareStatement(ROLLBACK).execute();
             }
-            createClinicianContact(clinician, connection);
-            connection.commit();
+            connection.prepareStatement(COMMIT).execute();
         } catch (SQLException sqlEx) {
             Log.warning(ERROR_IN_CONNECTION_TO_DATABASE, sqlEx);
-            connection.rollback();
-            throw sqlEx;
-        } finally {
-            connection.setAutoCommit(autoCommit);
         }
     }
 
@@ -181,24 +180,26 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
      * @param clinician  The clinician associated with the entry to be deleted
      * @param connection Connection to the target database
      */
-    private void deleteRole(Clinician clinician, Connection connection) throws SQLException {
+    private void deleteRole(Clinician clinician, Connection connection) {
         String identifier;
-        boolean autoCommit = connection.getAutoCommit();
-        try (PreparedStatement stmt = connection.prepareStatement(DELETE_CLINICIAN_STMT)) {
-            connection.setAutoCommit(false);
-            identifier = clinician.getStaffId();
+        String sql;
+        try {
+            connection.prepareStatement(START_TRANSACTION).execute();
+            try {
+                identifier = clinician.getStaffId();
+                sql = DELETE_CLINICIAN_STMT;
+                PreparedStatement stmt = connection.prepareStatement(sql);
+                stmt.setString(1, identifier);
 
-            stmt.setString(1, identifier);
+                stmt.executeUpdate();
+            } catch (SQLException sqlEx) {
+                Log.severe("A fatal error in deletion, cancelling operation", sqlEx);
+                connection.prepareStatement(ROLLBACK).execute();
+            }
 
-            stmt.executeUpdate();
-
-            connection.commit();
+            connection.prepareStatement(COMMIT).execute();
         } catch (SQLException sqlEx) {
             Log.warning(ERROR_IN_CONNECTION_TO_DATABASE, sqlEx);
-            connection.rollback();
-            throw sqlEx;
-        } finally {
-            connection.setAutoCommit(autoCommit);
         }
     }
 
@@ -210,23 +211,24 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
      * @param clinician  The clinician associated with the entry in the database
      * @param connection Connection ot the target database
      */
-    private void executeUpdate(Clinician clinician, Connection connection) throws SQLException {
-        boolean autoCommit = connection.getAutoCommit();
+    private void executeUpdate(Clinician clinician, Connection connection) {
+
         try {
-            connection.setAutoCommit(false);
+            connection.prepareStatement(START_TRANSACTION).execute();
+            try {
                 updateClinicianDetails(clinician, connection);
                 updateClinicianAddress(clinician, connection);
                 if (!clinician.isPasswordCorrect("")) {
                     updateClinicianPassword(clinician, connection);
                 }
-            connection.commit();
+            } catch (SQLException sqlEx) {
+                Log.severe("A fatal error in updating, cancelling operation", sqlEx);
+                connection.prepareStatement(ROLLBACK).execute();
+            }
+
+            connection.prepareStatement(COMMIT).execute();
         } catch (SQLException sqlEx) {
-            Log.severe("A fatal error in updating, cancelling operation", sqlEx);
             Log.warning(ERROR_IN_CONNECTION_TO_DATABASE, sqlEx);
-            connection.rollback();
-            throw sqlEx;
-        } finally {
-            connection.setAutoCommit(autoCommit);
         }
 
     }

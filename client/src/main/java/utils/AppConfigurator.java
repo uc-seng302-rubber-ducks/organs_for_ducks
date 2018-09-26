@@ -24,7 +24,7 @@ public class AppConfigurator {
      * The command line args will take priority if there are any conflicts.
      *
      * @param parameters launch params used by Application including command line args.
-     * @param filename   config file name to get initial parameters from. can be null if no file exists/is needed
+     * @param filename config file name to get initial parameters from. can be null if no file exists/is needed
      */
     public void setupArguments(Application.Parameters parameters, String filename) {
         if (filename != null) {
@@ -39,7 +39,6 @@ public class AppConfigurator {
     /**
      * sets up the websocket to listen to server.websocket.url
      * if --testConfig=true is found, this will be skipped
-     *
      * @param controller AppController instance used as an entry point to the correct socket handler
      */
     public void setupWebsocket(AppController controller) {

@@ -17,9 +17,9 @@ public class OrganListCellFactory {
     /**
      * Generates a TableCell object and that recolours text based on certain fields
      *
-     * @param column      The table column to be which holds an organ type to be highlighted
+     * @param column The table column to be which holds an organ type to be highlighted
      * @param currentUser The current user
-     * @param <T>         Generic type of the table column
+     * @param <T> Generic type of the table column
      * @return A new TableCell object
      */
     public static <T> TableCell<T, Organs> generateOrganTableCell(TableColumn<T, Organs> column, User currentUser) {

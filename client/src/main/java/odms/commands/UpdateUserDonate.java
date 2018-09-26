@@ -13,15 +13,18 @@ import java.io.IOException;
 @Command(name = "donate", description = "Updates a user's organs to donate.")
 public class UpdateUserDonate implements Runnable {
 
-    @Option(names = {"-h", "help"}, usageHelp = true)
-    boolean helpRequested;
     private AppController controller = AppController.getInstance();
+
     @Parameters(index = "0", description = "The NHI of the user to be updated")
     private String nhi;
+
     @Parameters(index = "1..*", description =
             "A list of the organs to be updated separated by spaces prefixed by + or / \n"
                     + "e.g. +liver /bone_marrow would add liver and remove bone marrow")
     private String[] rawOrgans;
+
+    @Option(names = {"-h", "help"}, usageHelp = true)
+    boolean helpRequested;
 
     @Override
     public void run() {

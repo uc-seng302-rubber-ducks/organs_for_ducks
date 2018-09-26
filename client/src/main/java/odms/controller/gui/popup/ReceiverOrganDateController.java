@@ -19,9 +19,11 @@ import java.util.ArrayList;
 public class ReceiverOrganDateController {
 
     @FXML
-    public TableView<ReceiverOrganDetailsHolder> organTimeTable;
-    @FXML
     private Label organNameLabel;
+
+    @FXML
+    public TableView<ReceiverOrganDetailsHolder> organTimeTable;
+
     private User user;
     private Stage stage;
 

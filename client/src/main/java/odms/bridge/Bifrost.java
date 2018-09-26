@@ -13,9 +13,9 @@ public class Bifrost {
 
     protected OkHttpClient client;
     protected MediaType json = MediaType.parse("application/json; charset=utf-8");
-    protected JsonHandler handler = new JsonHandler();
     String ip;
     String tokenHeader;
+    protected JsonHandler handler = new JsonHandler();
 
     Bifrost(OkHttpClient client) {
         tokenHeader = ConfigPropertiesSession.getInstance().getProperty("server.token.header", "x-auth-token");

@@ -70,7 +70,7 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
         when(application.getToken()).thenReturn("Poggers");
         when(application.getOrgansBridge()).thenReturn(organsBridge);
 
-        when(loginBridge.loginToServer(anyString(), anyString(), anyString())).thenReturn("lsdjfksd");
+        when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(clinician);
         when(bridge.getUser(anyString())).thenReturn(testUser);
         doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any(), eq(null));
@@ -97,7 +97,7 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
         clickOn("#clinicianTab");
         setTextField(this, "#staffIdTextField", "0");
         setTextField(this, "#staffPasswordField", "admin");
-        clickOnButton(this, "#loginCButton");
+        clickOnButton(this,"#loginCButton");
         clickOn("#searchTab");
         doubleClickOn(getCell("#searchTableView", 0, 0));
         clickOn("#receiverTab");

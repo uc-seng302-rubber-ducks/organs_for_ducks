@@ -16,5 +16,4 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @RestController
 @RequestMapping("/odms/v1")
-public @interface OdmsController {
-}
+public @interface OdmsController {}

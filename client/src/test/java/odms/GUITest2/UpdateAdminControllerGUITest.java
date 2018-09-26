@@ -59,7 +59,7 @@ public class UpdateAdminControllerGUITest extends ApplicationTest {
         when(application.getUserBridge()).thenReturn(userBridge);
         when(application.getOrgansBridge()).thenReturn(organsBridge);
 
-        when(loginBridge.loginToServer(anyString(), anyString(), anyString())).thenReturn("lsdjfksd");
+        when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
         when(administratorBridge.getAdmin(anyString(), anyString())).thenReturn(testAdmin);
         when(application.getTransplantBridge()).thenReturn(transplantBridge);
         when(application.getTransplantList()).thenReturn(new ArrayList<>());
@@ -74,9 +74,9 @@ public class UpdateAdminControllerGUITest extends ApplicationTest {
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class, "--testConfig=true");
         clickOn("#administratorTab");
-        setTextField(this, "#adminUsernameTextField", "admin1");
-        setTextField(this, "#adminPasswordField", "face");
-        clickOnButton(this, "#loginAButton");
+        setTextField(this,"#adminUsernameTextField","admin1");
+        setTextField(this,"#adminPasswordField","face");
+        clickOnButton(this,"#loginAButton");
         clickOn("#editAdminMenu");
         clickOn(
                 "#updateAdminDetails");
@@ -99,51 +99,51 @@ public class UpdateAdminControllerGUITest extends ApplicationTest {
 
     @Test
     public void updateFirstName() {
-        setTextField(this, "#firstNameTextField", "Annah");
-        clickOnButton(this, "#confirmButton");
+        setTextField(this,"#firstNameTextField","Annah");
+        clickOnButton(this,"#confirmButton");
         verifyThat("#adminFirstnameLabel", LabeledMatchers.hasText("Annah"));
     }
 
 
     @Test
     public void updateMiddleName() {
-        setTextField(this, "#middleNameTextField", "Grace");
-        clickOnButton(this, "#confirmButton");
+        setTextField(this,"#middleNameTextField","Grace");
+        clickOnButton(this,"#confirmButton");
         verifyThat("#adminMiddleNameLabel", LabeledMatchers.hasText("Grace"));
     }
 
     @Test
     public void updateLastName() {
-        setTextField(this, "#lastNameTextField", "Anderson");
-        clickOnButton(this, "#confirmButton");
+        setTextField(this,"#lastNameTextField","Anderson");
+        clickOnButton(this,"#confirmButton");
         verifyThat("#adminLastNameLabel", LabeledMatchers.hasText("Anderson"));
     }
 
     @Test
     public void updatePassword() {
-        setTextField(this, "#passwordTextField", "hey");
-        setTextField(this, "#cPasswordTextField", "hey");
-        clickOnButton(this, "#confirmButton");
+        setTextField(this,"#passwordTextField","hey");
+        setTextField(this,"#cPasswordTextField","hey");
+        clickOnButton(this,"#confirmButton");
         clickOn("#AdminFileMenu");
         clickOn("#AdminLogout");
         clickOn("#administratorTab");
-        setTextField(this, "#adminUsernameTextField", "admin1");
-        setTextField(this, "#adminPasswordField", "hey");
-        clickOnButton(this, "#loginAButton");
+        setTextField(this,"#adminUsernameTextField","admin1");
+        setTextField(this,"#adminPasswordField","hey");
+        clickOnButton(this,"#loginAButton");
         verifyThat("#adminFirstnameLabel", LabeledMatchers.hasText("Anna"));
     }
 
     @Test
     public void passwordError() {
-        setTextField(this, "#passwordTextField", "hey");
-        setTextField(this, "#cPasswordTextField", "heyy");
-        clickOnButton(this, "#confirmButton");
+        setTextField(this,"#passwordTextField","hey");
+        setTextField(this,"#cPasswordTextField","heyy");
+        clickOnButton(this,"#confirmButton");
         verifyThat("#passwordErrorLabel", LabeledMatchers.hasText("Your passwords don't match"));
     }
 
     @Test
     public void cancel() {
-        setTextField(this, "#firstNameTextField", "Annah");
+        setTextField(this,"#firstNameTextField","Annah");
         clickOn("#cancelButton");
         clickOn("#yesButton");
         verifyThat("#adminFirstnameLabel", LabeledMatchers.hasText("Anna"));

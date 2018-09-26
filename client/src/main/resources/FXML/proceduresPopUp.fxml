@@ -4,60 +4,47 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-            minWidth="-Infinity" prefHeight="550.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8"
-            fx:controller="odms.controller.gui.popup.view.ProcedureModificationViewController">
-    <children>
-        <AnchorPane layoutX="14.0" layoutY="22.0" prefHeight="600.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0"
-                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-            <children>
-                <TextArea fx:id="descriptionTextArea" layoutX="14.0" layoutY="154.0" prefHeight="324.0"
-                          prefWidth="268.0" wrapText="true" AnchorPane.leftAnchor="25.0"/>
-                <ListView fx:id="organsAffectedByProcedureListView" layoutX="305.0" layoutY="151.0" prefHeight="324.0"
-                          prefWidth="242.0" AnchorPane.rightAnchor="25.0"/>
-                <Label layoutX="335.0" layoutY="127.0" text="Organs Affected:" AnchorPane.rightAnchor="140.0"
-                       AnchorPane.topAnchor="127.0">
-                    <font>
-                        <Font name="System Bold" size="13.0"/>
-                    </font>
-                </Label>
-                <Label layoutX="25.0" layoutY="127.0" text="Description:" AnchorPane.leftAnchor="25.0"
-                       AnchorPane.topAnchor="127.0">
-                    <font>
-                        <Font name="System Bold" size="13.0"/>
-                    </font>
-                </Label>
-                <TextField fx:id="procedureTextField" layoutX="221.0" layoutY="56.0" prefHeight="25.0" prefWidth="356.0"
-                           AnchorPane.rightAnchor="23.0"/>
-                <Label layoutX="27.0" layoutY="97.0" text="Procedure Date*:" AnchorPane.leftAnchor="27.0">
-                    <font>
-                        <Font name="System Bold" size="13.0"/>
-                    </font>
-                </Label>
-                <DatePicker fx:id="procedureDateSelector" layoutX="221.0" layoutY="93.0" prefHeight="25.0"
-                            prefWidth="356.0" AnchorPane.rightAnchor="23.0"/>
-                <Label layoutX="27.0" layoutY="60.0" text="Procedure Name*:" AnchorPane.leftAnchor="27.0">
-                    <font>
-                        <Font name="System Bold" size="13.0"/>
-                    </font>
-                </Label>
-                <Button fx:id="newProcedureCancel" layoutX="64.0" layoutY="527.0" mnemonicParsing="false"
-                        onAction="#cancelNewProcedure" text="Cancel" AnchorPane.bottomAnchor="25.0"
-                        AnchorPane.leftAnchor="25.0"/>
-                <Button fx:id="newProcedureConfirm" layoutX="505.0" layoutY="527.0" mnemonicParsing="false"
-                        onAction="#addNewProcedure" text="Confirm" AnchorPane.bottomAnchor="25.0"
-                        AnchorPane.rightAnchor="25.0"/>
-                <Label fx:id="warningLabel" layoutX="122.0" layoutY="505.0">
-                    <font>
-                        <Font name="System Bold" size="13.0"/>
-                    </font>
-                </Label>
-                <Label fx:id="titleLabel" layoutX="282.0" layoutY="20.0" text="Label">
-                    <font>
-                        <Font name="System Bold" size="13.0"/>
-                    </font>
-                </Label>
-            </children>
-        </AnchorPane>
-    </children>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" fx:controller="odms.controller.gui.popup.view.ProcedureModificationViewController">
+   <children>
+      <AnchorPane layoutX="14.0" layoutY="22.0" prefHeight="600.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <TextArea fx:id="descriptionTextArea" layoutX="14.0" layoutY="154.0" prefHeight="324.0" prefWidth="268.0" wrapText="true" AnchorPane.leftAnchor="25.0" />
+            <ListView fx:id="organsAffectedByProcedureListView" layoutX="305.0" layoutY="151.0" prefHeight="324.0" prefWidth="242.0" AnchorPane.rightAnchor="25.0" />
+            <Label layoutX="335.0" layoutY="127.0" text="Organs Affected:" AnchorPane.rightAnchor="140.0" AnchorPane.topAnchor="127.0">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
+            <Label layoutX="25.0" layoutY="127.0" text="Description:" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="127.0">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
+            <TextField fx:id="procedureTextField" layoutX="221.0" layoutY="56.0" prefHeight="25.0" prefWidth="356.0" AnchorPane.rightAnchor="23.0" />
+            <Label layoutX="27.0" layoutY="97.0" text="Procedure Date*:" AnchorPane.leftAnchor="27.0">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
+            <DatePicker fx:id="procedureDateSelector" layoutX="221.0" layoutY="93.0" prefHeight="25.0" prefWidth="356.0" AnchorPane.rightAnchor="23.0" />
+            <Label layoutX="27.0" layoutY="60.0" text="Procedure Name*:" AnchorPane.leftAnchor="27.0">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
+            <Button fx:id="newProcedureCancel" layoutX="64.0" layoutY="527.0" mnemonicParsing="false" onAction="#cancelNewProcedure" text="Cancel" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="25.0" />
+            <Button fx:id="newProcedureConfirm" layoutX="505.0" layoutY="527.0" mnemonicParsing="false" onAction="#addNewProcedure" text="Confirm" AnchorPane.bottomAnchor="25.0" AnchorPane.rightAnchor="25.0" />
+            <Label fx:id="warningLabel" layoutX="122.0" layoutY="505.0">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
+            <Label fx:id="titleLabel" layoutX="282.0" layoutY="20.0" text="Label">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+   </children>
 </AnchorPane>

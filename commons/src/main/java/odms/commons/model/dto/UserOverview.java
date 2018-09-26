@@ -40,33 +40,16 @@ public class UserOverview {
         return overview;
     }
 
-    public static User toUser(UserOverview overview) {
-        //TODO implement me
-        throw new NullPointerException();
-    }
-
     public String getNhi() {
         return nhi;
-    }
-
-    public void setNhi(String nhi) {
-        this.nhi = nhi;
     }
 
     public LocalDate getDob() {
         return dob;
     }
 
-    public void setDob(LocalDate dob) {
-        this.dob = dob;
-    }
-
     public LocalDate getDod() {
         return dod;
-    }
-
-    public void setDod(LocalDate dod) {
-        this.dod = dod;
     }
 
     public String getFirstName() {
@@ -85,10 +68,6 @@ public class UserOverview {
         return donating;
     }
 
-    public void setDonating(Set<Organs> donating) {
-        this.donating = donating;
-    }
-
     public boolean isDonor() {
         return !donating.isEmpty();
     }
@@ -101,16 +80,29 @@ public class UserOverview {
         return receiving;
     }
 
-    public void setReceiving(Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> receiving) {
-        this.receiving = receiving;
+    public static User toUser(UserOverview overview) {
+        //TODO implement me
+        throw new NullPointerException();
     }
 
-    public String getRegion() {
-        return region;
+    public void setNhi(String nhi) {
+        this.nhi = nhi;
+    }
+
+    public void setDob(LocalDate dob) {
+        this.dob = dob;
+    }
+
+    public void setDod(LocalDate dod) {
+        this.dod = dod;
     }
 
     public void setRegion(String region) {
         this.region = region;
+    }
+
+    public String getRegion() {
+        return region;
     }
 
     @Override
@@ -129,6 +121,14 @@ public class UserOverview {
 
     public void setName(Name name) {
         this.name = name;
+    }
+
+    public void setDonating(Set<Organs> donating) {
+        this.donating = donating;
+    }
+
+    public void setReceiving(Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> receiving) {
+        this.receiving = receiving;
     }
 
     @Override

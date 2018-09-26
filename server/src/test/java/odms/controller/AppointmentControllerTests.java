@@ -152,7 +152,7 @@ public class AppointmentControllerTests {
 
     @Test
     public void putAppointmentShouldReturnBadRequestWhenDateTimeClashesWhenAppointmentDateTimeIsBefore8am() {
-        testAppointment.setRequestedDate(LocalDate.now().plusDays(1).atTime(7, 0));
+        testAppointment.setRequestedDate( LocalDate.now().plusDays(1).atTime(7, 0));
         ResponseEntity res = controller.putAppointment("0", 100, testAppointment);
         Assert.assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
     }
@@ -179,7 +179,7 @@ public class AppointmentControllerTests {
     @Test
     public void getUnseenUserAppointmentShouldReturnAppointmentIfConnectionValid() throws SQLException {
         when(handler.getUnseenAppointment(any(Connection.class), eq("ABC1234"))).thenReturn(testAppointment);
-        Appointment actual = controller.getUnseenUserAppointments("ABC1234");
+        Appointment actual = controller.getUnseenUserAppointments( "ABC1234");
         Assert.assertEquals(testAppointment, actual);
     }
 
@@ -229,35 +229,35 @@ public class AppointmentControllerTests {
     @Test
     public void validateRequestedAppointmentTimeShouldReturnFalseWhenDateTimeIsInPast() throws SQLException {
         LocalDateTime testDateTime = LocalDateTime.now().minusDays(1);
-        boolean result = controller.validateRequestedAppointmentTime("", testDateTime);
+        boolean result = controller.validateRequestedAppointmentTime("",testDateTime);
         Assert.assertEquals(false, result);
     }
 
     @Test
     public void validateRequestedAppointmentTimeShouldReturnFalseWhenDateTimeIsBefore8am() throws SQLException {
         LocalDateTime testDateTime = LocalDate.now().plusDays(1).atTime(7, 0);
-        boolean result = controller.validateRequestedAppointmentTime("", testDateTime);
+        boolean result = controller.validateRequestedAppointmentTime("",testDateTime);
         Assert.assertEquals(false, result);
     }
 
     @Test
     public void validateRequestedAppointmentTimeShouldReturnFalseWhenDateTimeIsAfter5pm() throws SQLException {
         LocalDateTime testDateTime = LocalDate.now().plusDays(1).atTime(18, 0);
-        boolean result = controller.validateRequestedAppointmentTime("", testDateTime);
+        boolean result = controller.validateRequestedAppointmentTime("",testDateTime);
         Assert.assertEquals(false, result);
     }
 
     @Test
     public void validateRequestedAppointmentTimeShouldReturnFalseWhenMinutesIsNot0() throws SQLException {
         LocalDateTime testDateTime = LocalDate.now().plusDays(1).atTime(9, 1);
-        boolean result = controller.validateRequestedAppointmentTime("", testDateTime);
+        boolean result = controller.validateRequestedAppointmentTime("",testDateTime);
         Assert.assertEquals(false, result);
     }
 
     @Test
     public void validateRequestedAppointmentTimeShouldReturnFalseWhenSecondsIsNot0() throws SQLException {
         LocalDateTime testDateTime = LocalDate.now().plusDays(1).atTime(9, 0, 1);
-        boolean result = controller.validateRequestedAppointmentTime("", testDateTime);
+        boolean result = controller.validateRequestedAppointmentTime("",testDateTime);
         Assert.assertEquals(false, result);
     }
 
@@ -268,7 +268,7 @@ public class AppointmentControllerTests {
         testBookedAppointmentTimes.add(testDateTime);
         when(handler.getBookedAppointmentTimes(connection, "")).thenReturn(testBookedAppointmentTimes);
 
-        boolean result = controller.validateRequestedAppointmentTime("", testDateTime);
+        boolean result = controller.validateRequestedAppointmentTime("",testDateTime);
         Assert.assertEquals(false, result);
     }
 
@@ -280,7 +280,7 @@ public class AppointmentControllerTests {
         testBookedAppointmentTimes.add(testDateTime1);
         when(handler.getBookedAppointmentTimes(connection, "")).thenReturn(testBookedAppointmentTimes);
 
-        boolean result = controller.validateRequestedAppointmentTime("", testDateTime2);
+        boolean result = controller.validateRequestedAppointmentTime("",testDateTime2);
         Assert.assertEquals(true, result);
     }
 

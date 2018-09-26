@@ -62,7 +62,7 @@ public class UpdateClinician implements Runnable {
         boolean valid = true;
         Clinician clinician;
         try {
-            clinician = controller.getClinicianBridge().getClinician(originalId, controller.getToken());
+            clinician = controller.getClinicianBridge().getClinician(originalId,controller.getToken());
         } catch (ApiException e) {
             IoHelper.display("That clinician id does not exist");
             return;
@@ -99,7 +99,7 @@ public class UpdateClinician implements Runnable {
             changed = true;
         }
 
-        if (password != null) {
+        if (password != null ) {
             if (!originalId.equals("0")) {
                 clinician.setPassword(password);
                 changed = true;

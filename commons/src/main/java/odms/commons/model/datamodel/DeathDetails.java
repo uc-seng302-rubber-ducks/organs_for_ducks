@@ -17,11 +17,6 @@ public class DeathDetails {
         this.placeOfDeath = new Address("", "", "", "", "", "", "");
     }
 
-    public DeathDetails(LocalDateTime momentOfDeath, Address placeOfDeath) {
-        this.momentOfDeath = momentOfDeath;
-        this.placeOfDeath = placeOfDeath;
-    }
-
     public LocalDateTime getMomentOfDeath() {
         return momentOfDeath;
     }
@@ -30,9 +25,13 @@ public class DeathDetails {
         this.momentOfDeath = momentOfDeath;
     }
 
+    public DeathDetails(LocalDateTime momentOfDeath, Address placeOfDeath) {
+        this.momentOfDeath = momentOfDeath;
+        this.placeOfDeath = placeOfDeath;
+    }
+
     /**
      * Uses the moment of death to return a LocalDate version, useful for date pickers
-     *
      * @return LocalDate portion of moment of death
      */
     public LocalDate getDateOfDeath() {
@@ -45,7 +44,6 @@ public class DeathDetails {
 
     /**
      * Uses the moment of death to return a LocalTime version, useful for date independent time calculations
-     *
      * @return LocalTime portion of moment of death
      */
     public LocalTime getTimeOfDeath() {
@@ -60,7 +58,6 @@ public class DeathDetails {
      * Combines a date and time into a LocalDateTime.
      * If Date of Death is null, Moment of Death is null
      * If only Time of Death is null, Moment of Death's time is set to 00:00
-     *
      * @param date of death
      * @param time of death
      * @return LocalDateTime of death

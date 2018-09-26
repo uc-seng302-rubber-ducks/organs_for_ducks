@@ -35,8 +35,8 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
     /**
      * Constructor to create a new logical instance of the controller
      *
-     * @param appointments Observable list of appointments used to populate the users appointments table
-     * @param user         User that the appointment panel belongs to
+     * @param appointments  Observable list of appointments used to populate the users appointments table
+     * @param user          User that the appointment panel belongs to
      */
     public UserAppointmentLogicController(ObservableList<Appointment> appointments, User user) {
         this.appointments = appointments;
@@ -184,8 +184,7 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
             try {
                 User newUser = AppController.getInstance().getUserBridge().getUser(event.getNewIdentifier());
                 if (newUser != null) {
-                    user = newUser;
-                }
+                    user = newUser;                }
             } catch (IOException ex) {
                 Log.warning("failed to get updated user", ex);
             }

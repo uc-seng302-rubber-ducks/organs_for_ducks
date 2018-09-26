@@ -70,7 +70,7 @@ public class OrganReceiverGUITest extends ApplicationTest {
         when(application.getOrgansBridge()).thenReturn(organsBridge);
 
         when(application.getTransplantList()).thenReturn(new ArrayList<>());
-        when(loginBridge.loginToServer(anyString(), anyString(), anyString())).thenReturn("lsdjfksd");
+        when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(clinician);
         doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any(), eq(null));
         doNothing().when(application).addUserOverview(any(UserOverview.class));
@@ -86,10 +86,10 @@ public class OrganReceiverGUITest extends ApplicationTest {
 
         //Use default clinician
         clickOn("#clinicianTab");
-        setTextField(this, "#staffIdTextField", "0");
-        setTextField(this, "#staffPasswordField", "admin");
+        setTextField(this,"#staffIdTextField" ,"0");
+        setTextField(this, "#staffPasswordField","admin");
 
-        clickOnButton(this, "#loginCButton");
+        clickOnButton(this,"#loginCButton");
         //verifyThat("#staffIdLabel", LabeledMatchers.hasText("0"));
         clickOn("#searchTab");
         interact(() -> {
@@ -109,30 +109,30 @@ public class OrganReceiverGUITest extends ApplicationTest {
 
     @Test
     public void clinicianShouldBeAbleToStartADonorReceivingAnOrgan() {
-        setComboBox(this, "#organsComboBox", Organs.KIDNEY);
-        clickOnButton(this, "#registerButton");
-        assertEquals("Kidney", getCellValue("#currentlyWaitingFor", 0, 0).toString());
+        setComboBox(this,"#organsComboBox",Organs.KIDNEY);
+        clickOnButton(this,"#registerButton");
+        assertEquals("Kidney", getCellValue("#currentlyWaitingFor", 0,0).toString());
     }
 
     @Test
     public void organShouldMoveCorrectlyBetweenTablesWhenMoveButtonsClicked() {
         //Setup
-        setComboBox(this, "#organsComboBox", Organs.KIDNEY);
-        clickOnButton(this, "#registerButton");
-        getCellValue("#currentlyWaitingFor", 0, 0);
+        setComboBox(this,"#organsComboBox", Organs.KIDNEY);
+        clickOnButton(this,"#registerButton");
+        getCellValue("#currentlyWaitingFor",0,0);
 
         //Test reRegister does nothing when already in currentlyReceiving
         clickOnButton(this, "#reRegisterButton");
-        assertEquals("Kidney", getCellValue("#currentlyWaitingFor", 0, 0).toString());
+        assertEquals("Kidney", getCellValue("#currentlyWaitingFor", 0,0).toString());
 
         //Test deRegister successfully moves organ to notReceiving
 //        clickOn(getCell("#currentlywaitingFor",0,0 ));
 
         interact(() -> lookup("#currentlyWaitingFor").queryAs(TableView.class).getSelectionModel().select(0));
-        clickOn("#deRegisterButton");
+        clickOn( "#deRegisterButton");
         clickOn("#registrationErrorRadioButton");
         clickOn("#okButton");
-        assertEquals("Kidney", getCellValue("#noLongerWaitingForOrgan", 0, 0).toString());
+        assertEquals("Kidney", getCellValue("#noLongerWaitingForOrgan", 0,0).toString());
 
     }
 }

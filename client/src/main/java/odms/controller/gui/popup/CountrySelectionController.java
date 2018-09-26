@@ -32,7 +32,6 @@ public class CountrySelectionController {
 
     /**
      * initialise country selection pop up window.
-     *
      * @param admin current admin
      * @param stage gui stage
      */
@@ -46,7 +45,7 @@ public class CountrySelectionController {
     /**
      * initialise  Country Selection List. includes rendering checkboxes for each row.
      */
-    private void initCountrySelectionList() {
+    private void initCountrySelectionList(){
         List<TextStringCheckBox> checkBoxes = new ArrayList<>();
         for (String country : appController.getAllCountries()) {
             TextStringCheckBox newCountry = new TextStringCheckBox(country);
@@ -64,7 +63,7 @@ public class CountrySelectionController {
     }
 
     @FXML
-    void selectDeselectAll() {
+    void selectDeselectAll(){
         selectAll = !selectAll;
         for (TextStringCheckBox checkBox : countrySelection.getItems()) {
             checkBox.setSelected(selectAll);
@@ -83,7 +82,7 @@ public class CountrySelectionController {
      * save the Country Selection and close the window.
      */
     @FXML
-    void saveCountriesSelection() {
+    void saveCountriesSelection(){
         allowedCountries.sort(String.CASE_INSENSITIVE_ORDER);
         appController.setAllowedCountries(allowedCountries);
         stage.close();
@@ -104,20 +103,19 @@ public class CountrySelectionController {
      * This method ges fired on key release from search text field.
      */
     @FXML
-    void getDesiredCountries() {
+    void getDesiredCountries(){
         String query = searchCountry.getText();
         countrySelection.setItems(FXCollections.observableList(countriesQuery(query)));
     }
 
     /**
      * gets the country names based on the search query
-     *
      * @param queryStr query string
      * @return list of desired country names
      */
     private List<TextStringCheckBox> countriesQuery(String queryStr) {
         List<TextStringCheckBox> desiredCountries = new ArrayList<>();
-        Pattern pattern = Pattern.compile(queryStr + ".*", Pattern.CASE_INSENSITIVE);
+        Pattern pattern = Pattern.compile(queryStr+".*", Pattern.CASE_INSENSITIVE);
 
         for (String country : appController.getAllCountries()) {
             Matcher matcher = pattern.matcher(country);
