@@ -30,6 +30,7 @@ import odms.controller.gui.panel.view.UserAppointmentViewController;
 import odms.controller.gui.popup.UserAppointmentAlertController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.socket.ServerEventNotifier;
+import utils.StageIconLoader;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -241,6 +242,8 @@ public class UserController implements PropertyChangeListener {
             updateStage.initModality(Modality.APPLICATION_MODAL);
             updateStage.setScene(new Scene(root));
             updateUserController.init(currentUser, application, updateStage, this, this.fromClinician);
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            updateStage.getIcons().add(stageIconLoader.getIconImage());
             updateStage.show();
             Log.info("Successfully launched update user window for User NHI: " + currentUser.getNhi());
 
@@ -328,6 +331,8 @@ public class UserController implements PropertyChangeListener {
             root = loader.load();
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            newStage.getIcons().add(stageIconLoader.getIconImage());
             newStage.show();
             stage.close();
             LoginController loginController = loader.getController();

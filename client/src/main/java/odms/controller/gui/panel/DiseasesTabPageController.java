@@ -17,6 +17,7 @@ import odms.controller.AppController;
 import odms.controller.gui.popup.NewDiseaseController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.controller.gui.window.UserController;
+import utils.StageIconLoader;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -185,6 +186,8 @@ public class DiseasesTabPageController {
             Stage stage = new Stage();
             newDiseaseController.init(currentUser, application, stage, disease, parent);
             stage.setScene(new Scene(root));
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            stage.getIcons().add(stageIconLoader.getIconImage());
             stage.show();
             Log.info("successfully launched add/update Diseases pop-up window for User NHI: " + currentUser.getNhi());
         } catch (IOException e) {
