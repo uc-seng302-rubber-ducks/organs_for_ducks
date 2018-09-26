@@ -1047,7 +1047,7 @@ public class User extends Undoable<User> implements Listenable {
             currentMedication.add(new Medication(medication));
         }
         addMedicationTimes(medication, currentMedication);
-        addChange(new Change("Added current medication" + medication));
+        addChange(new Change("Added current medication " + medication));
     }
 
     public void addPreviousMedication(String medication) {
@@ -1056,19 +1056,7 @@ public class User extends Undoable<User> implements Listenable {
             previousMedication.add(new Medication(medication));
         }
         addMedicationTimes(medication, previousMedication);
-        addChange(new Change("Added previous medication" + medication));
-    }
-
-    public void addCurrentMedicationSetup(String medication) {
-        updateLastModified();
-        currentMedication.add(new Medication(medication));
-        addChange(new Change("Added current medication" + medication));
-    }
-
-    public void addPreviousMedicationSetUp(String medication) {
-        updateLastModified();
-        previousMedication.add(new Medication(medication));
-        addChange(new Change("Added previous medication" + medication));
+        addChange(new Change("Added previous medication " + medication));
     }
 
     public void removeCurrentMedication(String medication) {
@@ -1078,7 +1066,7 @@ public class User extends Undoable<User> implements Listenable {
                 m.setDeleted(true);
             }
         }
-        addChange(new Change("Removed current medication" + medication));
+        addChange(new Change("Removed current medication " + medication));
     }
 
     public void removePreviousMedication(String medication) {
@@ -1088,7 +1076,7 @@ public class User extends Undoable<User> implements Listenable {
                 m.setDeleted(true);
             }
         }
-        addChange(new Change("Removed previous medication" + medication));
+        addChange(new Change("Removed previous medication " + medication));
     }
 
     /**
@@ -1156,13 +1144,13 @@ public class User extends Undoable<User> implements Listenable {
     public void addMedicalProcedure(MedicalProcedure medicalProcedure) {
         updateLastModified();
         medicalProcedures.add(medicalProcedure);
-        addChange(new Change("Added Medical Procedure" + medicalProcedure));
+        addChange(new Change("Added Medical Procedure " + medicalProcedure.getSummary()));
     }
 
     public void removeMedicalProcedure(MedicalProcedure medicalProcedure) {
         updateLastModified();
         medicalProcedures.remove(medicalProcedure);
-        addChange(new Change("Removed Medical Procedure" + medicalProcedure));
+        addChange(new Change("Removed Medical Procedure " + medicalProcedure.getSummary()));
     }
 
     @Override
