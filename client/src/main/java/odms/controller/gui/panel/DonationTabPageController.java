@@ -135,13 +135,13 @@ public class DonationTabPageController {
         populateOrganLists(user);
         updateButton();
         currentlyDonating.getSelectionModel().selectedItemProperty().addListener(a-> {
-            if(currentlyDonating.getSelectionModel().getSelectedItem() == null) {
+            if (currentlyDonating.getSelectionModel().getSelectedItem() == null) {
                 return;
             }
-            if (!currentlyDonating.getSelectionModel().getSelectedItem().getExpired()){
+            if (!currentlyDonating.getSelectionModel().getSelectedItem().getExpired()) {
                 removeExpiryReasonButton.setDisable(true);
                 expireOrganButton.setText("Expire Organ");
-            } else{
+            } else {
                 removeExpiryReasonButton.setDisable(false);
                 expireOrganButton.setText("Edit Expiry Details");
             }

@@ -61,6 +61,7 @@ public class AvailableOrgansViewController {
     private AvailableOrgansLogicController logicController = new AvailableOrgansLogicController(availableOrganDetails, transplantDetails);
     private PauseTransition pause = new PauseTransition(Duration.millis(300));
     private UserLauncher parent;
+    private Comparator<ProgressTask> organTimeLeftComparator = Comparator.comparingLong(p -> p.calculateTimeLeft(LocalDateTime.now()));
 
     /**
      * Initialises the panel
@@ -116,13 +117,11 @@ public class AvailableOrgansViewController {
         timeLeftColumn.setComparator(new TimeRemainingComparator());
     }
 
-    private Comparator<ProgressTask> organTimeLeftComparator = Comparator.comparingLong(p -> p.calculateTimeLeft(LocalDateTime.now()));
-
     /**
      * Initialises the table for potential recipients
      */
-    private void initMatchesTable(){
-        TableColumn<TransplantDetails,String> matchesNhiColumn = new TableColumn<>("NHI");
+    private void initMatchesTable() {
+        TableColumn<TransplantDetails, String> matchesNhiColumn = new TableColumn<>("NHI");
         TableColumn<TransplantDetails, String> matchesRegionColumn = new TableColumn<>("Region");
 
         matchesNhiColumn.setCellValueFactory(new PropertyValueFactory<>("nhi"));
@@ -209,7 +208,7 @@ public class AvailableOrgansViewController {
 
 
         matchesView.setOnMouseClicked(event -> {
-            if(event.getClickCount() == 2 && matchesView.getSelectionModel().getSelectedItem() != null){
+            if (event.getClickCount() == 2 && matchesView.getSelectionModel().getSelectedItem() != null) {
                 parent.launchUser(matchesView.getSelectionModel().getSelectedItem().getNhi());
             }
         });

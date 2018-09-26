@@ -39,8 +39,8 @@ public class Scheduler {
      * so we have second, minute, hour, day-of-month, month, day-of-year, year with year being optional
      * for more info visit https://www.baeldung.com/cron-expressions
      */
-    @Scheduled(cron="0 0 8 * * * ")
-    public void sendEmailsDaily(){
+    @Scheduled(cron = "0 0 8 * * * ")
+    public void sendEmailsDaily() {
         Collection<AppointmentWithPeople> appointmentWithPeopleTomorrow;
         Collection<AppointmentWithPeople> appointmentWithPeopleNextWeek;
         Collection<AppointmentWithPeople> appointments = new ArrayList<>();
@@ -50,14 +50,14 @@ public class Scheduler {
             appointments.addAll(appointmentWithPeopleNextWeek);
             appointments.addAll(appointmentWithPeopleTomorrow);
 
-        } catch (SQLException e){
+        } catch (SQLException e) {
             Log.severe("Unable to get appointments date", e);
         }
         MailHandler mailHandler = new MailHandler();
         mailHandler.setMailSender(new JavaMailSenderImpl() {
         });
         for (AppointmentWithPeople appointment : appointments) {
-            if(!appointment.getUser().getEmail().equals("") || appointment.getUser().getEmail() != null){
+            if (!appointment.getUser().getEmail().equals("") || appointment.getUser().getEmail() != null) {
                 String message = composer.writeReminder(appointment);
                 if (!message.isEmpty()) {
                     mailHandler.sendMail(appointment.getUser().getEmail(),

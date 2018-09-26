@@ -13,9 +13,6 @@ public class AppointmentWithPeople {
     Clinician clinician;
     LocalDateTime appointmentTime;
 
-    public AppointmentWithPeople() {
-    }
-
     public User getUser() {
         return user;
     }
@@ -40,7 +37,7 @@ public class AppointmentWithPeople {
         this.appointmentTime = appointmentTime;
     }
 
-    public String getAppointmentDateTimeString(){
+    public String getAppointmentDateTimeString() {
         return appointmentTime.toLocalTime().toString().replaceAll("T", " ");
     }
 }

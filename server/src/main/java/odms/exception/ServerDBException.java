@@ -11,12 +11,15 @@ public class ServerDBException extends RuntimeException {
     public ServerDBException() {
         super();
     }
+
     public ServerDBException(String message, Throwable cause) {
         super(message, cause);
     }
+
     public ServerDBException(String message) {
         super(message);
     }
+
     public ServerDBException(Throwable cause) {
         super(cause);
     }

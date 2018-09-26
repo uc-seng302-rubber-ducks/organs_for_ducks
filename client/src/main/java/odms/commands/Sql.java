@@ -17,12 +17,9 @@ public class Sql implements Runnable {
 
     @Option(names = {"-h", "help"}, usageHelp = true)
     boolean helpRequested = false;
-
+    AppController controller = AppController.getInstance();
     @Parameters(description = "String containing a select statement. e.g. SELECT * from User")
     private String[] statementArray;
-
-
-    AppController controller = AppController.getInstance();
 
     @Override
     public void run() {
@@ -44,12 +41,12 @@ public class Sql implements Runnable {
         }
 
         try {
-            List<String> result = sqlBridge.executeSqlStatement(statement,controller.getToken());
-            if(result.isEmpty()){
+            List<String> result = sqlBridge.executeSqlStatement(statement, controller.getToken());
+            if (result.isEmpty()) {
                 IoHelper.display("The result set was empty; an invalid query may have been entered or this result returned no rows");
             } else {
                 IoHelper.display("----------------------------------------------------------------------------------------");
-                for(String s : result){
+                for (String s : result) {
                     IoHelper.display(s);
                     IoHelper.display("----------------------------------------------------------------------------------------");
                 }
@@ -63,7 +60,7 @@ public class Sql implements Runnable {
 
     }
 
-    public void setAppController(AppController appController){
+    public void setAppController(AppController appController) {
         this.controller = appController;
     }
 }

@@ -1,8 +1,8 @@
 package odms.commands;
 
+import odms.bridge.UserBridge;
 import odms.commons.model.User;
 import odms.controller.AppController;
-import odms.bridge.UserBridge;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -24,9 +24,9 @@ import static org.mockito.Mockito.when;
 public class UpdateUserDetailsTest {
 
     AppController controller;
+    User testUser;
     private DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private String NHI = "";
-    User testUser;
 
     @Before
     public void resetDonor() throws IOException {
@@ -183,7 +183,7 @@ public class UpdateUserDetailsTest {
 
         User test = controller.getUserBridge().getUser(NHI);
 
-        Assert.assertEquals (null, test.getDateOfDeath());
+        Assert.assertEquals(null, test.getDateOfDeath());
 
     }
 

@@ -24,7 +24,6 @@ public class AvailableOrganDetail implements Listenable, Expirable {
     private String bloodType;
     private transient ProgressTask progressTask; //NOSONAR
     private transient PropertyChangeSupport pcs; //NOSONAR
-    private transient ExpiryReason expiryReason;
     private long age;
 
     public AvailableOrganDetail(Organs organ, String nhi, LocalDateTime momentOfDeath, String region, String bloodType, long age) {
@@ -52,20 +51,28 @@ public class AvailableOrganDetail implements Listenable, Expirable {
         return organ;
     }
 
+    public void setOrgan(Organs organ) {
+        this.organ = organ;
+    }
+
     public String getDonorNhi() {
         return donorNhi;
+    }
+
+    public void setDonorNhi(String donorNhi) {
+        this.donorNhi = donorNhi;
     }
 
     public LocalDateTime getMomentOfDeath() {
         return momentOfDeath;
     }
 
-    public String getRegion() {
-        return region;
-    }
-
     public void setMomentOfDeath(LocalDateTime momentOfDeath) {
         this.momentOfDeath = momentOfDeath;
+    }
+
+    public String getRegion() {
+        return region;
     }
 
     public void setRegion(String region) {
@@ -80,14 +87,6 @@ public class AvailableOrganDetail implements Listenable, Expirable {
         this.bloodType = bloodType;
     }
 
-    public void setOrgan(Organs organ) {
-        this.organ = organ;
-    }
-
-    public void setDonorNhi(String donorNhi) {
-        this.donorNhi = donorNhi;
-    }
-
     public long getAge() {
         return age;
     }
@@ -95,6 +94,7 @@ public class AvailableOrganDetail implements Listenable, Expirable {
     public void setAge(long age) {
         this.age = age;
     }
+
     public LocalDateTime getExpiryDate() {
         return this.expiryDate;
     }
@@ -111,7 +111,6 @@ public class AvailableOrganDetail implements Listenable, Expirable {
      * takes a time and returns if the organ is still valid
      *
      * @param timeToaskabout time that the organ needs to be valid at.
-     *
      * @return true if valid; false if not
      */
     public boolean isOrganStillValid(LocalDateTime timeToaskabout) {
@@ -127,7 +126,6 @@ public class AvailableOrganDetail implements Listenable, Expirable {
      * Uses the organs expiry date to return the seconds left until the organ expires
      *
      * @param fromThisTime time to calculate expiry time for. Will most often be LocalDateTime.now()
-     *
      * @return long value of how many seconds are left
      */
     public long calculateTimeLeft(LocalDateTime fromThisTime) {
@@ -143,7 +141,7 @@ public class AvailableOrganDetail implements Listenable, Expirable {
      * Returns an expiry date for an organ given a time of death and organ type
      *
      * @param timeOfDeath LocalDateTime of when the donor died
-     * @param organType Organs enum of the type of organ
+     * @param organType   Organs enum of the type of organ
      * @return LocalDateTime of when the organ will expire
      */
     private LocalDateTime calculateExpiryDate(LocalDateTime timeOfDeath, Organs organType) {
@@ -174,10 +172,6 @@ public class AvailableOrganDetail implements Listenable, Expirable {
     @Override
     public void fire(PropertyChangeEvent event) {
         pcs.firePropertyChange(event);
-    }
-
-    public void setExpiryReason(ExpiryReason reason) {
-        expiryReason = reason;
     }
 
     @Override

@@ -227,6 +227,7 @@ public class AttributeValidation {
 
     /**
      * Checks if the string is in a 24 hour hh:mm format
+     *
      * @param time String to be checked
      * @return True if string is in correct format
      */

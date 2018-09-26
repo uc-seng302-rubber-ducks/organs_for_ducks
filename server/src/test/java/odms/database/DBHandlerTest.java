@@ -31,6 +31,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 public class DBHandlerTest {
+    private static final String PHOTO_TEST_FILE_PATH = "../server/src/test/resources/images/duck_jpg.jpg";
     private DBHandler dbHandler;
     private Connection connection;
     private PreparedStatement mockStmt;
@@ -38,7 +39,6 @@ public class DBHandlerTest {
     private User testUser = new User("Eiran", LocalDate.of(2018, 2, 20), "ABC1111");
     private Clinician testClinician = new Clinician("Jon", "16", "password");
     private Administrator testAdmin = new Administrator("username", "James", "", "", "admin");
-    private static final String PHOTO_TEST_FILE_PATH = "../server/src/test/resources/images/duck_jpg.jpg";
 
     @Before
     public void beforeTest() throws SQLException {
@@ -113,7 +113,7 @@ public class DBHandlerTest {
     }
 
     @Test
-    public void getUserProfilePicture() throws SQLException{
+    public void getUserProfilePicture() throws SQLException {
         when(mockResultSet.next()).thenReturn(true, false);
         dbHandler.getProfilePhoto(User.class, testUser.getNhi(), connection);
         verify(mockStmt, times(1)).executeQuery();
@@ -200,7 +200,7 @@ public class DBHandlerTest {
         verify(mockStmt, times(1)).executeUpdate();
     }
 
-    @Test (expected = UnsupportedOperationException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void testRoleNotSupportUpdateProfilePicture() throws SQLException, FileNotFoundException {
         InputStream inputStream = new FileInputStream(PHOTO_TEST_FILE_PATH);
 
@@ -214,7 +214,7 @@ public class DBHandlerTest {
         verify(mockStmt, times(1)).executeQuery();
     }
 
-    @Test (expected = UnsupportedOperationException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void testRoleNotSupportGetProfilePicture() throws SQLException {
         dbHandler.getProfilePhoto(Administrator.class, testAdmin.getUserName(), connection);
     }
@@ -224,14 +224,14 @@ public class DBHandlerTest {
         when(mockResultSet.next()).thenReturn(true, false);
         DBHandlerMocker.setTransplantResultSet(mockResultSet);
         when(mockResultSet.getString(eq("organName"))).thenReturn("LIVER");
-        when(mockResultSet.getTimestamp("dob")).thenReturn(java.sql.Timestamp.valueOf(LocalDateTime.of(1,1,1,1,1)));
+        when(mockResultSet.getTimestamp("dob")).thenReturn(java.sql.Timestamp.valueOf(LocalDateTime.of(1, 1, 1, 1, 1)));
         when(mockResultSet.getDate(eq("dateRegistered"))).thenReturn(Date.valueOf(LocalDate.now()));
-        dbHandler.getTransplantDetails(connection,0, 1, "", "", new String[] {});
+        dbHandler.getTransplantDetails(connection, 0, 1, "", "", new String[]{});
         verify(mockStmt, times(1)).executeQuery();
     }
 
     @Test
-    public void testGetDeathDetails() throws  SQLException {
+    public void testGetDeathDetails() throws SQLException {
         when(mockResultSet.next()).thenReturn(true, false);
         DBHandlerMocker.setDeathDetailsResultSet(mockResultSet);
         dbHandler.getDeathDetails(testUser, connection);
@@ -294,7 +294,7 @@ public class DBHandlerTest {
         testClinician.setMiddleName("mid");
         testClinician.setLastName("last");
         DBHandlerMocker.setClinicianResultSet(mockResultSet, testClinician);
-        Collection<ComboBoxClinician> clinicians = dbHandler.getBasicClinicians(connection,"");
+        Collection<ComboBoxClinician> clinicians = dbHandler.getBasicClinicians(connection, "");
 
         verify(mockStmt, times(1)).executeQuery();
         Assert.assertEquals("Jon mid last", clinicians.iterator().next().toString());
@@ -314,7 +314,7 @@ public class DBHandlerTest {
         testClinician.setMiddleName("mid");
         testClinician.setLastName("last");
         DBHandlerMocker.setClinicianResultSet(mockResultSet, testClinician);
-        ComboBoxClinician clinician = dbHandler.getPreferredBasicClinician(connection,"ABC1234");
+        ComboBoxClinician clinician = dbHandler.getPreferredBasicClinician(connection, "ABC1234");
 
         verify(mockStmt, times(1)).executeQuery();
         Assert.assertEquals("Jon mid last", clinician.toString());

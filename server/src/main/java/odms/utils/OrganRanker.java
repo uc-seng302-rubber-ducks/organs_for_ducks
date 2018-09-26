@@ -33,7 +33,7 @@ public class OrganRanker {
      * <p>
      * This version currently only checks they are in the same region
      *
-     * @param organAvailable   A list of avaliable organs
+     * @param organAvailable     A list of avaliable organs
      * @param waitingTransplants transplant to be matched
      * @return A map of organs to the best match, Note a receiver may be the best match for more than one organ
      */
@@ -46,7 +46,7 @@ public class OrganRanker {
         for (TransplantDetails transplantDetail : waitingTransplants) {
             LocalDateTime death = organAvailable.getMomentOfDeath();
             Organs organ = organAvailable.getOrgan();
-            if(transplantDetail.getNhi().equalsIgnoreCase(organAvailable.getDonorNhi())){
+            if (transplantDetail.getNhi().equalsIgnoreCase(organAvailable.getDonorNhi())) {
                 continue;
             }
             double timeRemaining = death.until(death.plusSeconds(organ.getUpperBoundSeconds()), ChronoUnit.SECONDS);

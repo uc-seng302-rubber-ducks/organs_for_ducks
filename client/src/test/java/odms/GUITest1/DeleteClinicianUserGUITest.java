@@ -91,7 +91,7 @@ public class DeleteClinicianUserGUITest extends ApplicationTest {
         doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any(), eq(null));
 
         clickOn("#clinicianTab");
-        setTextField(this,"#staffIdTextField", "0");
+        setTextField(this, "#staffIdTextField", "0");
         setTextField(this, "#staffPasswordField", "admin");
         clickOnButton(this, "#loginCButton");
         clickOn("#searchTab");

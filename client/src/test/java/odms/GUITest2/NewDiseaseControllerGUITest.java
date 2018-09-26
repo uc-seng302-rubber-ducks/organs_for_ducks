@@ -70,7 +70,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
         when(controller.getLoginBridge()).thenReturn(loginBridge);
         when(controller.getToken()).thenReturn("EZ");
 
-        when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
+        when(loginBridge.loginToServer(anyString(), anyString(), anyString())).thenReturn("lsdjfksd");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(clinician);
         when(controller.getTransplantBridge()).thenReturn(transplantBridge);
         when(controller.getOrgansBridge()).thenReturn(organsBridge);
@@ -91,7 +91,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
 
         //Use default clinician
         clickOn("#clinicianTab");
-        setTextField(this,"#staffIdTextField", "0");
+        setTextField(this, "#staffIdTextField", "0");
         setTextField(this, "#staffPasswordField", "admin");
         clickOnButton(this, "#loginCButton");
         //verifyThat("#staffIdLabel", LabeledMatchers.hasText("0"));
@@ -113,11 +113,11 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
 
     @Test
     public void createdDiseaseShouldBeInCurrentDiseaseTable() {
-        clickOnButton(this,"#addDiseaseButton");
-        setTextField(this,"#diseaseNameInput", "A1");
+        clickOnButton(this, "#addDiseaseButton");
+        setTextField(this, "#diseaseNameInput", "A1");
         //Use default date
         setDateValue(this, "#diagnosisDateInput", LocalDate.of(2007, 1, 12));
-        clickOnButton(this,"#createButton");
+        clickOnButton(this, "#createButton");
         assertEquals("A1", getCellValue("#currentDiseaseTableView", 1, 1).toString());
 
     }
@@ -125,9 +125,9 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
     @Test
     public void updatedDiseaseNameShouldBeDisplayedCorrectly() {
         clickOn(getCell("#currentDiseaseTableView", 0, 0));
-        clickOnButton(this,"#updateDiseaseButton");
-        setTextField(this, "#diseaseNameInput","A1");
-        clickOnButton(this,"#createButton");
+        clickOnButton(this, "#updateDiseaseButton");
+        setTextField(this, "#diseaseNameInput", "A1");
+        clickOnButton(this, "#createButton");
         assertEquals("A1", getCellValue("#currentDiseaseTableView", 1, 0).toString());
     }
 
@@ -135,7 +135,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
     public void updatedDiseaseDateShouldBeDisplayedCorrectly() {
         clickOn(getCell("#currentDiseaseTableView", 0, 0));
         clickOnButton(this, "#updateDiseaseButton");
-        setDateValue(this, "#diagnosisDateInput",LocalDate.of(2007, 1, 12));
+        setDateValue(this, "#diagnosisDateInput", LocalDate.of(2007, 1, 12));
         clickOnButton(this, "#createButton");
         assertEquals(LocalDate.of(2007, 1, 12), getCellValue("#currentDiseaseTableView", 0, 0));
     }
@@ -143,18 +143,18 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
     @Test
     public void diseaseShouldMoveToPastDiseaseTableWhenSetToCured() { //FAIL
         clickOn(getCell("#currentDiseaseTableView", 0, 0));
-        clickOnButton(this,"#updateDiseaseButton");
+        clickOnButton(this, "#updateDiseaseButton");
         clickOn("#curedRadioButton");
-        clickOnButton(this,"#createButton");
+        clickOnButton(this, "#createButton");
         assertEquals("A0", getCellValue("#pastDiseaseTableView", 1, 1).toString());
     }
 
     @Test
     public void diseaseShouldMoveToCurrentDiseaseTableWhenNeitherCuredOrChronic() {
         clickOn(getCell("#pastDiseaseTableView", 0, 0));
-        clickOnButton(this,"#updateDiseaseButton");
-        clickOnButton(this,"#clearSelection");
-        clickOnButton(this,"#createButton");
+        clickOnButton(this, "#updateDiseaseButton");
+        clickOnButton(this, "#clearSelection");
+        clickOnButton(this, "#createButton");
         assertEquals("B0", getCellValue("#currentDiseaseTableView", 1, 1).toString());
     }
 

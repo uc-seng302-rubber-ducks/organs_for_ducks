@@ -16,11 +16,11 @@ import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 public class OdmsSocketHandlerTest {
 
+    private final String testUrl = "http://url.com"; //Request has regex/checking for format
     private OdmsSocketHandler handler;
     private WebSocketListener listener;
     private OkHttpClient client;
     private ServerEventNotifier eventStore;
-    private final String testUrl = "http://url.com"; //Request has regex/checking for format
 
     @Before
     public void setUp() {
@@ -29,6 +29,7 @@ public class OdmsSocketHandlerTest {
         handler = new OdmsSocketHandler(client, eventStore);
         listener = handler.getListener();
     }
+
     @Test
     public void startShouldTryOpenNewSocket() {
         handler.start(testUrl);

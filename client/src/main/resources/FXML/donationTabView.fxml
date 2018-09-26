@@ -8,14 +8,14 @@
         <ListView fx:id="currentOrgans" layoutX="368.0" layoutY="86.0" onMouseClicked="#currentOrgansMouseClick" prefHeight="437.0" prefWidth="200.0" />
         <TableView fx:id="currentlyDonating" layoutX="368.0" layoutY="86.0" prefHeight="437.0" prefWidth="798.0" visible="false">
             <columns>
-                <TableColumn fx:id="donatingOrganColumn" maxWidth="150" prefWidth="120" text="Organ" />
-                <TableColumn fx:id="organExpiryColumn" maxWidth="180" prefWidth="151.0" text="Expiry Progress" />
-                <TableColumn fx:id="expiryReasonColumn" maxWidth="180" prefWidth="180" text="Expiry Reason" />
-                <TableColumn fx:id="manualExpiryTimeColumn" maxWidth="180" prefWidth="180" text="Time Expired" />
-                <TableColumn fx:id="expiryStaffIdColumn" maxWidth="180" prefWidth="180" text="Staff ID" />
+                <TableColumn fx:id="donatingOrganColumn" maxWidth="150" prefWidth="120" text="Organ"/>
+                <TableColumn fx:id="organExpiryColumn" maxWidth="180" prefWidth="151.0" text="Expiry Progress"/>
+                <TableColumn fx:id="expiryReasonColumn" maxWidth="180" prefWidth="180" text="Expiry Reason"/>
+                <TableColumn fx:id="manualExpiryTimeColumn" maxWidth="180" prefWidth="180" text="Time Expired"/>
+                <TableColumn fx:id="expiryStaffIdColumn" maxWidth="180" prefWidth="180" text="Staff ID"/>
             </columns>
             <columnResizePolicy>
-                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
             </columnResizePolicy>
         </TableView>
         <Label layoutX="108.0" layoutY="66.0" styleClass="label-title" text="Donatable" />

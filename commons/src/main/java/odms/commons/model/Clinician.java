@@ -67,11 +67,11 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     /**
      * Constructor for Clinician
      *
-     * @param staffId     clinician staff id
-     * @param password    clinician password
-     * @param firstName   clinician first name
-     * @param middleName  clinician middle name
-     * @param lastName    clinician last name
+     * @param staffId    clinician staff id
+     * @param password   clinician password
+     * @param firstName  clinician first name
+     * @param middleName clinician middle name
+     * @param lastName   clinician last name
      */
     public Clinician(String staffId, String password, String firstName, String middleName, String lastName) {
         this.staffId = staffId;
@@ -113,9 +113,9 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     /**
      * Constructor for Clinician
      *
-     * @param name        clinician name
-     * @param staffId     clinician staff id
-     * @param password    clinician password
+     * @param name     clinician name
+     * @param staffId  clinician staff id
+     * @param password clinician password
      */
     public Clinician(String name, String staffId, String password) {
         this.staffId = staffId;
@@ -129,6 +129,29 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         changes = new ArrayList<>();
         this.pcs = new PropertyChangeSupport(this);
         profilePhotoFilePath = "";
+    }
+
+    public static Clinician clone(Clinician clinician) {
+        Clinician newClinician = new Clinician();
+        newClinician.staffId = clinician.staffId;
+        newClinician.password = clinician.password;
+        newClinician.salt = clinician.salt;
+        newClinician.firstName = clinician.firstName;
+        newClinician.middleName = clinician.middleName;
+        newClinician.lastName = clinician.lastName;
+
+        Address workAddress = new Address(clinician.getStreetNumber(), clinician.getStreetName(),
+                clinician.getNeighborhood(), clinician.getCity(), clinician.getRegion(), clinician.getZipCode(), clinician.getCountry());
+        newClinician.workContactDetails = new ContactDetails("", "", workAddress, "");
+
+        newClinician.dateCreated = clinician.dateCreated;
+        newClinician.dateLastModified = clinician.dateLastModified;
+        newClinician.changes = new ArrayList<>(clinician.changes);
+        newClinician.pcs = new PropertyChangeSupport(clinician.pcs);
+
+        newClinician.profilePhotoFilePath = clinician.profilePhotoFilePath;
+
+        return newClinician;
     }
 
     public LocalDateTime getDateCreated() {
@@ -335,7 +358,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
      * updates the password by hashing it and storing the new salt
      *
      * @param password hashed password to be stored
-     * @param salt salt to be stored
+     * @param salt     salt to be stored
      */
     public void setPassword(String password, String salt) {
         this.salt = salt;
@@ -426,29 +449,6 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         Memento<Clinician> memento = getRedoStack().pop();
         this.changeInto(memento.getState());
         addChange(new Change("redo"));
-    }
-
-    public static Clinician clone(Clinician clinician) {
-        Clinician newClinician = new Clinician();
-        newClinician.staffId = clinician.staffId;
-        newClinician.password = clinician.password;
-        newClinician.salt = clinician.salt;
-        newClinician.firstName = clinician.firstName;
-        newClinician.middleName = clinician.middleName;
-        newClinician.lastName = clinician.lastName;
-
-        Address workAddress = new Address(clinician.getStreetNumber(), clinician.getStreetName(),
-                clinician.getNeighborhood(), clinician.getCity(), clinician.getRegion(), clinician.getZipCode(), clinician.getCountry());
-        newClinician.workContactDetails = new ContactDetails("", "", workAddress, "");
-
-        newClinician.dateCreated = clinician.dateCreated;
-        newClinician.dateLastModified = clinician.dateLastModified;
-        newClinician.changes = new ArrayList<>(clinician.changes);
-        newClinician.pcs = new PropertyChangeSupport(clinician.pcs);
-
-        newClinician.profilePhotoFilePath = clinician.profilePhotoFilePath;
-
-        return newClinician;
     }
 
     /**

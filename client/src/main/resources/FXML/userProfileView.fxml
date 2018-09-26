@@ -14,26 +14,28 @@
             </font>
         </Label>
         <Label layoutX="417.0" layoutY="13.0" styleClass="label-title" text="Health Details"/>
-        <Separator layoutY="28.0" prefHeight="5.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-        <ImageView fx:id="profilePicture" fitHeight="150.0" fitWidth="200.0" layoutX="15.0" layoutY="36.0" pickOnBounds="true" preserveRatio="true" />
+        <Separator layoutY="28.0" prefHeight="5.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0"
+                   AnchorPane.rightAnchor="0.0"/>
+        <ImageView fx:id="profilePicture" fitHeight="150.0" fitWidth="200.0" layoutX="15.0" layoutY="36.0"
+                   pickOnBounds="true" preserveRatio="true"/>
         <GridPane layoutX="21.0" layoutY="194.0" minWidth="270.0" prefHeight="360.0" prefWidth="310.0">
             <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="161.0" minWidth="10.0" prefWidth="161.0"/>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="190.0" minWidth="10.0" prefWidth="149.0"/>
             </columnConstraints>
             <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
             </rowConstraints>
             <children>
                 <Label styleClass="label-title" text="NHI:">
@@ -41,23 +43,23 @@
                         <Font name="System Bold" size="13.0"/>
                     </font>
                 </Label>
-                <Label fx:id="NHIValue" text="aa" GridPane.columnIndex="1" />
+                <Label fx:id="NHIValue" text="aa" GridPane.columnIndex="1"/>
                 <Label styleClass="label-title" text="First Name:" GridPane.rowIndex="1"/>
-                <Label fx:id="fNameValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <Label fx:id="fNameValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
                 <Label styleClass="label-title" text="Preferred Name:" GridPane.rowIndex="2"/>
-                <Label fx:id="pNameValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                <Label fx:id="pNameValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
                 <Label styleClass="label-title" text="Middle Name:" GridPane.rowIndex="3"/>
-                <Label fx:id="mNameValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                <Label fx:id="mNameValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
                 <Label styleClass="label-title" text="Last Name:" GridPane.rowIndex="4"/>
-                <Label fx:id="lNameValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                <Label fx:id="lNameValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
                 <Label styleClass="label-title" text="Date of Birth:" GridPane.rowIndex="5"/>
-                <Label fx:id="DOBValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                <Label fx:id="DOBValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
                 <Label prefHeight="16.0" prefWidth="36.0" styleClass="label-title" text="Age:" GridPane.rowIndex="6"/>
-                <Label fx:id="ageValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                <Label fx:id="ageValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
                 <Label styleClass="label-title" text="User Last Modified:" GridPane.rowIndex="10"/>
-                <Label fx:id="lastModifiedValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                <Label fx:id="lastModifiedValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="10"/>
                 <Label styleClass="label-title" text="User Created:" GridPane.rowIndex="11"/>
-                <Label fx:id="createdValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+                <Label fx:id="createdValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="11"/>
             </children>
         </GridPane>
         <GridPane layoutX="448.0" layoutY="36.0" minWidth="300.0" prefHeight="420.0" prefWidth="312.0">
@@ -66,51 +68,51 @@
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="167.0" minWidth="10.0" prefWidth="139.0"/>
             </columnConstraints>
             <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
             </rowConstraints>
             <children>
                 <Label styleClass="label-title" text="Birth Gender:"/>
-                <Label fx:id="birthGenderValue" text="aa" GridPane.columnIndex="1" />
+                <Label fx:id="birthGenderValue" text="aa" GridPane.columnIndex="1"/>
                 <Label styleClass="label-title" text="Gender Identity:" GridPane.rowIndex="1"/>
-                <Label fx:id="genderIdentityValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <Label fx:id="genderIdentityValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
                 <Label styleClass="label-title" text="Blood Type:" GridPane.rowIndex="2"/>
-                <Label fx:id="bloodTypeValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                <Label fx:id="bloodTypeValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
                 <Label styleClass="label-title" text="Height(m):" GridPane.rowIndex="3"/>
-                <Label fx:id="heightValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                <Label fx:id="heightValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
                 <Label styleClass="label-title" text="Weight(Kgs):" GridPane.rowIndex="4"/>
-                <Label fx:id="weightValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                <Label fx:id="weightValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
                 <Label styleClass="label-title" text="Smoker:" GridPane.rowIndex="5"/>
-                <Label fx:id="smokerValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                <Label fx:id="smokerValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
                 <Label styleClass="label-title" text="Alcohol consumption:" GridPane.rowIndex="6"/>
-                <Label fx:id="alcoholValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                <Label fx:id="alcoholValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
                 <Label styleClass="label-title" text="BMI:" GridPane.rowIndex="7"/>
-                <Label fx:id="bmiValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                <Label fx:id="bmiValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
                 <Label styleClass="label-title" text="City of Death: " GridPane.rowIndex="11"/>
                 <Label styleClass="label-title" text="Region of Death: " GridPane.rowIndex="12"/>
                 <Label styleClass="label-title" text="Country of Death:" GridPane.rowIndex="13"/>
                 <Label fx:id="dodLabel" styleClass="label-title" text="Date of Death:" GridPane.rowIndex="9"/>
                 <Label styleClass="label-title" text="Age at Death:" GridPane.rowIndex="10"/>
-                <Label fx:id="DODValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-                <Label fx:id="ageDeathValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-            <Label fx:id="cityOfDeathValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="11" />
-            <Label fx:id="regionOfDeathValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="12" />
-            <Label fx:id="countryOfDeathValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+                <Label fx:id="DODValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="9"/>
+                <Label fx:id="ageDeathValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="10"/>
+                <Label fx:id="cityOfDeathValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="11"/>
+                <Label fx:id="regionOfDeathValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="12"/>
+                <Label fx:id="countryOfDeathValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="13"/>
             </children>
         </GridPane>
-        <AnchorPane layoutX="447.0" layoutY="31.0" />
+        <AnchorPane layoutX="447.0" layoutY="31.0"/>
     </children>
 </AnchorPane>

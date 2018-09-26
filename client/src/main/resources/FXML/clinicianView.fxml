@@ -11,7 +11,8 @@
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="800.0" prefWidth="1200.0" stylesheets="@../gui.css"
             xmlns="http://javafx.com/javafx/8.0.121" fx:controller="odms.controller.gui.window.ClinicianController">
     <children>
-        <MenuBar prefHeight="37.0" prefWidth="619.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <MenuBar prefHeight="37.0" prefWidth="619.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                 AnchorPane.topAnchor="0.0">
             <menus>
                 <Menu fx:id="fileMenuClinician" mnemonicParsing="false" text="File">
                     <items>
@@ -21,13 +22,18 @@
                 </Menu>
                 <Menu fx:id="editMenuClinician" mnemonicParsing="false" text="Edit">
                     <items>
-                        <MenuItem fx:id="editDetailsClinician" mnemonicParsing="false" onAction="#edit" text="Clinician Details" />
-                        <MenuItem fx:id="deleteClinician" mnemonicParsing="false" onAction="#deleteClinician" text="Delete Profile" />
+                        <MenuItem fx:id="editDetailsClinician" mnemonicParsing="false" onAction="#edit"
+                                  text="Clinician Details"/>
+                        <MenuItem fx:id="deleteClinician" mnemonicParsing="false" onAction="#deleteClinician"
+                                  text="Delete Profile"/>
                     </items>
                 </Menu>
             </menus>
         </MenuBar>
-        <TabPane fx:id="clinicianTabPane" layoutY="37.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="371.0" prefWidth="617.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="37.0">
+        <TabPane fx:id="clinicianTabPane" layoutY="37.0" maxHeight="-Infinity" maxWidth="-Infinity"
+                 minHeight="-Infinity" minWidth="-Infinity" prefHeight="371.0" prefWidth="617.0"
+                 tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="0.0"
+                 AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="37.0">
             <tabs>
                 <Tab fx:id="detailsTab" text="Details">
                     <content>
@@ -200,48 +206,77 @@
                 </Tab>
                 <Tab fx:id="searchTab" text="Search">
                     <content>
-                        <SplitPane dividerPositions="50.0" minHeight="-Infinity" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
+                        <SplitPane dividerPositions="50.0" minHeight="-Infinity" orientation="VERTICAL"
+                                   prefHeight="200.0" prefWidth="160.0">
                             <items>
-                                <AnchorPane fx:id="filterAnchorPane" maxHeight="45.0" minHeight="45" prefHeight="-Infinity" prefWidth="756.0">
+                                <AnchorPane fx:id="filterAnchorPane" maxHeight="45.0" minHeight="45"
+                                            prefHeight="-Infinity" prefWidth="756.0">
                                     <children>
-                                        <TextField fx:id="searchTextField" layoutX="115.0" layoutY="10.0" prefHeight="25.0" prefWidth="200.0" AnchorPane.leftAnchor="115.0" AnchorPane.rightAnchor="329.0" AnchorPane.topAnchor="10.0" />
-                                        <Button fx:id="expandButton" layoutX="576.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#expandFilter" text="▼" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="10.0" />
-                                        <Label layoutX="14.0" layoutY="18.0" text="Name:" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0" />
-                                        <Label layoutX="14.0" layoutY="50.0" text="Birth Gender: " AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="49.5" />
-                                        <Label layoutX="14.0" layoutY="85.0" text="Region:" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="85.0" />
-                                        <Label layoutX="14.0" layoutY="118.0" text="Donor status: " AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="120.5" />
-                                        <ComboBox fx:id="genderComboBox" layoutX="115.0" layoutY="46.0" prefWidth="150.0" AnchorPane.leftAnchor="115.0" AnchorPane.topAnchor="46.0">
+                                        <TextField fx:id="searchTextField" layoutX="115.0" layoutY="10.0"
+                                                   prefHeight="25.0" prefWidth="200.0" AnchorPane.leftAnchor="115.0"
+                                                   AnchorPane.rightAnchor="329.0" AnchorPane.topAnchor="10.0"/>
+                                        <Button fx:id="expandButton" layoutX="576.0" layoutY="14.0"
+                                                mnemonicParsing="false" onMouseClicked="#expandFilter" text="▼"
+                                                AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="10.0"/>
+                                        <Label layoutX="14.0" layoutY="18.0" text="Name:" AnchorPane.leftAnchor="14.0"
+                                               AnchorPane.topAnchor="14.0"/>
+                                        <Label layoutX="14.0" layoutY="50.0" text="Birth Gender: "
+                                               AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="49.5"/>
+                                        <Label layoutX="14.0" layoutY="85.0" text="Region:" AnchorPane.leftAnchor="14.0"
+                                               AnchorPane.topAnchor="85.0"/>
+                                        <Label layoutX="14.0" layoutY="118.0" text="Donor status: "
+                                               AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="120.5"/>
+                                        <ComboBox fx:id="genderComboBox" layoutX="115.0" layoutY="46.0"
+                                                  prefWidth="150.0" AnchorPane.leftAnchor="115.0"
+                                                  AnchorPane.topAnchor="46.0">
                                             <items>
                                                 <FXCollections fx:factory="observableArrayList">
-                                                    <String fx:value="Male" />
-                                                    <String fx:value="Female" />
-                                                    <String fx:value="All" />
+                                                    <String fx:value="Male"/>
+                                                    <String fx:value="Female"/>
+                                                    <String fx:value="All"/>
                                                 </FXCollections>
                                             </items>
                                             <value>
-                                                <String fx:value="All" />
+                                                <String fx:value="All"/>
                                             </value>
                                         </ComboBox>
-                                        <TextField fx:id="regionSearchTextField" layoutX="59.0" layoutY="81.0" prefHeight="25.0" prefWidth="200.0" AnchorPane.leftAnchor="115.0" AnchorPane.rightAnchor="329.0" AnchorPane.topAnchor="81.0" />
-                                        <CheckBox fx:id="donorFilterCheckBox" layoutX="115.0" layoutY="121.0" mnemonicParsing="false" text="Donor" AnchorPane.leftAnchor="115.0" AnchorPane.topAnchor="121.0" />
-                                        <CheckBox fx:id="receiverFilterCheckBox" layoutX="199.0" layoutY="121.0" mnemonicParsing="false" text="Receiver" AnchorPane.leftAnchor="199.0" AnchorPane.topAnchor="121.0" />
-                                        <CheckBox fx:id="allCheckBox" layoutX="290.0" layoutY="121.0" mnemonicParsing="false" text="All" AnchorPane.leftAnchor="290.0" AnchorPane.topAnchor="121.0" />
-                                        <Button fx:id="recentlyDeletedButton" layoutX="393.0" layoutY="118.0" mnemonicParsing="false" onAction="#loadRecentlyDeleted" text="Show Recently Deleted Users" visible="false" />
+                                        <TextField fx:id="regionSearchTextField" layoutX="59.0" layoutY="81.0"
+                                                   prefHeight="25.0" prefWidth="200.0" AnchorPane.leftAnchor="115.0"
+                                                   AnchorPane.rightAnchor="329.0" AnchorPane.topAnchor="81.0"/>
+                                        <CheckBox fx:id="donorFilterCheckBox" layoutX="115.0" layoutY="121.0"
+                                                  mnemonicParsing="false" text="Donor" AnchorPane.leftAnchor="115.0"
+                                                  AnchorPane.topAnchor="121.0"/>
+                                        <CheckBox fx:id="receiverFilterCheckBox" layoutX="199.0" layoutY="121.0"
+                                                  mnemonicParsing="false" text="Receiver" AnchorPane.leftAnchor="199.0"
+                                                  AnchorPane.topAnchor="121.0"/>
+                                        <CheckBox fx:id="allCheckBox" layoutX="290.0" layoutY="121.0"
+                                                  mnemonicParsing="false" text="All" AnchorPane.leftAnchor="290.0"
+                                                  AnchorPane.topAnchor="121.0"/>
+                                        <Button fx:id="recentlyDeletedButton" layoutX="393.0" layoutY="118.0"
+                                                mnemonicParsing="false" onAction="#loadRecentlyDeleted"
+                                                text="Show Recently Deleted Users" visible="false"/>
                                     </children>
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="617.0">
                                     <children>
-                                        <LoadingTableView fx:id="searchTableView" prefHeight="331.0" prefWidth="600.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="2.0">
+                                        <LoadingTableView fx:id="searchTableView" prefHeight="331.0" prefWidth="600.0"
+                                                          AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0"
+                                                          AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="2.0">
                                             <columns>
-                                                <TableColumn prefWidth="75.0" text="C1" />
-                                                <TableColumn prefWidth="75.0" text="C2" />
+                                                <TableColumn prefWidth="75.0" text="C1"/>
+                                                <TableColumn prefWidth="75.0" text="C2"/>
                                             </columns>
                                         </LoadingTableView>
-                                        <Label fx:id="searchCountLabel" layoutX="14.0" layoutY="336.0" text="" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" />
-                                        <HBox alignment="CENTER" layoutX="269.0" layoutY="244.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                        <Label fx:id="searchCountLabel" layoutX="14.0" layoutY="336.0" text=""
+                                               AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0"/>
+                                        <HBox alignment="CENTER" layoutX="269.0" layoutY="244.0"
+                                              AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="0.0"
+                                              AnchorPane.rightAnchor="0.0">
                                             <children>
-                                                <Button layoutX="269.0" layoutY="244.0" mnemonicParsing="false" onAction="#clinicianSearchPrevPage" text="&lt;&lt;" />
-                                                <Button mnemonicParsing="false" onAction="#clinicianSearchNextPage" text="&gt;&gt;" />
+                                                <Button layoutX="269.0" layoutY="244.0" mnemonicParsing="false"
+                                                        onAction="#clinicianSearchPrevPage" text="&lt;&lt;"/>
+                                                <Button mnemonicParsing="false" onAction="#clinicianSearchNextPage"
+                                                        text="&gt;&gt;"/>
                                             </children>
                                         </HBox>
                                     </children>
@@ -252,12 +287,12 @@
                 </Tab>
                 <Tab fx:id="transplantWaitListTab" text="Transplant Wait List">
                     <content>
-                        <fx:include fx:id="transplantWaitListTabPage" source="transplantWaitListView.fxml" />
+                        <fx:include fx:id="transplantWaitListTabPage" source="transplantWaitListView.fxml"/>
                     </content>
                 </Tab>
                 <Tab text="Available Organs">
                     <content>
-                        <fx:include fx:id="availableOrgansView" source="availableOrgansPanel.fxml" />
+                        <fx:include fx:id="availableOrgansView" source="availableOrgansPanel.fxml"/>
                     </content>
                 </Tab>
                 <Tab fx:id="appointmentsTab" text="Appointments">
@@ -269,7 +304,7 @@
         </TabPane>
         <AnchorPane fx:id="StatusBar" AnchorPane.bottomAnchor="0.0">
             <children>
-                <fx:include fx:id="statusBarPage" source="statusBar.fxml" />
+                <fx:include fx:id="statusBarPage" source="statusBar.fxml"/>
             </children>
         </AnchorPane>
       <Label layoutX="262.0" layoutY="6.0" text="Clinician" AnchorPane.leftAnchor="262.0" AnchorPane.rightAnchor="272.0">

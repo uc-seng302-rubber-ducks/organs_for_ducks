@@ -99,7 +99,7 @@ public class IoHelper {
         return sb.toString();
     }
 
-    public static void display(String toShow){
+    public static void display(String toShow) {
         System.out.println(toShow); //NOSONAR
         //This writes the strings to the GUI CLI
     }

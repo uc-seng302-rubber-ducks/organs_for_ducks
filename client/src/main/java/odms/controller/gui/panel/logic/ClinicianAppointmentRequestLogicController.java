@@ -43,7 +43,7 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
     private ObservableList<LocalTime> availableTimes;
     private ObservableSet<LocalDateTime> bookedDateTimes;
     private ObservableSet<LocalTime> bookedTimes;
-    private Set<LocalTime> TIMES = new HashSet<>(Arrays.asList(LocalTime.of(8,0),LocalTime.of(9,0),LocalTime.of(10,0),LocalTime.of(11,0),LocalTime.of(12,0),LocalTime.of(13,0),LocalTime.of(14,0),LocalTime.of(15,0),LocalTime.of(16,0),LocalTime.of(17,0)));
+    private Set<LocalTime> times = new HashSet<>(Arrays.asList(LocalTime.of(8, 0), LocalTime.of(9, 0), LocalTime.of(10, 0), LocalTime.of(11, 0), LocalTime.of(12, 0), LocalTime.of(13, 0), LocalTime.of(14, 0), LocalTime.of(15, 0), LocalTime.of(16, 0), LocalTime.of(17, 0)));
     private LoadingWidget loadingWidget;
 
 
@@ -68,6 +68,7 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
 
     /**
      * Calls the server to get updated appointment entries
+     *
      * @param startIndex index to display entries from (eg. 60 will display entries 60 to 60+ROWS_PER_PAGE)
      */
     public void updateTable(int startIndex) {
@@ -176,9 +177,9 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
     /**
      * takes the list of local date times converts them to local times and adds them to the bookedTimes
      */
-    private void refreshBookedTime(){
+    private void refreshBookedTime() {
         bookedTimes.clear();
-        for(LocalDateTime dateTime: bookedDateTimes){
+        for (LocalDateTime dateTime : bookedDateTimes) {
             bookedTimes.add(dateTime.toLocalTime());
         }
     }
@@ -186,6 +187,7 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
 
     /**
      * gets all the times the clinician is booked for the given date and add
+     *
      * @param wantedDate the date for the appointment
      */
     public void refreshClinicianAvailableTimes(LocalDate wantedDate, Appointment appointment) {
@@ -193,12 +195,12 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
         bookedDateTimes.addListener((SetChangeListener<LocalDateTime>) c -> {
             availableTimes.clear();
             refreshBookedTime();
-            availableTimes.addAll(TIMES);
+            availableTimes.addAll(times);
             availableTimes.removeAll(bookedTimes);
             availableTimes.add(appointment.getRequestedDate().toLocalTime());
             Collections.sort(availableTimes);
         });
-        appointmentsbridge.getClinicianAppointmentsTimes(clinician.getStaffId(), wantedDate.atStartOfDay().toString(),wantedDate.atStartOfDay().plusHours(24).toString(), appController.getToken(), bookedDateTimes);
+        appointmentsbridge.getClinicianAppointmentsTimes(clinician.getStaffId(), wantedDate.atStartOfDay().toString(), wantedDate.atStartOfDay().plusHours(24).toString(), appController.getToken(), bookedDateTimes);
     }
 
     /**
@@ -212,7 +214,7 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
 
         if (pending) {
             appointment.setAppointmentStatus(AppointmentStatus.ACCEPTED);
-        } else if(appointment.getAppointmentStatus() != AppointmentStatus.ACCEPTED) {
+        } else if (appointment.getAppointmentStatus() != AppointmentStatus.ACCEPTED) {
             appointment.setAppointmentStatus(AppointmentStatus.UPDATED);
         }
 

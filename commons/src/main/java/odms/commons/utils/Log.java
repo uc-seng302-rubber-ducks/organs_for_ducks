@@ -131,6 +131,7 @@ public class Log {
     /**
      * Creates a log entry at the FINE level. this uses the debug logger, not the production logger.
      * This will also append to the debugLogs
+     *
      * @param message String message to be logged
      */
     public static void debug(String message) {
@@ -139,6 +140,7 @@ public class Log {
 
     /**
      * simple getter for debug/test logs
+     *
      * @return list of strings containing log messages
      */
     public static List<String> getDebugLogs() {

@@ -41,33 +41,34 @@ public class TransplantListControllerTest {
         when(manager.getDriver()).thenReturn(driver);
         controller = new TransplantListController(manager);
     }
+
     @Test
-    public void shouldReturnResultsIfAvailable() throws SQLException{
+    public void shouldReturnResultsIfAvailable() throws SQLException {
         List<TransplantDetails> expected = new ArrayList<>();
         expected.add(new TransplantDetails("ABC1234", "Geoff", Organs.HEART, LocalDate.now(), "over there", 0, "A+"));
         when(handler.getTransplantDetails(any(Connection.class), anyInt(), anyInt(), anyString(), anyString(), any(String[].class)))
                 .thenReturn(expected);
 
-        List<TransplantDetails> actual = controller.getWaitingFor(0, 0, "", "", new String[] {});
+        List<TransplantDetails> actual = controller.getWaitingFor(0, 0, "", "", new String[]{});
 
         Assert.assertEquals(expected, actual);
     }
 
     @Test
-    public void shouldReturnEmptyListIfNoResults() throws SQLException{
+    public void shouldReturnEmptyListIfNoResults() throws SQLException {
         when(handler.getTransplantDetails(any(Connection.class), anyInt(), anyInt(), anyString(), anyString(), any(String[].class)))
                 .thenReturn(null);
         final List<TransplantDetails> expected = new ArrayList<>();
 
-        List<TransplantDetails> actual = controller.getWaitingFor(0, 0, "", "", new String[] {});
+        List<TransplantDetails> actual = controller.getWaitingFor(0, 0, "", "", new String[]{});
         Assert.assertEquals(expected, actual);
     }
 
     @Test(expected = ServerDBException.class)
-    public void shouldThrowExceptionWhenConnectionError() throws SQLException{
+    public void shouldThrowExceptionWhenConnectionError() throws SQLException {
         when(driver.getConnection()).thenThrow(SQLException.class);
 
-        controller.getWaitingFor(0, 0, "", "", new String[] {});
+        controller.getWaitingFor(0, 0, "", "", new String[]{});
 
     }
 

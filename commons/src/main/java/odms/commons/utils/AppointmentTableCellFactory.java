@@ -13,8 +13,8 @@ public class AppointmentTableCellFactory {
     /**
      * Colours the appointment status text within the appointment tables according to their status type
      *
-     * @param <T>   The generic type of the TableView
-     * @return      The table cell with coloured text
+     * @param <T> The generic type of the TableView
+     * @return The table cell with coloured text
      */
     public static <T> TableCell<T, AppointmentStatus> generateAppointmentTableCell() {
         return new TableCell<T, AppointmentStatus>() {

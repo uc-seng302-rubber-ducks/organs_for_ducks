@@ -26,7 +26,7 @@ public class OrganSorterTest {
     }
 
     @Test
-    public void testSecondEntryIsReturnedFirst(){
+    public void testSecondEntryIsReturnedFirst() {
 
         TransplantDetails transplant1 = new TransplantDetails("abc1222", "", Organs.LIVER,
                 LocalDate.of(2018, 7, 7), "Otago", 30, "A+");
@@ -41,7 +41,7 @@ public class OrganSorterTest {
     }
 
     @Test
-    public void testSecondEntryIsReturnedFirstWhenDatesSameAndBetterDistanceSecond(){
+    public void testSecondEntryIsReturnedFirstWhenDatesSameAndBetterDistanceSecond() {
 
         TransplantDetails transplant1 = new TransplantDetails("abc1222", "", Organs.LIVER,
                 LocalDate.of(2018, 7, 7), "Canterbury", 30, "A+");
@@ -57,7 +57,7 @@ public class OrganSorterTest {
 
 
     @Test
-    public void testFirstEntryIsReturnedFirst(){
+    public void testFirstEntryIsReturnedFirst() {
 
         TransplantDetails transplant1 = new TransplantDetails("abc1222", "", Organs.LIVER,
                 LocalDate.of(2018, 7, 6), "Otago", 30, "A+");
@@ -73,7 +73,7 @@ public class OrganSorterTest {
 
 
     @Test
-    public void testFirstEntryIsReturnedFirstAndSecondSecondWhenEqual(){
+    public void testFirstEntryIsReturnedFirstAndSecondSecondWhenEqual() {
 
         TransplantDetails transplant1 = new TransplantDetails("abc1222", "", Organs.LIVER,
                 LocalDate.of(2018, 7, 7), "Otago", 30, "A+");
@@ -90,7 +90,7 @@ public class OrganSorterTest {
 
 
     @Test
-    public void testThreeEntriesAreInCorrectOrder(){
+    public void testThreeEntriesAreInCorrectOrder() {
 
         TransplantDetails transplant1 = new TransplantDetails("abc1222", "", Organs.LIVER,
                 LocalDate.of(2018, 7, 7), "Otago", 30, "A+");

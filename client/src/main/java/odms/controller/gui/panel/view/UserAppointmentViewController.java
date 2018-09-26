@@ -26,44 +26,31 @@ import java.util.Comparator;
 
 public class UserAppointmentViewController {
 
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm");
     private ObservableList<Appointment> appointments = FXCollections.observableList(new ArrayList<>());
     private UserAppointmentLogicController logicController;
-
     @FXML
     private TableView<Appointment> userAppointmentsTableView;
-
     @FXML
     private TableColumn<Appointment, String> userAppointmentDateColumn;
-
     @FXML
     private TableColumn<Appointment, String> userAppointmentClinicianIdColumn;
-
     @FXML
     private TableColumn<Appointment, AppointmentCategory> userAppointmentCategoryColumn;
-
     @FXML
     private TableColumn<Appointment, AppointmentStatus> userAppointmentStatusColumn;
-
     @FXML
     private Label userAppointmentDescriptionLabel;
-
     @FXML
     private Label userAppointmentStatusLabel;
-
     @FXML
     private Label userAppointmentDateLabel;
-
     @FXML
     private Label userAppointmentTimeLabel;
-
     @FXML
     private Label userAppointmentClinicianIdLabel;
-
     @FXML
     private Label userAppointmentCategoryLabel;
-
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm");
-
     /**
      * Compares the appointment status value so that when applied to the table view, pending appointments will be
      * displayed at the top of the table

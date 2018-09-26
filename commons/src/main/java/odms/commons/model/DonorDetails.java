@@ -30,11 +30,6 @@ public class DonorDetails {
         this.disqualifiedOrgans = new ArrayList<>();
     }
 
-    public void setOrgans(Map<Organs, ExpiryReason> organs) {
-        attachedUser.updateLastModified();
-        this.organs = organs;
-    }
-
     public Map<Organs, ExpiryReason> getOrganMap() {
         return organs;
     }
@@ -73,12 +68,17 @@ public class DonorDetails {
         }
     }
 
+    public void setOrgans(Map<Organs, ExpiryReason> organs) {
+        attachedUser.updateLastModified();
+        this.organs = organs;
+    }
+
     /**
      * Adds an organ to donate and an ExpiryReason to the user profile.
      * The ExpiryReason will only be given if the donor is dead and the organ has been manually expired,
      * otherwise it is null
      *
-     * @param organ the Organ enum to be added
+     * @param organ  the Organ enum to be added
      * @param reason the ExpiryReason object for manually expiring the given organ
      */
     public void addOrgan(Organs organ, ExpiryReason reason) { //The previous logic on this seemed like it had had an initial goal but had
@@ -135,6 +135,10 @@ public class DonorDetails {
         return organs == null || organs.isEmpty();
     }
 
+    public User getAttachedUser() {
+        return attachedUser;
+    }
+
     /**
      * USE SPARINGLY. this can easily create consistency issues. Only sensible use case is
      * user.getDonorDetails().setAttachedUser(user)
@@ -145,16 +149,12 @@ public class DonorDetails {
         this.attachedUser = attachedUser;
     }
 
-    public User getAttachedUser() {
-        return attachedUser;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Organs to donate:\n");
         Set<Organs> organSet = organs.keySet();
-        for (Organs o : organSet){
+        for (Organs o : organSet) {
             sb.append(o).append("\n");
         }
         return sb.toString();

@@ -71,7 +71,8 @@ public class ProcedureTabController {
         previousProcedures = FXCollections.observableArrayList();
         pendingProcedures = FXCollections.observableArrayList();
         pendingProcedureTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        previousProcedureTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);;
+        previousProcedureTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        ;
         constructTables();
         removeProcedureButton.setDisable(true);
         if (!fromClinician) {
@@ -105,22 +106,22 @@ public class ProcedureTabController {
         });
 
         pendingProcedureTableView.setOnMouseClicked(event -> {
-            if(event.getClickCount() ==2 && !pendingProcedureTableView.getSelectionModel().getSelectedCells().isEmpty()) {
+            if (event.getClickCount() == 2 && !pendingProcedureTableView.getSelectionModel().getSelectedCells().isEmpty()) {
                 openProceduresPopUp(pendingProcedureTableView.getSelectionModel().getSelectedItem());
             }
         });
-        previousProcedureTableView.getSelectionModel().selectedItemProperty().addListener(a ->{
+        previousProcedureTableView.getSelectionModel().selectedItemProperty().addListener(a -> {
             pendingProcedureTableView.getSelectionModel().select(-1);
             removeProcedureButton.setDisable(false);
-            if(previousProcedureTableView.getSelectionModel().getSelectedCells().isEmpty()){
+            if (previousProcedureTableView.getSelectionModel().getSelectedCells().isEmpty()) {
                 removeProcedureButton.setDisable(true);
             }
         });
 
-        pendingProcedureTableView.getSelectionModel().selectedItemProperty().addListener(a ->{
+        pendingProcedureTableView.getSelectionModel().selectedItemProperty().addListener(a -> {
             previousProcedureTableView.getSelectionModel().select(-1);
             removeProcedureButton.setDisable(false);
-            if(pendingProcedureTableView.getSelectionModel().getSelectedCells().isEmpty()){
+            if (pendingProcedureTableView.getSelectionModel().getSelectedCells().isEmpty()) {
                 removeProcedureButton.setDisable(true);
             }
         });
@@ -214,7 +215,7 @@ public class ProcedureTabController {
         parent.updateUndoRedoButtons();
     }
 
-    private void openProceduresPopUp(MedicalProcedure procedure){
+    private void openProceduresPopUp(MedicalProcedure procedure) {
         FXMLLoader procedureModificationLoader = new FXMLLoader(
                 getClass().getResource("/FXML/proceduresPopUp.fxml"));
         Parent root;

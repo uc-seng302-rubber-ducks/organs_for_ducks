@@ -10,14 +10,10 @@ import odms.commons.model.Administrator;
 import odms.commons.model.Change;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
-import odms.commons.model._enum.Directory;
 import odms.commons.model._enum.Regions;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.model.dto.UserOverview;
-import odms.commons.utils.DataHandler;
-import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
-import odms.controller.gui.StatusBarController;
 import odms.controller.gui.window.AdministratorViewController;
 import odms.controller.gui.window.ClinicianController;
 import odms.controller.gui.window.UserController;
@@ -38,10 +34,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
  */
 public class AppController {
 
-
-    private static final String USERS_FILE = Directory.JSON.directory() + "/users.json";
-    private static final String CLINICIAN_FILE = Directory.JSON.directory() + "/clinicians.json";
-    private static final String ADMIN_FILE = Directory.JSON.directory() + "/administrators.json";
     private static AppController controller;
     private Collection<Administrator> admins = new ArrayList<>();
     private List<User> users = new ArrayList<>();
@@ -53,7 +45,6 @@ public class AppController {
     private List<String> allowedCountries; //store the countries chosen by admin
     private List<String> allNZRegion;
     private int historyPointer = 0;
-    private DataHandler dataHandler = new JsonHandler();
     private OkHttpClient client = new OkHttpClient();
     private UserBridge userBridge;
     private ClinicianBridge clinicianBridge;
@@ -65,7 +56,6 @@ public class AppController {
     private ClinicianController clinicianController = null;
     private CountriesBridge countriesBridge;
     private AdministratorViewController administratorViewController = null;
-    private StatusBarController statusBarController = new StatusBarController();
     private String token;
     private SQLBridge sqlBridge = new SQLBridge(client);
     private AppointmentsBridge appointmentsBridge;
@@ -73,6 +63,7 @@ public class AppController {
     private OdmsSocketHandler socketHandler = new OdmsSocketHandler(client, ServerEventNotifier.getInstance());
     private String username = "";
     private String name = "";
+
     /**
      * Creates new instance of AppController
      */
@@ -121,12 +112,17 @@ public class AppController {
         return transplantBridge;
     }
 
+    public void setTransplantBridge(TransplantBridge transplantBridge) {
+        this.transplantBridge = transplantBridge;
+    }
+
     /**
      * If New Zealand is selected at the country combo box, the region combo box will appear.
      * If country other than New Zealand is selected at the country combo box, the region combo box will
      * be replaced with a text field.
      * region text field is cleared by default when it appears.
      * region combo box selects the first item by default when it appears.
+     *
      * @param countrySelector Combo Box
      * @param regionSelector Combo Box
      * @param regionInput Text Field
@@ -134,7 +130,7 @@ public class AppController {
      * @param clinician clinician to attach this too, null if not applicable
      */
     public void countrySelectorEventHandler(ComboBox countrySelector, ComboBox regionSelector, TextField regionInput, User user, Clinician clinician) {
-        if(! countrySelector.getSelectionModel().getSelectedItem().equals("New Zealand")) {
+        if (!countrySelector.getSelectionModel().getSelectedItem().equals("New Zealand")) {
             regionSelector.setVisible(false);
             regionInput.setVisible(true);
 
@@ -193,7 +189,6 @@ public class AppController {
     }
 
     /**
-     *
      * @return unmodifiable collection of all country names
      */
     public List<String> getAllCountries() {
@@ -226,20 +221,18 @@ public class AppController {
     /**
      * create a list of all New Zealand Region names.
      */
-    private void generateAllNZRegion(){
+    private void generateAllNZRegion() {
         allNZRegion = new ArrayList<>();
         Arrays.asList(Regions.values()).forEach(region -> allNZRegion.add(region.toString()));
         allNZRegion.sort(String.CASE_INSENSITIVE_ORDER);
     }
 
     /**
-     *
      * @return unmodifiable collection of all New Zealand region names
      */
     public List<String> getAllNZRegion() {
         return Collections.unmodifiableList(allNZRegion);
     }
-
 
     /**
      * Sets the point in history
@@ -346,6 +339,13 @@ public class AppController {
         return users;
     }
 
+    /**
+     * @param users An array list of users.
+     */
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
     public void addUserOverview(UserOverview overview) {
         this.overviews.add(overview);
         if (clinicianController != null) {
@@ -364,13 +364,6 @@ public class AppController {
         if (administratorViewController != null) {
             administratorViewController.refreshTables();
         }
-    }
-
-    /**
-     * @param users An array list of users.
-     */
-    public void setUsers(List<User> users) {
-        this.users = users;
     }
 
     /**
@@ -418,6 +411,7 @@ public class AppController {
             Log.warning("Could not save user " + user.getNhi(), e);
         } catch (InterruptedException e) {
             Log.warning("Thread sleep time was interrupted", e);
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -477,7 +471,7 @@ public class AppController {
         try {
             return getClinicianBridge().getClinician(id, getToken());
         } catch (ApiException ex) {
-            Log.warning("Error while trying to retrieve clinician " + id + " status "+ex.getResponseCode(), ex);
+            Log.warning("Error while trying to retrieve clinician " + id + " status " + ex.getResponseCode(), ex);
         }
         return null;
     }
@@ -521,6 +515,7 @@ public class AppController {
             }
         } catch (InterruptedException e) {
             Log.warning("Thread sleep time was interrupted", e);
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -614,7 +609,6 @@ public class AppController {
         }
     }
 
-
     /**
      * Method to remove the specified user object from the deleted user set and add it into the pool
      * of users
@@ -695,16 +689,32 @@ public class AppController {
         return administratorBridge;
     }
 
+    public void setAdministratorBridge(AdministratorBridge adminBridge) {
+        administratorBridge = adminBridge;
+    }
+
     public UserBridge getUserBridge() {
         return userBridge;
+    }
+
+    public void setUserBridge(UserBridge userBridge) {
+        this.userBridge = userBridge;
     }
 
     public ClinicianBridge getClinicianBridge() {
         return clinicianBridge;
     }
 
+    public void setClinicianBridge(ClinicianBridge cliBridge) {
+        clinicianBridge = cliBridge;
+    }
+
     public LoginBridge getLoginBridge() {
         return loginBridge;
+    }
+
+    public void setLoginBridge(LoginBridge loginBridge) {
+        this.loginBridge = loginBridge;
     }
 
     public String getToken() {
@@ -715,32 +725,12 @@ public class AppController {
         this.token = token;
     }
 
-    public void setAdministratorBridge(AdministratorBridge adminBridge) {
-        administratorBridge = adminBridge;
-    }
-
-    public void setClinicianBridge(ClinicianBridge cliBridge) {
-        clinicianBridge = cliBridge;
-    }
-
-    public void setLoginBridge(LoginBridge loginBridge) {
-        this.loginBridge = loginBridge;
-    }
-
-    public void setUserBridge(UserBridge userBridge) {
-        this.userBridge = userBridge;
-    }
-
-    public void setTransplantBridge(TransplantBridge transplantBridge) {
-        this.transplantBridge = transplantBridge;
+    public CountriesBridge getCountriesBridge() {
+        return countriesBridge;
     }
 
     public void setCountriesBridge(CountriesBridge countriesBridge) {
         this.countriesBridge = countriesBridge;
-    }
-
-    public CountriesBridge getCountriesBridge() {
-        return countriesBridge;
     }
 
     public SQLBridge getSqlBridge() {

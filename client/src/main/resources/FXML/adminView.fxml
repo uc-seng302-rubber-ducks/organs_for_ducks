@@ -10,7 +10,8 @@
             minWidth="800.0" prefHeight="1200.0" prefWidth="800.0" stylesheets="@../gui.css"
             xmlns="http://javafx.com/javafx/8" fx:controller="odms.controller.gui.window.AdministratorViewController">
     <children>
-        <MenuBar prefHeight="50.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <MenuBar prefHeight="50.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                 AnchorPane.topAnchor="0.0">
             <menus>
                 <Menu fx:id="AdminFileMenu" mnemonicParsing="false" text="File">
                     <items>
@@ -18,75 +19,119 @@
                         <MenuItem fx:id="AdminLogout" mnemonicParsing="false" onAction="#logout" text="Log Out" />
                         <Menu mnemonicParsing="false" text="Import">
                             <items>
-                                <MenuItem fx:id="importAdminsMenuItem" mnemonicParsing="false" onAction="#importAdmins" text="Import Admins" />
-                                <MenuItem fx:id="importCliniciansMenuItem" mnemonicParsing="false" onAction="#importClinicians" text="Import Clinicians" />
-                                <MenuItem fx:id="importUsersMenuItem" mnemonicParsing="false" onAction="#importUsers" text="Import Users" />
+                                <MenuItem fx:id="importAdminsMenuItem" mnemonicParsing="false" onAction="#importAdmins"
+                                          text="Import Admins"/>
+                                <MenuItem fx:id="importCliniciansMenuItem" mnemonicParsing="false"
+                                          onAction="#importClinicians" text="Import Clinicians"/>
+                                <MenuItem fx:id="importUsersMenuItem" mnemonicParsing="false" onAction="#importUsers"
+                                          text="Import Users"/>
                             </items>
                         </Menu>
-                  <MenuItem fx:id="configMenuItem" mnemonicParsing="false" onAction="#selectCountries" text="Configuration" />
+                        <MenuItem fx:id="configMenuItem" mnemonicParsing="false" onAction="#selectCountries"
+                                  text="Configuration"/>
                     </items>
                 </Menu>
                 <Menu fx:id="editAdminMenu" mnemonicParsing="false" text="Edit">
                     <items>
-                        <MenuItem fx:id="updateAdminDetails" mnemonicParsing="false" onAction="#updateAdmin" text="Admin Details" />
-                        <MenuItem fx:id="deleteAdmin" mnemonicParsing="false" onAction="#deleteAdminAccount" text="Delete Account" />
+                        <MenuItem fx:id="updateAdminDetails" mnemonicParsing="false" onAction="#updateAdmin"
+                                  text="Admin Details"/>
+                        <MenuItem fx:id="deleteAdmin" mnemonicParsing="false" onAction="#deleteAdminAccount"
+                                  text="Delete Account"/>
                     </items>
                 </Menu>
             </menus>
         </MenuBar>
-        <TabPane layoutY="33.0" prefHeight="348.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="19.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="33.0">
+        <TabPane layoutY="33.0" prefHeight="348.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE"
+                 AnchorPane.bottomAnchor="19.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                 AnchorPane.topAnchor="33.0">
             <tabs>
                 <Tab text="Details">
                     <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                             <children>
-                                <GridPane layoutY="-2.0" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="-2.0">
+                                <GridPane layoutY="-2.0" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="0.0"
+                                          AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="-2.0">
                                     <columnConstraints>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"/>
                                     </columnConstraints>
                                     <rowConstraints>
-                                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
                                     </rowConstraints>
                                     <children>
-                                        <AnchorPane layoutX="300.0" layoutY="-2.0" prefHeight="322.0" prefWidth="298.0" AnchorPane.bottomAnchor="-1.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="-2.0" GridPane.columnIndex="1">
+                                        <AnchorPane layoutX="300.0" layoutY="-2.0" prefHeight="322.0" prefWidth="298.0"
+                                                    AnchorPane.bottomAnchor="-1.0" AnchorPane.rightAnchor="3.0"
+                                                    AnchorPane.topAnchor="-2.0" GridPane.columnIndex="1">
                                             <children>
-                                                <Label fx:id="succesFailLabel" layoutX="89.0" layoutY="98.0" AnchorPane.leftAnchor="103.0" AnchorPane.rightAnchor="167.0" />
-                                                <Button fx:id="addClinicianButton" layoutX="50.0" layoutY="190.0" mnemonicParsing="false" onAction="#addClinician" prefHeight="25.0" prefWidth="196.0" text="Add Clinician" AnchorPane.bottomAnchor="107.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="52.0" />
-                                                <Button fx:id="addAdminButton" layoutX="50.0" layoutY="233.0" mnemonicParsing="false" onAction="#addAdmin" prefHeight="25.0" prefWidth="194.0" text="Add Admin" AnchorPane.bottomAnchor="67.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="52.0" />
-                                                <Label alignment="CENTER" layoutX="103.0" layoutY="38.0" prefHeight="29.0" prefWidth="103.0" text="Add Users" textAlignment="CENTER" AnchorPane.leftAnchor="103.0" AnchorPane.rightAnchor="92.0">
+                                                <Label fx:id="succesFailLabel" layoutX="89.0" layoutY="98.0"
+                                                       AnchorPane.leftAnchor="103.0" AnchorPane.rightAnchor="167.0"/>
+                                                <Button fx:id="addClinicianButton" layoutX="50.0" layoutY="190.0"
+                                                        mnemonicParsing="false" onAction="#addClinician"
+                                                        prefHeight="25.0" prefWidth="196.0" text="Add Clinician"
+                                                        AnchorPane.bottomAnchor="107.0" AnchorPane.leftAnchor="50.0"
+                                                        AnchorPane.rightAnchor="52.0"/>
+                                                <Button fx:id="addAdminButton" layoutX="50.0" layoutY="233.0"
+                                                        mnemonicParsing="false" onAction="#addAdmin" prefHeight="25.0"
+                                                        prefWidth="194.0" text="Add Admin"
+                                                        AnchorPane.bottomAnchor="67.0" AnchorPane.leftAnchor="50.0"
+                                                        AnchorPane.rightAnchor="52.0"/>
+                                                <Label alignment="CENTER" layoutX="103.0" layoutY="38.0"
+                                                       prefHeight="29.0" prefWidth="103.0" text="Add Users"
+                                                       textAlignment="CENTER" AnchorPane.leftAnchor="103.0"
+                                                       AnchorPane.rightAnchor="92.0">
                                                     <font>
-                                                        <Font size="18.0" />
+                                                        <Font size="18.0"/>
                                                     </font>
                                                 </Label>
-                                                <Button fx:id="addUserButton" layoutX="50.0" layoutY="149.0" mnemonicParsing="false" onAction="#addUser" prefHeight="25.0" prefWidth="197.0" text="Add Public User" AnchorPane.bottomAnchor="148.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="51.0" />
-                                    <ProgressIndicator fx:id="progressIndicator" layoutX="255.0" layoutY="228.0" progress="0.0" />
+                                                <Button fx:id="addUserButton" layoutX="50.0" layoutY="149.0"
+                                                        mnemonicParsing="false" onAction="#addUser" prefHeight="25.0"
+                                                        prefWidth="197.0" text="Add Public User"
+                                                        AnchorPane.bottomAnchor="148.0" AnchorPane.leftAnchor="50.0"
+                                                        AnchorPane.rightAnchor="51.0"/>
+                                                <ProgressIndicator fx:id="progressIndicator" layoutX="255.0"
+                                                                   layoutY="228.0" progress="0.0"/>
                                             </children>
                                         </AnchorPane>
                                         <AnchorPane prefHeight="320.0" prefWidth="298.0">
                                             <children>
                                                 <Label layoutY="64.0" styleClass="label-title" text="First Name: "
                                                        AnchorPane.leftAnchor="37.0" AnchorPane.topAnchor="117.0"/>
-                                                <Label fx:id="adminFirstnameLabel" layoutX="148.0" layoutY="64.0" text="Label" textAlignment="CENTER" AnchorPane.leftAnchor="185.0" AnchorPane.topAnchor="117.0" />
+                                                <Label fx:id="adminFirstnameLabel" layoutX="148.0" layoutY="64.0"
+                                                       text="Label" textAlignment="CENTER" AnchorPane.leftAnchor="185.0"
+                                                       AnchorPane.topAnchor="117.0"/>
                                                 <Label layoutY="126.0" styleClass="label-title" text="Middle Name:"
                                                        AnchorPane.leftAnchor="37.0" AnchorPane.topAnchor="179.0"/>
-                                                <Label fx:id="adminLastNameLabel" layoutX="147.0" layoutY="176.0" text="Label" textAlignment="CENTER" AnchorPane.leftAnchor="184.0" AnchorPane.topAnchor="229.0" />
-                                                <Label fx:id="adminUsernameLable" layoutX="148.0" text="Label" textAlignment="CENTER" AnchorPane.leftAnchor="185.0" AnchorPane.topAnchor="53.0" />
-                                                <Label fx:id="adminMiddleNameLabel" layoutX="148.0" layoutY="126.0" text="Label" textAlignment="CENTER" AnchorPane.leftAnchor="185.0" AnchorPane.topAnchor="179.0" />
+                                                <Label fx:id="adminLastNameLabel" layoutX="147.0" layoutY="176.0"
+                                                       text="Label" textAlignment="CENTER" AnchorPane.leftAnchor="184.0"
+                                                       AnchorPane.topAnchor="229.0"/>
+                                                <Label fx:id="adminUsernameLable" layoutX="148.0" text="Label"
+                                                       textAlignment="CENTER" AnchorPane.leftAnchor="185.0"
+                                                       AnchorPane.topAnchor="53.0"/>
+                                                <Label fx:id="adminMiddleNameLabel" layoutX="148.0" layoutY="126.0"
+                                                       text="Label" textAlignment="CENTER" AnchorPane.leftAnchor="185.0"
+                                                       AnchorPane.topAnchor="179.0"/>
                                                 <Label layoutY="176.0" styleClass="label-title" text="Last Name: "
                                                        AnchorPane.leftAnchor="37.0" AnchorPane.topAnchor="229.0"/>
                                                 <Label layoutX="2.0" styleClass="label-title" text="Username: "
                                                        AnchorPane.leftAnchor="39.0" AnchorPane.topAnchor="53.0"/>
-                                                <GridPane hgap="10.0" layoutX="22.0" layoutY="262.0" prefHeight="50.0" prefWidth="266.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="22.0" AnchorPane.rightAnchor="10.0">
+                                                <GridPane hgap="10.0" layoutX="22.0" layoutY="262.0" prefHeight="50.0"
+                                                          prefWidth="266.0" AnchorPane.bottomAnchor="10.0"
+                                                          AnchorPane.leftAnchor="22.0" AnchorPane.rightAnchor="10.0">
                                                     <columnConstraints>
-                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"
+                                                                           prefWidth="100.0"/>
+                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"
+                                                                           prefWidth="100.0"/>
                                                     </columnConstraints>
                                                     <rowConstraints>
-                                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints minHeight="10.0" prefHeight="30.0"
+                                                                        vgrow="SOMETIMES"/>
                                                     </rowConstraints>
                                                 </GridPane>
-                                                <Label fx:id="fileNotFoundLabel" layoutX="21.0" layoutY="2.0" prefHeight="42.0" prefWidth="259.0" text="Import aborted, either file not chosen or file not found!" textFill="#ee0404" visible="false" wrapText="true" />
+                                                <Label fx:id="fileNotFoundLabel" layoutX="21.0" layoutY="2.0"
+                                                       prefHeight="42.0" prefWidth="259.0"
+                                                       text="Import aborted, either file not chosen or file not found!"
+                                                       textFill="#ee0404" visible="false" wrapText="true"/>
                                             </children>
                                         </AnchorPane>
                                     </children>
@@ -97,80 +142,130 @@
                 </Tab>
                 <Tab text="Search">
                     <content>
-                        <SplitPane dividerPositions="0.5" minHeight="-Infinity" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0"> <!---->
+                        <SplitPane dividerPositions="0.5" minHeight="-Infinity" orientation="VERTICAL"
+                                   prefHeight="200.0" prefWidth="160.0"> <!---->
                             <items>
-                                <AnchorPane fx:id="filterAnchorPane" maxHeight="75.0" minHeight="75.0" prefHeight="79.0" prefWidth="608.0">
+                                <AnchorPane fx:id="filterAnchorPane" maxHeight="75.0" minHeight="75.0" prefHeight="79.0"
+                                            prefWidth="608.0">
                                     <children>
-                                        <Button fx:id="expandButton" layoutX="576.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#expandFilter" text="▼" visible="false" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="10.0" />
-                                        <Label fx:id="birthGenderLabel" layoutX="15.0" layoutY="83.0" text="Birth Gender: " AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="83.0" />
-                                        <Label fx:id="donorStatusLabel" layoutX="14.0" layoutY="118.0" text="Donor status: " AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="120.5" />
-                                        <ComboBox fx:id="genderComboBox" layoutX="116.0" layoutY="78.0" prefWidth="150.0" value="All" AnchorPane.leftAnchor="116.0" AnchorPane.topAnchor="78.0">
+                                        <Button fx:id="expandButton" layoutX="576.0" layoutY="14.0"
+                                                mnemonicParsing="false" onMouseClicked="#expandFilter" text="▼"
+                                                visible="false" AnchorPane.rightAnchor="14.0"
+                                                AnchorPane.topAnchor="10.0"/>
+                                        <Label fx:id="birthGenderLabel" layoutX="15.0" layoutY="83.0"
+                                               text="Birth Gender: " AnchorPane.leftAnchor="15.0"
+                                               AnchorPane.topAnchor="83.0"/>
+                                        <Label fx:id="donorStatusLabel" layoutX="14.0" layoutY="118.0"
+                                               text="Donor status: " AnchorPane.leftAnchor="14.0"
+                                               AnchorPane.topAnchor="120.5"/>
+                                        <ComboBox fx:id="genderComboBox" layoutX="116.0" layoutY="78.0"
+                                                  prefWidth="150.0" value="All" AnchorPane.leftAnchor="116.0"
+                                                  AnchorPane.topAnchor="78.0">
                                             <items>
                                                 <FXCollections fx:factory="observableArrayList">
-                                                    <String fx:value="Male" />
-                                                    <String fx:value="Female" />
-                                                    <String fx:value="All" />
+                                                    <String fx:value="Male"/>
+                                                    <String fx:value="Female"/>
+                                                    <String fx:value="All"/>
                                                 </FXCollections>
                                             </items>
                                         </ComboBox>
-                                        <CheckBox fx:id="donorFilterCheckBox" layoutX="115.0" layoutY="121.0" mnemonicParsing="false" text="Donor" AnchorPane.leftAnchor="115.0" AnchorPane.topAnchor="121.0" />
-                                        <CheckBox fx:id="receiverFilterCheckBox" layoutX="199.0" layoutY="121.0" mnemonicParsing="false" text="Receiver" AnchorPane.leftAnchor="199.0" AnchorPane.topAnchor="121.0" />
-                                        <CheckBox fx:id="allCheckBox" layoutX="290.0" layoutY="121.0" mnemonicParsing="false" text="All" AnchorPane.leftAnchor="290.0" AnchorPane.topAnchor="121.0" />
-                                        <GridPane hgap="10.0" layoutX="8.0" prefHeight="75.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                        <CheckBox fx:id="donorFilterCheckBox" layoutX="115.0" layoutY="121.0"
+                                                  mnemonicParsing="false" text="Donor" AnchorPane.leftAnchor="115.0"
+                                                  AnchorPane.topAnchor="121.0"/>
+                                        <CheckBox fx:id="receiverFilterCheckBox" layoutX="199.0" layoutY="121.0"
+                                                  mnemonicParsing="false" text="Receiver" AnchorPane.leftAnchor="199.0"
+                                                  AnchorPane.topAnchor="121.0"/>
+                                        <CheckBox fx:id="allCheckBox" layoutX="290.0" layoutY="121.0"
+                                                  mnemonicParsing="false" text="All" AnchorPane.leftAnchor="290.0"
+                                                  AnchorPane.topAnchor="121.0"/>
+                                        <GridPane hgap="10.0" layoutX="8.0" prefHeight="75.0" prefWidth="600.0"
+                                                  AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0"
+                                                  AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columnConstraints>
-                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="79.0" minWidth="10.0" prefWidth="68.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="109.0" minWidth="10.0" prefWidth="64.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="81.0" minWidth="10.0" prefWidth="71.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="106.0" minWidth="10.0" prefWidth="103.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="79.0" minWidth="10.0"
+                                                                   prefWidth="68.0"/>
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="109.0" minWidth="10.0"
+                                                                   prefWidth="64.0"/>
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="81.0" minWidth="10.0"
+                                                                   prefWidth="71.0"/>
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="106.0" minWidth="10.0"
+                                                                   prefWidth="103.0"/>
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
                                             </columnConstraints>
                                             <rowConstraints>
-                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                                             </rowConstraints>
                                             <children>
-                                                <Label text="Search" />
-                                                <TextField fx:id="adminSearchField" prefHeight="18.0" prefWidth="266.0" GridPane.columnIndex="1" GridPane.columnSpan="3" />
-                                                <Label fx:id="regionLabel" text="Region:" GridPane.rowIndex="1" />
-                                                <Button fx:id="deletedProfiles" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#openDeletedProfiles" text="Recently Deleted Profiles" visible="false" GridPane.columnIndex="4" GridPane.columnSpan="3" GridPane.rowIndex="1" />
-                                                <TextField fx:id="regionSearchTextField" prefHeight="25.0" prefWidth="239.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" />
-                                                <RadioButton fx:id="adminAdminRadioButton" mnemonicParsing="false" text="Admin" GridPane.columnIndex="6">
+                                                <Label text="Search"/>
+                                                <TextField fx:id="adminSearchField" prefHeight="18.0" prefWidth="266.0"
+                                                           GridPane.columnIndex="1" GridPane.columnSpan="3"/>
+                                                <Label fx:id="regionLabel" text="Region:" GridPane.rowIndex="1"/>
+                                                <Button fx:id="deletedProfiles" alignment="CENTER_RIGHT"
+                                                        mnemonicParsing="false" onAction="#openDeletedProfiles"
+                                                        text="Recently Deleted Profiles" visible="false"
+                                                        GridPane.columnIndex="4" GridPane.columnSpan="3"
+                                                        GridPane.rowIndex="1"/>
+                                                <TextField fx:id="regionSearchTextField" prefHeight="25.0"
+                                                           prefWidth="239.0" GridPane.columnIndex="1"
+                                                           GridPane.columnSpan="3" GridPane.rowIndex="1"/>
+                                                <RadioButton fx:id="adminAdminRadioButton" mnemonicParsing="false"
+                                                             text="Admin" GridPane.columnIndex="6">
                                                     <toggleGroup>
-                                                        <ToggleGroup fx:id="adminSearchRadios" />
+                                                        <ToggleGroup fx:id="adminSearchRadios"/>
                                                     </toggleGroup>
                                                 </RadioButton>
-                                                <RadioButton fx:id="adminClinicianRadioButton" mnemonicParsing="false" text="Clinician" toggleGroup="$adminSearchRadios" GridPane.columnIndex="5" />
-                                                <RadioButton fx:id="adminUserRadioButton" mnemonicParsing="false" selected="true" text="User" toggleGroup="$adminSearchRadios" GridPane.columnIndex="4" />
+                                                <RadioButton fx:id="adminClinicianRadioButton" mnemonicParsing="false"
+                                                             text="Clinician" toggleGroup="$adminSearchRadios"
+                                                             GridPane.columnIndex="5"/>
+                                                <RadioButton fx:id="adminUserRadioButton" mnemonicParsing="false"
+                                                             selected="true" text="User"
+                                                             toggleGroup="$adminSearchRadios" GridPane.columnIndex="4"/>
                                             </children>
                                         </GridPane>
                                     </children>
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="617.0">
                                     <children>
-                                        <LoadingTableView fx:id="adminTableView" layoutY="32.0" prefHeight="240.0" prefWidth="592.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="0.0">
+                                        <LoadingTableView fx:id="adminTableView" layoutY="32.0" prefHeight="240.0"
+                                                          prefWidth="592.0" AnchorPane.bottomAnchor="48.0"
+                                                          AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0"
+                                                          AnchorPane.topAnchor="0.0">
                                             <tooltip>
-                                                <Tooltip fx:id="searchToolTip" text="Empty Tooltip" />
+                                                <Tooltip fx:id="searchToolTip" text="Empty Tooltip"/>
                                             </tooltip>
                                         </LoadingTableView>
-                                        <Label fx:id="searchCountLabel" layoutX="14.0" layoutY="336.0" text="" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" />
-                                        <LoadingTableView fx:id="clinicianTableView" prefHeight="240.0" prefWidth="592.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="0.0">
+                                        <Label fx:id="searchCountLabel" layoutX="14.0" layoutY="336.0" text=""
+                                               AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0"/>
+                                        <LoadingTableView fx:id="clinicianTableView" prefHeight="240.0"
+                                                          prefWidth="592.0" AnchorPane.bottomAnchor="48.0"
+                                                          AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0"
+                                                          AnchorPane.topAnchor="0.0">
                                             <tooltip>
-                                                <Tooltip fx:id="searchToolTip1" text="Empty Tooltip" />
+                                                <Tooltip fx:id="searchToolTip1" text="Empty Tooltip"/>
                                             </tooltip>
                                         </LoadingTableView>
-                                        <LoadingTableView fx:id="userTableView" prefHeight="214.0" prefWidth="595.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="0.0">
+                                        <LoadingTableView fx:id="userTableView" prefHeight="214.0" prefWidth="595.0"
+                                                          AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0"
+                                                          AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="0.0">
                                             <tooltip>
-                                                <Tooltip fx:id="searchToolTip2" text="Empty Tooltip" />
+                                                <Tooltip fx:id="searchToolTip2" text="Empty Tooltip"/>
                                             </tooltip>
                                         </LoadingTableView>
-                              <HBox alignment="CENTER" layoutX="260.0" layoutY="191.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-                                 <children>
-                                    <Button alignment="CENTER" layoutX="260.0" layoutY="191.0" mnemonicParsing="false" onAction="#goToPrevPage" text="&lt;&lt;" />
-                                    <Button alignment="CENTER" contentDisplay="CENTER" layoutX="300.0" layoutY="191.0" mnemonicParsing="false" onAction="#goToNextPage" text="&gt;&gt;" />
-                                 </children>
-                              </HBox>
+                                        <HBox alignment="CENTER" layoutX="260.0" layoutY="191.0"
+                                              AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="0.0"
+                                              AnchorPane.rightAnchor="0.0">
+                                            <children>
+                                                <Button alignment="CENTER" layoutX="260.0" layoutY="191.0"
+                                                        mnemonicParsing="false" onAction="#goToPrevPage"
+                                                        text="&lt;&lt;"/>
+                                                <Button alignment="CENTER" contentDisplay="CENTER" layoutX="300.0"
+                                                        layoutY="191.0" mnemonicParsing="false" onAction="#goToNextPage"
+                                                        text="&gt;&gt;"/>
+                                            </children>
+                                        </HBox>
                                     </children>
                                 </AnchorPane>
                             </items>
@@ -179,29 +274,34 @@
                 </Tab>
                 <Tab onSelectionChanged="#refreshTables" text="Transplant Waiting List">
                     <content>
-                        <fx:include fx:id="transplantWaitListTabPage" source="transplantWaitListView.fxml" />
+                        <fx:include fx:id="transplantWaitListTabPage" source="transplantWaitListView.fxml"/>
                     </content>
                 </Tab>
                 <Tab text="CLI">
                     <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                             <children>
-                                <TextArea fx:id="adminCliTextArea" prefHeight="287.0" prefWidth="600.0" AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                <TextField fx:id="cliInputTextField" layoutY="293.0" prefHeight="25.0" prefWidth="600.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                <TextArea fx:id="adminCliTextArea" prefHeight="287.0" prefWidth="600.0"
+                                          AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="0.0"
+                                          AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                                <TextField fx:id="cliInputTextField" layoutY="293.0" prefHeight="25.0" prefWidth="600.0"
+                                           AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0"
+                                           AnchorPane.rightAnchor="0.0"/>
                             </children>
                         </AnchorPane>
                     </content>
                 </Tab>
                 <Tab text="Available organs">
-                   <content>
-                       <fx:include fx:id="availableOrgansView" source="availableOrgansPanel.fxml" />
-                   </content>
+                    <content>
+                        <fx:include fx:id="availableOrgansView" source="availableOrgansPanel.fxml"/>
+                    </content>
                 </Tab>
             </tabs>
         </TabPane>
-        <Label alignment="CENTER" layoutX="199.0" text="Administrator" AnchorPane.leftAnchor="199.0" AnchorPane.rightAnchor="236.0" AnchorPane.topAnchor="0.0">
+        <Label alignment="CENTER" layoutX="199.0" text="Administrator" AnchorPane.leftAnchor="199.0"
+               AnchorPane.rightAnchor="236.0" AnchorPane.topAnchor="0.0">
             <font>
-                <Font size="24.0" />
+                <Font size="24.0"/>
             </font>
         </Label>
         <Button onAction="#saveClicked" AnchorPane.rightAnchor="70.0" AnchorPane.topAnchor="2.0" styleClass="button-secondary, save-button" text="">
@@ -215,7 +315,7 @@
                 AnchorPane.topAnchor="2.0"/>
         <AnchorPane fx:id="StatusBar" AnchorPane.bottomAnchor="-5.0">
             <children>
-                <fx:include fx:id="statusBarPage" source="statusBar.fxml" />
+                <fx:include fx:id="statusBarPage" source="statusBar.fxml"/>
             </children>
         </AnchorPane>
     </children>

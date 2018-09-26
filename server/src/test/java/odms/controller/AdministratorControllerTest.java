@@ -51,11 +51,11 @@ public class AdministratorControllerTest {
         //set up data
         Collection<Administrator> administrators = new ArrayList<>();
         administrators.add(testAdministrator);
-        when(handler.loadAdmins(any(Connection.class),anyInt(),anyInt(),anyString())).thenReturn(administrators);
+        when(handler.loadAdmins(any(Connection.class), anyInt(), anyInt(), anyString())).thenReturn(administrators);
         List<Administrator> results = new ArrayList<>(controller.getAdministrator(0, 1, ""));
 
         Assert.assertEquals(testAdministrator, results.get(0));
-        Assert.assertEquals(results.size(), 1);
+        Assert.assertEquals(1, results.size());
     }
 
     @Test(expected = ServerDBException.class)
@@ -71,7 +71,7 @@ public class AdministratorControllerTest {
     public void postAdministratorShouldReturnAcceptedIfConnectionValid() throws SQLException {
         //this is pretty dumb but any real error handling should be done within the DBHandler
         ResponseEntity res = controller.postAdministrator(testAdministrator);
-        Assert.assertEquals(res.getStatusCode(), HttpStatus.ACCEPTED);
+        Assert.assertEquals(HttpStatus.ACCEPTED, res.getStatusCode());
     }
 
     @Test(expected = ServerDBException.class)

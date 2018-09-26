@@ -21,7 +21,7 @@ public class SQLBridge extends Bifrost {
         RequestBody body = RequestBody.create(json, new Gson().toJson(query));
         Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).post(body).build();
         Response response = client.newCall(request).execute();
-        if(response.isSuccessful()) {
+        if (response.isSuccessful()) {
             return handler.decodeQueryResult(response.body());
         }
         return new ArrayList<>();

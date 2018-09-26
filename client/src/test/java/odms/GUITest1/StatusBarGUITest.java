@@ -68,7 +68,7 @@ public class StatusBarGUITest extends ApplicationTest {
         clickOn("#fNameInput").push(SHORTCUT, A).push(BACK_SPACE);
         clickOn("#fNameInput");
         write("Kate");
-        clickOnButton(this,"#updateProfileButton");
+        clickOnButton(this, "#updateProfileButton");
     }
 
     @After
@@ -78,7 +78,8 @@ public class StatusBarGUITest extends ApplicationTest {
     }
 
     //TODO fix me pls 24/09/2018
-    @Test @Ignore
+    @Test
+    @Ignore
     public void checkStatusBarUpdates() {
         //Told to ignore by Alanna, status bars have changed 20/9/18 - JB
         verifyThat("#statusBar", LabeledMatchers.hasText("ABC1234 Changed first name to Kate"));

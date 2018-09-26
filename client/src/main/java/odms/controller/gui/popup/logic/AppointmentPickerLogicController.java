@@ -21,8 +21,8 @@ public class AppointmentPickerLogicController {
     /**
      * Initializes the AppointmentPickerLogicController
      *
-     * @param user          Current user
-     * @param stage         The applications stage.
+     * @param user  Current user
+     * @param stage The applications stage.
      */
     public AppointmentPickerLogicController(User user, Stage stage) {
         this.user = user;
@@ -85,6 +85,7 @@ public class AppointmentPickerLogicController {
 
     /**
      * Sets the default preferred clinician for the user if the checkbox in the appointment picker is checked
+     *
      * @param staffId Id of the clinician to set.
      */
     public void setDefaultPreferredClinician(String staffId) {

@@ -29,7 +29,7 @@ public class AppointmentUpdateStrategy extends AbstractUpdateStrategy {
      */
     @Override
     public <T> void update(Collection<T> roles, Connection connection) {
-        // todo: use this for saving recurring appointments
+        throw new UnsupportedOperationException();
     }
 
     /**

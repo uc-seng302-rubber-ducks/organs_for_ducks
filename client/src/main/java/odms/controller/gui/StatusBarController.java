@@ -12,7 +12,6 @@ public class StatusBarController {
     private Label statusBar;
 
 
-
     @FXML
     public void init() {
         updateStatus("");

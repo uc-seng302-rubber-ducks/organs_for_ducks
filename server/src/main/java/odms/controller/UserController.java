@@ -74,7 +74,7 @@ public class UserController extends BaseController {
     public ResponseEntity postUser(@RequestBody User newUser) {
         try (Connection connection = driver.getConnection()) {
             handler.saveUser(newUser, connection);
-            socketHandler.broadcast(EventTypes.USER_UPDATE, newUser.getNhi(),newUser.getNhi());
+            socketHandler.broadcast(EventTypes.USER_UPDATE, newUser.getNhi(), newUser.getNhi());
         } catch (SQLException ex) {
             Log.severe("cannot add new user to database", ex);
             throw new ServerDBException(ex);
@@ -117,7 +117,7 @@ public class UserController extends BaseController {
     public ResponseEntity putUser(@PathVariable("nhi") String nhi, @RequestBody User user) {
         try (Connection connection = driver.getConnection()) {
             handler.updateUser(connection, nhi, user);
-            socketHandler.broadcast(EventTypes.USER_UPDATE,user.getNhi(),nhi);
+            socketHandler.broadcast(EventTypes.USER_UPDATE, user.getNhi(), nhi);
         } catch (SQLException ex) {
             Log.severe("cannot put user " + nhi, ex);
             throw new ServerDBException(ex);
@@ -149,7 +149,7 @@ public class UserController extends BaseController {
             return handler.getExists(connection, User.class, nhi);
         } catch (SQLException ex) {
             Log.severe("cannot find whether user exists", ex);
-            throw  new ServerDBException(ex);
+            throw new ServerDBException(ex);
         }
     }
 

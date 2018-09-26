@@ -37,8 +37,9 @@ public class CalendarWidget extends CalendarView {
     /**
      * Makes the calendar editable, adds the entry to it, and then disables the calendar if the calendar isn't the
      * personal calendar
+     *
      * @param calendar calendar to add the entry to
-     * @param entry entry to add to the calendar
+     * @param entry    entry to add to the calendar
      */
     private void addEntryToCalendar(Calendar calendar, Entry<Appointment> entry) {
         calendar.setReadOnly(false);

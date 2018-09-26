@@ -38,9 +38,9 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
             return;
         }
 
-        this.setAuthenticationSuccessHandler((request1, response1, authentication) -> {
-            chain.doFilter(request1, response1);
-        });
+        this.setAuthenticationSuccessHandler((request1, response1, authentication) ->
+                chain.doFilter(request1, response1)
+        );
 
         super.doFilter(request, response, chain);
     }
@@ -50,7 +50,7 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
                                                 HttpServletResponse response)
             throws AuthenticationException, IOException, ServletException {
         final String tokenValue = getTokenValue(request);
-        if(StringUtils.isEmpty(tokenValue)){
+        if (StringUtils.isEmpty(tokenValue)) {
             return null;
         }
 

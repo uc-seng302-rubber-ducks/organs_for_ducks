@@ -63,7 +63,7 @@ public class OrganExpiryViewController {
      * Confirms and updates the manual expiry of the selected organ
      */
     public void confirmExpiration() {
-        if( Pattern.compile(" *").matcher(expirationReasonTextArea.getText()).matches()){
+        if (Pattern.compile(" *").matcher(expirationReasonTextArea.getText()).matches()) {
             warningLabelOE.setText("A reason for expiry must be given");
             return;
         }

@@ -41,7 +41,7 @@ public class AppointmentsBridge extends Bifrost {
      * @param id     The unique identifier of the user/clinician
      * @param type   Role specifying either a user or a clinician
      * @param status The status of the appointment to be checked for
-     * @return       True if the user/clinician has appointments with the given status, false otherwise
+     * @return True if the user/clinician has appointments with the given status, false otherwise
      */
     public boolean checkAppointmentStatusExists(String id, UserType type, AppointmentStatus status) {
         String url = "";
@@ -151,8 +151,8 @@ public class AppointmentsBridge extends Bifrost {
      * @param token               auth token to use
      * @param observableDateTimes observable list to be updated on response
      */
-    public void getClinicianAppointmentsTimes(String staffId, String startDate, String endDate, String token, ObservableSet<LocalDateTime> observableDateTimes){
-        String url = String.format("%s/clinicians/%s/appointmentsTimes?startDateTime=%s&endDateTime=%s", ip,staffId,startDate,endDate);
+    public void getClinicianAppointmentsTimes(String staffId, String startDate, String endDate, String token, ObservableSet<LocalDateTime> observableDateTimes) {
+        String url = String.format("%s/clinicians/%s/appointmentsTimes?startDateTime=%s&endDateTime=%s", ip, staffId, startDate, endDate);
         Request request = new Request.Builder().addHeader(tokenHeader, token).url(url).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -182,6 +182,7 @@ public class AppointmentsBridge extends Bifrost {
 
     /**
      * Calls the server and asks if the user has any appointments that are accepted or rejected but not seen
+     *
      * @param nhi of the user that is being checked for unseen appointments
      * @return An appointment that is unseen if it exists, otherwise null.
      */
@@ -206,23 +207,19 @@ public class AppointmentsBridge extends Bifrost {
      * Gets the count of a clinicians pending appointments
      *
      * @param staffId clinicians appointments to get
-     * @param token auth token for the server
+     * @param token   auth token for the server
      * @return number of appointments pending
      */
     public int getPendingAppointments(String staffId, String token) {
         String url = String.format("%s/clinicians/%s/appointments/pending", ip, staffId);
         Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).build();
         try (Response res = client.newCall(request).execute()) {
-            try {
-                return Integer.parseInt(res.body().string().replaceAll("\\[", "").replaceAll("]", ""));
-            } catch (IOException e) {
-                Log.severe("response body for pending appointments could not be parsed", e);
-            } catch (NumberFormatException e) {
-                Log.severe("Invalid pending appointment response returned.", e);
-            }
-            return 0;
+
+            return Integer.parseInt(res.body().string().replaceAll("\\[", "").replaceAll("]", ""));
         } catch (IOException e) {
-            Log.severe("request to pending appointments failed", e);
+            Log.severe("response body for pending appointments could not be parsed", e);
+        } catch (NumberFormatException e) {
+            Log.severe("Invalid pending appointment response returned.", e);
         }
         return 0;
     }
@@ -259,8 +256,9 @@ public class AppointmentsBridge extends Bifrost {
 
     /**
      * Fire a patch request to the server for updating the status of an appointment
+     *
      * @param appointmentId Id of the appointment to be updated.
-     * @param statusId status to be changed to.
+     * @param statusId      status to be changed to.
      */
     public void patchAppointmentStatus(Integer appointmentId, int statusId) {
         String url = String.format("%s%s", ip, APPOINTMENTS + "/" + appointmentId + "/status");

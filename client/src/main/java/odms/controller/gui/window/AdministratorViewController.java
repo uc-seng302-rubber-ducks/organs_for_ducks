@@ -70,13 +70,13 @@ public class AdministratorViewController implements PropertyChangeListener, User
 
     //<editor-fold desc="FXML stuff">
 
+    public static final String FAILED_TO_GET_USER_OVERVIEWS_FROM_SERVER = "failed to get user overviews from server";
     private static final int ROWS_PER_PAGE = 30;
     private static final String JSON = "*.json";
     private static final String FILE_NAME_NOT_FOUND = "File name not found";
     private static final String FIRST_NAME = "firstName";
     private static final String LAST_NAME = "lastName";
     private static final String ERROR = "error";
-    public static final String FAILED_TO_GET_USER_OVERVIEWS_FROM_SERVER = "failed to get user overviews from server";
     @FXML
     private LoadingTableView<UserOverview> userTableView;
     @FXML
@@ -203,6 +203,21 @@ public class AdministratorViewController implements PropertyChangeListener, User
         adminCliTextArea.setEditable(false);
         adminCliTextArea.setFont(Font.font("DialogInput"));
         adminCliTextArea.setFocusTraversable(false);
+        initCliKeyPresses();
+        progressIndicator.setVisible(false);
+        addListeners();
+        initClinicianSearchTable();
+        initAdminSearchTable();
+        initUserSearchTable();
+        clinicianTableView.setVisible(false);
+        adminTableView.setVisible(false);
+    }
+
+    /**
+     * adds handlers to keypresses for the cli
+     * e.g. up arrow goes to previous command
+     */
+    private void initCliKeyPresses() {
         cliInputTextField.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
                 sendInputToCLI();
@@ -223,13 +238,6 @@ public class AdministratorViewController implements PropertyChangeListener, User
                 }
             }
         });
-        progressIndicator.setVisible(false);
-        addListeners();
-        initClinicianSearchTable();
-        initAdminSearchTable();
-        initUserSearchTable();
-        clinicianTableView.setVisible(false);
-        adminTableView.setVisible(false);
     }
 
     /**
@@ -653,7 +661,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
         }
 
         for (Administrator newAdmin : newAdmins) {
-            new Thread(()-> appController.getAdministratorBridge().putAdmin(newAdmin, newAdmin.getUserName(),appController.getToken())).start();
+            new Thread(() -> appController.getAdministratorBridge().putAdmin(newAdmin, newAdmin.getUserName(), appController.getToken())).start();
         }
         saveRole(Administrator.class, appController, appController.getToken());
         messageBoxPopup("confirm");
@@ -687,19 +695,19 @@ public class AdministratorViewController implements PropertyChangeListener, User
                         }
                     }
 
-                for (User user : newUsers) {
-                    new Thread(() -> appController.getUserBridge().postUserSilently(user)).start();
-                }
-                saveRole(User.class, appController, appController.getToken());
-            } catch (FileNotFoundException e) {
-                Log.warning("Failed to load file " + filename, e);
-                messageBoxPopup(ERROR);
+                    for (User user : newUsers) {
+                        new Thread(() -> appController.getUserBridge().postUserSilently(user)).start();
+                    }
+                    saveRole(User.class, appController, appController.getToken());
+                } catch (FileNotFoundException e) {
+                    Log.warning("Failed to load file " + filename, e);
+                    messageBoxPopup(ERROR);
 
-            } catch (InvalidFileException e) {
-                Log.warning(filename + "contained bad data", e);
-                messageBoxPopup(ERROR);
-            }
-            Platform.runLater(this::refreshTables);
+                } catch (InvalidFileException e) {
+                    Log.warning(filename + "contained bad data", e);
+                    messageBoxPopup(ERROR);
+                }
+                Platform.runLater(this::refreshTables);
                 final int numberImported = newUsers.size();
                 final int malformed = csvHandler.getMalformed();
                 Platform.runLater(() -> AlertWindowFactory.generateInfoWindow(numberImported + " Users Successfully imported. " +
@@ -1184,8 +1192,8 @@ public class AdministratorViewController implements PropertyChangeListener, User
     @FXML
     private void goToNextPage() {
         if ((appController.getUserOverviews().size() < ROWS_PER_PAGE && adminUserRadioButton.isSelected())
-            || (appController.getClinicians().size() < ROWS_PER_PAGE && adminClinicianRadioButton.isSelected())
-            || (appController.getAdmins().size() < ROWS_PER_PAGE && adminAdminRadioButton.isSelected())){
+                || (appController.getClinicians().size() < ROWS_PER_PAGE && adminClinicianRadioButton.isSelected())
+                || (appController.getAdmins().size() < ROWS_PER_PAGE && adminAdminRadioButton.isSelected())) {
             return;
         }
         if (adminUserRadioButton.isSelected()) {

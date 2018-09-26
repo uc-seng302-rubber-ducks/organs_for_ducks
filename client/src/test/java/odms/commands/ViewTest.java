@@ -52,8 +52,8 @@ public class ViewTest {
         testAdministrator = new Administrator("admin1", "Anna", "Kate", "Robertson", "face");
 
         when(userBridge.getUser(anyString())).thenReturn(testUser);
-        when(clinicianBridge.getClinician(anyString(),anyString())).thenReturn(testClinician);
-        when(administratorBridge.getAdmin(anyString(),anyString())).thenReturn(testAdministrator);
+        when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(testClinician);
+        when(administratorBridge.getAdmin(anyString(), anyString())).thenReturn(testAdministrator);
 
         command = new View();
         command.setAppController(appController);
@@ -64,20 +64,20 @@ public class ViewTest {
         String[] args = {"ABC1234"};
 
         new CommandLine(command).parseWithHandler(new CommandLine.RunLast(), System.err, args);
-        verify(appController,times(1)).getUserBridge();
+        verify(appController, times(1)).getUserBridge();
     }
 
     @Test
-    public void testClinicianIsSelected(){
-        String[] args = {"16","-c"};
+    public void testClinicianIsSelected() {
+        String[] args = {"16", "-c"};
         new CommandLine(command).parseWithHandler(new CommandLine.RunLast(), System.err, args);
-        verify(appController,times(1)).getClinicianBridge();
+        verify(appController, times(1)).getClinicianBridge();
     }
 
     @Test
-    public void testAdminIsSelected(){
+    public void testAdminIsSelected() {
         String[] args = {"a", "-a"};
         new CommandLine(command).parseWithHandler(new CommandLine.RunLast(), System.err, args);
-        verify(appController,times(1)).getAdministratorBridge();
+        verify(appController, times(1)).getAdministratorBridge();
     }
 }

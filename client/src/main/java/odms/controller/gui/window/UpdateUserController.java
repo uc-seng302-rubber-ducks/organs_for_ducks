@@ -509,6 +509,7 @@ public class UpdateUserController {
     /**
      * Checks if the entry fields are of a valid format and sensible time (death date after birth date)
      * Combobox entries automatically validates country and region if from New Zealand
+     *
      * @return True if fields are valid.
      */
     private boolean validateDeathDetailsFields() {
@@ -908,10 +909,8 @@ public class UpdateUserController {
         } catch (InvalidFieldsException e) {
             valid = false;
         }
-        if (userDead.isSelected()) {
-            if (!validateDeathDetailsFields()) {
-                valid = false;
-            }
+        if (userDead.isSelected() && !validateDeathDetailsFields()) {
+            valid = false;
         }
         if (valid) { // only updates if everything is valid
             appController.update(currentUser);
@@ -1111,7 +1110,6 @@ public class UpdateUserController {
 
         return changed;
     }
-
 
 
     /**

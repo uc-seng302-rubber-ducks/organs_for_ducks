@@ -60,7 +60,7 @@ public class UndoDonorGUITest extends ApplicationTest {
         FxToolkit.setupApplication(App.class, "--testConfig=true");
 
 
-        setTextField(this, "#userIDTextField","ABC1234");
+        setTextField(this, "#userIDTextField", "ABC1234");
         clickOnButton(this, "#loginUButton");
     }
 
@@ -86,8 +86,8 @@ public class UndoDonorGUITest extends ApplicationTest {
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         setTextField(this, "#lNameInput", "Jefferson");
-        clickOnButton(this,"#updateProfileButton");
-        clickOnButton(this,"#undoButton");
+        clickOnButton(this, "#updateProfileButton");
+        clickOnButton(this, "#undoButton");
 
         verifyThat("#lNameValue", LabeledMatchers.hasText(""));
     }
@@ -100,8 +100,8 @@ public class UndoDonorGUITest extends ApplicationTest {
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         setTextField(this, "#lNameInput", "Jefferson");
-        clickOnButton(this,"#updateProfileButton");
-        clickOnButton(this,"#undoButton");
+        clickOnButton(this, "#updateProfileButton");
+        clickOnButton(this, "#undoButton");
 
         Assert.assertTrue(lookup("#undoButton").queryAs(Button.class).isDisabled());
     }
@@ -122,16 +122,16 @@ public class UndoDonorGUITest extends ApplicationTest {
         clickOn("#healthDetailsTab");
         clickOn("#genderIdComboBox");
         clickOn("Non Binary");
-        clickOnButton(this,"#updateProfileButton");
+        clickOnButton(this, "#updateProfileButton");
 
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         clickOn("#healthDetailsTab");
         clickOn("#smokerCheckBox");
-        clickOnButton(this,"#updateProfileButton");
-        clickOnButton(this,"#undoButton");
-        clickOnButton(this,"#undoButton");
-        clickOnButton(this,"#undoButton");
+        clickOnButton(this, "#updateProfileButton");
+        clickOnButton(this, "#undoButton");
+        clickOnButton(this, "#undoButton");
+        clickOnButton(this, "#undoButton");
 
         verifyThat("#lNameValue", LabeledMatchers.hasText(""));
         verifyThat("#genderIdentityValue", LabeledMatchers.hasText(""));
@@ -149,9 +149,9 @@ public class UndoDonorGUITest extends ApplicationTest {
         doubleClickOn("#nhiInput");
 
         write("ABD1111");
-        clickOnButton(this,"#updateProfileButton");
+        clickOnButton(this, "#updateProfileButton");
 
-        clickOnButton(this,"#undoButton");
+        clickOnButton(this, "#undoButton");
 
         verifyThat("#NHIValue", LabeledMatchers.hasText("ABC1234"));
     }

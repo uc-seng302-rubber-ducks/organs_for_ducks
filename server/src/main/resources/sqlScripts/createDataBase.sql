@@ -32,9 +32,9 @@ DROP TABLE IF EXISTS User;
 
 SET GLOBAL event_scheduler = TRUE ;
 
-CREATE TABLE User(
+CREATE TABLE User (
   uniqueId       INT AUTO_INCREMENT PRIMARY KEY,
-  nhi            varchar(7) UNIQUE NOT NULL,
+  nhi            VARCHAR(7) UNIQUE NOT NULL,
   firstName      VARCHAR(255),
   middleName     VARCHAR(255),
   lastName       VARCHAR(255),
@@ -47,7 +47,7 @@ CREATE TABLE User(
   pictureFormat  VARCHAR(255)
 );
 
-CREATE TABLE Clinician(
+CREATE TABLE Clinician (
   staffId        VARCHAR(255) PRIMARY KEY,
   firstName      VARCHAR(255),
   middleName     VARCHAR(255),
@@ -58,7 +58,7 @@ CREATE TABLE Clinician(
   pictureFormat  VARCHAR(255)
 );
 
-CREATE TABLE Administrator(
+CREATE TABLE Administrator (
   userName     VARCHAR(255) PRIMARY KEY,
   firstName    VARCHAR(255),
   middleName   VARCHAR(255),
@@ -67,80 +67,100 @@ CREATE TABLE Administrator(
   lastModified DATETIME
 );
 
-CREATE TABLE Organ(
+CREATE TABLE Organ (
   organId   SMALLINT PRIMARY KEY,
-  organName varchar(255)
+  organName VARCHAR(255)
 );
 
-CREATE TABLE  PreviousDisease(
+CREATE TABLE PreviousDisease (
   diseaseName   VARCHAR(255) NOT NULL,
-  diagnosisDate DATETIME     not NULL,
+  diagnosisDate DATETIME     NOT NULL,
   fkUserNhi     VARCHAR(7)   NOT NULL,
   PRIMARY KEY (diseaseName, diagnosisDate, fkUserNhi),
-  FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (fkUserNhi) REFERENCES User (nhi)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
-CREATE TABLE  CurrentDisease(
+CREATE TABLE CurrentDisease (
   diseaseName   VARCHAR(255) NOT NULL,
   diagnosisDate DATETIME     NOT NULL,
   fkUserNhi     VARCHAR(7)   NOT NULL,
   isChronic     BOOLEAN,
   PRIMARY KEY (diseaseName, diagnosisDate, fkUserNhi),
-  FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (fkUserNhi) REFERENCES User (nhi)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
-CREATE TABLE Medication(
+CREATE TABLE Medication (
   medicationName       VARCHAR(255) NOT NULL,
   fkUserNhi            VARCHAR(7)   NOT NULL,
-  medicationInstanceId int UNIQUE AUTO_INCREMENT,
+  medicationInstanceId INT UNIQUE AUTO_INCREMENT,
   PRIMARY KEY (medicationName, fkUserNhi),
-  FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (fkUserNhi) REFERENCES User (nhi)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
-CREATE TABLE MedicationDates(
+CREATE TABLE MedicationDates (
   keyValue               INT AUTO_INCREMENT PRIMARY KEY,
-  fkMedicationInstanceId int      NOT NULL ,
+  fkMedicationInstanceId INT      NOT NULL,
   dateStartedTaking      DATETIME NOT NULL,
   dateStoppedTaking      DATETIME,
-  FOREIGN KEY (fkMedicationInstanceId) REFERENCES Medication(medicationInstanceId) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (fkMedicationInstanceId) REFERENCES Medication (medicationInstanceId)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
-CREATE TABLE OrganAwaiting(
+CREATE TABLE OrganAwaiting (
   fkOrgansId SMALLINT,
   fkUserNhi  VARCHAR(7),
   awaitingId INT AUTO_INCREMENT UNIQUE,
   PRIMARY KEY (fkOrgansId, fkUserNhi),
-  FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (fkOrgansId) REFERENCES Organ(organId) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (fkUserNhi) REFERENCES User (nhi)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  FOREIGN KEY (fkOrgansId) REFERENCES Organ (organId)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
-CREATE TABLE OrganAwaitingDates(
+CREATE TABLE OrganAwaitingDates (
   awaitingDateId   INT AUTO_INCREMENT PRIMARY KEY,
   dateRegistered   DATE,
   dateDeregistered DATE,
   fkAwaitingId     INT,
-  FOREIGN KEY (fkAwaitingId) REFERENCES OrganAwaiting(awaitingId) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (fkAwaitingId) REFERENCES OrganAwaiting (awaitingId)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
-CREATE TABLE OrganDonating(
+CREATE TABLE OrganDonating (
   fkOrgansId SMALLINT,
   fkUserNhi  VARCHAR(7),
   donatingId INT AUTO_INCREMENT UNIQUE,
   PRIMARY KEY (fkOrgansId, fkUserNhi),
-  FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (fkOrgansId) REFERENCES Organ(organId) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (fkUserNhi) REFERENCES User (nhi)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  FOREIGN KEY (fkOrgansId) REFERENCES Organ (organId)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
-CREATE TABLE OrganDonatingDates(
+CREATE TABLE OrganDonatingDates (
   donatingDateId   INT AUTO_INCREMENT PRIMARY KEY,
   dateRegistered   DATE,
   dateDeregistered DATE,
   fkAwaitingId     INT,
-  FOREIGN KEY (fkAwaitingId) REFERENCES OrganDonating(donatingId) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (fkAwaitingId) REFERENCES OrganDonating (donatingId)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
 
-CREATE TABLE HealthDetails(
+CREATE TABLE HealthDetails (
   fkUserNhi          VARCHAR(7) NOT NULL PRIMARY KEY,
   gender             VARCHAR(15),
   birthGender        VARCHAR(15),
@@ -149,17 +169,21 @@ CREATE TABLE HealthDetails(
   height             DOUBLE,
   weight             DOUBLE,
   bloodType          VARCHAR(3),
-  FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (fkUserNhi) REFERENCES User (nhi)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
-CREATE TABLE MedicalProcedure(
+CREATE TABLE MedicalProcedure (
   procedureId          INT UNIQUE AUTO_INCREMENT,
   procedureName        VARCHAR(255) NOT NULL,
   procedureDate        DATE         NOT NULL,
   fkUserNhi            VARCHAR(7)   NOT NULL,
   procedureDescription TEXT,
-  PRIMARY KEY (procedureDate,procedureName,fkUserNhi),
-  FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE ON UPDATE CASCADE
+  PRIMARY KEY (procedureDate, procedureName, fkUserNhi),
+  FOREIGN KEY (fkUserNhi) REFERENCES User (nhi)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
 CREATE TABLE MedicalProcedureOrgan (
@@ -167,33 +191,43 @@ CREATE TABLE MedicalProcedureOrgan (
   fkProcedureId INT,
   PRIMARY KEY (fkOrgansId, fkProcedureId),
   FOREIGN KEY (fkProcedureId) REFERENCES MedicalProcedure (procedureId)
-    ON DELETE CASCADE ON UPDATE CASCADE,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   FOREIGN KEY (fkOrgansId) REFERENCES Organ (organId)
-    ON DELETE CASCADE ON UPDATE CASCADE
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
-CREATE TABLE ContactDetails(
+CREATE TABLE ContactDetails (
   contactId INT AUTO_INCREMENT PRIMARY KEY,
   fkUserNhi VARCHAR(7),
   fkStaffId VARCHAR(255) UNIQUE,
   homePhone VARCHAR(31),
   cellPhone VARCHAR(31),
   email     VARCHAR(255),
-  FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (fkStaffId) REFERENCES Clinician(staffId) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (fkUserNhi) REFERENCES User (nhi)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  FOREIGN KEY (fkStaffId) REFERENCES Clinician (staffId)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
-CREATE TABLE EmergencyContactDetails(
-  contactName         VARCHAR(255) NOT NULL ,
+CREATE TABLE EmergencyContactDetails (
+  contactName         VARCHAR(255) NOT NULL,
   contactRelationship VARCHAR(255) NOT NULL,
   fkContactId         INT          NOT NULL,
   fkUserNhi           VARCHAR(7)   NOT NULL UNIQUE,
   PRIMARY KEY (fkContactId, fkUserNhi),
-  FOREIGN KEY (fkContactId) REFERENCES  ContactDetails(contactId)  ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (fkUserNhi) REFERENCES User(nhi)  ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (fkContactId) REFERENCES ContactDetails (contactId)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  FOREIGN KEY (fkUserNhi) REFERENCES User (nhi)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
-CREATE TABLE Address(
+CREATE TABLE Address (
   fkContactId   INT PRIMARY KEY,
   streetNumber  VARCHAR(15),
   streetName    VARCHAR(255),
@@ -204,29 +238,41 @@ CREATE TABLE Address(
   country       VARCHAR(255),
   fkUserNhi     VARCHAR(7),
   fkStaffId     VARCHAR(255) UNIQUE,
-  FOREIGN KEY (fkUserNhi) REFERENCES User(nhi)  ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (fkStaffId) REFERENCES Clinician(staffId) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (fkContactId) REFERENCES ContactDetails(contactId)  ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (fkUserNhi) REFERENCES User (nhi)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  FOREIGN KEY (fkStaffId) REFERENCES Clinician (staffId)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  FOREIGN KEY (fkContactId) REFERENCES ContactDetails (contactId)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
-CREATE TABLE PasswordDetails(
+CREATE TABLE PasswordDetails (
   password_id     INT AUTO_INCREMENT PRIMARY KEY,
   fkAdminUserName VARCHAR(255) UNIQUE,
   fkStaffId       VARCHAR(255) UNIQUE,
   hash            TEXT,
   salt            TEXT,
-  FOREIGN KEY (fkAdminUserName) REFERENCES Administrator(userName)  ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (fkStaffId) REFERENCES Clinician(staffId) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (fkAdminUserName) REFERENCES Administrator (userName)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  FOREIGN KEY (fkStaffId) REFERENCES Clinician (staffId)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
 
-CREATE TABLE DeathDetails(
+CREATE TABLE DeathDetails (
   fkUserNhi     VARCHAR(7) NOT NULL PRIMARY KEY,
   momentOfDeath DATETIME,
   city          VARCHAR(255),
   region        VARCHAR(255),
   country       VARCHAR(255),
-  FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (fkUserNhi) REFERENCES User (nhi)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
 /*CREATE TABLE Countries(
@@ -235,7 +281,7 @@ CREATE TABLE DeathDetails(
 );*/
 
 CREATE TABLE OrganExpiryDetails (
-  fkDonatingId INT          NOT NULL PRIMARY KEY ,
+  fkDonatingId INT NOT NULL PRIMARY KEY,
   id           VARCHAR(255),
   timeOfExpiry DATETIME,
   reason       VARCHAR(255),
@@ -302,8 +348,8 @@ CREATE TABLE PreferredClinician (
   fkUserNhi VARCHAR(7) PRIMARY KEY,
   fkStaffId VARCHAR(255),
   FOREIGN KEY (fkUserNhi) REFERENCES User (nhi)
-  ON DELETE CASCADE
-  ON UPDATE CASCADE,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   FOREIGN KEY (fkStaffId) REFERENCES Clinician (staffId)
     ON DELETE CASCADE
     ON UPDATE CASCADE

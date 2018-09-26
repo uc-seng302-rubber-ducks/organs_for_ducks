@@ -23,9 +23,9 @@ import java.util.*;
 
 public class UserBridge extends RoleBridge {
 
+    public static final String COULD_NOT_MAKE_A_CALL_TO = "Could not make a call to ";
     private static final String USERS = "/users/";
     private static final String FAILED_TO_PUT_TO = "Failed to PUT to ";
-    public static final String COULD_NOT_MAKE_A_CALL_TO = "Could not make a call to ";
     private static final String FAILED_TO_POST_TO = "Failed to POST to ";
 
     private Call inProgress;
@@ -310,13 +310,13 @@ public class UserBridge extends RoleBridge {
     public String getProfilePicture(String nhi) throws IOException {
         String url = ip + USERS + nhi + "/photo";
         Request request = new Request.Builder().get().url(url).build();
-        try(Response response  = client.newCall(request).execute()) {
+        try (Response response = client.newCall(request).execute()) {
             if (response.isSuccessful()) {
                 String contentType = response.header("Content-Type");
                 String[] bits = contentType.split("/");
-                String format = bits[bits.length-1];
+                String format = bits[bits.length - 1];
                 return handler.decodeProfilePicture(response.body(), nhi, format);
-            } else if(response.code() == 404){
+            } else if (response.code() == 404) {
                 return null;
             } else {
                 throw new IOException("Failed to get profile picture");
@@ -327,12 +327,12 @@ public class UserBridge extends RoleBridge {
     public void putProfilePicture(String nhi, String profilePicturePath) throws IOException {
         String url = ip + USERS + nhi + "/photo";
         String[] bits = profilePicturePath.split("\\.");
-        String format = bits[bits.length-1];
+        String format = bits[bits.length - 1];
         byte[] bytesFromImage = PhotoHelper.getBytesFromImage(profilePicturePath);
-        if(bytesFromImage.length == 0){
+        if (bytesFromImage.length == 0) {
             return;
         }
-        RequestBody body = RequestBody.create(MediaType.parse("image/"+format), bytesFromImage);
+        RequestBody body = RequestBody.create(MediaType.parse("image/" + format), bytesFromImage);
         Request request = new Request.Builder().url(url).put(body).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -342,7 +342,7 @@ public class UserBridge extends RoleBridge {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if(!response.isSuccessful()) {
+                if (!response.isSuccessful()) {
                     Log.warning("Failed to PUT " + url + " Response code: " + response.code());
                     throw new IOException("Could not PUT " + url);
                 }
@@ -350,8 +350,10 @@ public class UserBridge extends RoleBridge {
             }
         });
     }
+
     /**
      * checks whether a user can be found in the database
+     *
      * @param nhi nhi of the user to search for
      * @return true if the user can be found, false otherwise
      */
@@ -368,10 +370,11 @@ public class UserBridge extends RoleBridge {
 
     /**
      * Asks the server to get the preferred clinician for the specified user
+     *
      * @param nhi of the user to get the preferred clinician for.
      * @return comboBoxClinician representing the preferred clinician
      */
-    public ComboBoxClinician getPreferredClinician(String nhi) throws IOException{
+    public ComboBoxClinician getPreferredClinician(String nhi) throws IOException {
         ComboBoxClinician clinician = null;
         String url = ip + USERS + nhi + "/preferred-clinician";
         Request request = new Request.Builder().url(url).build();
@@ -396,7 +399,8 @@ public class UserBridge extends RoleBridge {
 
     /**
      * Updates the preferred clinician of the user
-     * @param nhi of the user to get the preferred clinician for.
+     *
+     * @param nhi     of the user to get the preferred clinician for.
      * @param staffId the id of the preferred clinician
      */
     public void putPreferredClinician(String nhi, String staffId) {
@@ -405,7 +409,6 @@ public class UserBridge extends RoleBridge {
         Request request = new Request.Builder().put(body).url(url).build();
         client.newCall(request).enqueue(CommonMethods.loggedCallback("PUT", url));
     }
-
 
 
 }

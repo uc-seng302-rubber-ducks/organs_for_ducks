@@ -21,14 +21,14 @@ public class View implements Runnable {
     @Parameters(description = "ID of the user to be viewed")
     private String[] params;
 
-    @Option(names ={"-u","-user"}, description = "Sets the user flag to specify that a user is the query target.\n" +
+    @Option(names = {"-u", "-user"}, description = "Sets the user flag to specify that a user is the query target.\n" +
             "This is the default option")
     private boolean afterUser = true;
 
-    @Option(names = {"-c","-clinician"}, description = "Sets the user flag to specify that a Clinician is the query target.")
+    @Option(names = {"-c", "-clinician"}, description = "Sets the user flag to specify that a Clinician is the query target.")
     private boolean afterClinician = false;
 
-    @Option(names = {"-a","-admin"}, description = "Sets the user flag to specify that an Admin is the query target.")
+    @Option(names = {"-a", "-admin"}, description = "Sets the user flag to specify that an Admin is the query target.")
     private boolean afterAdmin = false;
 
     @Override
@@ -40,19 +40,19 @@ public class View implements Runnable {
         try {
             String id = params[0];
             if (afterClinician) {
-               IoHelper.display(appController.getClinicianBridge().getClinician(id, appController.getToken()).toString());
+                IoHelper.display(appController.getClinicianBridge().getClinician(id, appController.getToken()).toString());
             } else if (afterAdmin) {
                 IoHelper.display(appController.getAdministratorBridge().getAdmin(id, appController.getToken()).toString());
             } else {
                 IoHelper.display(appController.getUserBridge().getUser(id).toString());
             }
-        } catch (IOException e){
+        } catch (IOException e) {
             IoHelper.display("No User by that name was found");
             Log.severe("Io exception somehow occurred", e);
         }
     }
 
-    public void setAppController(AppController appController){
+    public void setAppController(AppController appController) {
         this.appController = appController;
     }
 }

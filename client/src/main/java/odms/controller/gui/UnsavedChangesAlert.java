@@ -19,7 +19,6 @@ public class UnsavedChangesAlert {
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
 
 
-
         return alert.showAndWait();
     }
 }
