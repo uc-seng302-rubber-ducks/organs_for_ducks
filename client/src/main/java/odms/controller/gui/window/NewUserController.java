@@ -764,7 +764,7 @@ public class NewUserController {
         }
 
         LocalDate dob = dobInput.getValue();
-        if (!AttributeValidation.validateDateOfBirth(dob)) {
+        if (!AttributeValidation.validateDateBeforeTomorrow(dob)) {
             String error;
             if (dob == null) {
                 error = "A date of birth must be selected";

@@ -25,6 +25,7 @@ import odms.controller.AppController;
 import odms.controller.gui.StatusBarController;
 import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.panel.*;
+import odms.controller.gui.panel.view.BloodTestViewController;
 import odms.controller.gui.panel.view.UserAppointmentViewController;
 import odms.controller.gui.popup.UserAppointmentAlertController;
 import odms.socket.ServerEventNotifier;
@@ -125,7 +126,11 @@ public class UserController implements PropertyChangeListener {
     private StatusBarController statusBarPageController;
 
     @FXML
-    private UserAppointmentViewController appointmentTabPageController; //</editor-fold>
+    private UserAppointmentViewController appointmentTabPageController;
+
+    @FXML
+    private BloodTestViewController bloodTestTabPageController;
+    //</editor-fold>
 
     private User currentUser;
     private boolean fromClinician;
@@ -155,6 +160,7 @@ public class UserController implements PropertyChangeListener {
             }
         }
         this.stage = stage;
+        stage.setResizable(true);
         application = controller;
         this.fromClinician = fromClinician;
         stage.setMinWidth(1200);
@@ -169,6 +175,7 @@ public class UserController implements PropertyChangeListener {
         diseasesTabPageController.init(controller, user, fromClinician, this);
         receiverTabPageController.init(controller, this.stage, user, fromClinician, this);
         appointmentTabPageController.init(user);
+        bloodTestTabPageController.init(user, fromClinician);
         statusBarPageController.init();
         //arbitrary default values
 

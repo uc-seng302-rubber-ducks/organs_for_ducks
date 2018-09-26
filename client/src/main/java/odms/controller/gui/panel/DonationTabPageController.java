@@ -31,10 +31,7 @@ import odms.controller.gui.window.UserController;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class DonationTabPageController {
 
@@ -327,24 +324,32 @@ public class DonationTabPageController {
     public void removeExpiry() {
         if (currentlyDonating.getItems().size() > 0) {
             if (currentlyDonating.getSelectionModel().getSelectedItem() != null) {
-                Alert alert = new Alert(Alert.AlertType.WARNING,
-                        "please confirm you want to remove the manual expiry for ",
-                        ButtonType.YES, ButtonType.NO);
 
-                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-                Button yesButton = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
-                yesButton.setId("yeseButton");
+                if (organWasDisqualified()) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "You cannot remove an expired organ that was previously disqualified");
+                    alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                    alert.showAndWait();
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.WARNING,
+                            "Please confirm you want to remove the manual expiry for ",
+                            ButtonType.YES, ButtonType.NO);
 
-                Optional<ButtonType> result = alert.showAndWait();
-                if (result.isPresent() && result.get() == ButtonType.YES) {
-                    ExpiryReason expiryReason = currentUser.getDonorDetails().getOrganMap().get(currentlyDonating.getSelectionModel().getSelectedItem().getOrganType());
-                    expiryReason.setName("");
-                    expiryReason.setTimeOrganExpired(null);
-                    expiryReason.setId("");
-                    expiryReason.setReason("");
-                    refreshCurrentlyDonating();
-                    parent.showUser(currentUser);
+                    alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                    Button yesButton = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
+                    yesButton.setId("yeseButton");
+
+                    Optional<ButtonType> result = alert.showAndWait();
+                    if (result.isPresent() && result.get() == ButtonType.YES) {
+                        ExpiryReason expiryReason = currentUser.getDonorDetails().getOrganMap().get(currentlyDonating.getSelectionModel().getSelectedItem().getOrganType());
+                        expiryReason.setName("");
+                        expiryReason.setTimeOrganExpired(null);
+                        expiryReason.setId("");
+                        expiryReason.setReason("");
+                        refreshCurrentlyDonating();
+                        parent.showUser(currentUser);
+                    }
                 }
+
             } else {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION, "Please select an organ to remove an expiry from", ButtonType.OK);
                 alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
@@ -355,6 +360,20 @@ public class DonationTabPageController {
             alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
             alert.showAndWait();
         }
+    }
+
+    /**
+     * Checks if the organ trying to have it's manual expiry removed was a disqualified organ or not
+     * @return true if the organ was disqualified if the user was alive
+     */
+    private boolean organWasDisqualified() {
+        List<OrgansWithDisqualification> userDisqualifications = new ArrayList<>(currentUser.getDonorDetails().getDisqualifiedOrgans());
+        for (OrgansWithDisqualification userDisqualification : userDisqualifications) {
+            if (userDisqualification.getOrganType().equals(currentlyDonating.getSelectionModel().getSelectedItem().getOrganType())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -403,13 +422,13 @@ public class DonationTabPageController {
         showOrHideExpiryTable();
         organsWithExpiries.clear();
         for (Map.Entry<Organs, ExpiryReason> organEntry : organsExpiryReasonMap.entrySet()) {
-            organsWithExpiries.add(new OrgansWithExpiry(organEntry.getKey(), organEntry.getValue(), currentUser.getMomentDeath()));
+            organsWithExpiries.add(new OrgansWithExpiry(organEntry.getKey(), organEntry.getValue(), currentUser.getMomentDeath())); //
         }
         //Add the disqualified organs to the expired organs
         for (OrgansWithDisqualification organ : currentUser.getDonorDetails().getDisqualifiedOrgans()) {
             if (organ.isCurrentlyDisqualified()) {
                 ExpiryReason expiryDetails = new ExpiryReason(organ.getStaffId(), organ.getDate().atStartOfDay(), organ.getReason(), currentUser.getFullName());
-                organsWithExpiries.add(new OrgansWithExpiry(organ.getOrganType(), expiryDetails, currentUser.getMomentDeath()));
+                currentUser.getDonorDetails().getOrganMap().put(organ.getOrganType(), expiryDetails);
             }
         }
         organExpiryColumn.setCellFactory(callback -> ProgressBarTableCellFactory.generateCell(organExpiryColumn));
@@ -461,6 +480,7 @@ public class DonationTabPageController {
         }
         currentlyDonating.refresh();
         parent.refreshCurrentlyReceivingList();
+        parent.refreshHistoryTable();
     }
 
     /**
@@ -534,6 +554,7 @@ public class DonationTabPageController {
         }
         refreshCurrentlyDonating();
         parent.refreshCurrentlyReceivingList();
+        parent.refreshHistoryTable();
     }
 
     /**
@@ -600,11 +621,11 @@ public class DonationTabPageController {
 
             if (isUpdate) {
                 OrgansWithDisqualification organsWithDisqualification = userDisqualifiedOrgansTable.getSelectionModel().getSelectedItem();
-                disqualifyOrganReasonViewController.init(organsWithDisqualification.getOrganType(), currentUser, disqualifyOrganReasonStage, application.getUsername(), observableDisqualifiedOrgans);
+                disqualifyOrganReasonViewController.init(organsWithDisqualification.getOrganType(), currentUser, disqualifyOrganReasonStage, application.getUsername(), observableDisqualifiedOrgans, this);
                 disqualifyOrganReasonViewController.updateMode(userDisqualifiedOrgansTable.getSelectionModel().getSelectedItem());
 
             } else {
-                disqualifyOrganReasonViewController.init(organ, currentUser, disqualifyOrganReasonStage, application.getUsername(), observableDisqualifiedOrgans);
+                disqualifyOrganReasonViewController.init(organ, currentUser, disqualifyOrganReasonStage, application.getUsername(), observableDisqualifiedOrgans, this);
 
             }
 
@@ -612,7 +633,6 @@ public class DonationTabPageController {
             disqualifyOrganReasonStage.setTitle("");
             disqualifyOrganReasonStage.initModality(Modality.APPLICATION_MODAL);
             disqualifyOrganReasonStage.show();
-            refreshCurrentlyDonating();
             updateDisqualifiedOrgan.setDisable(true);
             removeDisqualificationButton.setDisable(true);
             parent.updateUndoRedoButtons();
@@ -636,7 +656,7 @@ public class DonationTabPageController {
             RemoveDisqualificationViewController removeDisqualificationViewController = removeDisqualifiedOrgansLoader.getController();
             Stage removeDisqualifiedStage = new Stage();
 
-            removeDisqualificationViewController.init(userDisqualifiedOrgansTable.getSelectionModel().getSelectedItem(), currentUser, removeDisqualifiedStage, observableDisqualifiedOrgans);
+            removeDisqualificationViewController.init(userDisqualifiedOrgansTable.getSelectionModel().getSelectedItem(), currentUser, removeDisqualifiedStage, observableDisqualifiedOrgans, this);
 
             removeDisqualifiedStage.setScene(new Scene(root));
             removeDisqualifiedStage.setTitle("");

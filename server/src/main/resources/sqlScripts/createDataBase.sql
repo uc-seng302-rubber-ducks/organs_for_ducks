@@ -1,5 +1,6 @@
 DROP EVENT IF EXISTS qualifyOrgans;
 DROP TABLE IF EXISTS DisqualifiedOrgans;
+DROP TABLE IF EXISTS BloodTestDetails;
 DROP TABLE IF EXISTS PreferredClinician;
 DROP TABLE IF EXISTS AppointmentDetails;
 DROP TABLE IF EXISTS AppointmentType;
@@ -308,10 +309,27 @@ CREATE TABLE PreferredClinician (
     ON UPDATE CASCADE
 );
 
-CREATE DEFINER=`seng302-team100`@`%` EVENT `qualifyOrgans` 
-  ON SCHEDULE EVERY 1 DAY ON COMPLETION PRESERVE 
-DISABLE DO 
-  UPDATE DisqualifiedOrgans 
-  set isCurrentlyDisqulifed = 0 
+CREATE DEFINER=`seng302-team100`@`%` EVENT `qualifyOrgans`
+  ON SCHEDULE EVERY 1 DAY ON COMPLETION PRESERVE
+DISABLE DO
+  UPDATE DisqualifiedOrgans
+  set isCurrentlyDisqulifed = 0
   WHERE dateEligable <= CURDATE()
 
+
+CREATE TABLE BloodTestDetails(
+  bloodTestId         INT AUTO_INCREMENT PRIMARY KEY,
+  fkUserNhi           VARCHAR(7),
+  redBloodCellCount   DOUBLE,
+  whiteBloodCellCount DOUBLE,
+  haemoglobinLevel    DOUBLE,
+  platelets           DOUBLE,
+  glucoseLevels       DOUBLE,
+  haematocrit         DOUBLE,
+  meanCellVolume      DOUBLE,
+  meanCellHaematocrit DOUBLE,
+  testDate            DATE,
+  FOREIGN KEY (fkUserNhi) REFERENCES User (nhi)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE
+);
