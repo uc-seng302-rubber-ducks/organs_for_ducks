@@ -200,11 +200,6 @@
                 </Tab>
             </tabs>
         </TabPane>
-        <Label alignment="CENTER" layoutX="199.0" text="Administrator" AnchorPane.leftAnchor="199.0" AnchorPane.rightAnchor="236.0" AnchorPane.topAnchor="0.0">
-            <font>
-                <Font size="24.0" />
-            </font>
-        </Label>
         <Button fx:id="adminUndoButton" layoutX="464.0" layoutY="2.0" mnemonicParsing="false" onAction="#undo"
                 styleClass="button-secondary" text="Undo" AnchorPane.rightAnchor="84.0" AnchorPane.topAnchor="2.0"/>
         <Button fx:id="adminRedoButton" layoutX="525.0" layoutY="2.0" mnemonicParsing="false" onAction="#redo"
