@@ -74,21 +74,6 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         this.dateLastModified = LocalDateTime.now();
     }
 
-    /**
-     * Could this and changeInto be combined somehow?
-     */
-    public static Administrator clone(Administrator admin) {
-        Administrator newAdmin = new Administrator();
-        newAdmin.userName = admin.userName;
-        newAdmin.firstName = admin.firstName;
-        newAdmin.middleName = admin.middleName;
-        newAdmin.lastName = admin.lastName;
-        newAdmin.password = admin.password;
-        newAdmin.salt = admin.salt;
-        newAdmin.dateCreated = admin.dateCreated;
-        newAdmin.dateLastModified = admin.dateLastModified;
-        return newAdmin;
-    }
 
     @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -262,6 +247,9 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         return PasswordManager.isExpectedPassword(passwordAttempt, salt, getPassword());
     }
 
+    /**
+     * Saves the administrator's current state and pushes it onto the undo stack
+     */
     private void saveStateForUndo() {
         //attempt to find out who called this method
         //if the caller is annotated with IgnoreForUndo, skip the memento/cloning process.
@@ -321,6 +309,25 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         getUndoStack().push(new Memento<>(clone(this)));
         Memento<Administrator> memento = getRedoStack().pop();
         this.changeInto(memento.getState());
+    }
+
+
+    /**
+     * Returns the clone of the administrator
+     * @param admin administrator to clone
+     * @return a deep copy of the administrator given
+     */
+    public static Administrator clone(Administrator admin) {
+        Administrator newAdmin = new Administrator();
+        newAdmin.userName = admin.userName;
+        newAdmin.firstName = admin.firstName;
+        newAdmin.middleName = admin.middleName;
+        newAdmin.lastName = admin.lastName;
+        newAdmin.password = admin.password;
+        newAdmin.salt = admin.salt;
+        newAdmin.dateCreated = admin.dateCreated;
+        newAdmin.dateLastModified = admin.dateLastModified;
+        return newAdmin;
     }
 
     /**
