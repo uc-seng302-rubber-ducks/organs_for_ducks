@@ -105,12 +105,17 @@
                       </Tab>
                       <Tab text="Appointments">
                           <content>
-                              <fx:include fx:id="appointmentTabPage" source="userAppointmentView.fxml"/>
+                              <fx:include fx:id="appointmentTabPage" source="userAppointmentView.fxml" />
                           </content>
                       </Tab>
+                  <Tab text="Blood Test">
+                    <content>
+                        <fx:include fx:id="bloodTestTabPage" source="BloodTestPanel.fxml" />
+                    </content>
+                  </Tab>
                   </tabs>
               </TabPane>
-              <AnchorPane fx:id="StatusBar" AnchorPane.bottomAnchor="-5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="814.0" AnchorPane.topAnchor="649.0">
+              <AnchorPane fx:id="StatusBar" layoutY="770.0" prefHeight="35.0" prefWidth="386.0" AnchorPane.bottomAnchor="-5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="814.0" AnchorPane.topAnchor="770.0">
                   <children>
                       <fx:include fx:id="statusBarPage" source="statusBar.fxml" />
                   </children>

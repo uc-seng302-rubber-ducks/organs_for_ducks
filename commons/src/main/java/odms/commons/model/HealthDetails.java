@@ -1,6 +1,11 @@
 package odms.commons.model;
 
 
+import odms.commons.model.datamodel.BloodTest;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Class for health details for a user
  */
@@ -15,6 +20,8 @@ public class HealthDetails {
     private Double weight;
     private transient String weightText; //NOSONAR
     private String bloodType;
+    private List<BloodTest> bloodTests;
+
 
     public HealthDetails() {
         this.birthGender = "";
@@ -26,8 +33,12 @@ public class HealthDetails {
         this.heightText = "";
         this.weightText = "";
         this.bloodType = "";
+        this.bloodTests = new ArrayList<>();
     }
 
+    public void addNewBloodTest(BloodTest bloodTest){
+        bloodTests.add(bloodTest);
+    }
 
     public Double getHeight() {
         return height;
@@ -51,7 +62,14 @@ public class HealthDetails {
 
     public void setHeightText(String height) {
         this.heightText = height;
+    }
 
+    public List<BloodTest> getBloodTests() {
+        return bloodTests;
+    }
+
+    public void setBloodTests(List<BloodTest> bloodTests) {
+        this.bloodTests = bloodTests;
     }
 
     public String getWeightText() {

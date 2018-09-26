@@ -39,6 +39,7 @@ public class AlertWindowFactory {
         alert.setTitle("Info");
         alert.setHeaderText(null);
         alert.setContentText(message);
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
 
         alert.showAndWait();
     }
@@ -61,8 +62,10 @@ public class AlertWindowFactory {
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         Button okButton = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
         okButton.setId("okButton");
+        okButton.setText("Yes");
         Button cancelButton = (Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL);
         cancelButton.setId("cancelButton");
+        cancelButton.setText("No");
 
         return alert.showAndWait();
     }

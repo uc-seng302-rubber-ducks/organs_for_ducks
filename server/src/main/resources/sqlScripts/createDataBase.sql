@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS BloodTestDetails;
 DROP TABLE IF EXISTS PreferredClinician;
 DROP TABLE IF EXISTS AppointmentDetails;
 DROP TABLE IF EXISTS AppointmentType;
@@ -283,4 +284,21 @@ CREATE TABLE PreferredClinician (
   FOREIGN KEY (fkStaffId) REFERENCES Clinician (staffId)
     ON DELETE CASCADE
     ON UPDATE CASCADE
+);
+
+CREATE TABLE BloodTestDetails(
+  bloodTestId         INT AUTO_INCREMENT PRIMARY KEY,
+  fkUserNhi           VARCHAR(7),
+  redBloodCellCount   DOUBLE,
+  whiteBloodCellCount DOUBLE,
+  haemoglobinLevel    DOUBLE,
+  platelets           DOUBLE,
+  glucoseLevels       DOUBLE,
+  haematocrit         DOUBLE,
+  meanCellVolume      DOUBLE,
+  meanCellHaematocrit DOUBLE,
+  testDate            DATE,
+  FOREIGN KEY (fkUserNhi) REFERENCES User (nhi)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE
 );

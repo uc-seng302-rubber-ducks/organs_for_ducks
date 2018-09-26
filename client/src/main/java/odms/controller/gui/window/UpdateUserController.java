@@ -874,7 +874,7 @@ public class UpdateUserController {
             valid = false;
         }
 
-        if (!AttributeValidation.validateDateOfBirth(dob)) {
+        if (!AttributeValidation.validateDateBeforeTomorrow(dob)) {
             invalidateTextField(dobInput);
             dobErrorLabel.setVisible(true);
             valid = false;
