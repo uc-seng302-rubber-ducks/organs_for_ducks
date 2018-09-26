@@ -185,6 +185,7 @@ public class UpdateUserController {
     private String defaultCountry = "New Zealand";
     private UserController userController;
     private boolean isNewZealand;
+    private boolean changed = false;
 
 
     /**
@@ -332,7 +333,7 @@ public class UpdateUserController {
         dp.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (listen) {
                 dp.getStyleClass().remove("invalid");
-                stage.setTitle(stage.getTitle().endsWith("*") ? stage.getTitle() : stage.getTitle() + "*");
+                changed = true;
             }
         });
     }
@@ -345,7 +346,7 @@ public class UpdateUserController {
     private void addCheckBoxListener(CheckBox checkBox) {
         checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (listen) {
-                stage.setTitle(stage.getTitle().endsWith("*") ? stage.getTitle() : stage.getTitle() + "*");
+                changed = true;
             }
         });
     }
@@ -400,7 +401,7 @@ public class UpdateUserController {
     private void comboBoxListener(ComboBox<String> cb) {
         cb.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (listen) {
-                stage.setTitle(stage.getTitle().endsWith("*") ? stage.getTitle() : stage.getTitle() + "*");
+                changed = true;
             }
         });
     }
@@ -414,7 +415,7 @@ public class UpdateUserController {
         field.textProperty().addListener((observable, oldValue, newValue) -> {
             if (listen) {
                 field.getStyleClass().remove("invalid");
-                stage.setTitle(stage.getTitle().endsWith("*") ? stage.getTitle() : stage.getTitle() + "*");
+                changed = true;
             }
         });
 
@@ -1353,7 +1354,7 @@ public class UpdateUserController {
      */
     @FXML
     void goBack() {
-        if (stage.getTitle().endsWith("*")) { // has changes
+        if (changed) { // has changes
             Alert alert = new Alert(Alert.AlertType.WARNING,
                     "You have unsaved changes, would you like to save these changes?",
                     ButtonType.YES, ButtonType.NO);
