@@ -1,10 +1,7 @@
 package odms.TestUtils;
 
 import javafx.event.ActionEvent;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import org.testfx.framework.junit.ApplicationTest;
 
 import java.time.LocalDate;
@@ -19,6 +16,12 @@ public class FxRobotHelper {
     public static void setTextField(ApplicationTest app, String query, String text) {
         app.interact(() -> {
             app.lookup(query).queryAs(TextField.class).setText(text);
+        });
+    }
+
+    public static void setTextArea(ApplicationTest app, String query, String text) {
+        app.interact(() -> {
+            app.lookup(query).queryAs(TextArea.class).setText(text);
         });
     }
 

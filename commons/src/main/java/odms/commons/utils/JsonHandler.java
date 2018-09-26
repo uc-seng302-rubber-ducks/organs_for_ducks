@@ -8,6 +8,7 @@ import com.google.gson.reflect.TypeToken;
 import odms.commons.model.*;
 import odms.commons.model._enum.Directory;
 import odms.commons.model.datamodel.AvailableOrganDetail;
+import odms.commons.model.datamodel.OrgansWithDisqualification;
 import odms.commons.model.datamodel.BloodTest;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.model.dto.LoginResponse;
@@ -421,6 +422,16 @@ public class JsonHandler extends DataHandler {
     public Collection<LocalDateTime> decodeDateTimes(String bodyString) {
         return new Gson().fromJson(bodyString, new TypeToken<Collection<LocalDateTime>>(){
 
+        }.getType());
+    }
+
+    /**
+     * Decodes raw json stirng into a collection of OrgansWithDisqualification
+     * @param bodyString raw json string
+     * @return Collection of OrgansWithDisqualifications
+     */
+    public List<OrgansWithDisqualification> decodeDisqualified(String bodyString) {
+        return new Gson().fromJson(bodyString, new TypeToken<List<OrgansWithDisqualification>>() {
         }.getType());
     }
 

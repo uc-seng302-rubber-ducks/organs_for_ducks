@@ -103,10 +103,12 @@ public class DBHandler {
             "JOIN HealthDetails ON OrganDonating.fkUserNhi = HealthDetails.fkUserNhi " +
             "JOIN User U ON DeathDetails.fkUserNhi = U.nhi " +
             "JOIN OrganExpiryDetails OED ON OrganDonating.donatingId = OED.fkDonatingId " +
+            "LEFT JOIN DisqualifiedOrgans D ON Organ.organId = D.fkOrgan And U.nhi = D.fkUserNhi " +
             "WHERE (bloodType LIKE ? OR bloodType IS NULL)" +
             "AND (organName LIKE ? OR organName IS NULL )" +
             "AND (DeathDetails.region LIKE ? OR DeathDetails.region IS NULL) " +
-            "AND (OED.timeOfExpiry IS NULL ) " +
+            "AND (OED.timeOfExpiry is NULL ) " +
+            "AND (D.isCurrentlyDisqualified = 0 OR D.isCurrentlyDisqualified is NULL ) " +
             "LIMIT ? OFFSET ?";
     private static final String SELECT_AVAILABLE_ORGANS_BY_NHI = "SELECT * FROM OrganDonating " +
             "JOIN DeathDetails ON OrganDonating.fkUserNhi = DeathDetails.fkUserNhi " +
@@ -202,9 +204,6 @@ public class DBHandler {
     }
 
 
-
-
-
     /**
      * gets the info of a single administrator
      *
@@ -281,7 +280,6 @@ public class DBHandler {
     }
 
 
-
     /**
      * Gets info of a single user based on user NHI provided
      *
@@ -319,6 +317,7 @@ public class DBHandler {
                         getUserContact(user, connection);
                         getUserEmergencyContact(user, connection);
                         getDeathDetails(user, connection);
+                        getUserDisqualifiedOrgans(user, connection);
                     } catch (SQLException e) {
                         Log.warning("Unable to create instance of user with nhi " + user.getNhi(), e);
                         throw e;
@@ -621,6 +620,17 @@ public class DBHandler {
                 }
             }
         }
+    }
+
+    /**
+     * Gets a users disqualified organs form the database and adds it to the user
+     * @param user to get the disqualifications for
+     * @param connection to the database
+     * @throws SQLException if the is an error with the retrieval of the disqualifications
+     */
+    private void getUserDisqualifiedOrgans(User user, Connection connection) throws SQLException {
+        DisqualifiedOrgansHandler disqualifiedOrgansHandler = new DisqualifiedOrgansHandler();
+        user.getDonorDetails().getDisqualifiedOrgans().addAll(disqualifiedOrgansHandler.getDisqualifiedOrgans(connection, user.getNhi()));
     }
 
     /**

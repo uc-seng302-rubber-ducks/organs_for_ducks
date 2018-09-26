@@ -445,6 +445,7 @@ public class UserController implements PropertyChangeListener {
     @FXML
     private void undo() {
         currentUser.undo();
+        donationTabPageController.refreshDisqualifiedOrgans();
         updateUndoRedoButtons();
         showUser(currentUser);
     }
@@ -456,6 +457,7 @@ public class UserController implements PropertyChangeListener {
     @FXML
     private void redo() {
         currentUser.redo();
+        donationTabPageController.refreshDisqualifiedOrgans();
         updateUndoRedoButtons();
         showUser(currentUser);
     }
