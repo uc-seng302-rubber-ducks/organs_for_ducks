@@ -12,6 +12,11 @@ public class BloodTestUtils {
 
     private static boolean assigned;
 
+    /**
+     * Applies error css to the given node
+     *
+     * @param node The node to be invalidated
+     */
     public static void invalidateNode(Node node) {
         node.getStyleClass().add("invalid");
     }
@@ -45,12 +50,12 @@ public class BloodTestUtils {
         } else if (value == 0.0) {
             assigned = false;
         } else if (value > (bloodTestProperties.getUpperBound()) * 5.0) {
-            label.setText("That number is too large, the max number is " + df2.format(bloodTestProperties.getUpperBound() * 5.0));
+            label.setText("The max number allowed is " + df2.format(bloodTestProperties.getUpperBound() * 5.0));
             label.setVisible(true);
             invalidateNode(textField);
             valid = false;
         } else if (value < (bloodTestProperties.getLowerBound() / 5.0)) {
-            label.setText("That number is too small, the min number is " + df2.format(bloodTestProperties.getLowerBound() / 5.0));
+            label.setText("The min number allowed is " + df2.format(bloodTestProperties.getLowerBound() / 5.0));
             label.setVisible(true);
             invalidateNode(textField);
             valid = false;

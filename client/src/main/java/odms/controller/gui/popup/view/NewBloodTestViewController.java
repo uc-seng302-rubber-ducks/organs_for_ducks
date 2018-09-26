@@ -9,7 +9,6 @@ import odms.commons.model.User;
 import odms.commons.model._enum.BloodTestProperties;
 import odms.commons.utils.AttributeValidation;
 import odms.controller.gui.popup.logic.NewBloodTestLogicController;
-import odms.controller.gui.popup.utils.AlertWindowFactory;
 
 import static odms.commons.utils.BloodTestUtils.*;
 
@@ -51,6 +50,8 @@ public class NewBloodTestViewController {
     private Label haematocritError;
     @FXML
     private Label meanCellHaematocritError;
+    @FXML
+    private Label noPropertyPopupErrorLabel;
 
     private NewBloodTestLogicController logicController;
     private boolean atLeastOneValue = false;
@@ -86,7 +87,8 @@ public class NewBloodTestViewController {
     /**
      * resets the error label to be hidden
      */
-    private void resetErrorLabels(){
+    private void resetErrorLabels() {
+        noPropertyPopupErrorLabel.setVisible(false);
         dateErrorLabel.setVisible(false);
         redBloodCellError.setVisible(false);
         whiteBloodCellError.setVisible(false);
@@ -136,6 +138,7 @@ public class NewBloodTestViewController {
     @FXML
     private void addBloodTest() {
         resetErrorLabels();
+        atLeastOneValue = false;
         testDate.getStyleClass().remove("invalid");
         if (validateField()) {
             if (atLeastOneValue) {
@@ -143,10 +146,8 @@ public class NewBloodTestViewController {
                         heamoglobin.getText(), platelets.getText(), glucose.getText(), meanCellVolume.getText(),
                         haematocrit.getText(), meanCellHaematocrit.getText());
             } else {
-                AlertWindowFactory.generateAlertWindow("You must have provided at least one blood field property.");
+                noPropertyPopupErrorLabel.setVisible(true);
             }
-        } else {
-            AlertWindowFactory.generateAlertWindow("You must have provided at least one blood field property.");
         }
     }
 }

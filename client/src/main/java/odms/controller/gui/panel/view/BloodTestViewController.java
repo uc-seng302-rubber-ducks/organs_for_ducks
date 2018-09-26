@@ -85,6 +85,9 @@ public class BloodTestViewController {
     @FXML
     private Label bloodTestErrorMCHaematocritLabel;
     @FXML
+    private Label noPropertyErrorLabel;
+
+    @FXML
     private TableView<BloodTest> bloodTestTableView;
     @FXML
     private TableColumn<BloodTest, LocalDate> testDateColumn;
@@ -150,6 +153,7 @@ public class BloodTestViewController {
      * when a different blood test is selected.
      */
     private void resetErrorLabels() {
+        noPropertyErrorLabel.setVisible(false);
         bloodTestErrorDateLabel.setVisible(false);
         bloodTestErrorRCCountLabel.setVisible(false);
         bloodTestErrorWCCountLabel.setVisible(false);
@@ -270,10 +274,9 @@ public class BloodTestViewController {
             if (fromClinician) {
                 return "";
             } else {
-                return "This property was not tested";
+                return "Not tested";
             }
         }
-
         return Double.toString(value);
     }
 
@@ -310,9 +313,9 @@ public class BloodTestViewController {
      * @return returns true if all properties are valid
      */
     private boolean validateField() {
-        boolean fieldValid = true;
+        boolean fieldValid;
         boolean atLeastOneValue = false;
-        fieldValid &= bloodTestValidation(redBloodCount,bloodTestErrorRCCountLabel,BloodTestProperties.RBC);
+        fieldValid = bloodTestValidation(redBloodCount, bloodTestErrorRCCountLabel, BloodTestProperties.RBC);
         atLeastOneValue |= isAssigned();
         fieldValid &= bloodTestValidation(whiteBloodCount,bloodTestErrorWCCountLabel,BloodTestProperties.WBC);
         atLeastOneValue |= isAssigned();
@@ -328,10 +331,14 @@ public class BloodTestViewController {
         atLeastOneValue |= isAssigned();
         fieldValid &= bloodTestValidation(meanCellHaematocrit, bloodTestErrorMCHaematocritLabel, BloodTestProperties.MEAN_CELL_HAEMATOCRIT);
         atLeastOneValue |= isAssigned();
-        if(!AttributeValidation.validateDateBeforeTomorrow(bloodTestDatePicker.getValue())){
+        if (!AttributeValidation.validateDateBeforeTomorrow(bloodTestDatePicker.getValue())) {
             bloodTestDateLabel.setVisible(true);
             invalidateNode(bloodTestDatePicker);
             fieldValid = false;
+        }
+
+        if (!atLeastOneValue) {
+            noPropertyErrorLabel.setVisible(true);
         }
         return fieldValid && atLeastOneValue;
 
@@ -343,6 +350,7 @@ public class BloodTestViewController {
      */
     @FXML
     private void updateBloodTest() {
+        noPropertyErrorLabel.setVisible(false);
         if (bloodTestTableView.getSelectionModel().getSelectedItem() != null) {
             if (validateField()) {
                 bloodTest.setGlucoseLevels(AttributeValidation.validateDouble(glucose.getText()));
@@ -356,8 +364,6 @@ public class BloodTestViewController {
                 bloodTest.setTestDate(bloodTestDatePicker.getValue());
                 logicController.updateBloodTest(bloodTest);
                 AlertWindowFactory.generateInfoWindow("Blood Test on: " + bloodTest.getTestDate() + " updated");
-            } else {
-                AlertWindowFactory.generateError("You have invalid fields. Make sure at least one blood test property is present.");
             }
         } else {
             AlertWindowFactory.generateError("You must select a blood test to update");
