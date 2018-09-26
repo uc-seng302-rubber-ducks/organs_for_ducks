@@ -18,6 +18,10 @@ public class EmergencyContact extends ContactDetails {
 
     /**
      * Constructor for emergency contact
+     *
+     * @param name name of the contact
+     * @param relationship relationship to the user
+     * @param cell contact number for the contact
      */
     public EmergencyContact(String name, String relationship, String cell) {
         super("", cell, new Address("", "", "", "", "", "", ""), "");
@@ -26,7 +30,16 @@ public class EmergencyContact extends ContactDetails {
     }
 
 
-    //TODO: Simplify constructor to take less arguments 17/05/18
+    /**
+     *  Constructor for emergency contact
+     *
+     * @param ename name of the contact
+     * @param eCellPhone cellphone contact number for the contact
+     * @param homePhoneNumber home contact number for the contact
+     * @param address physical address
+     * @param email email address for the contact
+     * @param relationship relationship to the user
+     */
     public EmergencyContact(String ename, String eCellPhone, String homePhoneNumber, Address address, String email, String relationship) {
         name = ename;
         super.setAddress(address);
