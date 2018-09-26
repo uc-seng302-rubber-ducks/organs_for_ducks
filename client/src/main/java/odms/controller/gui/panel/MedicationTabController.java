@@ -200,6 +200,7 @@ public class MedicationTabController {
             previousMedicationListView.setItems(previousMeds);
         }
 
+        parent.refreshHistoryTable();
         currentMedicationListView.refresh();
         previousMedicationListView.refresh();
     }

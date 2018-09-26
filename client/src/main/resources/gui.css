@@ -136,6 +136,28 @@
     -fx-background-color: #b7b6b6;
     -fx-border-color: #b7b6b6;
 }
+
+.undo-button {
+    -fx-background-image: url("./icons/undo.png");
+    -fx-background-size: 30px 30px;
+    -fx-pref-width: 30px;
+    -fx-pref-height: 30px;
+}
+
+.redo-button {
+    -fx-background-image: url("./icons/redo.png");
+    -fx-background-size: 30px, 30px;
+    -fx-pref-width: 30px;
+    -fx-pref-height: 30px;
+}
+
+.save-button {
+    -fx-background-image: url("./icons/save.png");
+    -fx-background-size: 30px 30px;
+    -fx-pref-width: 30px;
+    -fx-pref-height: 30px;
+}
+
 /****************************************
 *                                       *
 * TEXT_FIELD                            *
@@ -442,7 +464,6 @@
 }
 
 .toggle-button {
-
     -fx-border-style: solid;
     -fx-font-size: 12px;
     -fx-font-weight: bold;
@@ -468,5 +489,59 @@
     -fx-border-color: #b7b6b6
 }
 
+/************************************
+ *                                  *
+ * LINE CHART GRAPH                 *
+ *                                  *
+ ************************************/
 
+.chart-plot-background {
+    -fx-background-color: WHITE;
+    -fx-border-color: #B2C8D2;
+    -fx-border-width: 2px;
+}
+
+.chart-vertical-grid-lines {
+    -fx-stroke: transparent;
+}
+
+.chart-horizontal-grid-lines {
+    -fx-stroke: #B2C8D2;
+}
+
+.chart-series-line {
+    -fx-stroke-width: 2px;
+}
+
+.default-color0.chart-series-line {
+    -fx-stroke-width: 3px;
+    -fx-stroke: #00b3b3;
+}
+
+.default-color1.chart-series-line {
+    -fx-stroke: rgba(0%, 100%, 0%, 0.1);
+}
+
+.default-color2.chart-series-line {
+    -fx-stroke: rgba(0%, 100%, 0%, 0.1);
+}
+
+.chart-title {
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.axis-label {
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+.label-color0 {
+    -fx-background-color: #00b3b3;
+}
+
+.label-color1 {
+    -fx-background-color: rgba(0%, 100%, 0%, 0.1);
+    -fx-border-color: rgba(0%, 100%, 0%, 0.1);
+}
 
