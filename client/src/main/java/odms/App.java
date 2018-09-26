@@ -7,6 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import odms.commons.config.ConfigPropertiesSession;
@@ -18,6 +19,7 @@ import odms.controller.gui.window.LoginController;
 import utils.AppConfigurator;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Optional;
 
 /**
@@ -81,6 +83,16 @@ public class App extends Application {
             }
 
         });
+
+        URL url = getClass().getResource("/logos/LoveDuck.png");
+//        URL url = getClass().getResource("/logos/HeartDuck.png");
+        if (url == null) {
+            Log.warning("Could not load the icon for the taskbar. Check that the filepath is correct");
+        } else {
+            javafx.scene.image.Image image = new Image(url.openStream());
+            primaryStage.getIcons().add(image);
+        }
+
 
         loginController.init(controller, primaryStage);
         primaryStage.show();
