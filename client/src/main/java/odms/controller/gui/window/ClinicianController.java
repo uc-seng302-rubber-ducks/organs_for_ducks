@@ -212,8 +212,9 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         EventHandler<WindowEvent> closeEvent = stage.getOnCloseRequest();
         stage.setOnCloseRequest(e -> {
             availableOrgansViewController.shutdownThreads();
-            closeEvent.handle(e);
-
+            if (closeEvent != null) {
+                closeEvent.handle(e);
+            }
         });
 
         displayImage(profileImage, clinician.getProfilePhotoFilePath());
