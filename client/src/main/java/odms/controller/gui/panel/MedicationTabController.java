@@ -219,6 +219,7 @@ public class MedicationTabController {
             Log.info("Medication: " + medication + " already exist, updated GUI instead of adding new medication for User NHI: " + currentUser.getNhi());
             return;
         }
+        currentUser.getRedoStack().clear();
         currentUser.saveStateForUndo();
         medicationTextField.setText("");
         currentMeds.add(medication);
