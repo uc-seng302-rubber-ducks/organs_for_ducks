@@ -178,6 +178,9 @@
               <Font size="20.0" />
           </font>
       </Label>
+        <Button onAction="#save" AnchorPane.rightAnchor="70.0" AnchorPane.topAnchor="2.0" styleClass="button-secondary, save-button" text="">
+            <tooltip><Tooltip text="Save"/></tooltip>
+        </Button>
         <Button fx:id="undoButton" layoutX="481.0" layoutY="5.0" mnemonicParsing="false" onAction="#undo"
                 styleClass="button-secondary, undo-button" text="Undo" AnchorPane.rightAnchor="38.0"
                 AnchorPane.topAnchor="5.0"/>

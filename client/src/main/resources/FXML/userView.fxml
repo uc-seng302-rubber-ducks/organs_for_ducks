@@ -2,7 +2,6 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0"
             prefWidth="1200.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.UserController">
@@ -133,11 +132,10 @@
                 </Menu>
               </menus>
             </MenuBar>
-              <Label text="User" AnchorPane.leftAnchor="395.0" AnchorPane.rightAnchor="432.0">
-                  <font>
-                      <Font size="29.0" />
-                  </font>
-              </Label>
+              <Label text="User" AnchorPane.leftAnchor="395.0" AnchorPane.rightAnchor="432.0"/>
+             <Button onAction="#save" AnchorPane.rightAnchor="70.0" AnchorPane.topAnchor="2.0" styleClass="button-secondary, save-button" text="">
+                 <tooltip><Tooltip text="Save"/></tooltip>
+             </Button>
              <Button fx:id="undoButton" layoutX="1132.0" layoutY="2.0" maxHeight="50" maxWidth="50"
                      mnemonicParsing="false" onAction="#undo" styleClass="button-secondary, undo-button" text=""
                      AnchorPane.rightAnchor="38.0" AnchorPane.topAnchor="2.0">

@@ -150,6 +150,14 @@
     -fx-pref-width: 30px;
     -fx-pref-height: 30px;
 }
+
+.save-button {
+    -fx-background-image: url("./icons/save.png");
+    -fx-background-size: 30px 30px;
+    -fx-pref-width: 30px;
+    -fx-pref-height: 30px;
+}
+
 /****************************************
 *                                       *
 * TEXT_FIELD                            *
