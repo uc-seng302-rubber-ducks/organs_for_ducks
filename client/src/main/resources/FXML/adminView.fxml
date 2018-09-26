@@ -206,9 +206,11 @@
             </font>
         </Label>
         <Button fx:id="adminUndoButton" layoutX="464.0" layoutY="2.0" mnemonicParsing="false" onAction="#undo"
-                styleClass="button-secondary" text="Undo" AnchorPane.rightAnchor="84.0" AnchorPane.topAnchor="2.0"/>
+                styleClass="button-secondary, undo-button" text="Undo" AnchorPane.rightAnchor="38.0"
+                AnchorPane.topAnchor="2.0"/>
         <Button fx:id="adminRedoButton" layoutX="525.0" layoutY="2.0" mnemonicParsing="false" onAction="#redo"
-                styleClass="button-secondary" text="Redo" AnchorPane.rightAnchor="23.0" AnchorPane.topAnchor="2.0"/>
+                styleClass="button-secondary, redo-button" text="Redo" AnchorPane.rightAnchor="6.0"
+                AnchorPane.topAnchor="2.0"/>
         <AnchorPane fx:id="StatusBar" AnchorPane.bottomAnchor="-5.0">
             <children>
                 <fx:include fx:id="statusBarPage" source="statusBar.fxml" />

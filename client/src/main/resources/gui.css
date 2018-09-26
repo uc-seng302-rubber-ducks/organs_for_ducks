@@ -136,6 +136,20 @@
     -fx-background-color: #b7b6b6;
     -fx-border-color: #b7b6b6;
 }
+
+.undo-button {
+    -fx-background-image: url("./icons/undo.png");
+    -fx-background-size: 30px 30px;
+    -fx-pref-width: 30px;
+    -fx-pref-height: 30px;
+}
+
+.redo-button {
+    -fx-background-image: url("./icons/redo.png");
+    -fx-background-size: 30px, 30px;
+    -fx-pref-width: 30px;
+    -fx-pref-height: 30px;
+}
 /****************************************
 *                                       *
 * TEXT_FIELD                            *

@@ -179,8 +179,10 @@
           </font>
       </Label>
         <Button fx:id="undoButton" layoutX="481.0" layoutY="5.0" mnemonicParsing="false" onAction="#undo"
-                styleClass="button-secondary" text="Undo" AnchorPane.rightAnchor="86.0" AnchorPane.topAnchor="5.0"/>
+                styleClass="button-secondary, undo-button" text="Undo" AnchorPane.rightAnchor="38.0"
+                AnchorPane.topAnchor="5.0"/>
         <Button fx:id="redoButton" layoutX="545.0" layoutY="5.0" mnemonicParsing="false" onAction="#redo"
-                styleClass="button-secondary" text="Redo" AnchorPane.rightAnchor="22.0" AnchorPane.topAnchor="5.0"/>
+                styleClass="button-secondary, redo-button" text="Redo" AnchorPane.rightAnchor="6.0"
+                AnchorPane.topAnchor="5.0"/>
     </children>
 </AnchorPane>
