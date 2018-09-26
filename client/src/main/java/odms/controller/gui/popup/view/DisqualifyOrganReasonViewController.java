@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.OrgansWithDisqualification;
+import odms.controller.gui.panel.DonationTabPageController;
 import odms.controller.gui.popup.logic.DisqualifyOrganReasonLogicController;
 
 public class DisqualifyOrganReasonViewController {
@@ -33,6 +34,7 @@ public class DisqualifyOrganReasonViewController {
     private Organs disqualifiedOrgan;
     private String staffId;
     private Stage stage;
+    private DonationTabPageController controller;
 
 
     /**
@@ -41,7 +43,7 @@ public class DisqualifyOrganReasonViewController {
      * @param user          Current user
      * @param stage         The applications stage.
      */
-    public void init(Organs disqualifiedOrgan, User user, Stage stage, String staffId, ObservableList<OrgansWithDisqualification> disqualifiedOrgans) {
+    public void init(Organs disqualifiedOrgan, User user, Stage stage, String staffId, ObservableList<OrgansWithDisqualification> disqualifiedOrgans, DonationTabPageController controller) {
         stage.setResizable(false);
         this.stage = stage;
         this.disqualifiedOrgan = disqualifiedOrgan;
@@ -53,6 +55,7 @@ public class DisqualifyOrganReasonViewController {
         disqualifyOrganDescriptionRulesLabel.setText("Must not be empty.\n" +
                                                      "Max 255 characters.\n" +
                                                      "Alphanumeric, apostrophe, and hyphen characters only.");
+        this.controller = controller;
 
     }
 
@@ -113,6 +116,7 @@ public class DisqualifyOrganReasonViewController {
         boolean validDescription = validateDescription();
         if (validDate && validDescription) {
             logicController.confirm(disqualifiedOrgan, eligibleDateInput.getValue(), disqualifyOrganDescriptionInput.getText(), staffId);
+            controller.refreshCurrentlyDonating();
             stage.close();
         }
     }
