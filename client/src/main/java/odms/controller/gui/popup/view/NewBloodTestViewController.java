@@ -1,12 +1,10 @@
 package odms.controller.gui.popup.view;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import odms.bridge.BloodTestBridge;
 import odms.commons.model.User;
 import odms.commons.model._enum.BloodTestProperties;
 import odms.commons.utils.AttributeValidation;
@@ -36,10 +34,6 @@ public class NewBloodTestViewController {
     @FXML
     private  TextField meanCellHaematocrit;
     @FXML
-    private Button addBloodTest;
-    @FXML
-    private Button cancelBloodTest;
-    @FXML
     private Label dateErrorLabel;
     @FXML
     private Label redBloodCellError;
@@ -58,12 +52,16 @@ public class NewBloodTestViewController {
     @FXML
     private Label meanCellHaematocritError;
 
-
-
     private NewBloodTestLogicController logicController;
     private boolean atLeastOneValue = false;
 
-    public void init(User user, Stage stage, BloodTestBridge bloodTestBridge){
+    /**
+     * Initializes the pop-up to add a new blood test
+     *
+     * @param user  The user who the blood test is for
+     * @param stage The new stage
+     */
+    public void init(User user, Stage stage) {
         this.logicController = new NewBloodTestLogicController(user,stage);
         resetErrorLabels();
         textFieldListener(redBloodCount);
@@ -77,6 +75,9 @@ public class NewBloodTestViewController {
         datePickerListener(testDate);
     }
 
+    /**
+     * Closes the pop-up
+     */
     @FXML
     public void cancel() {
         logicController.cancel();
@@ -98,31 +99,39 @@ public class NewBloodTestViewController {
     }
 
     /**
-     * check that all blood test properties are valid
+     * Checks that all blood test properties are valid are that at least one field is filled out.
+     *
      * @return returns true if all properties are valid
      */
     private boolean validateField() {
-        boolean fieldValid = true;
-        fieldValid &= bloodTestValidation(redBloodCount,redBloodCellError,BloodTestProperties.RBC);
-        fieldValid &= bloodTestValidation(whiteBloodCount,whiteBloodCellError,BloodTestProperties.WBC);
-        fieldValid &= bloodTestValidation(heamoglobin,heamoglobinError,BloodTestProperties.HAEMOGLOBIN);
-        fieldValid &= bloodTestValidation(platelets,plateletsError,BloodTestProperties.PLATELETS);
-        fieldValid &= bloodTestValidation(glucose,glucoseError,BloodTestProperties.GLUCOSE);
+        boolean fieldValid;
+        fieldValid = bloodTestValidation(redBloodCount, redBloodCellError, BloodTestProperties.RBC);
+        atLeastOneValue |= isAssigned();
+        fieldValid &= bloodTestValidation(whiteBloodCount, whiteBloodCellError, BloodTestProperties.WBC);
+        atLeastOneValue |= isAssigned();
+        fieldValid &= bloodTestValidation(heamoglobin, heamoglobinError, BloodTestProperties.HAEMOGLOBIN);
+        atLeastOneValue |= isAssigned();
+        fieldValid &= bloodTestValidation(platelets, plateletsError, BloodTestProperties.PLATELETS);
+        atLeastOneValue |= isAssigned();
+        fieldValid &= bloodTestValidation(glucose, glucoseError, BloodTestProperties.GLUCOSE);
+        atLeastOneValue |= isAssigned();
         fieldValid &= bloodTestValidation(meanCellVolume, meanCellVolumeError, BloodTestProperties.MEAN_CELL_VOLUME);
+        atLeastOneValue |= isAssigned();
         fieldValid &= bloodTestValidation(haematocrit, haematocritError, BloodTestProperties.HAEMATOCRIT);
+        atLeastOneValue |= isAssigned();
         fieldValid &= bloodTestValidation(meanCellHaematocrit, meanCellHaematocritError, BloodTestProperties.MEAN_CELL_HAEMATOCRIT);
-        if(!AttributeValidation.validateDateBeforeTomorrow(testDate.getValue())){
+        atLeastOneValue |= isAssigned();
+        if (!AttributeValidation.validateDateBeforeTomorrow(testDate.getValue())) {
             dateErrorLabel.setVisible(true);
             invalidateNode(testDate);
             fieldValid = false;
         }
-
         return fieldValid;
-
     }
 
+
     /**
-     * a method to add a new blood test to a user
+     * A method to add a new blood test to a user
      */
     @FXML
     private void addBloodTest() {
@@ -133,13 +142,11 @@ public class NewBloodTestViewController {
                 logicController.addBloodTest(testDate.getValue(), redBloodCount.getText(), whiteBloodCount.getText(),
                         heamoglobin.getText(), platelets.getText(), glucose.getText(), meanCellVolume.getText(),
                         haematocrit.getText(), meanCellHaematocrit.getText());
+            } else {
+                AlertWindowFactory.generateAlertWindow("You must have provided at least one blood field property.");
             }
         } else {
-            AlertWindowFactory.generateAlertWindow("you must have provided at least one blood field property.");
+            AlertWindowFactory.generateAlertWindow("You must have provided at least one blood field property.");
         }
     }
-
-
-
-
 }

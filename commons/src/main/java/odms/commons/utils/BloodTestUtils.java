@@ -10,32 +10,47 @@ import java.text.DecimalFormat;
 
 public class BloodTestUtils {
 
+    private static boolean assigned;
+
     public static void invalidateNode(Node node) {
         node.getStyleClass().add("invalid");
     }
 
     /**
-     * a method to check blood test properties and set error labels if they are invalid
+     * Checks if a blood test field has been added
+     *
+     * @return true if the blood test field was added, false if it was left blank
+     */
+    public static boolean isAssigned() {
+        return assigned;
+    }
+
+    /**
+     * A method to check blood test properties and set error labels if they are invalid
+     *
      * @param textField the textfield containing the value for a blood test property
      * @param label the error label for a blood test property
      * @param bloodTestProperties the BloodTestProperty to get the upper and lower bound
      * @return returns true if the value in the textfield is a valid input
      */
-    public static Boolean bloodTestValidation(TextField textField, Label label, BloodTestProperties bloodTestProperties){
-        Boolean valid = true;
+    public static boolean bloodTestValidation(TextField textField, Label label, BloodTestProperties bloodTestProperties) {
+        boolean valid = true;
+        assigned = true;
         DecimalFormat df2 = new DecimalFormat(".##");
         double value = AttributeValidation.validateDouble(textField.getText());
-        if (value == -1){
+        if (value == -1) {
             label.setVisible(true);
             invalidateNode(textField);
             valid = false;
-        } else if (value > (bloodTestProperties.getUpperBound()) * 5.0){
-            label.setText("that number is too large the max number is " + df2.format(bloodTestProperties.getUpperBound() * 5.0));
+        } else if (value == 0.0) {
+            assigned = false;
+        } else if (value > (bloodTestProperties.getUpperBound()) * 5.0) {
+            label.setText("That number is too large, the max number is " + df2.format(bloodTestProperties.getUpperBound() * 5.0));
             label.setVisible(true);
             invalidateNode(textField);
             valid = false;
-        } else if (value < (bloodTestProperties.getLowerBound() / 5.0) && value != 0.0) {
-            label.setText("that number is too small the min number is " + df2.format(bloodTestProperties.getLowerBound() / 5.0));
+        } else if (value < (bloodTestProperties.getLowerBound() / 5.0)) {
+            label.setText("That number is too small, the min number is " + df2.format(bloodTestProperties.getLowerBound() / 5.0));
             label.setVisible(true);
             invalidateNode(textField);
             valid = false;

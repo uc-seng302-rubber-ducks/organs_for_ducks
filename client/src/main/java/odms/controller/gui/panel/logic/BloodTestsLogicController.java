@@ -48,7 +48,7 @@ public class BloodTestsLogicController implements PropertyChangeListener {
             root = newBloodTestLoader.load();
             NewBloodTestViewController newBloodTestViewController = newBloodTestLoader.getController();
             Stage bloodTestStage = new Stage();
-            newBloodTestViewController.init(user,bloodTestStage, AppController.getInstance().getBloodTestBridge());
+            newBloodTestViewController.init(user, bloodTestStage);
             bloodTestStage.setScene(new Scene(root));
             bloodTestStage.setResizable(false);
             bloodTestStage.setTitle("Add New Blood Test");

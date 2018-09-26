@@ -28,7 +28,8 @@ public class NewBloodTestLogicController {
 
 
     /**
-     * a method to add a new blood test to a user
+     * A method to add a new blood test to a user
+     *
      * @param date the blood test happened
      * @param redBloodCount the blood test's red blood count
      * @param whiteBloodCount the blood test's white blood count
@@ -72,7 +73,5 @@ public class NewBloodTestLogicController {
         AppController appController = AppController.getInstance();
         appController.getBloodTestBridge().postBloodTest(bloodTest, user.getNhi(), appController.getToken());
         stage.close();
-
-
     }
 }

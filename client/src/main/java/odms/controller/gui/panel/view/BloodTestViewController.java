@@ -311,20 +311,30 @@ public class BloodTestViewController {
      */
     private boolean validateField() {
         boolean fieldValid = true;
-        fieldValid &= bloodTestValidation(redBloodCount, bloodTestErrorRCCountLabel, BloodTestProperties.RBC);
-        fieldValid &= bloodTestValidation(whiteBloodCount, bloodTestErrorWCCountLabel, BloodTestProperties.WBC);
-        fieldValid &= bloodTestValidation(heamoglobin, bloodTestErrorHeamoglobinLabel, BloodTestProperties.HAEMOGLOBIN);
-        fieldValid &= bloodTestValidation(platelets, bloodTestErrorPlateletsLabel, BloodTestProperties.PLATELETS);
-        fieldValid &= bloodTestValidation(glucose, bloodTestErrorGlucoseLabel, BloodTestProperties.GLUCOSE);
+        boolean atLeastOneValue = false;
+        fieldValid &= bloodTestValidation(redBloodCount,bloodTestErrorRCCountLabel,BloodTestProperties.RBC);
+        atLeastOneValue |= isAssigned();
+        fieldValid &= bloodTestValidation(whiteBloodCount,bloodTestErrorWCCountLabel,BloodTestProperties.WBC);
+        atLeastOneValue |= isAssigned();
+        fieldValid &= bloodTestValidation(heamoglobin,bloodTestErrorHeamoglobinLabel,BloodTestProperties.HAEMOGLOBIN);
+        atLeastOneValue |= isAssigned();
+        fieldValid &= bloodTestValidation(platelets,bloodTestErrorPlateletsLabel,BloodTestProperties.PLATELETS);
+        atLeastOneValue |= isAssigned();
+        fieldValid &= bloodTestValidation(glucose,bloodTestErrorGlucoseLabel,BloodTestProperties.GLUCOSE);
+        atLeastOneValue |= isAssigned();
         fieldValid &= bloodTestValidation(meanCellVolume, bloodTestErrorMCVolumeLabel, BloodTestProperties.MEAN_CELL_VOLUME);
+        atLeastOneValue |= isAssigned();
         fieldValid &= bloodTestValidation(haematocrit, bloodTestErrorHaematocritLabel, BloodTestProperties.HAEMATOCRIT);
+        atLeastOneValue |= isAssigned();
         fieldValid &= bloodTestValidation(meanCellHaematocrit, bloodTestErrorMCHaematocritLabel, BloodTestProperties.MEAN_CELL_HAEMATOCRIT);
+        atLeastOneValue |= isAssigned();
         if(!AttributeValidation.validateDateBeforeTomorrow(bloodTestDatePicker.getValue())){
             bloodTestDateLabel.setVisible(true);
             invalidateNode(bloodTestDatePicker);
             fieldValid = false;
         }
-        return fieldValid;
+        return fieldValid && atLeastOneValue;
+
     }
 
     /**
@@ -346,6 +356,8 @@ public class BloodTestViewController {
                 bloodTest.setTestDate(bloodTestDatePicker.getValue());
                 logicController.updateBloodTest(bloodTest);
                 AlertWindowFactory.generateInfoWindow("Blood Test on: " + bloodTest.getTestDate() + " updated");
+            } else {
+                AlertWindowFactory.generateError("You have invalid fields. Make sure at least one blood test property is present.");
             }
         } else {
             AlertWindowFactory.generateError("You must select a blood test to update");
@@ -376,7 +388,6 @@ public class BloodTestViewController {
     @FXML
     private void goToNextPage() {
         logicController.gotoNextPage();
-
     }
 
     /**
@@ -385,7 +396,6 @@ public class BloodTestViewController {
     @FXML
     private void goToPreviousPage() {
         logicController.goToPreviousPage();
-
     }
 
     /**
