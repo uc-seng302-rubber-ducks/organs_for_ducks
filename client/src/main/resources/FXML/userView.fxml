@@ -2,10 +2,9 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-            minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" stylesheets="@../gui.css"
-            xmlns="http://javafx.com/javafx/8" fx:controller="odms.controller.gui.window.UserController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0"
+            prefWidth="1200.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.UserController">
     <children>
       <AnchorPane prefHeight="675.0" prefWidth="894.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -120,7 +119,6 @@
               <menus>
                   <Menu fx:id="fileMenuUser" mnemonicParsing="false" text="File">
                   <items>
-                      <MenuItem fx:id="refreshUser" mnemonicParsing="false" text="Refresh" />
                       <MenuItem fx:id="saveUserMenuItem" mnemonicParsing="false" onAction="#save" text="Save" />
                       <MenuItem fx:id="logoutUser" mnemonicParsing="false" text="Log Out" />
                   </items>
@@ -133,15 +131,24 @@
                 </Menu>
               </menus>
             </MenuBar>
-              <Label text="User" AnchorPane.leftAnchor="395.0" AnchorPane.rightAnchor="432.0">
-                  <font>
-                      <Font size="29.0" />
-                  </font>
-              </Label>
-             <Button fx:id="undoButton" mnemonicParsing="false" onAction="#undo" styleClass="button-secondary"
-                     text="Undo" AnchorPane.rightAnchor="84.0" AnchorPane.topAnchor="4.0"/>
-             <Button fx:id="redoButton" mnemonicParsing="false" onAction="#redo" styleClass="button-secondary"
-                     text="Redo" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="4.0"/>
+              <Label text="User" AnchorPane.leftAnchor="395.0" AnchorPane.rightAnchor="432.0"/>
+             <Button onAction="#save" AnchorPane.rightAnchor="70.0" AnchorPane.topAnchor="2.0" styleClass="button-secondary, save-button" text="">
+                 <tooltip><Tooltip text="Save"/></tooltip>
+             </Button>
+             <Button fx:id="undoButton" layoutX="1132.0" layoutY="2.0" maxHeight="50" maxWidth="50"
+                     mnemonicParsing="false" onAction="#undo" styleClass="button-secondary, undo-button" text=""
+                     AnchorPane.rightAnchor="38.0" AnchorPane.topAnchor="2.0">
+                 <tooltip>
+                     <Tooltip text="Undo"/>
+                 </tooltip>
+             </Button>
+             <Button fx:id="redoButton" layoutX="1164.0" layoutY="2.0" maxHeight="50" maxWidth="50"
+                     mnemonicParsing="false" onAction="#redo" styleClass="button-secondary, redo-button" text=""
+                     AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="2.0">
+                 <tooltip>
+                     <Tooltip text="Redo"/>
+                 </tooltip>
+             </Button>
          </children>
       </AnchorPane>
     </children>
