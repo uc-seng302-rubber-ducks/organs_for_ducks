@@ -686,10 +686,8 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setHeightText(String height) {
-        updateLastModified();
         if (!(healthDetails.getHeightText().equals(height))) {
             healthDetails.setHeightText(height);
-            addChange(new Change("set height to " + height));
         }
     }
 
@@ -698,10 +696,8 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setWeightText(String weight) {
-        updateLastModified();
         if (!(healthDetails.getWeightText().equals(weight))) {
             healthDetails.setWeightText(weight);
-            addChange(new Change("set weight to " + weight));
         }
     }
 
@@ -1320,8 +1316,6 @@ public class User extends Undoable<User> implements Listenable {
         this.medicalProcedures = other.medicalProcedures;
 
         this.profilePhotoFilePath = other.profilePhotoFilePath;
-
-        this.changes = other.changes;
     }
 
     @Override

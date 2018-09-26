@@ -44,7 +44,7 @@ import static odms.commons.utils.PhotoHelper.setUpImageFile;
  */
 public class UpdateUserController {
 
-    private final int MAX_FILE_SIZE = 2097152;
+    private static final int MAX_FILE_SIZE = 2097152;
     //<editor-fold desc="fxml stuff">
     @FXML
     private CheckBox userDead;
@@ -218,20 +218,20 @@ public class UpdateUserController {
         }
 
 
-        boolean hasOverridedExpiry = false;
+        boolean hasOverriddenExpiry = false;
         for (Map.Entry<Organs, ExpiryReason> pair: currentUser.getDonorDetails().getOrganMap().entrySet()) {
             try {
                 sleep(10);
             } catch (InterruptedException e) {
-                Log.warning("Sleep was interupted", e);
+                Log.warning("Sleep was interrupted", e);
                 Thread.currentThread().interrupt();
             }
             if (pair.getValue().getTimeOrganExpired() != null) {
-                hasOverridedExpiry = true;
+                hasOverriddenExpiry = true;
                 break;
             }
         }
-        if (hasOverridedExpiry) {
+        if (hasOverriddenExpiry) {
             updateDeathDetailsOverrideWarningLabel.setVisible(true);
             updateDeathDetailsDatePicker.setDisable(true);
             updateDeathDetailsTimeTextField.setDisable(true);
@@ -332,7 +332,7 @@ public class UpdateUserController {
         dp.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (listen) {
                 dp.getStyleClass().remove("invalid");
-                update();
+                stage.setTitle(stage.getTitle().endsWith("*") ? stage.getTitle() : stage.getTitle() + "*");
             }
         });
     }
@@ -345,7 +345,7 @@ public class UpdateUserController {
     private void addCheckBoxListener(CheckBox checkBox) {
         checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (listen) {
-                update();
+                stage.setTitle(stage.getTitle().endsWith("*") ? stage.getTitle() : stage.getTitle() + "*");
             }
         });
     }
@@ -400,7 +400,7 @@ public class UpdateUserController {
     private void comboBoxListener(ComboBox<String> cb) {
         cb.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (listen) {
-                update();
+                stage.setTitle(stage.getTitle().endsWith("*") ? stage.getTitle() : stage.getTitle() + "*");
             }
         });
     }
@@ -414,7 +414,7 @@ public class UpdateUserController {
         field.textProperty().addListener((observable, oldValue, newValue) -> {
             if (listen) {
                 field.getStyleClass().remove("invalid");
-                update();
+                stage.setTitle(stage.getTitle().endsWith("*") ? stage.getTitle() : stage.getTitle() + "*");
             }
         });
 
@@ -541,7 +541,6 @@ public class UpdateUserController {
     private void setUserDetails(User user) {
         //personal
         String region = user.getRegion() == null ? "" : user.getRegion();
-        String country = user.getCountry();
 
         listen = false;
         fNameInput.setText(user.getFirstName());
@@ -798,7 +797,6 @@ public class UpdateUserController {
                 isValid = false;
             }
             if (isValid) {
-                update();
                 displayImage(profileImage, inFile.getPath());
                 currentUser.setProfilePhotoFilePath(inFile.getPath());
             }
@@ -815,7 +813,7 @@ public class UpdateUserController {
         boolean valid = validateFields();
 
         if (valid) {
-            removeFormChanges();
+            update();
             if (inFile != null) {
                 String filePath = setUpImageFile(inFile, currentUser.getNhi());
                 currentUser.setProfilePhotoFilePath(filePath);
@@ -833,15 +831,6 @@ public class UpdateUserController {
             stage.close();
         } else {
             genericErrorLabel.setVisible(true);
-        }
-    }
-
-    /**
-     * Pops all but the specified number of changes off the stack.
-     */
-    private void removeFormChanges() {
-        while (currentUser.getUndoStack().size() > undoMarker + 1) {
-            currentUser.getUndoStack().pop();
         }
     }
 
@@ -1160,10 +1149,8 @@ public class UpdateUserController {
                 AttributeValidation.validateGender(birthGenderComboBox.getValue()) ? birthGenderComboBox.getValue()
                         : "";
 
-        if (birthGender != null && !birthGender.equals(bGender)) {
-            currentUser.setBirthGender(bGender);
-            changed = true;
-        } else if (birthGender == null && bGender != null) {
+        if ((birthGender != null && !birthGender.equals(bGender)) ||
+                (birthGender == null && bGender != null)) {
             currentUser.setBirthGender(bGender);
             changed = true;
         }
@@ -1188,10 +1175,8 @@ public class UpdateUserController {
         String blood =
                 AttributeValidation.validateBlood(bloodComboBox.getValue()) ? bloodComboBox.getValue()
                         : "";
-        if (bloodType != null && !bloodType.equals("U") && !bloodType.equals(blood)) {
-            currentUser.setBloodType(blood);
-            changed = true;
-        } else if (bloodType == null && blood != null) {
+        if ((bloodType != null && !bloodType.equals("U") && !bloodType.equals(blood)) ||
+                (bloodType == null && blood != null)) {
             currentUser.setBloodType(blood);
             changed = true;
         }
@@ -1368,17 +1353,17 @@ public class UpdateUserController {
      */
     @FXML
     void goBack() {
-        if (currentUser.getUndoStack().size() > undoMarker) { // has changes
+        if (stage.getTitle().endsWith("*")) { // has changes
             Alert alert = new Alert(Alert.AlertType.WARNING,
-                    "You have unsaved changes, are you sure you want to cancel?",
+                    "You have unsaved changes, would you like to save these changes??",
                     ButtonType.YES, ButtonType.NO);
 
             alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-            Button yesButton = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
-            yesButton.setId("yesButton");
+            Button noButton = (Button) alert.getDialogPane().lookupButton(ButtonType.NO);
+            noButton.setId("yesButton");
 
             Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.YES) {
+            if (result.isPresent() && result.get() == ButtonType.NO) {
                 AppController appController = AppController.getInstance();
                 UserController userController = appController.getUserController();
                 try {
