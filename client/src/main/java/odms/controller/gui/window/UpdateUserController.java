@@ -542,7 +542,6 @@ public class UpdateUserController {
     private void setUserDetails(User user) {
         //personal
         String region = user.getRegion() == null ? "" : user.getRegion();
-        String country = user.getCountry();
 
         listen = false;
         fNameInput.setText(user.getFirstName());
@@ -919,10 +918,8 @@ public class UpdateUserController {
         } catch (InvalidFieldsException e) {
             valid = false;
         }
-        if (userDead.isSelected()) {
-            if (!validateDeathDetailsFields()) {
-                valid = false;
-            }
+        if (userDead.isSelected() && !validateDeathDetailsFields()) {
+            valid = false;
         }
         if (valid) { // only updates if everything is valid
             appController.update(currentUser);
@@ -1378,7 +1375,7 @@ public class UpdateUserController {
             yesButton.setId("yesButton");
 
             Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.YES) {
+            if (result.isPresent() && result.get() == ButtonType.YES) {
                 AppController appController = AppController.getInstance();
                 UserController userController = appController.getUserController();
                 try {

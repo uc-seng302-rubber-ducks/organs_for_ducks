@@ -78,7 +78,7 @@ public class UserControllerTest {
     public void postUserShouldReturnAcceptedIfConnectionValid() {
         //this is pretty dumb but any real error handling should be done within the DBHandler
         ResponseEntity res = controller.postUser(testUser);
-        Assert.assertEquals(res.getStatusCode(), HttpStatus.ACCEPTED);
+        Assert.assertEquals(HttpStatus.ACCEPTED, res.getStatusCode());
     }
 
     @Test(expected = ServerDBException.class)

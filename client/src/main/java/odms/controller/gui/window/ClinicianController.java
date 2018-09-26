@@ -658,7 +658,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         Optional<ButtonType> result = alert.showAndWait();
 
-        if (result.get() == ButtonType.OK) {
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             appController.deleteClinician(clinician);
             clinician.setDeleted(true);
             if (!admin) {
