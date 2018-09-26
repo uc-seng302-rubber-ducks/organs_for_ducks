@@ -51,34 +51,25 @@
                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                    </rowConstraints>
                    <children>
-                       <DatePicker fx:id="bloodTestDatePicker" disable="true" visible="false" GridPane.columnIndex="1"
-                                   GridPane.columnSpan="2"/>
-                       <TextField fx:id="redBloodCount" disable="true" visible="false" GridPane.columnIndex="1"
-                                  GridPane.columnSpan="2" GridPane.rowIndex="1"/>
-                       <TextField fx:id="whiteBloodCount" disable="true" visible="false" GridPane.columnIndex="1"
-                                  GridPane.columnSpan="2" GridPane.rowIndex="2"/>
-                       <TextField fx:id="heamoglobin" disable="true" visible="false" GridPane.columnIndex="1"
-                                  GridPane.columnSpan="2" GridPane.rowIndex="3"/>
-                       <TextField fx:id="platelets" disable="true" visible="false" GridPane.columnIndex="1"
-                                  GridPane.columnSpan="2" GridPane.rowIndex="4"/>
-                       <TextField fx:id="glucose" disable="true" visible="false" GridPane.columnIndex="1"
-                                  GridPane.columnSpan="2" GridPane.rowIndex="5"/>
-                       <TextField fx:id="haematocrit" disable="true" visible="false" GridPane.columnIndex="1"
-                                  GridPane.columnSpan="2" GridPane.rowIndex="6"/>
-                       <TextField fx:id="meanCellVolume" disable="true" visible="false" GridPane.columnIndex="1"
-                                  GridPane.columnSpan="2" GridPane.rowIndex="7"/>
-                       <TextField fx:id="meanCellHaematocrit" disable="true" visible="false" GridPane.columnIndex="1"
-                                  GridPane.columnSpan="2" GridPane.rowIndex="8"/>
+                       <DatePicker fx:id="bloodTestDatePicker" disable="true" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2" />
+                       <TextField fx:id="redBloodCount" disable="true" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                       <TextField fx:id="whiteBloodCount" disable="true" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                       <TextField fx:id="heamoglobin" disable="true" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                       <TextField fx:id="platelets" disable="true" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                       <TextField fx:id="glucose" disable="true" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5" />
+                       <TextField fx:id="haematocrit" disable="true" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="6" />
+                       <TextField fx:id="meanCellVolume" disable="true" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="7" />
+                       <TextField fx:id="meanCellHaematocrit" disable="true" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="8" />
                        <Label text="Date Of Blood Test:" />
-                       <Label fx:id="bloodTestDateLabel" GridPane.columnIndex="2" />
-                       <Label fx:id="bloodTestRCCountLabel" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                       <Label fx:id="bloodTestWCCountLabel" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                       <Label fx:id="bloodTestHeamoglobinLabel" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                       <Label fx:id="bloodTestPlateletsLabel" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                       <Label fx:id="bloodTestGlucoseLabel" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-                       <Label fx:id="bloodTestMCVolumeLabel" GridPane.columnIndex="2" GridPane.rowIndex="7" />
-                       <Label fx:id="bloodTestHaematocritLabel" GridPane.columnIndex="2" GridPane.rowIndex="6" />
-                       <Label fx:id="bloodTestMCHaematocritLabel" GridPane.columnIndex="2" GridPane.rowIndex="8" />
+                       <Label fx:id="bloodTestDateLabel" GridPane.columnIndex="2" GridPane.valignment="BOTTOM" />
+                       <Label fx:id="bloodTestRCCountLabel" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
+                       <Label fx:id="bloodTestWCCountLabel" GridPane.columnIndex="2" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
+                       <Label fx:id="bloodTestHeamoglobinLabel" GridPane.columnIndex="2" GridPane.rowIndex="3" GridPane.valignment="BOTTOM" />
+                       <Label fx:id="bloodTestPlateletsLabel" GridPane.columnIndex="2" GridPane.rowIndex="4" GridPane.valignment="BOTTOM" />
+                       <Label fx:id="bloodTestGlucoseLabel" GridPane.columnIndex="2" GridPane.rowIndex="5" GridPane.valignment="BOTTOM" />
+                       <Label fx:id="bloodTestMCVolumeLabel" GridPane.columnIndex="2" GridPane.rowIndex="7" GridPane.valignment="BOTTOM" />
+                       <Label fx:id="bloodTestHaematocritLabel" GridPane.columnIndex="2" GridPane.rowIndex="6" GridPane.valignment="BOTTOM" />
+                       <Label fx:id="bloodTestMCHaematocritLabel" GridPane.columnIndex="2" GridPane.rowIndex="8" GridPane.valignment="BOTTOM" />
                        <VBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="172.0" GridPane.rowIndex="1">
                            <children>
                                <Label />

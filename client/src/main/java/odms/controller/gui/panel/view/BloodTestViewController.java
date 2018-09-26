@@ -97,6 +97,15 @@ public class BloodTestViewController {
 
         logicController = new BloodTestsLogicController(bloodTests, user);
         initBloodTestTableView();
+        textFieldListener(redBloodCount);
+        textFieldListener(whiteBloodCount);
+        textFieldListener(haematocrit);
+        textFieldListener(heamoglobin);
+        textFieldListener(meanCellHaematocrit);
+        textFieldListener(meanCellVolume);
+        textFieldListener(platelets);
+        textFieldListener(glucose);
+        datePickerListener(bloodTestDatePicker);
     }
 
     /**
@@ -246,6 +255,30 @@ public class BloodTestViewController {
             bloodTestHaematocritLabel.setText("");
             bloodTestMCHaematocritLabel.setText("");
         }
+    }
+
+    /**
+     * removes the invalid field if the user starts typing
+     *
+     * @param field The current textfield.
+     */
+    private void textFieldListener(TextField field) {
+        field.textProperty().addListener((observable, oldValue, newValue) -> {
+                field.getStyleClass().remove("invalid");
+        });
+
+    }
+
+    /**
+     * Changes the title bar to add/remove an asterisk when a change was detected on the date picker.
+     *
+     * @param dp The current date picker.
+     */
+    private void datePickerListener(DatePicker dp) {
+        dp.valueProperty().addListener((observable, oldValue, newValue) -> {
+                dp.getStyleClass().remove("invalid");
+
+        });
     }
 
     private void invalidateNode(Node node) {
