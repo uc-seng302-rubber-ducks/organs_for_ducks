@@ -39,23 +39,19 @@ public class UserBridge extends RoleBridge {
             inProgress.cancel();
         }
         String url = ip + "/users?startIndex=" + startIndex + "&count=" + count + "&name=" + name + "&region=" + region + "&gender=" + gender;
-        Request request = new Request.Builder().header(tokenHeader, token).url(url).build();
-        inProgress = client.newCall(request);
-        inProgress.enqueue(new Callback() {
+        Request request = new Request.Builder().header(tokenHeader, token).url(url).tag("Tag").build();
+        client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                if (!e.getMessage().equals("Canceled")) {
-                    Platform.runLater(() -> AlertWindowFactory.generateError(e));
-                }
+                Platform.runLater(() -> AlertWindowFactory.generateError("Users:" + e));
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 Collection<UserOverview> overviews = new Gson().fromJson(response.body().string(), new TypeToken<Collection<UserOverview>>() {
                 }.getType());
-                for (UserOverview overview : overviews) {
-                    AppController.getInstance().addUserOverview(overview);
-                }
+                AppController.getInstance().getUserOverviews().clear();
+                AppController.getInstance().addUserOverviews(overviews);
                 if (overviews.isEmpty() && tableview != null) {
                     Platform.runLater(() -> tableview.setWaiting(false));
                 }

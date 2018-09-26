@@ -1565,15 +1565,6 @@ public class DBHandler {
     }
 
     /**
-     * Gets and returns the blood test handler to the blood test controller
-     *
-     * @return A BloodTestHandler
-     */
-    public BloodTestHandler getBloodTestHandler() {
-        return new BloodTestHandler();
-    }
-
-    /**
      * Gets the appointments scheduled for the given date
      *
      * @param connection connection to the database
@@ -1599,7 +1590,6 @@ public class DBHandler {
                     results.add(appointment);
                 }
             }
-
         }
         return results;
     }
@@ -1613,7 +1603,6 @@ public class DBHandler {
      * @throws SQLException sql db has gone wrong
      */
     public AppointmentWithPeople getAppointmentWithPeople(Connection connection, int appointmentId) throws SQLException {
-
         try(PreparedStatement preparedStatement  = connection.prepareStatement(GET_APPOINTMENTS_TIME)){
             preparedStatement.setInt(1, appointmentId);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -1630,9 +1619,16 @@ public class DBHandler {
                     return appointment;
                 }
             }
-
         }
         return null;
     }
 
+    /**
+     * Gets and returns the blood test handler to the blood test controller
+     *
+     * @return A BloodTestHandler
+     */
+    public BloodTestHandler getBloodTestHandler() {
+        return new BloodTestHandler();
+    }
 }
