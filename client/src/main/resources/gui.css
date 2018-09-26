@@ -488,7 +488,7 @@
 
 .default-color0.chart-series-line {
     -fx-stroke-width: 3px;
-    -fx-stroke: #004a6c;
+    -fx-stroke: #00b3b3;
 }
 
 .default-color1.chart-series-line {
@@ -507,5 +507,14 @@
 .axis-label {
     -fx-font-weight: bold;
     -fx-font-size: 12px;
+}
+
+.label-color0 {
+    -fx-background-color: #00b3b3;
+}
+
+.label-color1 {
+    -fx-background-color: rgba(0%, 100%, 0%, 0.1);
+    -fx-border-color: rgba(0%, 100%, 0%, 0.1);
 }
 
