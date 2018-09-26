@@ -138,7 +138,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now().plusDays(1));
         setTextField(this, "#updateDeathDetailsTimeTextField", LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
         clickOnButton(this, "#updateProfileButton");
-        verifyThat("#updateDeathDetailsErrorLabel", LabeledMatchers.hasText(dateErrorText));
+        verifyThat("#updateDeathDetailsErrorLabel", LabeledMatchers.hasText("The time of death cannot be in the future"));
     }
 
     @Test
