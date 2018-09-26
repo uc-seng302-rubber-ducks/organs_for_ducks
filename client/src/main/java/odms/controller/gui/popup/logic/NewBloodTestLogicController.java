@@ -4,6 +4,7 @@ import javafx.stage.Stage;
 import odms.bridge.BloodTestBridge;
 import odms.commons.model.User;
 import odms.commons.model.datamodel.BloodTest;
+import odms.controller.AppController;
 
 import java.time.LocalDate;
 
@@ -13,10 +14,9 @@ public class NewBloodTestLogicController {
     private BloodTestBridge bloodTestBridge;
 
 
-    public NewBloodTestLogicController(User user, Stage stage, BloodTestBridge bloodTestBridge){
+    public NewBloodTestLogicController(User user, Stage stage){
         this.user = user;
         this.stage = stage;
-        this.bloodTestBridge = bloodTestBridge;
     }
 
     /**
@@ -27,6 +27,18 @@ public class NewBloodTestLogicController {
     }
 
 
+    /**
+     * a method to add a new blood test to a user
+     * @param date the blood test happened
+     * @param redBloodCount the blood test's red blood count
+     * @param whiteBloodCount the blood test's white blood count
+     * @param heamoglobin the blood test's heamoglobin level
+     * @param platelets the blood test's platelets level
+     * @param glucose the blood test's glucose level
+     * @param meanCellVolume the blood test's meanCellVolume level
+     * @param haematocrit the blood test's haematocrit level
+     * @param meanCellHaematocrit the blood test's meanCellHaematocrit level
+     */
     public void addBloodTest(LocalDate date, String redBloodCount, String whiteBloodCount, String heamoglobin,
                              String platelets, String  glucose, String meanCellVolume, String haematocrit,
                              String meanCellHaematocrit) {
@@ -57,7 +69,8 @@ public class NewBloodTestLogicController {
         BloodTest bloodTest = new BloodTest(Double.parseDouble(redBloodCount),Double.parseDouble(whiteBloodCount), Double.parseDouble(heamoglobin),
                 Double.parseDouble(platelets), Double.parseDouble(glucose),Double.parseDouble(meanCellVolume),
                 Double.parseDouble(haematocrit),Double.parseDouble(meanCellHaematocrit),date);
-        bloodTestBridge.postBloodtest(bloodTest, user.getNhi());
+        AppController appController = AppController.getInstance();
+        appController.getBloodTestBridge().postBloodTest(bloodTest, user.getNhi(), appController.getToken());
         stage.close();
 
 

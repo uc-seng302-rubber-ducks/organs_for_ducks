@@ -9,6 +9,7 @@ import odms.database.DBHandler;
 import odms.database.JDBCDriver;
 import odms.exception.BadRequestException;
 import odms.exception.ServerDBException;
+import odms.security.IsClinician;
 import odms.socket.SocketHandler;
 import odms.utils.DBManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,9 +104,10 @@ public class BloodTestController extends BaseController {
      * @param bloodTest test to put
      * @return the blood test
      */
+    @IsClinician
     @RequestMapping(method = RequestMethod.POST, value = "/user/{nhi}/bloodTest")
     public ResponseEntity postBloodTest(@PathVariable(value ="nhi") String nhi,
-                                   @RequestBody BloodTest bloodTest) throws IOException {
+                                        @RequestBody BloodTest bloodTest) throws IOException {
         try (Connection connection = driver.getConnection()) {
             bloodTestHandler.postBloodTest(connection, bloodTest, nhi);
 
@@ -126,6 +128,7 @@ public class BloodTestController extends BaseController {
      * @param bloodTest test to put
      * @return the blood test
      */
+    @IsClinician
     @RequestMapping(method = RequestMethod.PATCH, value = "/user/{nhi}/bloodTest/{id}")
     public ResponseEntity patchBloodTest(@PathVariable(value ="nhi") String nhi,
                                          @PathVariable(value = "id") int id,
@@ -147,6 +150,7 @@ public class BloodTestController extends BaseController {
      * @param id the id of the blood test to patch
      * @return the blood test
      */
+    @IsClinician
     @RequestMapping(method = RequestMethod.DELETE, value = "/user/{nhi}/bloodTest/{id}")
     public ResponseEntity deleteBloodTest(@PathVariable(value ="nhi") String nhi,
                                           @PathVariable(value = "id") int id) throws IOException {

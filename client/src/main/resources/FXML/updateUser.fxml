@@ -404,17 +404,26 @@
                      <children>
                         <GridPane hgap="5.0" layoutX="13.0" layoutY="32.0" prefHeight="283.0" prefWidth="452.0" vgap="5.0">
                            <children>
-                              <Label styleClass="label-title" text="Date of Death:" />
-                              <Label styleClass="label-title" text="Time of Death:" GridPane.rowIndex="1" />
-                              <Label styleClass="label-title" text="City of Death:" GridPane.rowIndex="3" />
-                              <Label styleClass="label-title" text="Region of Death:" GridPane.rowIndex="4" />
-                              <Label styleClass="label-title" text="Country of Death:" GridPane.rowIndex="5" />
-                              <TextField fx:id="updateDeathDetailsCityTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <DatePicker fx:id="updateDeathDetailsDatePicker" prefHeight="27.0" prefWidth="260.0" promptText="YYYY-MM-DD" GridPane.columnIndex="1" />
-                              <TextField fx:id="updateDeathDetailsTimeTextField" promptText="hh:mm" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <ComboBox fx:id="updateDeathDetailsCountryComboBox" onAction="#deathCountrySelectorListener" prefHeight="27.0" prefWidth="259.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                              <TextField fx:id="updateDeathDetailsRegionTextField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                              <ComboBox fx:id="updateDeathDetailsRegionComboBox" prefHeight="27.0" prefWidth="259.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                               <Label styleClass="label-title" text="Date of Death:" GridPane.rowIndex="1"/>
+                               <Label styleClass="label-title" text="Time of Death:" GridPane.rowIndex="2"/>
+                               <Label styleClass="label-title" text="City of Death:" GridPane.rowIndex="4"/>
+                               <Label styleClass="label-title" text="Region of Death:" GridPane.rowIndex="5"/>
+                               <Label styleClass="label-title" text="Country of Death:" GridPane.rowIndex="6"/>
+                               <TextField fx:id="updateDeathDetailsCityTextField" GridPane.columnIndex="1"
+                                          GridPane.rowIndex="4"/>
+                               <DatePicker fx:id="updateDeathDetailsDatePicker" prefHeight="27.0" prefWidth="260.0"
+                                           promptText="YYYY-MM-DD" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                               <TextField fx:id="updateDeathDetailsTimeTextField" promptText="hh:mm"
+                                          GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                               <ComboBox fx:id="updateDeathDetailsCountryComboBox"
+                                         onAction="#deathCountrySelectorListener" prefHeight="27.0" prefWidth="259.0"
+                                         GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+                               <TextField fx:id="updateDeathDetailsRegionTextField" GridPane.columnIndex="1"
+                                          GridPane.rowIndex="5"/>
+                               <ComboBox fx:id="updateDeathDetailsRegionComboBox" prefHeight="27.0" prefWidth="259.0"
+                                         GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+                               <CheckBox fx:id="userDead" mnemonicParsing="false" GridPane.columnIndex="1"/>
+                               <Label styleClass="label-title" text="User has died:"/>
                            </children>
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="169.0" minWidth="10.0" prefWidth="123.0" />
@@ -430,11 +439,14 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                            </rowConstraints>
                         </GridPane>
                         <Label fx:id="updateDeathDetailsErrorLabel" layoutX="14.0" layoutY="321.0" text="Error message" textFill="RED" />
-                        <Button fx:id="removeUpdateDeathDetailsButton" layoutX="270.0" layoutY="363.0" mnemonicParsing="false" onAction="#removeUpdateDeathDetails" text="Remove Death Details" />
-                        <Label fx:id="updateDeathDetailsOverrideWarningLabel" layoutX="22.0" layoutY="129.0" prefHeight="45.0" prefWidth="437.0" text="You cannot change the date and time of death if the user has a manually expired organ" textFill="#fc940d" wrapText="true" />
+                         <Label fx:id="updateDeathDetailsOverrideWarningLabel" layoutX="22.0" layoutY="152.0"
+                                prefHeight="45.0" prefWidth="437.0"
+                                text="You cannot change the date and time of death if the user has a manually expired organ"
+                                textFill="#fc940d" wrapText="true"/>
                         <Separator layoutY="27.0" prefHeight="9.0" prefWidth="706.0" />
                         <Label layoutX="8.0" layoutY="6.0" styleClass="label-sub-title" text="Death Details" />
                      </children></AnchorPane>

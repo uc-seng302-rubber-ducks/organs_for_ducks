@@ -773,4 +773,8 @@ public class AppController {
     public void setAppointmentsBridge(AppointmentsBridge appointmentsBridge) {
         this.appointmentsBridge = appointmentsBridge;
     }
+
+    public void setBloodTestBridge(BloodTestBridge bloodTestBridge) {
+        this.bloodTestBridge = bloodTestBridge;
+    }
 }

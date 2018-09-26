@@ -25,6 +25,7 @@ import odms.controller.gui.widget.LoadingWidget;
 import odms.controller.gui.widget.TextStringRadioButton;
 
 import java.time.DayOfWeek;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.TextStyle;
@@ -253,6 +254,24 @@ public class BloodTestViewController implements LoadingWidget {
     }
 
     /**
+     * Changes the fields to be enabled or disabled depending on the given boolean value.
+     * The fields are disabled if no blood test is selected from the table.
+     *
+     * @param disabledValue true or false
+     */
+    private void enableFields(boolean disabledValue) {
+        bloodTestDatePicker.setDisable(disabledValue);
+        redBloodCount.setDisable(disabledValue);
+        whiteBloodCount.setDisable(disabledValue);
+        heamoglobin.setDisable(disabledValue);
+        platelets.setDisable(disabledValue);
+        glucose.setDisable(disabledValue);
+        haematocrit.setDisable(disabledValue);
+        meanCellVolume.setDisable(disabledValue);
+        meanCellHaematocrit.setDisable(disabledValue);
+    }
+
+    /**
      * Displays the given blood test in more detail
      * The details are displayed as labels for users and text fields for clinicians/admins
      *
@@ -260,6 +279,7 @@ public class BloodTestViewController implements LoadingWidget {
      */
     private void displayBloodTestDetails(BloodTest selectedBloodTest) {
         if (fromClinician) {
+            enableFields(false);
             bloodTestDatePicker.setValue(selectedBloodTest.getTestDate());
             redBloodCount.setText(getString(selectedBloodTest.getRedBloodCellCount()));
             whiteBloodCount.setText(getString(selectedBloodTest.getWhiteBloodCellCount()));
@@ -269,7 +289,6 @@ public class BloodTestViewController implements LoadingWidget {
             haematocrit.setText(getString(selectedBloodTest.getHaematocrit()));
             meanCellVolume.setText(getString(selectedBloodTest.getMeanCellVolume()));
             meanCellHaematocrit.setText(getString(selectedBloodTest.getMeanCellHaematocrit()));
-
         } else {
             bloodTestDateLabel.setText(selectedBloodTest.getTestDate().toString());
             bloodTestRCCountLabel.setText(getString(selectedBloodTest.getRedBloodCellCount()));
@@ -307,6 +326,7 @@ public class BloodTestViewController implements LoadingWidget {
      */
     private void clearDetails() {
         if (fromClinician) {
+            enableFields(true);
             bloodTestDatePicker.setValue(null);
             redBloodCount.setText("");
             whiteBloodCount.setText("");
@@ -568,59 +588,65 @@ public class BloodTestViewController implements LoadingWidget {
     }
 
 
-    private boolean validateField() {
-        boolean valid = true;
-        if (AttributeValidation.validateDouble(redBloodCount.getText()) == -1) {
-            bloodTestRCCountLabel.setVisible(true);
-            invalidateNode(redBloodCount);
+    /**
+     * a method to check blood test properties and set error labels if they are invalid
+     * @param textField the textfield containing the value for a blood test property
+     * @param label the error label for a blood test property
+     * @param bloodTestProperties the BloodTestProperty to get the upper and lower bound
+     * @return returns true if the value in the textfield is a valid input
+     */
+    private Boolean BloodTestValidation(TextField textField, Label label, BloodTestProperties bloodTestProperties){
+        Boolean valid = true;
+        DecimalFormat df2 = new DecimalFormat(".##");
+        double value = AttributeValidation.validateDouble(textField.getText());
+        if (value == -1){
+            label.setVisible(true);
+            invalidateNode(textField);
             valid = false;
-        }
-        if (AttributeValidation.validateDouble(whiteBloodCount.getText()) == -1) {
-            bloodTestWCCountLabel.setVisible(true);
-            invalidateNode(whiteBloodCount);
+        } else if (value > (bloodTestProperties.getUpperBound()) * 5.0){
+            label.setText("that number is too large the max number is " + df2.format(bloodTestProperties.getUpperBound() * 5.0));
+            label.setVisible(true);
+            invalidateNode(textField);
             valid = false;
-
-        }
-        if (AttributeValidation.validateDouble(heamoglobin.getText()) == -1) {
-            bloodTestHeamoglobinLabel.setVisible(true);
-            invalidateNode(heamoglobin);
-            valid = false;
-        }
-        if (AttributeValidation.validateDouble(platelets.getText()) == -1) {
-            bloodTestPlateletsLabel.setVisible(true);
-            invalidateNode(platelets);
-            valid = false;
-        }
-        if (AttributeValidation.validateDouble(glucose.getText()) == -1) {
-            bloodTestGlucoseLabel.setVisible(true);
-            invalidateNode(glucose);
-            valid = false;
-        }
-        if (AttributeValidation.validateDouble(meanCellVolume.getText()) == -1) {
-            bloodTestMCVolumeLabel.setVisible(true);
-            invalidateNode(meanCellVolume);
-            valid = false;
-        }
-        if (AttributeValidation.validateDouble(haematocrit.getText()) == -1) {
-            bloodTestHaematocritLabel.setVisible(true);
-            invalidateNode(haematocrit);
-            valid = false;
-        }
-        if (AttributeValidation.validateDouble(meanCellHaematocrit.getText()) == -1) {
-            bloodTestMCHaematocritLabel.setVisible(true);
-            invalidateNode(meanCellHaematocrit);
-            valid = false;
-        }
-        if (!AttributeValidation.validateDateBeforeTomorrow(bloodTestDatePicker.getValue())) {
-            bloodTestDateLabel.setVisible(true);
-            invalidateNode(bloodTestDatePicker);
+        } else if (value < (bloodTestProperties.getLowerBound() / 5.0) && value != 0.0) {
+            label.setText("that number is too small the min number is " + df2.format(bloodTestProperties.getLowerBound() / 5.0));
+            label.setVisible(true);
+            invalidateNode(textField);
             valid = false;
         }
         return valid;
     }
 
+    /**
+     * check that all blood test properties are valid
+     * @return returns true if all properties are valid
+     */
+    private boolean validateField() {
+        boolean fieldValid = true;
+        fieldValid &= BloodTestValidation(redBloodCount,bloodTestRCCountLabel,BloodTestProperties.RBC);
+        fieldValid &= BloodTestValidation(whiteBloodCount,bloodTestWCCountLabel,BloodTestProperties.WBC);
+        fieldValid &= BloodTestValidation(heamoglobin,bloodTestHeamoglobinLabel,BloodTestProperties.HAEMOGLOBIN);
+        fieldValid &= BloodTestValidation(platelets,bloodTestPlateletsLabel,BloodTestProperties.PLATELETS);
+        fieldValid &= BloodTestValidation(glucose,bloodTestGlucoseLabel,BloodTestProperties.GLUCOSE);
+        fieldValid &= BloodTestValidation(meanCellVolume, bloodTestMCVolumeLabel, BloodTestProperties.MEAN_CELL_VOLUME);
+        fieldValid &= BloodTestValidation(haematocrit, bloodTestHaematocritLabel, BloodTestProperties.HAEMATOCRIT);
+        fieldValid &= BloodTestValidation(meanCellHaematocrit, bloodTestMCHaematocritLabel, BloodTestProperties.MEAN_CELL_HAEMATOCRIT);
+        if(!AttributeValidation.validateDateBeforeTomorrow(bloodTestDatePicker.getValue())){
+            bloodTestDateLabel.setVisible(true);
+            invalidateNode(bloodTestDatePicker);
+            fieldValid = false;
+        }
+        return fieldValid;
+
+    }
+
+    /**
+     * check that all field are valid then gets all the values from the textfield,
+     * then calls the logic controller to update the blood test
+     */
     @FXML
     private void updateBloodTest() {
+        if (bloodTestTableView.getSelectionModel().getSelectedItem() != null) {
             if (validateField()) {
                 bloodTest.setGlucoseLevels(AttributeValidation.validateDouble(glucose.getText()));
                 bloodTest.setHaematocrit(AttributeValidation.validateDouble(haematocrit.getText()));
@@ -632,24 +658,28 @@ public class BloodTestViewController implements LoadingWidget {
                 bloodTest.setHaemoglobinLevel(AttributeValidation.validateDouble(heamoglobin.getText()));
                 bloodTest.setTestDate(bloodTestDatePicker.getValue());
                 logicController.updateBloodTest(bloodTest);
-                AlertWindowFactory.generateInfoWindow("Blood Test on: "+ bloodTest.getTestDate() +" updated");
+                AlertWindowFactory.generateInfoWindow("Blood Test on: " + bloodTest.getTestDate() + " updated");
             }
+        } else {
+            AlertWindowFactory.generateError("You must select a blood test to update");
+        }
     }
 
+    /**
+     * check to make sure the user want to delete a test
+     * see logicController.deleteBloodTest
+     */
     @FXML
     private void deleteBloodTest() {
         if (bloodTestTableView.getSelectionModel().getSelectedItem() != null) {
             Optional<ButtonType> result = AlertWindowFactory.generateConfirmation("Are you sure you want to delete this blood test?");
 
-            if (!result.isPresent()) {
-            return;
-        }
-
-            if (result.get() == ButtonType.OK) {
+            if (result.isPresent() && result.get() == ButtonType.OK) {
                 logicController.deleteBloodTest(bloodTestTableView.getSelectionModel().getSelectedItem());
             }
+
         } else {
-            AlertWindowFactory.generateInfoWindow("You must select an blood test to delete");
+            AlertWindowFactory.generateError("You must select a blood test to delete");
         }
     }
 
@@ -665,6 +695,9 @@ public class BloodTestViewController implements LoadingWidget {
 
     }
 
+    /**
+     *  see logicController.addNewBloodTest
+     */
     @FXML
     private void addNewBloodTest() {
         logicController.addNewBloodTest();

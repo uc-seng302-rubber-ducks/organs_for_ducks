@@ -5,7 +5,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import odms.bridge.BloodTestBridge;
 import odms.commons.model.User;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model.datamodel.BloodTest;
@@ -31,8 +30,6 @@ public class BloodTestsLogicController implements PropertyChangeListener {
     private static final int RESULTS_ON_GRAPH = 365;
     private int startingIndex = 0;
     private User user;
-    private BloodTestBridge bloodTestBridge;
-
 
     /**
      * Constructor to create a new logical instance of the controller
@@ -43,11 +40,12 @@ public class BloodTestsLogicController implements PropertyChangeListener {
         this.bloodTests = bloodTests;
         this.graphBloodTests = graphBloodTests;
         this.user = user;
-        bloodTestBridge = AppController.getInstance().getBloodTestBridge();
         ServerEventNotifier.getInstance().addPropertyChangeListener(this);
-
     }
 
+    /**
+     * Opens the new blood test pop up for users to add a new blood test
+     */
     public void addNewBloodTest() {
         FXMLLoader newBloodTestLoader = new FXMLLoader(getClass().getResource("/FXML/BloodTestPopUP.fxml"));
         Parent root;
@@ -56,8 +54,10 @@ public class BloodTestsLogicController implements PropertyChangeListener {
             root = newBloodTestLoader.load();
             NewBloodTestViewController newBloodTestViewController = newBloodTestLoader.getController();
             Stage bloodTestStage = new Stage();
-            newBloodTestViewController.init(user, bloodTestStage, bloodTestBridge);
+            newBloodTestViewController.init(user, bloodTestStage, AppController.getInstance().getBloodTestBridge());
             bloodTestStage.setScene(new Scene(root));
+            bloodTestStage.setResizable(false);
+            bloodTestStage.setTitle("Add New Blood Test");
             bloodTestStage.showAndWait();
             Log.info("Successfully launched the new blood test pop-up window for user: " + user.getNhi());
 
@@ -67,12 +67,23 @@ public class BloodTestsLogicController implements PropertyChangeListener {
 
     }
 
+    /**
+     * Calls the database to delete the given blood test
+     * @param bloodTest the blood test to be deleted
+     */
     public void deleteBloodTest(BloodTest bloodTest) {
-        bloodTestBridge.deleteBloodtest(Integer.toString(bloodTest.getBloodTestId()), user.getNhi());
+        AppController appController = AppController.getInstance();
+        appController.getBloodTestBridge().deleteBloodTest(Integer.toString(bloodTest.getBloodTestId()),
+                user.getNhi(), appController.getToken());
     }
 
+    /**
+     * Calls the database to update the given blood entry
+     * @param bloodTest the blood test to be updated
+     */
     public void updateBloodTest(BloodTest bloodTest) {
-        bloodTestBridge.patchBloodtest(bloodTest, user.getNhi());
+        AppController appController = AppController.getInstance();
+        appController.getBloodTestBridge().patchBloodTest(bloodTest, user.getNhi(), appController.getToken());
     }
 
     /**
@@ -88,27 +99,19 @@ public class BloodTestsLogicController implements PropertyChangeListener {
     }
 
     public void gotoNextPage() {
-
+        if (bloodTests.size() < ROWS_PER_PAGE) {
+            return;
+        }
+        startingIndex = startingIndex + ROWS_PER_PAGE;
+        updateTableView(startingIndex);
     }
 
     public void goToPreviousPage() {
-
-    }
-
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        UpdateNotificationEvent event;
-        try {
-            event = (UpdateNotificationEvent) evt;
-        } catch (ClassCastException ex) {
+        if (startingIndex - ROWS_PER_PAGE < 0) {
             return;
         }
-        if (event == null) {
-            return;
-        }
-        if (event.getType().equals(EventTypes.BLOOD_TEST_UPDATE)) {
-            updateTableView(startingIndex);
-        }
+        startingIndex = startingIndex - ROWS_PER_PAGE;
+        updateTableView(startingIndex);
     }
 
     /**
@@ -189,5 +192,21 @@ public class BloodTestsLogicController implements PropertyChangeListener {
                 break;
         }
         return testDate;
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        UpdateNotificationEvent event;
+        try {
+            event = (UpdateNotificationEvent) evt;
+        } catch (ClassCastException ex) {
+            return;
+        }
+        if (event == null) {
+            return;
+        }
+        if (event.getType().equals(EventTypes.BLOOD_TEST_UPDATE)) {
+            updateTableView(startingIndex);
+        }
     }
 }
