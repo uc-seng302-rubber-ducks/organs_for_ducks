@@ -3,7 +3,6 @@
 <?import javafx.collections.FXCollections?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
 <?import odms.controller.gui.widget.LoadingTableView?>
 <?import java.lang.*?>
 <AnchorPane prefHeight="735.0" prefWidth="1200.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.panel.view.ClinicianAppointmentRequestViewController">
@@ -58,10 +57,7 @@
                     </value>
                 </ComboBox>
                 <TextArea fx:id="appointmentRequestDescription" layoutX="150.0" layoutY="328.0" prefHeight="313.0" prefWidth="218.0" wrapText="true" AnchorPane.bottomAnchor="108.0" AnchorPane.rightAnchor="49.0" AnchorPane.topAnchor="328.0" />
-                <Label fx:id="appointmentDetailsTitleLabel" layoutX="2.7666015625" layoutY="72.0" styleClass="label-sub-title" text="Appointment Details" AnchorPane.rightAnchor="231.7607421875">
-                    <font>
-                        <Font name="System Bold" size="13.0" />
-                    </font>
+                <Label fx:id="appointmentDetailsTitleLabel"  layoutX="2.7666015625" layoutY="72.0" styleClass="label-sub-title" text="Appointment Details" AnchorPane.rightAnchor="231.7607421875">
                 </Label>
                 <ComboBox fx:id="appointmentRequestTime" layoutX="130.0" layoutY="240.0" prefHeight="25.0" prefWidth="218.0" AnchorPane.rightAnchor="49.0" />
                 <ToggleButton fx:id="calendarViewToggle" layoutX="139.0" layoutY="31.0" mnemonicParsing="false" onAction="#tableCalendarViewToggle" prefHeight="25.0" prefWidth="119.0" styleClass="toggle-button-secondary" text="Calendar View" AnchorPane.rightAnchor="139.0" AnchorPane.topAnchor="31.0">
