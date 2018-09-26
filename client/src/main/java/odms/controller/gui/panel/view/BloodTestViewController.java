@@ -14,6 +14,7 @@ import odms.commons.utils.AttributeValidation;
 import odms.controller.gui.panel.logic.BloodTestsLogicController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -187,7 +188,6 @@ public class BloodTestViewController {
             haematocrit.setText(getString(selectedBloodTest.getHaematocrit()));
             meanCellVolume.setText(getString(selectedBloodTest.getMeanCellVolume()));
             meanCellHaematocrit.setText(getString(selectedBloodTest.getMeanCellHaematocrit()));
-
         } else {
             bloodTestDateLabel.setText(selectedBloodTest.getTestDate().toString());
             bloodTestRCCountLabel.setText(getString(selectedBloodTest.getRedBloodCellCount()));
@@ -254,58 +254,55 @@ public class BloodTestViewController {
 
 
     /**
-     * checks that all the blood test properties are valid
-     * @return if all the blood test properties are valid
+     * a method to check blood test properties and set error labels if they are invalid
+     * @param textField the textfield containing the value for a blood test property
+     * @param label the error label for a blood test property
+     * @param bloodTestProperties the BloodTestProperty to get the upper and lower bound
+     * @return returns true if the value in the textfield is a valid input
      */
-    private boolean validateField() {
-        boolean valid = true;
-        if (AttributeValidation.validateDouble(redBloodCount.getText()) == -1) {
-            bloodTestRCCountLabel.setVisible(true);
-            invalidateNode(redBloodCount);
+    private Boolean BloodTestValidation(TextField textField, Label label, BloodTestProperties bloodTestProperties){
+        Boolean valid = true;
+        DecimalFormat df2 = new DecimalFormat(".##");
+        double value = AttributeValidation.validateDouble(textField.getText());
+        if (value == -1){
+            label.setVisible(true);
+            invalidateNode(textField);
             valid = false;
-        }
-        if (AttributeValidation.validateDouble(whiteBloodCount.getText()) == -1) {
-            bloodTestWCCountLabel.setVisible(true);
-            invalidateNode(whiteBloodCount);
+        } else if (value > (bloodTestProperties.getUpperBound()) * 5.0){
+            label.setText("that number is too large the max number is " + df2.format(bloodTestProperties.getUpperBound() * 5.0));
+            label.setVisible(true);
+            invalidateNode(textField);
             valid = false;
-
-        }
-        if (AttributeValidation.validateDouble(heamoglobin.getText()) == -1) {
-            bloodTestHeamoglobinLabel.setVisible(true);
-            invalidateNode(heamoglobin);
-            valid = false;
-        }
-        if (AttributeValidation.validateDouble(platelets.getText()) == -1) {
-            bloodTestPlateletsLabel.setVisible(true);
-            invalidateNode(platelets);
-            valid = false;
-        }
-        if (AttributeValidation.validateDouble(glucose.getText()) == -1) {
-            bloodTestGlucoseLabel.setVisible(true);
-            invalidateNode(glucose);
-            valid = false;
-        }
-        if (AttributeValidation.validateDouble(meanCellVolume.getText()) == -1) {
-            bloodTestMCVolumeLabel.setVisible(true);
-            invalidateNode(meanCellVolume);
-            valid = false;
-        }
-        if (AttributeValidation.validateDouble(haematocrit.getText()) == -1) {
-            bloodTestHaematocritLabel.setVisible(true);
-            invalidateNode(haematocrit);
-            valid = false;
-        }
-        if (AttributeValidation.validateDouble(meanCellHaematocrit.getText()) == -1) {
-            bloodTestMCHaematocritLabel.setVisible(true);
-            invalidateNode(meanCellHaematocrit);
-            valid = false;
-        }
-        if (!AttributeValidation.validateDateBeforeTomorrow(bloodTestDatePicker.getValue())) {
-            bloodTestDateLabel.setVisible(true);
-            invalidateNode(bloodTestDatePicker);
+        } else if (value < (bloodTestProperties.getLowerBound() / 5.0) && value != 0.0) {
+            label.setText("that number is too small the min number is " + df2.format(bloodTestProperties.getLowerBound() / 5.0));
+            label.setVisible(true);
+            invalidateNode(textField);
             valid = false;
         }
         return valid;
+    }
+
+    /**
+     * check that all blood test properties are valid
+     * @return returns true if all properties are valid
+     */
+    private boolean validateField() {
+        boolean fieldValid = true;
+        fieldValid &= BloodTestValidation(redBloodCount,bloodTestRCCountLabel,BloodTestProperties.RBC);
+        fieldValid &= BloodTestValidation(whiteBloodCount,bloodTestWCCountLabel,BloodTestProperties.WBC);
+        fieldValid &= BloodTestValidation(heamoglobin,bloodTestHeamoglobinLabel,BloodTestProperties.HAEMOGLOBIN);
+        fieldValid &= BloodTestValidation(platelets,bloodTestPlateletsLabel,BloodTestProperties.PLATELETS);
+        fieldValid &= BloodTestValidation(glucose,bloodTestGlucoseLabel,BloodTestProperties.GLUCOSE);
+        fieldValid &= BloodTestValidation(meanCellVolume, bloodTestMCVolumeLabel, BloodTestProperties.MEAN_CELL_VOLUME);
+        fieldValid &= BloodTestValidation(haematocrit, bloodTestHaematocritLabel, BloodTestProperties.HAEMATOCRIT);
+        fieldValid &= BloodTestValidation(meanCellHaematocrit, bloodTestMCHaematocritLabel, BloodTestProperties.MEAN_CELL_HAEMATOCRIT);
+        if(!AttributeValidation.validateDateBeforeTomorrow(bloodTestDatePicker.getValue())){
+            bloodTestDateLabel.setVisible(true);
+            invalidateNode(bloodTestDatePicker);
+            fieldValid = false;
+        }
+        return fieldValid;
+
     }
 
     /**
