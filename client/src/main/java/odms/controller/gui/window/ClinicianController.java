@@ -423,7 +423,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
             AppController.getInstance().setUserController(userController);
             userController.init(AppController.getInstance(), user, userStage, true, parentListeners);
             StageIconLoader stageIconLoader = new StageIconLoader();
-            userStage.getIcons().add(stageIconLoader.getIconImage());
+            userStage = stageIconLoader.addStageIcon(userStage);
             userStage.show();
             Log.info("Clinician " + clinician.getStaffId()
                     + " successfully launched user overview window");
@@ -552,7 +552,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
             StageIconLoader stageIconLoader = new StageIconLoader();
-            newStage.getIcons().add(stageIconLoader.getIconImage());
+            newStage = stageIconLoader.addStageIcon(newStage);
             newStage.show();
             stage.close();
             availableOrgansViewController.shutdownThreads();
@@ -607,7 +607,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
             updateClinicianController.init(clinician, appController, stage, false, newStage);
             newStage.initModality(Modality.APPLICATION_MODAL); // background window is no longer selectable
             StageIconLoader stageIconLoader = new StageIconLoader();
-            newStage.getIcons().add(stageIconLoader.getIconImage());
+            newStage = stageIconLoader.addStageIcon(newStage);
             newStage.showAndWait();
             showClinician(clinician);
             Log.info("Clinician " + clinician.getStaffId() + " successfully launched update clinician window");
@@ -653,7 +653,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
             deletedUserController.init(false);
             stage.initModality(Modality.APPLICATION_MODAL);
             StageIconLoader stageIconLoader = new StageIconLoader();
-            stage.getIcons().add(stageIconLoader.getIconImage());
+            stage = stageIconLoader.addStageIcon(stage);
             stage.showAndWait();
             Log.info("Clinician " + clinician.getStaffId() + " successfully launched delete user window");
         } catch (IOException e) {

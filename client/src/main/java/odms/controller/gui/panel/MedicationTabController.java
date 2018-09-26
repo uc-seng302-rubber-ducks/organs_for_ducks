@@ -345,7 +345,7 @@ public class MedicationTabController {
                     .getController();
             medicationsTimeController.init(currentUser, stage, med);
             StageIconLoader stageIconLoader = new StageIconLoader();
-            stage.getIcons().add(stageIconLoader.getIconImage());
+            stage = stageIconLoader.addStageIcon(stage);
             stage.show();
             Log.info("successfully launched Medications Time view window for User NHI: " + currentUser.getNhi());
         } catch (IOException e) {

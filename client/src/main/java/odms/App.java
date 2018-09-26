@@ -85,19 +85,23 @@ public class App extends Application {
 
         });
 
-        URL url = getClass().getResource("/logos/LoveDuck.png");
-//        URL url = getClass().getResource("/logos/HeartDuck.png");
-        if (url == null) {
-            Log.warning("Could not load the icon for the taskbar. Check that the filepath is correct");
-        } else {
-            javafx.scene.image.Image image = new Image(url.openStream());
-            primaryStage.getIcons().add(image);
+        if (!ConfigPropertiesSession.getInstance().getProperty("testConfig", "false").equalsIgnoreCase("true")) {
+            URL url = getClass().getResource("/logos/LoveDuck.png");
+            if (url == null) {
+                Log.warning("Could not load the icon for the taskbar. Check that the filepath is correct");
+            } else {
+                javafx.scene.image.Image image = new Image(url.openStream());
+                primaryStage.getIcons().add(image);
+            }
         }
 
 
+
         loginController.init(controller, primaryStage);
-        StageIconLoader stageIconLoader = new StageIconLoader();
-        primaryStage.getIcons().add(stageIconLoader.getIconImage());
+        if (!ConfigPropertiesSession.getInstance().getProperty("testConfig", "false").equalsIgnoreCase("true")) {
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            primaryStage.getIcons().add(stageIconLoader.getIconImage());
+        }
         primaryStage.show();
     }
 

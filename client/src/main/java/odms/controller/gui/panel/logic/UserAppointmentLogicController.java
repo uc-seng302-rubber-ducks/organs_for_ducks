@@ -64,7 +64,7 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
             appointmentPickerViewController.init(user, appointmentPickerStage);
             appointmentPickerStage.setScene(new Scene(root));
             StageIconLoader stageIconLoader = new StageIconLoader();
-            appointmentPickerStage.getIcons().add(stageIconLoader.getIconImage());
+            appointmentPickerStage = stageIconLoader.addStageIcon(appointmentPickerStage);
             appointmentPickerStage.showAndWait();
             Log.info("Successfully launched the appointment picker pop-up window for user: " + user.getNhi());
 
