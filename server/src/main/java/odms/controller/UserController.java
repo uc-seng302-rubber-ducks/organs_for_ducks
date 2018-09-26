@@ -37,8 +37,14 @@ public class UserController extends BaseController {
     }
 
     /**
+     *
      * sends a list of users depending on query parameters
      *
+     * @param startIndex index to start in
+     * @param count hpow many to fetch
+     * @param name name to search by
+     * @param region region to search in
+     * @param gender gender to search by
      * @return list of users
      */
     @IsClinician
