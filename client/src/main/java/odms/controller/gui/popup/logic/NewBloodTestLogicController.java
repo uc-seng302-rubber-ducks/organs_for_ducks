@@ -1,7 +1,6 @@
 package odms.controller.gui.popup.logic;
 
 import javafx.stage.Stage;
-import odms.bridge.BloodTestBridge;
 import odms.commons.model.User;
 import odms.commons.model.datamodel.BloodTest;
 import odms.controller.AppController;
@@ -11,10 +10,14 @@ import java.time.LocalDate;
 public class NewBloodTestLogicController {
     private User user;
     private Stage stage;
-    private BloodTestBridge bloodTestBridge;
 
-
-    public NewBloodTestLogicController(User user, Stage stage){
+    /**
+     * Initializes the pop-up to create a new blood test
+     *
+     * @param user  The user who the blood test is for
+     * @param stage The new stage
+     */
+    public NewBloodTestLogicController(User user, Stage stage) {
         this.user = user;
         this.stage = stage;
     }
@@ -28,7 +31,8 @@ public class NewBloodTestLogicController {
 
 
     /**
-     * a method to add a new blood test to a user
+     * A method to add a new blood test to a user
+     *
      * @param date the blood test happened
      * @param redBloodCount the blood test's red blood count
      * @param whiteBloodCount the blood test's white blood count
@@ -57,7 +61,7 @@ public class NewBloodTestLogicController {
         if (glucose.isEmpty()) {
             glucose = "0.0";
         }
-        if (meanCellVolume.isEmpty()){
+        if (meanCellVolume.isEmpty()) {
             meanCellVolume = "0.0";
         }
         if (haematocrit.isEmpty()) {
@@ -72,7 +76,5 @@ public class NewBloodTestLogicController {
         AppController appController = AppController.getInstance();
         appController.getBloodTestBridge().postBloodTest(bloodTest, user.getNhi(), appController.getToken());
         stage.close();
-
-
     }
 }

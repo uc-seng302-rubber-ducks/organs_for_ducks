@@ -39,6 +39,7 @@ public class AlertWindowFactory {
         alert.setTitle("Info");
         alert.setHeaderText(null);
         alert.setContentText(message);
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
 
         alert.showAndWait();
     }

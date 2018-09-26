@@ -31,6 +31,8 @@ import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.*;
 
+import static odms.commons.utils.BloodTestUtils.*;
+
 public class BloodTestViewController implements LoadingWidget {
 
     @FXML
@@ -81,6 +83,26 @@ public class BloodTestViewController implements LoadingWidget {
     private Label bloodTestHaematocritLabel;
     @FXML
     private Label bloodTestMCHaematocritLabel;
+    @FXML
+    private Label bloodTestErrorDateLabel;
+    @FXML
+    private Label bloodTestErrorRCCountLabel;
+    @FXML
+    private Label bloodTestErrorWCCountLabel;
+    @FXML
+    private Label bloodTestErrorHeamoglobinLabel;
+    @FXML
+    private Label bloodTestErrorPlateletsLabel;
+    @FXML
+    private Label bloodTestErrorGlucoseLabel;
+    @FXML
+    private Label bloodTestErrorMCVolumeLabel;
+    @FXML
+    private Label bloodTestErrorHaematocritLabel;
+    @FXML
+    private Label bloodTestErrorMCHaematocritLabel;
+    @FXML
+    private Label noPropertyErrorLabel;
 
     @FXML
     private Toggle bloodTestTableToggle;
@@ -160,6 +182,15 @@ public class BloodTestViewController implements LoadingWidget {
         logicController = new BloodTestsLogicController(bloodTests, graphBloodTests, user);
         initBloodTestTableView();
         initGraphView();
+        textFieldListener(redBloodCount);
+        textFieldListener(whiteBloodCount);
+        textFieldListener(haematocrit);
+        textFieldListener(heamoglobin);
+        textFieldListener(meanCellHaematocrit);
+        textFieldListener(meanCellVolume);
+        textFieldListener(platelets);
+        textFieldListener(glucose);
+        datePickerListener(bloodTestDatePicker);
     }
 
     private BooleanProperty waitingProperty() {
@@ -194,6 +225,34 @@ public class BloodTestViewController implements LoadingWidget {
         meanCellVolume.setVisible(true);
         meanCellHaematocrit.setVisible(true);
     }
+
+
+    /**
+     * Hides the error labels and removes the invalid css for the blood test update fields
+     * when a different blood test is selected.
+     */
+    private void resetErrorLabels() {
+        noPropertyErrorLabel.setVisible(false);
+        bloodTestErrorDateLabel.setVisible(false);
+        bloodTestErrorRCCountLabel.setVisible(false);
+        bloodTestErrorWCCountLabel.setVisible(false);
+        bloodTestErrorHeamoglobinLabel.setVisible(false);
+        bloodTestErrorPlateletsLabel.setVisible(false);
+        bloodTestErrorGlucoseLabel.setVisible(false);
+        bloodTestErrorMCVolumeLabel.setVisible(false);
+        bloodTestErrorHaematocritLabel.setVisible(false);
+        bloodTestErrorMCHaematocritLabel.setVisible(false);
+        removeInvalid(redBloodCount);
+        removeInvalid(whiteBloodCount);
+        removeInvalid(haematocrit);
+        removeInvalid(heamoglobin);
+        removeInvalid(meanCellHaematocrit);
+        removeInvalid(meanCellVolume);
+        removeInvalid(platelets);
+        removeInvalid(glucose);
+        bloodTestDatePicker.getStyleClass().remove("Invalid");
+    }
+
 
     /**
      * Initializes the table view of blood tests for the current user
@@ -251,11 +310,14 @@ public class BloodTestViewController implements LoadingWidget {
             if (selectedBloodTest != null) {
                 displayBloodTestDetails(selectedBloodTest);
                 bloodTest = selectedBloodTest;
+                resetErrorLabels();
+
             } else {
                 clearDetails();
             }
         });
     }
+
 
     /**
      * Changes the fields to be enabled or disabled depending on the given boolean value.
@@ -318,10 +380,9 @@ public class BloodTestViewController implements LoadingWidget {
             if (fromClinician) {
                 return "";
             } else {
-                return "This property was not tested";
+                return "Not tested";
             }
         }
-
         return Double.toString(value);
     }
 
@@ -630,21 +691,34 @@ public class BloodTestViewController implements LoadingWidget {
      * @return returns true if all properties are valid
      */
     private boolean validateField() {
-        boolean fieldValid = true;
-        fieldValid &= BloodTestValidation(redBloodCount, bloodTestRCCountLabel, BloodTestProperties.RED_BLOOD_CELL);
-        fieldValid &= BloodTestValidation(whiteBloodCount, bloodTestWCCountLabel, BloodTestProperties.WHITE_BLOOD_CELL);
-        fieldValid &= BloodTestValidation(heamoglobin,bloodTestHeamoglobinLabel,BloodTestProperties.HAEMOGLOBIN);
-        fieldValid &= BloodTestValidation(platelets,bloodTestPlateletsLabel,BloodTestProperties.PLATELETS);
-        fieldValid &= BloodTestValidation(glucose,bloodTestGlucoseLabel,BloodTestProperties.GLUCOSE);
-        fieldValid &= BloodTestValidation(meanCellVolume, bloodTestMCVolumeLabel, BloodTestProperties.MEAN_CELL_VOLUME);
-        fieldValid &= BloodTestValidation(haematocrit, bloodTestHaematocritLabel, BloodTestProperties.HAEMATOCRIT);
-        fieldValid &= BloodTestValidation(meanCellHaematocrit, bloodTestMCHaematocritLabel, BloodTestProperties.MEAN_CELL_HAEMATOCRIT);
-        if(!AttributeValidation.validateDateBeforeTomorrow(bloodTestDatePicker.getValue())){
+        boolean fieldValid;
+        boolean atLeastOneValue = false;
+        fieldValid = bloodTestValidation(redBloodCount, bloodTestErrorRCCountLabel, BloodTestProperties.RED_BLOOD_CELL);
+        atLeastOneValue |= isAssigned();
+        fieldValid &= bloodTestValidation(whiteBloodCount,bloodTestErrorWCCountLabel,BloodTestProperties.WHITE_BLOOD_CELL);
+        atLeastOneValue |= isAssigned();
+        fieldValid &= bloodTestValidation(heamoglobin,bloodTestErrorHeamoglobinLabel,BloodTestProperties.HAEMOGLOBIN);
+        atLeastOneValue |= isAssigned();
+        fieldValid &= bloodTestValidation(platelets,bloodTestErrorPlateletsLabel,BloodTestProperties.PLATELETS);
+        atLeastOneValue |= isAssigned();
+        fieldValid &= bloodTestValidation(glucose,bloodTestErrorGlucoseLabel,BloodTestProperties.GLUCOSE);
+        atLeastOneValue |= isAssigned();
+        fieldValid &= bloodTestValidation(meanCellVolume, bloodTestErrorMCVolumeLabel, BloodTestProperties.MEAN_CELL_VOLUME);
+        atLeastOneValue |= isAssigned();
+        fieldValid &= bloodTestValidation(haematocrit, bloodTestErrorHaematocritLabel, BloodTestProperties.HAEMATOCRIT);
+        atLeastOneValue |= isAssigned();
+        fieldValid &= bloodTestValidation(meanCellHaematocrit, bloodTestErrorMCHaematocritLabel, BloodTestProperties.MEAN_CELL_HAEMATOCRIT);
+        atLeastOneValue |= isAssigned();
+        if (!AttributeValidation.validateDateBeforeTomorrow(bloodTestDatePicker.getValue())) {
             bloodTestDateLabel.setVisible(true);
             invalidateNode(bloodTestDatePicker);
             fieldValid = false;
         }
-        return fieldValid;
+
+        if (!atLeastOneValue) {
+            noPropertyErrorLabel.setVisible(true);
+        }
+        return fieldValid && atLeastOneValue;
 
     }
 
@@ -654,6 +728,7 @@ public class BloodTestViewController implements LoadingWidget {
      */
     @FXML
     private void updateBloodTest() {
+        noPropertyErrorLabel.setVisible(false);
         if (bloodTestTableView.getSelectionModel().getSelectedItem() != null) {
             if (validateField()) {
                 bloodTest.setGlucoseLevels(AttributeValidation.validateDouble(glucose.getText()));
@@ -691,20 +766,24 @@ public class BloodTestViewController implements LoadingWidget {
         }
     }
 
+    /**
+     * @see BloodTestsLogicController goNextPage()
+     */
     @FXML
     private void goToNextPage() {
         logicController.gotoNextPage();
-
-    }
-
-    @FXML
-    private void goToPreviousPage() {
-        logicController.goToPreviousPage();
-
     }
 
     /**
-     *  see logicController.addNewBloodTest
+     * @see BloodTestsLogicController goToPreviousPage()
+     */
+    @FXML
+    private void goToPreviousPage() {
+        logicController.goToPreviousPage();
+    }
+
+    /**
+     *  @see BloodTestsLogicController addNewBloodTest()
      */
     @FXML
     private void addNewBloodTest() {

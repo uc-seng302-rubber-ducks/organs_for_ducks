@@ -1,5 +1,8 @@
 package odms.commons.model._enum;
 
+/**
+ * Enum for properties that a blood test can contain
+ */
 public enum BloodTestProperties {
     RED_BLOOD_CELL("Red Blood Cell", 1, 4.2, 6.1),
     WHITE_BLOOD_CELL("White Blood Cell", 2, 4.5, 12.0),
@@ -35,10 +38,20 @@ public enum BloodTestProperties {
         return this.dbValue;
     }
 
+    /**
+     * The lower bound of a specific blood test properties normal range
+     *
+     * @return The lower bound of the normal range
+     */
     public double getLowerBound() {
         return this.lowerBound;
     }
 
+    /**
+     * The upper bound of a specific blood test properties normal range
+     *
+     * @return The upper bound of the normal range
+     */
     public double getUpperBound() {
         return this.upperBound;
     }

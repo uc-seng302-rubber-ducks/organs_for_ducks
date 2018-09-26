@@ -54,7 +54,7 @@ public class BloodTestsLogicController implements PropertyChangeListener {
             root = newBloodTestLoader.load();
             NewBloodTestViewController newBloodTestViewController = newBloodTestLoader.getController();
             Stage bloodTestStage = new Stage();
-            newBloodTestViewController.init(user, bloodTestStage, AppController.getInstance().getBloodTestBridge());
+            newBloodTestViewController.init(user, bloodTestStage);
             bloodTestStage.setScene(new Scene(root));
             bloodTestStage.setResizable(false);
             bloodTestStage.setTitle("Add New Blood Test");
@@ -98,6 +98,9 @@ public class BloodTestsLogicController implements PropertyChangeListener {
         AppController.getInstance().getBloodTestBridge().getBloodTests(user.getNhi(), startDate, endDate, ROWS_PER_PAGE, start, bloodTests, null);
     }
 
+    /**
+     * Goes to the next page on the user's blood test results table
+     */
     public void gotoNextPage() {
         if (bloodTests.size() < ROWS_PER_PAGE) {
             return;
@@ -106,6 +109,9 @@ public class BloodTestsLogicController implements PropertyChangeListener {
         updateTableView(startingIndex);
     }
 
+    /**
+     * Goes to the previous page on the user's blood test results table
+     */
     public void goToPreviousPage() {
         if (startingIndex - ROWS_PER_PAGE < 0) {
             return;
@@ -190,6 +196,13 @@ public class BloodTestsLogicController implements PropertyChangeListener {
         return testDate;
     }
 
+    /**
+     * Handles events fired by blood tests that are being listened to
+     * The user's blood test table will be updated when the given event is appropriate
+     *
+     * @param evt PropertyChangeEvent to be handled
+     * @see UpdateNotificationEvent
+     */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         UpdateNotificationEvent event;

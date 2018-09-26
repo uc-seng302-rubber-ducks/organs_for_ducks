@@ -176,6 +176,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
      */
     public void init(Administrator administrator, AppController appController, Stage stage, boolean owner) {
         this.stage = stage;
+        stage.setResizable(true);
         this.appController = appController;
         this.administrator = administrator;
         this.owner = owner;
