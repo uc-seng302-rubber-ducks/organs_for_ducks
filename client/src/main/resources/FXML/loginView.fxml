@@ -93,13 +93,13 @@
                 </Tab>
             </tabs>
         </TabPane>
-        <Label alignment="CENTER" layoutY="41.0" prefHeight="44.0" prefWidth="600.0" styleClass="label-big-title" text="Organ Donation Management System" AnchorPane.bottomAnchor="150.0">
+        <Label alignment="CENTER" layoutY="41.0" prefHeight="44.0" prefWidth="600.0" styleClass="label-main-title" text="Organ Donation Management System" AnchorPane.bottomAnchor="150.0">
             <font>
                 <Font size="22.0" />
             </font>
         </Label>
       <ImageView fx:id="logoImageView" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="225.0" AnchorPane.rightAnchor="225.0" AnchorPane.topAnchor="55.0" />
-      <Label fx:id="poweredByLabel" text="Powered By Rubber Duck Software" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" styleClass="label">
+      <Label fx:id="poweredByLabel" text="Powered By Rubber Duck Software" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0"  styleClass="label-powered">
          <font>
             <Font size="9.0" />
          </font>
