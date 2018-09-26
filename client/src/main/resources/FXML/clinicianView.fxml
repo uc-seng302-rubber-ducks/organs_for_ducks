@@ -169,11 +169,6 @@
                 <fx:include fx:id="statusBarPage" source="statusBar.fxml" />
             </children>
         </AnchorPane>
-      <Label layoutX="262.0" layoutY="6.0" text="Clinician" AnchorPane.leftAnchor="262.0" AnchorPane.rightAnchor="272.0">
-          <font>
-              <Font size="20.0" />
-          </font>
-      </Label>
         <Button onAction="#save" AnchorPane.rightAnchor="70.0" AnchorPane.topAnchor="2.0" styleClass="button-secondary, save-button" text="">
             <tooltip><Tooltip text="Save"/></tooltip>
         </Button>
