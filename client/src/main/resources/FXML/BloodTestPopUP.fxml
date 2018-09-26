@@ -25,14 +25,14 @@
                 <Label styleClass="label-title" text="Test Date:" />
                 <DatePicker fx:id="testDate" prefHeight="25.0" prefWidth="335.0" GridPane.columnIndex="1" />
                 <Label fx:id="dateErrorLabel" prefHeight="15.0" prefWidth="304.0" styleClass="label-error" text="Please select either today or a date in the past" GridPane.columnIndex="1" GridPane.valignment="BOTTOM" />
-                <Label fx:id="redBloodCellError" prefHeight="15.0" prefWidth="332.0" styleClass="label-error" text="Please enter a postive number" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
-                <Label fx:id="whiteBloodCellError" prefHeight="15.0" prefWidth="331.0" styleClass="label-error" text="Please enter a postive number" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
-                <Label fx:id="heamoglobinError" prefHeight="15.0" prefWidth="337.0" styleClass="label-error" text="Please enter a postive number" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.valignment="BOTTOM" />
-                <Label fx:id="plateletsError" prefHeight="15.0" prefWidth="334.0" styleClass="label-error" text="Please enter a postive number" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.valignment="BOTTOM" />
-                <Label fx:id="glucoseError" prefHeight="15.0" prefWidth="329.0" styleClass="label-error" text="Please enter a postive number" GridPane.columnIndex="1" GridPane.rowIndex="5" GridPane.valignment="BOTTOM" />
-                <Label fx:id="meanCellVolumeError" prefHeight="15.0" prefWidth="328.0" styleClass="label-error" text="Please enter a postive number" GridPane.columnIndex="1" GridPane.rowIndex="7" GridPane.valignment="BOTTOM" />
-                <Label fx:id="haematocritError" prefHeight="15.0" prefWidth="332.0" styleClass="label-error" text="Please enter a postive number" GridPane.columnIndex="1" GridPane.rowIndex="6" GridPane.valignment="BOTTOM" />
-                <Label fx:id="meanCellHaematocritError" prefHeight="15.0" prefWidth="336.0" styleClass="label-error" text="Please enter a postive number" GridPane.columnIndex="1" GridPane.rowIndex="8" GridPane.valignment="BOTTOM" />
+                <Label fx:id="redBloodCellError" prefHeight="15.0" prefWidth="332.0" styleClass="label-error" text="Please enter a positive number" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
+                <Label fx:id="whiteBloodCellError" prefHeight="15.0" prefWidth="331.0" styleClass="label-error" text="Please enter a positive number" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
+                <Label fx:id="heamoglobinError" prefHeight="15.0" prefWidth="337.0" styleClass="label-error" text="Please enter a positive number" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.valignment="BOTTOM" />
+                <Label fx:id="plateletsError" prefHeight="15.0" prefWidth="334.0" styleClass="label-error" text="Please enter a positive number" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.valignment="BOTTOM" />
+                <Label fx:id="glucoseError" prefHeight="15.0" prefWidth="329.0" styleClass="label-error" text="Please enter a positive number" GridPane.columnIndex="1" GridPane.rowIndex="5" GridPane.valignment="BOTTOM" />
+                <Label fx:id="meanCellVolumeError" prefHeight="15.0" prefWidth="328.0" styleClass="label-error" text="Please enter a positive number" GridPane.columnIndex="1" GridPane.rowIndex="7" GridPane.valignment="BOTTOM" />
+                <Label fx:id="haematocritError" prefHeight="15.0" prefWidth="332.0" styleClass="label-error" text="Please enter a positive number" GridPane.columnIndex="1" GridPane.rowIndex="6" GridPane.valignment="BOTTOM" />
+                <Label fx:id="meanCellHaematocritError" prefHeight="15.0" prefWidth="336.0" styleClass="label-error" text="Please enter a positive number" GridPane.columnIndex="1" GridPane.rowIndex="8" GridPane.valignment="BOTTOM" />
                 <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="2">
                     <children>
                         <Label />
