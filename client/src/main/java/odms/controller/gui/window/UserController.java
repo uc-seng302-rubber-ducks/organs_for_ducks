@@ -160,6 +160,7 @@ public class UserController implements PropertyChangeListener {
             }
         }
         this.stage = stage;
+        stage.setResizable(true);
         application = controller;
         this.fromClinician = fromClinician;
         stage.setMinWidth(1200);
