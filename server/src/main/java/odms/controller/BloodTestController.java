@@ -68,6 +68,8 @@ public class BloodTestController extends BaseController {
      * @param nhi users nhi
      * @param startDateS date to start the results in format dd/MM/yyyy
      * @param endDateS date to end the results in format dd/MM/yyyy
+     * @param count number of blood tests to return
+     * @param startIndex number of blood tests to skip before returning
      * @return results found by the server
      */
     @RequestMapping(method = RequestMethod.GET, value = "/user/{nhi}/bloodTests")
@@ -101,8 +103,9 @@ public class BloodTestController extends BaseController {
      * Posts a single blood test for a user
      *
      * @param nhi users nhi
-     * @param bloodTest test to put
-     * @return the blood test
+     * @param bloodTest test to post
+     * @return A response entity which informs the caller of the success/failure of the request
+     * @throws IOException if there is an error when broadcasting the notification down the websocket
      */
     @IsClinician
     @RequestMapping(method = RequestMethod.POST, value = "/user/{nhi}/bloodTest")
@@ -121,12 +124,13 @@ public class BloodTestController extends BaseController {
     }
 
     /**
-     * Posts a single blood test for a user
+     * Patches a single blood test for a user
      *
      * @param nhi users nhi
      * @param id the id of the blood test to patch
-     * @param bloodTest test to put
+     * @param bloodTest test to patch
      * @return the blood test
+     * @throws IOException if there is an error when broadcasting the notification down the websocket
      */
     @IsClinician
     @RequestMapping(method = RequestMethod.PATCH, value = "/user/{nhi}/bloodTest/{id}")
@@ -149,6 +153,7 @@ public class BloodTestController extends BaseController {
      * @param nhi users nhi
      * @param id the id of the blood test to patch
      * @return the blood test
+     * @throws IOException if there is an error when broadcasting the notification down the websocket
      */
     @IsClinician
     @RequestMapping(method = RequestMethod.DELETE, value = "/user/{nhi}/bloodTest/{id}")
