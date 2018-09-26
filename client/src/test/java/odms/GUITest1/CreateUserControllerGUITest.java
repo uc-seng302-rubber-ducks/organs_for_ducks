@@ -4,6 +4,7 @@ import javafx.scene.Node;
 import javafx.scene.control.DatePicker;
 import odms.App;
 import odms.TestUtils.AppControllerMocker;
+import odms.TestUtils.CommonTestMethods;
 import odms.controller.AppController;
 import org.junit.After;
 import org.junit.Before;
@@ -24,7 +25,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-//        CommonTestMethods.runMethods();
+        CommonTestMethods.runMethods();
     }
 
     @Before

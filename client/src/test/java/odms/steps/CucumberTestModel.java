@@ -29,6 +29,7 @@ public class CucumberTestModel {
     private static TransplantBridge transplantBridge = mock(TransplantBridge.class);
     private static OrgansBridge organsBridge = mock(OrgansBridge.class);
     private static AppointmentsBridge appointmentsBridge = mock(AppointmentsBridge.class);
+    private static BloodTestBridge bloodTestBridge = mock(BloodTestBridge.class);
     private static User user;
     private static String userNhi;
     private static boolean isClinicianLogin;
@@ -62,6 +63,7 @@ public class CucumberTestModel {
         controller.setCountriesBridge(countriesBridge);
         controller.setOrgansBridge(organsBridge);
         controller.setAppointmentsBridge(appointmentsBridge);
+        controller.setBloodTestBridge(bloodTestBridge);
         return controller;
     }
 

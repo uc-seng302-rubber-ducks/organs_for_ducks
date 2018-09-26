@@ -1585,7 +1585,6 @@ public class DBHandler {
                     results.add(appointment);
                 }
             }
-
         }
         return results;
     }
@@ -1600,7 +1599,7 @@ public class DBHandler {
      */
     public AppointmentWithPeople getAppointmentWithPeople(Connection connection, int appointmentId) throws SQLException {
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(GET_APPOINTMENTS_TIME)) {
+        try( PreparedStatement preparedStatement = connection.prepareStatement(GET_APPOINTMENTS_TIME)) {
             preparedStatement.setInt(1, appointmentId);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) { //should only ever be a single result in the set
@@ -1616,9 +1615,16 @@ public class DBHandler {
                     return appointment;
                 }
             }
-
         }
         return null;
     }
 
+    /**
+     * Gets and returns the blood test handler to the blood test controller
+     *
+     * @return A BloodTestHandler
+     */
+    public BloodTestHandler getBloodTestHandler() {
+        return new BloodTestHandler();
+    }
 }

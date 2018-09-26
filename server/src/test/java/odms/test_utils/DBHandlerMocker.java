@@ -6,6 +6,7 @@ import odms.commons.model.User;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static org.mockito.Mockito.when;
@@ -65,8 +66,6 @@ public class DBHandlerMocker {
         } catch (ParseException p) {
             //Go away
         }
-
-
     }
 
     /**
@@ -84,4 +83,25 @@ public class DBHandlerMocker {
         when(resultSet.getInt("fkCategoryId")).thenReturn(1);
         when(resultSet.getInt("fkStatusId")).thenReturn(1);
     }
+
+    /**
+     * Causes the result set to return the details of a blood test
+     * Units are specified on the side
+     *
+     * @param resultSet mocked result set to return basic blood test details
+     * @throws SQLException This shouldn't be thrown due to it being a mocked object.
+     */
+    public static void setBloodTestResultSet(ResultSet resultSet) throws SQLException {
+        when(resultSet.getInt("bloodTestId")).thenReturn(1);
+        when(resultSet.getDouble("redBloodCellCount")).thenReturn(0.0054);  // x10^9 /L
+        when(resultSet.getDouble("whiteBloodCellCount")).thenReturn(8.5);   // x10^9 /L
+        when(resultSet.getDouble("haemoglobinLevel")).thenReturn(120.5);    // g/L
+        when(resultSet.getDouble("platelets")).thenReturn(300.5);           // x10^9 /L
+        when(resultSet.getDouble("glucoseLevels")).thenReturn(4.8);         // mmol/L
+        when(resultSet.getDouble("meanCellVolume")).thenReturn(80.5);       // fL
+        when(resultSet.getDouble("haematocrit")).thenReturn(0.35);          // ratio
+        when(resultSet.getDouble("meanCellHaematocrit")).thenReturn(25.5);  // pg
+        when(resultSet.getDate("testDate")).thenReturn(Date.valueOf(LocalDate.of(2018, 9, 15)));
+    }
+
 }

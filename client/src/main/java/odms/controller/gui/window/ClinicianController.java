@@ -103,8 +103,6 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
     @FXML
     private TextField searchTextField;
     @FXML
-    private Tooltip searchToolTip;
-    @FXML
     private LoadingTableView<UserOverview> searchTableView;
     @FXML
     private Label searchCountLabel;

@@ -59,6 +59,7 @@ public class AppController {
     private String token;
     private SQLBridge sqlBridge = new SQLBridge(client);
     private AppointmentsBridge appointmentsBridge;
+    private BloodTestBridge bloodTestBridge;
     private OdmsSocketHandler socketHandler = new OdmsSocketHandler(client, ServerEventNotifier.getInstance());
     private String username = "";
     private String name = "";
@@ -82,6 +83,7 @@ public class AppController {
         transplantBridge = new TransplantBridge(client);
         countriesBridge = new CountriesBridge(client);
         appointmentsBridge = new AppointmentsBridge(client);
+        bloodTestBridge = new BloodTestBridge(client);
     }
 
     /**
@@ -726,8 +728,8 @@ public class AppController {
         return appointmentsBridge;
     }
 
-    public void setAppointmentsBridge(AppointmentsBridge appointmentsBridge) {
-        this.appointmentsBridge = appointmentsBridge;
+    public BloodTestBridge getBloodTestBridge() {
+        return bloodTestBridge;
     }
 
     public OdmsSocketHandler getSocketHandler() {
@@ -756,5 +758,13 @@ public class AppController {
 
     public OkHttpClient getClient() {
         return client;
+    }
+
+    public void setAppointmentsBridge(AppointmentsBridge appointmentsBridge) {
+        this.appointmentsBridge = appointmentsBridge;
+    }
+
+    public void setBloodTestBridge(BloodTestBridge bloodTestBridge) {
+        this.bloodTestBridge = bloodTestBridge;
     }
 }

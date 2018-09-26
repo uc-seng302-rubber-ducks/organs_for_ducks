@@ -15,10 +15,8 @@
             <menus>
                 <Menu fx:id="fileMenuClinician" mnemonicParsing="false" text="File">
                     <items>
-                        <MenuItem fx:id="refreshClinician" mnemonicParsing="false" onAction="#refreshTables"
-                                  text="Refresh"/>
-                        <MenuItem fx:id="saveUserMenuItem" mnemonicParsing="false" onAction="#save" text="Save"/>
-                        <MenuItem fx:id="logoutMenuClinician" mnemonicParsing="false" text="Log Out"/>
+                        <MenuItem fx:id="saveUserMenuItem" mnemonicParsing="false" onAction="#save" text="Save" />
+                        <MenuItem fx:id="logoutMenuClinician" mnemonicParsing="false" text="Log Out" />
                     </items>
                 </Menu>
                 <Menu fx:id="editMenuClinician" mnemonicParsing="false" text="Edit">
@@ -188,9 +186,6 @@
                                                 <TableColumn prefWidth="75.0" text="C1"/>
                                                 <TableColumn prefWidth="75.0" text="C2"/>
                                             </columns>
-                                            <tooltip>
-                                                <Tooltip fx:id="searchToolTip" text="Empty Tooltip"/>
-                                            </tooltip>
                                         </LoadingTableView>
                                         <Label fx:id="searchCountLabel" layoutX="14.0" layoutY="336.0" text=""
                                                AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0"/>
@@ -232,15 +227,19 @@
                 <fx:include fx:id="statusBarPage" source="statusBar.fxml"/>
             </children>
         </AnchorPane>
-        <Label layoutX="262.0" layoutY="6.0" text="Clinician" AnchorPane.leftAnchor="262.0"
-               AnchorPane.rightAnchor="272.0">
-            <font>
-                <Font size="20.0"/>
-            </font>
-        </Label>
+      <Label layoutX="262.0" layoutY="6.0" text="Clinician" AnchorPane.leftAnchor="262.0" AnchorPane.rightAnchor="272.0">
+          <font>
+              <Font size="20.0" />
+          </font>
+      </Label>
+        <Button onAction="#save" AnchorPane.rightAnchor="70.0" AnchorPane.topAnchor="2.0" styleClass="button-secondary, save-button" text="">
+            <tooltip><Tooltip text="Save"/></tooltip>
+        </Button>
         <Button fx:id="undoButton" layoutX="481.0" layoutY="5.0" mnemonicParsing="false" onAction="#undo"
-                styleClass="button-secondary" text="Undo" AnchorPane.rightAnchor="86.0" AnchorPane.topAnchor="5.0"/>
+                styleClass="button-secondary, undo-button" text="Undo" AnchorPane.rightAnchor="38.0"
+                AnchorPane.topAnchor="5.0"/>
         <Button fx:id="redoButton" layoutX="545.0" layoutY="5.0" mnemonicParsing="false" onAction="#redo"
-                styleClass="button-secondary" text="Redo" AnchorPane.rightAnchor="22.0" AnchorPane.topAnchor="5.0"/>
+                styleClass="button-secondary, redo-button" text="Redo" AnchorPane.rightAnchor="6.0"
+                AnchorPane.topAnchor="5.0"/>
     </children>
 </AnchorPane>

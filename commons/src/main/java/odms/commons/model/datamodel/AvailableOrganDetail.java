@@ -12,6 +12,9 @@ import java.time.LocalDateTime;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 
+/**
+ * a class to store the detail related to a particular organ available to donate
+ */
 public class AvailableOrganDetail implements Listenable, Expirable {
     private Organs organ;
     private String donorNhi;

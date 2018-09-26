@@ -47,6 +47,7 @@ public class ClinicianAppointmentRequestViewController implements Converter {
     private static final double TITLE_CONTROL_TOP_ANCHOR = 109.0;
     private static final double TITLE_CONTROL_RIGHT_ANCHOR = 49;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm");
+
     @FXML
     private LoadingTableView<Appointment> clinicianAppointmentsRequestView;
     @FXML
@@ -331,20 +332,20 @@ public class ClinicianAppointmentRequestViewController implements Converter {
             return;
         }
         boolean valid = true;
-
-        if (appointmentRequestTime.getSelectionModel().getSelectedItem() == null) {
+        resetAppointmentFields();
+        if (appointmentRequestTime.getSelectionModel().getSelectedItem() == null){
             valid = false;
             AlertWindowFactory.generateInfoWindow("please pick a time");
         } else {
 
-            if (!AttributeValidation.validateTimeString(appointmentRequestTime.getValue().toString())) {
-                appointmentRequestTime.setStyle("-fx-background-color: rgba(100%, 0%, 0%, 0.25); -fx-border-color: RED");
+            if (!AttributeValidation.validateTimeString(appointmentRequestTime.getValue().toString()) || appointmentRequestTime.getValue().toString().equals("00:00")) {
+                appointmentRequestTime.getStyleClass().add("invalid");
                 valid = false;
             }
         }
 
         if (!AttributeValidation.validateDateOfAppointment(appointmentRequestDate.getValue())) {
-            appointmentRequestDate.setStyle("-fx-background-color: rgba(100%, 0%, 0%, 0.25); -fx-border-color: RED");
+            appointmentRequestDate.getStyleClass().add("invalid");
             valid = false;
         }
 
@@ -363,6 +364,13 @@ public class ClinicianAppointmentRequestViewController implements Converter {
         }
 
 
+    }
+
+    private void resetAppointmentFields() {
+
+
+        appointmentRequestDate.getStyleClass().remove("invalid");
+        appointmentRequestTime.getStyleClass().remove("invalid");
     }
 
     /**
