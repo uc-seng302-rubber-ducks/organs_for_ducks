@@ -1,7 +1,6 @@
 package odms.controller.gui.popup.view;
 
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -14,7 +13,7 @@ import odms.commons.utils.AttributeValidation;
 import odms.controller.gui.popup.logic.NewBloodTestLogicController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 
-import java.text.DecimalFormat;
+import static odms.commons.utils.BloodTestUtils.*;
 
 
 public class NewBloodTestViewController {
@@ -62,19 +61,25 @@ public class NewBloodTestViewController {
 
 
     private NewBloodTestLogicController logicController;
-    private boolean valid = true;
     private boolean atLeastOneValue = false;
 
     public void init(User user, Stage stage, BloodTestBridge bloodTestBridge){
         this.logicController = new NewBloodTestLogicController(user,stage);
         resetErrorLabels();
+        textFieldListener(redBloodCount);
+        textFieldListener(whiteBloodCount);
+        textFieldListener(haematocrit);
+        textFieldListener(heamoglobin);
+        textFieldListener(platelets);
+        textFieldListener(meanCellHaematocrit);
+        textFieldListener(meanCellVolume);
+        textFieldListener(glucose);
+        datePickerListener(testDate);
     }
 
     @FXML
     public void cancel() {
         logicController.cancel();
-
-
     }
 
     /**
@@ -92,37 +97,6 @@ public class NewBloodTestViewController {
         meanCellHaematocritError.setVisible(false);
     }
 
-    /**
-     * a method to check blood test properties and set error labels if they are invalid
-     * @param textField the textfield containing the value for a blood test property
-     * @param label the error label for a blood test property
-     * @param bloodTestProperties the BloodTestProperty to get the upper and lower bound
-     * @return returns true if the value in the textfield is a valid input
-     */
-    private boolean bloodTestValidation(TextField textField, Label label, BloodTestProperties bloodTestProperties){
-        valid = true;
-        DecimalFormat df2 = new DecimalFormat(".##");
-        double value = AttributeValidation.validateDouble(textField.getText());
-        if (value == -1){
-            label.setVisible(true);
-            invalidateNode(textField);
-            valid = false;
-        } else if (value > (bloodTestProperties.getUpperBound()) * 5.0){
-            label.setText("that number is too large the max number is " + df2.format(bloodTestProperties.getUpperBound() * 5.0));
-            label.setVisible(true);
-            invalidateNode(textField);
-            valid = false;
-        } else if (value < (bloodTestProperties.getLowerBound() / 5.0) && value != 0.0) {
-            label.setText("that number is too small the min number is " + df2.format(bloodTestProperties.getLowerBound() / 5.0));
-            label.setVisible(true);
-            invalidateNode(textField);
-            valid = false;
-        }
-        if (valid && value != 0.0) {
-            atLeastOneValue = true;
-        }
-        return valid;
-    }
     /**
      * check that all blood test properties are valid
      * @return returns true if all properties are valid
@@ -142,7 +116,7 @@ public class NewBloodTestViewController {
             invalidateNode(testDate);
             fieldValid = false;
         }
-        fieldValid &= atLeastOneValue;
+
         return fieldValid;
 
     }
@@ -165,13 +139,6 @@ public class NewBloodTestViewController {
         }
     }
 
-    /**
-     * changes a node to show the user if it is invalid
-     * @param node a node to mark as invalid
-     */
-    private void invalidateNode(Node node) {
-        node.getStyleClass().add("invalid");
-    }
 
 
 
