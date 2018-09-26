@@ -28,6 +28,7 @@ import odms.controller.gui.panel.*;
 import odms.controller.gui.panel.view.BloodTestViewController;
 import odms.controller.gui.panel.view.UserAppointmentViewController;
 import odms.controller.gui.popup.UserAppointmentAlertController;
+import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.socket.ServerEventNotifier;
 
 import java.beans.PropertyChangeEvent;
@@ -138,6 +139,7 @@ public class UserController implements PropertyChangeListener {
     private EmergencyContact contact = null;
     private ObservableList<Change> changelog;
     private UserAppointmentAlertController userAppointmentAlertController = new UserAppointmentAlertController();
+    private String userNhi;
 
     /**
      * Gives the user view the application controller and hides all label and buttons that are not
@@ -153,6 +155,7 @@ public class UserController implements PropertyChangeListener {
         if (user == null) {
             return;
         }
+        userNhi = user.getNhi();
         //add change listeners of parent controllers to the current user
         if (parentListeners != null && !parentListeners.isEmpty()) {
             for (PropertyChangeListener listener : parentListeners) {
@@ -472,6 +475,7 @@ public class UserController implements PropertyChangeListener {
      */
     public void showUser(User user) {
         changeCurrentUser(user);
+        userNhi = currentUser.getNhi();
         setContactPage();
         userProfileTabPageController.showUser(user);
         medicationTabPageController.refreshLists(user);
@@ -611,20 +615,23 @@ public class UserController implements PropertyChangeListener {
             return;
         }
         if (event.getType().equals(EventTypes.USER_UPDATE)
-                && event.getOldIdentifier().equalsIgnoreCase(currentUser.getNhi())
-                || event.getNewIdentifier().equalsIgnoreCase(currentUser.getNhi())) {
+                && (event.getOldIdentifier().equalsIgnoreCase(userNhi)
+                || event.getNewIdentifier().equalsIgnoreCase(userNhi))) {
 
             try {
                 currentUser = application.getUserBridge().getUser(event.getNewIdentifier());
                 if (currentUser != null) {
-                    showUser(currentUser); //TODO: Apply change once we solve the DB race 7/8/18 JB
+                    showUser(currentUser);
                 }
             } catch (IOException ex) {
                 Log.warning("failed to get updated user", ex);
             }
 
         } else if (event.getType().equals(EventTypes.REQUEST_UPDATE)) {
-            userAppointmentAlertController.checkForUnseenUpdates(currentUser.getNhi());
+            userAppointmentAlertController.checkForUnseenUpdates(userNhi);
+        } else if(event.getType().equals(EventTypes.USER_DELETE) && event.getOldIdentifier().equalsIgnoreCase(userNhi)){
+            AlertWindowFactory.generateInfoWindow("This user has been deleted from the server.\nThank you for using Organs for Ducks");
+            stage.close();
         }
     }
 }

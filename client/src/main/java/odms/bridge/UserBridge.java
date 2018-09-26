@@ -35,7 +35,7 @@ public class UserBridge extends RoleBridge {
     }
 
     public void getUsers(int startIndex, int count, String name, String region, String gender, String token, LoadingWidget tableview) {
-        if (inProgress != null) {
+       if (inProgress != null) {
             inProgress.cancel();
         }
         String url = ip + "/users?startIndex=" + startIndex + "&count=" + count + "&name=" + name + "&region=" + region + "&gender=" + gender;
