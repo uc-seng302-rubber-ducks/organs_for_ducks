@@ -84,6 +84,7 @@ public class LoginController {
         this.appController = appController;
         this.stage = stage;
         stage.setTitle("Login");
+        stage.setResizable(false);
         appController.setUsername("");
         appController.setName("");
         Scene scene = stage.getScene();
@@ -105,8 +106,8 @@ public class LoginController {
     }
 
     private void loadLogoImage() {
-//        URL url = getClass().getResource("/logos/LoveDuck.png");
-        URL url = getClass().getResource("/logos/HeartDuck.png");
+        URL url = getClass().getResource("/logos/LoveDuck.png");
+//        URL url = getClass().getResource("/logos/HeartDuck.png");
         if (url == null) {
             Log.warning("Could not load the icon for the taskbar. Check that the filepath is correct");
         } else {
