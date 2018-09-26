@@ -1355,7 +1355,7 @@ public class UpdateUserController {
     void goBack() {
         if (stage.getTitle().endsWith("*")) { // has changes
             Alert alert = new Alert(Alert.AlertType.WARNING,
-                    "You have unsaved changes, would you like to save these changes??",
+                    "You have unsaved changes, would you like to save these changes?",
                     ButtonType.YES, ButtonType.NO);
 
             alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
