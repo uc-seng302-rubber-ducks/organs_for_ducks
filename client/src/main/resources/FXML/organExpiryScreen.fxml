@@ -3,32 +3,24 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-            minWidth="-Infinity" prefHeight="400.0" prefWidth="396.0" stylesheets="@../gui.css"
-            xmlns="http://javafx.com/javafx/8" fx:controller="odms.controller.gui.panel.view.OrganExpiryViewController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="396.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.panel.view.OrganExpiryViewController">
     <children>
-        <Label fx:id="organProhibitingLabel" layoutX="35.0" layoutY="34.0" text="Expiration of available organ">
+        <Label fx:id="organProhibitingLabel" layoutX="35.0" layoutY="34.0" styleClass="label-sub-title" text="Expiration of available organ">
             <font>
                 <Font name="System Bold" size="20.0" />
             </font>
         </Label>
         <Label layoutX="62.0" layoutY="83.0" styleClass="label-title" text="Donor of organ:">
-         <font>
-            <Font name="System Bold" size="13.0" />
-         </font></Label>
+        </Label>
         <Label layoutX="62.0" layoutY="122.0" styleClass="label-title" text="Organ:">
-         <font>
-            <Font name="System Bold" size="13.0" />
-         </font></Label>
+        </Label>
         <Label fx:id="expirationNhi" layoutX="198.0" layoutY="83.0" text="Label" />
         <Label fx:id="expirationOrgan" layoutX="198.0" layoutY="122.0" text="Label" />
         <TextArea fx:id="expirationReasonTextArea" layoutX="62.0" layoutY="186.0" prefHeight="147.0" prefWidth="272.0" />
         <Label layoutX="62.0" layoutY="161.0" styleClass="label-title" text="Reason:">
-         <font>
-            <Font name="System Bold" size="13.0" />
-         </font></Label>
+        </Label>
         <Button fx:id="ExpiryConfirmButton" layoutX="264.0" layoutY="349.0" mnemonicParsing="false" onAction="#confirmExpiration" text="Confirm" />
         <Button fx:id="cancelExpiryButton" layoutX="62.0" layoutY="349.0" mnemonicParsing="false" onAction="#cancelExpiration" text="Cancel" />
-      <Label fx:id="warningLabelOE" layoutX="142.0" layoutY="162.0" text="Label" />
+        <Label fx:id="warningLabelOE" styleClass="label-error" layoutX="142.0" layoutY="162.0" text="Label" />
     </children>
 </AnchorPane>
