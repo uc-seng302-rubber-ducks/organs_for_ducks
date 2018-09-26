@@ -168,6 +168,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
      * @param stage         The applications stage.
      * @param appController the applications controller.
      * @param clinician     The current clinician.
+     * @param parentListeners The listeners of the parent controller that created this
      */
     public void init(Stage stage, AppController appController, Clinician clinician, boolean fromAdmin,
                      Collection<PropertyChangeListener> parentListeners) {
@@ -293,6 +294,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
 
     /**
      * initialises the clinicians details
+     * @param clinician clinician to show the details of
      */
     public void showClinician(Clinician clinician) {
         this.clinician = clinician;
