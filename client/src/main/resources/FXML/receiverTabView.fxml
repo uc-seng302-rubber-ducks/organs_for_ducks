@@ -1,20 +1,118 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.AnchorPane?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" minHeight="0.0" minWidth="0.0" prefHeight="620.0" prefWidth="894.0"
-            stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8"
-            fx:controller="odms.controller.gui.panel.ReceiverTabController">
+<?import javafx.scene.layout.*?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" minHeight="0.0" minWidth="0.0" prefHeight="700.0" prefWidth="1200.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8" fx:controller="odms.controller.gui.panel.ReceiverTabController">
     <children>
-        <Label fx:id="notReceivingLabel" layoutX="123.0" layoutY="133.0" text="No Longer Waiting" />
-        <Label fx:id="currentlyReceivingLabel" layoutX="601.0" layoutY="133.0" text="Waiting For" />
-        <Button fx:id="reRegisterButton" layoutX="407.0" layoutY="223.0" mnemonicParsing="false" onAction="#reRegisterOrgan" text="&gt;&gt;" />
-        <Button fx:id="deRegisterButton" layoutX="405.0" layoutY="328.0" mnemonicParsing="false" onAction="#deregisterOrganReason" text="&lt;&lt;" />
-        <Label fx:id="organLabel" alignment="TOP_CENTER" layoutX="232.0" layoutY="72.0" text="Organ:" textAlignment="CENTER" />
-        <ComboBox fx:id="organsComboBox" layoutX="293.0" layoutY="67.0" prefWidth="150.0" promptText="Select Organ" />
-        <Button fx:id="registerButton" layoutX="485.0" layoutY="67.0" mnemonicParsing="false" onAction="#registerOrgan" text="Register" />
-        <Label fx:id="notReceiverLabel" alignment="TOP_CENTER" layoutX="273.0" layoutY="272.0" prefHeight="15.0" prefWidth="304.0" text="You are currently not registered as Receiver" textAlignment="CENTER" visible="false" />
-      <TableView fx:id="currentlyWaitingFor" layoutX="558.0" layoutY="172.0" prefHeight="288.0" prefWidth="200.0" />
-      <TableView fx:id="noLongerWaitingForOrgan" layoutX="93.0" layoutY="172.0" prefHeight="288.0" prefWidth="200.0" />
+      <AnchorPane layoutX="-1.0" layoutY="-2.0" prefHeight="636.0" prefWidth="723.0" AnchorPane.bottomAnchor="-0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="79.0" minWidth="10.0" percentWidth="2.0" prefWidth="28.0" />
+                  <ColumnConstraints hgrow="ALWAYS" maxWidth="500.0" minWidth="260.0" percentWidth="28.0" prefWidth="260.0" />
+                  <ColumnConstraints hgrow="ALWAYS" maxWidth="165.0" minWidth="10.0" percentWidth="12.0" prefWidth="128.0" />
+                  <ColumnConstraints hgrow="NEVER" maxWidth="139.0" minWidth="10.0" percentWidth="6.0" prefWidth="85.0" />
+                  <ColumnConstraints hgrow="ALWAYS" maxWidth="168.0" minWidth="10.0" percentWidth="12.0" prefWidth="109.0" />
+                  <ColumnConstraints hgrow="ALWAYS" maxWidth="500.0" minWidth="260.0" percentWidth="28.0" prefWidth="260.0" />
+                  <ColumnConstraints hgrow="NEVER" maxWidth="146.0" minWidth="10.0" percentWidth="2.0" prefWidth="23.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints maxHeight="51.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="114.0" minHeight="10.0" prefHeight="64.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="116.0" minHeight="10.0" prefHeight="116.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="203.0" minHeight="10.0" prefHeight="202.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="268.0" minHeight="10.0" prefHeight="165.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <VBox layoutX="558.0" layoutY="133.0" GridPane.columnIndex="5" GridPane.rowIndex="2" GridPane.rowSpan="3">
+                     <children>
+                        <GridPane>
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints maxHeight="38.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="25.0" minHeight="7.0" prefHeight="11.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <TableView fx:id="currentlyWaitingFor" layoutX="558.0" layoutY="172.0" prefHeight="458.0" prefWidth="260.0" GridPane.rowIndex="2" />
+                                <Label fx:id="currentlyReceivingLabel" layoutX="601.0" layoutY="133.0" text="Waiting For" VBox.vgrow="ALWAYS" />
+                           </children>
+                        </GridPane>
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="158.0" prefWidth="51.0" GridPane.columnIndex="3" GridPane.rowIndex="3">
+                     <children>
+                        <GridPane prefHeight="218.0" prefWidth="82.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="NEVER" maxWidth="27.0" minWidth="10.0" prefWidth="16.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="62.0" minWidth="10.0" prefWidth="56.0" />
+                              <ColumnConstraints hgrow="NEVER" maxWidth="30.0" minWidth="10.0" prefWidth="10.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                                <Button fx:id="deRegisterButton" layoutX="405.0" layoutY="328.0" mnemonicParsing="false" onAction="#deregisterOrganReason" prefHeight="17.0" prefWidth="51.0" snapToPixel="false" text="&lt;&lt;" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
+                                <Button fx:id="reRegisterButton" layoutX="407.0" layoutY="223.0" mnemonicParsing="false" onAction="#reRegisterOrgan" prefHeight="28.0" prefWidth="53.0" text="&gt;&gt;" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
+                           </children>
+                        </GridPane>
+                     </children>
+                  </VBox>
+                  <HBox layoutX="232.0" layoutY="67.0" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="1">
+                     <children>
+                        <AnchorPane prefHeight="94.0" prefWidth="368.0">
+                           <children>
+                              <GridPane prefHeight="95.0" prefWidth="329.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="ALWAYS" maxWidth="127.0" minWidth="10.0" prefWidth="21.0" />
+                                    <ColumnConstraints hgrow="NEVER" maxWidth="127.0" minWidth="10.0" prefWidth="93.0" />
+                                    <ColumnConstraints maxWidth="93.0" minWidth="10.0" prefWidth="32.0" />
+                                    <ColumnConstraints hgrow="NEVER" maxWidth="225.0" minWidth="10.0" prefWidth="149.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" maxWidth="90.0" minWidth="9.0" prefWidth="22.0" />
+                                    <ColumnConstraints halignment="RIGHT" hgrow="NEVER" maxWidth="219.0" minWidth="10.0" prefWidth="84.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                      <ComboBox fx:id="organsComboBox" prefWidth="150.0" promptText="Select Organ" GridPane.columnIndex="3" />
+                                      <Button fx:id="registerButton" mnemonicParsing="false" onAction="#registerOrgan" text="Register" GridPane.columnIndex="5" />
+                                      <Label fx:id="organLabel" alignment="TOP_CENTER" layoutX="232.0" layoutY="72.0" text="Organ:" textAlignment="CENTER" GridPane.columnIndex="1" />
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </HBox>
+                  <VBox layoutX="93.0" layoutY="133.0" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.rowSpan="3">
+                     <children>
+                        <GridPane>
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="24.0" minHeight="10.0" prefHeight="11.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                                <Label fx:id="notReceivingLabel" layoutX="123.0" layoutY="133.0" text="No Longer Waiting" />
+                              <TableView fx:id="noLongerWaitingForOrgan" layoutX="93.0" layoutY="172.0" prefHeight="458.0" prefWidth="260.0" GridPane.rowIndex="2" />
+                           </children>
+                        </GridPane>
+                     </children>
+                  </VBox>
+                    <Label fx:id="notReceiverLabel" alignment="TOP_CENTER" layoutX="273.0" layoutY="272.0" prefHeight="15.0" prefWidth="304.0" text="You are currently not registered as Receiver" textAlignment="CENTER" visible="false" GridPane.columnIndex="2" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
+               </children>
+            </GridPane>
+         </children>
+      </AnchorPane>
     </children>
 </AnchorPane>
