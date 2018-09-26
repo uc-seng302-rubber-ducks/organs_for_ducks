@@ -744,9 +744,8 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
      * @throws SQLException if there is an error with the database
      */
     private void deleteFieldsOfUser(String tableName, String user, Connection connection) throws SQLException {
-        try (PreparedStatement deleteDiseases = connection.prepareStatement("DELETE FROM ? WHERE fkUserNhi = ?")) {
-            deleteDiseases.setString(1, tableName);
-            deleteDiseases.setString(2, user);
+        try (PreparedStatement deleteDiseases = connection.prepareStatement("DELETE FROM " + tableName + " WHERE fkUserNhi = ?")) {
+            deleteDiseases.setString(1, user);
             deleteDiseases.executeUpdate();
         }
     }
