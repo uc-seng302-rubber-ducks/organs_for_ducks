@@ -524,7 +524,7 @@ public class UpdateUserController {
         if (!(AttributeValidation.validateTimeString(timeOfDeath))) {
             updateDeathDetailsErrorLabel.setText("The format of the Time of Death is incorrect");
             isValid = false;
-        } else if (LocalTime.parse(updateDeathDetailsTimeTextField.getText()).isAfter(LocalTime.now())) {
+        } else if (LocalDateTime.of(dateOfDeath, LocalTime.parse(updateDeathDetailsTimeTextField.getText())).isAfter(LocalDateTime.now())) {
             updateDeathDetailsErrorLabel.setText("The time of death cannot be in the future");
             isValid = false;
         }
