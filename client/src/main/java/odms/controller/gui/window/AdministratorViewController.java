@@ -52,6 +52,7 @@ import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.controller.gui.widget.LoadingTableView;
 import odms.socket.ServerEventNotifier;
 import odms.view.CLI;
+import utils.StageIconLoader;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -549,6 +550,8 @@ public class AdministratorViewController implements PropertyChangeListener, User
             Stage countrySelectStage = new Stage();
             countrySelectionController.init(administrator, countrySelectStage, appController);
             countrySelectStage.setScene(new Scene(root));
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            countrySelectStage.getIcons().add(stageIconLoader.getIconImage());
             countrySelectStage.show();
             Log.info("successfully launched countrySelectionView pop-up window for admin user name: " + administrator.getUserName());
         } catch (IOException e) {
@@ -816,6 +819,8 @@ public class AdministratorViewController implements PropertyChangeListener, User
             Stage unclosedWindowStage = new Stage();
             alertUnclosedWindowsController.init(unclosedWindowStage, this);
             unclosedWindowStage.setScene(new Scene(root));
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            unclosedWindowStage.getIcons().add(stageIconLoader.getIconImage());
             unclosedWindowStage.show();
         } catch (IOException e) {
             Log.severe("IOException encountered", e);
@@ -836,6 +841,8 @@ public class AdministratorViewController implements PropertyChangeListener, User
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
             newStage.setTitle("Create New User Profile");
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            newStage.getIcons().add(stageIconLoader.getIconImage());
             newStage.show();
             NewUserController donorController = userLoader.getController();
             donorController.init(AppController.getInstance(), stage, newStage);
@@ -865,6 +872,8 @@ public class AdministratorViewController implements PropertyChangeListener, User
                 Collection<PropertyChangeListener> listeners = new ArrayList<>();
                 listeners.add(this);
                 userController.init(AppController.getInstance(), user, newStage, true, listeners);
+                StageIconLoader stageIconLoader = new StageIconLoader();
+                newStage.getIcons().add(stageIconLoader.getIconImage());
                 newStage.show();
                 Log.info(messageAdmin + administrator.getUserName() + " successfully launched user overview window for User NHI: " + user.getNhi());
             } catch (IOException e) {
@@ -892,6 +901,8 @@ public class AdministratorViewController implements PropertyChangeListener, User
             Collection<PropertyChangeListener> listeners = new ArrayList<>();
             listeners.add(this);
             clinicianController.init(newStage, AppController.getInstance(), clinician, owner, listeners);
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            newStage.getIcons().add(stageIconLoader.getIconImage());
             newStage.show();
             Log.info(messageAdmin + administrator.getUserName() + " successfully launched clinician overview window for Clinician Staff ID:" + clinician.getStaffId());
         } catch (IOException e) {
@@ -916,6 +927,8 @@ public class AdministratorViewController implements PropertyChangeListener, User
             AdministratorViewController adminLoaderController = adminLoader.getController();
             administratorViewControllers.add(adminLoaderController);
             adminLoaderController.init(administrator, AppController.getInstance(), newStage, false);
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            newStage.getIcons().add(stageIconLoader.getIconImage());
             newStage.show();
             Log.info(messageAdmin + administrator.getUserName() + " successfully launched administrator overview window");
         } catch (IOException e) {
@@ -935,6 +948,8 @@ public class AdministratorViewController implements PropertyChangeListener, User
             root = clinicianLoader.load();
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            newStage.getIcons().add(stageIconLoader.getIconImage());
             newStage.show();
             UpdateClinicianController newClinician = clinicianLoader.getController();
             newClinician.init(null, appController, stage, true, newStage);
@@ -956,6 +971,8 @@ public class AdministratorViewController implements PropertyChangeListener, User
             Stage newStage = new Stage();
             newStage.initModality(Modality.APPLICATION_MODAL);
             newStage.setScene(new Scene(root));
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            newStage.getIcons().add(stageIconLoader.getIconImage());
             newStage.show();
             UpdateAdminController updateAdminController = adminLoader.getController();
             updateAdminController.init(new Administrator(), newStage, true);
@@ -991,6 +1008,8 @@ public class AdministratorViewController implements PropertyChangeListener, User
             root = loginLoader.load();
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            newStage.getIcons().add(stageIconLoader.getIconImage());
             newStage.show();
             stage.close();
             LoginController loginController = loginLoader.getController();
@@ -1082,6 +1101,8 @@ public class AdministratorViewController implements PropertyChangeListener, User
             root = adminLoader.load();
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            newStage.getIcons().add(stageIconLoader.getIconImage());
             newStage.show();
             UpdateAdminController updateAdminController = adminLoader.getController();
             updateAdminController.init(administrator, newStage, false);
@@ -1130,6 +1151,8 @@ public class AdministratorViewController implements PropertyChangeListener, User
             deleteStage.setScene(new Scene(root));
             deletedUserController.init(true);
             deleteStage.initModality(Modality.APPLICATION_MODAL);
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            deleteStage.getIcons().add(stageIconLoader.getIconImage());
             deleteStage.showAndWait();
         } catch (IOException e) {
             Log.warning(e.getMessage());
