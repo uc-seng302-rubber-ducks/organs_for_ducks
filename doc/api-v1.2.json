@@ -19,6 +19,14 @@
       "description": "Admin Controller"
     },
     {
+      "name": "appointment-controller",
+      "description": "Appointment Controller"
+    },
+    {
+      "name": "blood-test-controller",
+      "description": "Blood Test Controller"
+    },
+    {
       "name": "clinician-controller",
       "description": "Clinician Controller"
     },
@@ -342,6 +350,145 @@
         "deprecated": false
       }
     },
+    "/odms/v1/appointments": {
+      "post": {
+        "tags": [
+          "appointment-controller"
+        ],
+        "summary": "postAppointment",
+        "operationId": "postAppointmentUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "newAppointment",
+            "description": "newAppointment",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Appointment"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "tags": [
+          "appointment-controller"
+        ],
+        "summary": "deleteAppointment",
+        "operationId": "deleteAppointmentUsingDELETE",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "appointmentToDelete",
+            "description": "appointmentToDelete",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Appointment"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/appointments/{appointmentId}/status": {
+      "patch": {
+        "tags": [
+          "appointment-controller"
+        ],
+        "summary": "patchAppointmentStatus",
+        "operationId": "patchAppointmentStatusUsingPATCH",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "appointmentId",
+            "in": "path",
+            "description": "appointmentId",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "in": "body",
+            "name": "statusId",
+            "description": "statusId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "deprecated": false
+      }
+    },
     "/odms/v1/availableOrgans": {
       "get": {
         "tags": [
@@ -412,6 +559,48 @@
               "type": "array",
               "items": {
                 "$ref": "#/definitions/AvailableOrganDetail"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/basic-clinicians/{region}": {
+      "get": {
+        "tags": [
+          "clinician-controller"
+        ],
+        "summary": "getBasicClinicians",
+        "operationId": "getBasicCliniciansUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "region",
+            "in": "path",
+            "description": "region",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ComboBoxClinician"
               }
             }
           },
@@ -700,6 +889,308 @@
           },
           "403": {
             "description": "Forbidden"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/clinicians/{staffId}/appointments": {
+      "get": {
+        "tags": [
+          "appointment-controller"
+        ],
+        "summary": "getClinicianAppointments",
+        "operationId": "getClinicianAppointmentsUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "count",
+            "in": "query",
+            "description": "count",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "staffId",
+            "in": "path",
+            "description": "staffId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startIndex",
+            "in": "query",
+            "description": "startIndex",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Appointment"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/clinicians/{staffId}/appointments/cancelled": {
+      "delete": {
+        "tags": [
+          "appointment-controller"
+        ],
+        "summary": "deleteCliniciansCancelledAppointments",
+        "operationId": "deleteCliniciansCancelledAppointmentsUsingDELETE",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "staffId",
+            "in": "path",
+            "description": "staffId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/clinicians/{staffId}/appointments/exists": {
+      "get": {
+        "tags": [
+          "appointment-controller"
+        ],
+        "summary": "clinicianAppointmentStatusExists",
+        "operationId": "clinicianAppointmentStatusExistsUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "staffId",
+            "in": "path",
+            "description": "staffId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "status",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/clinicians/{staffId}/appointments/pending": {
+      "get": {
+        "tags": [
+          "appointment-controller"
+        ],
+        "summary": "getPendingAppointments",
+        "operationId": "getPendingAppointmentsUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "staffId",
+            "in": "path",
+            "description": "staffId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/clinicians/{staffId}/appointments/{appointmentId}": {
+      "put": {
+        "tags": [
+          "appointment-controller"
+        ],
+        "summary": "putAppointment",
+        "operationId": "putAppointmentUsingPUT",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "appointment",
+            "description": "appointment",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Appointment"
+            }
+          },
+          {
+            "name": "appointmentId",
+            "in": "path",
+            "description": "appointmentId",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "staffId",
+            "in": "path",
+            "description": "staffId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/clinicians/{staffId}/appointmentsTimes": {
+      "get": {
+        "tags": [
+          "appointment-controller"
+        ],
+        "summary": "getClinicianAppointmentsTimes",
+        "operationId": "getClinicianAppointmentsTimesUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "endDateTime",
+            "in": "query",
+            "description": "endDateTime",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "staffId",
+            "in": "path",
+            "description": "staffId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDateTime",
+            "in": "query",
+            "description": "startDateTime",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/LocalDateTime"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
           }
         },
         "deprecated": false
@@ -1229,6 +1720,281 @@
         "deprecated": false
       }
     },
+    "/odms/v1/user/{nhi}/bloodTest": {
+      "post": {
+        "tags": [
+          "blood-test-controller"
+        ],
+        "summary": "postBloodTest",
+        "operationId": "postBloodTestUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "bloodTest",
+            "description": "bloodTest",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BloodTest"
+            }
+          },
+          {
+            "name": "nhi",
+            "in": "path",
+            "description": "nhi",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/user/{nhi}/bloodTest/{id}": {
+      "get": {
+        "tags": [
+          "blood-test-controller"
+        ],
+        "summary": "getBloodTest",
+        "operationId": "getBloodTestUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "nhi",
+            "in": "path",
+            "description": "nhi",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/BloodTest"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "tags": [
+          "blood-test-controller"
+        ],
+        "summary": "deleteBloodTest",
+        "operationId": "deleteBloodTestUsingDELETE",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "nhi",
+            "in": "path",
+            "description": "nhi",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "deprecated": false
+      },
+      "patch": {
+        "tags": [
+          "blood-test-controller"
+        ],
+        "summary": "patchBloodTest",
+        "operationId": "patchBloodTestUsingPATCH",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "bloodTest",
+            "description": "bloodTest",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BloodTest"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "nhi",
+            "in": "path",
+            "description": "nhi",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/user/{nhi}/bloodTests": {
+      "get": {
+        "tags": [
+          "blood-test-controller"
+        ],
+        "summary": "getBloodTests",
+        "operationId": "getBloodTestsUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "count",
+            "in": "query",
+            "description": "count",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "endDate",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nhi",
+            "in": "path",
+            "description": "nhi",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "startDate",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "startIndex",
+            "in": "query",
+            "description": "startIndex",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/BloodTest"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
     "/odms/v1/users": {
       "get": {
         "tags": [
@@ -1253,7 +2019,8 @@
             "in": "query",
             "description": "gender",
             "required": false,
-            "type": "string"
+            "type": "string",
+            "default": "All"
           },
           {
             "name": "name",
@@ -1508,6 +2275,189 @@
           },
           "403": {
             "description": "Forbidden"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/users/{nhi}/appointments": {
+      "get": {
+        "tags": [
+          "appointment-controller"
+        ],
+        "summary": "getUserAppointments",
+        "operationId": "getUserAppointmentsUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "count",
+            "in": "query",
+            "description": "count",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "nhi",
+            "in": "path",
+            "description": "nhi",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startIndex",
+            "in": "query",
+            "description": "startIndex",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Appointment"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/users/{nhi}/appointments/cancelled": {
+      "delete": {
+        "tags": [
+          "appointment-controller"
+        ],
+        "summary": "deleteUsersCancelledAppointments",
+        "operationId": "deleteUsersCancelledAppointmentsUsingDELETE",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "nhi",
+            "in": "path",
+            "description": "nhi",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/users/{nhi}/appointments/exists": {
+      "get": {
+        "tags": [
+          "appointment-controller"
+        ],
+        "summary": "userAppointmentStatusExists",
+        "operationId": "userAppointmentStatusExistsUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "nhi",
+            "in": "path",
+            "description": "nhi",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "status",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/users/{nhi}/appointments/unseen": {
+      "get": {
+        "tags": [
+          "appointment-controller"
+        ],
+        "summary": "getUnseenUserAppointments",
+        "operationId": "getUnseenUserAppointmentsUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "nhi",
+            "in": "path",
+            "description": "nhi",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Appointment"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
           }
         },
         "deprecated": false
@@ -1945,6 +2895,97 @@
         "deprecated": false
       }
     },
+    "/odms/v1/users/{nhi}/preferred-clinician": {
+      "get": {
+        "tags": [
+          "user-controller"
+        ],
+        "summary": "getPreferredClinician",
+        "operationId": "getPreferredClinicianUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "nhi",
+            "in": "path",
+            "description": "nhi",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ComboBoxClinician"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      },
+      "put": {
+        "tags": [
+          "user-controller"
+        ],
+        "summary": "putPreferredClinician",
+        "operationId": "putPreferredClinicianUsingPUT",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "nhi",
+            "in": "path",
+            "description": "nhi",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "staffId",
+            "description": "staffId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
     "/odms/v1/users/{nhi}/procedures": {
       "post": {
         "tags": [
@@ -2310,6 +3351,60 @@
       },
       "title": "Administrator"
     },
+    "Appointment": {
+      "type": "object",
+      "properties": {
+        "appointmentCategory": {
+          "type": "string",
+          "enum": [
+            "Blood test",
+            "General check up",
+            "Health advice",
+            "Prescription renewal",
+            "Other",
+            "Personal"
+          ]
+        },
+        "appointmentId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "appointmentStatus": {
+          "type": "string",
+          "enum": [
+            "Pending",
+            "Accepted",
+            "Rejected",
+            "Cancelled By User",
+            "Cancelled By Clinician",
+            "Updated"
+          ]
+        },
+        "rejectionReason": {
+          "type": "string"
+        },
+        "requestDescription": {
+          "type": "string"
+        },
+        "requestedClinicianId": {
+          "type": "string"
+        },
+        "requestedDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "requestingUserId": {
+          "type": "string"
+        },
+        "seen": {
+          "type": "boolean"
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "title": "Appointment"
+    },
     "AvailableOrganDetail": {
       "type": "object",
       "properties": {
@@ -2363,6 +3458,84 @@
         }
       },
       "title": "AvailableOrganDetail"
+    },
+    "BloodTest": {
+      "type": "object",
+      "properties": {
+        "bloodTestId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "glucoseLevels": {
+          "type": "number",
+          "format": "double"
+        },
+        "haematocrit": {
+          "type": "number",
+          "format": "double"
+        },
+        "haemoglobinLevel": {
+          "type": "number",
+          "format": "double"
+        },
+        "highValues": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "Red Blood Cell",
+              "White Blood Cell",
+              "Haemoglobin",
+              "Platelets",
+              "Glucose",
+              "Haematocrit",
+              "Mean Cell Volume",
+              "Mean Cell Haematocrit"
+            ]
+          }
+        },
+        "lowValues": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "Red Blood Cell",
+              "White Blood Cell",
+              "Haemoglobin",
+              "Platelets",
+              "Glucose",
+              "Haematocrit",
+              "Mean Cell Volume",
+              "Mean Cell Haematocrit"
+            ]
+          }
+        },
+        "meanCellHaematocrit": {
+          "type": "number",
+          "format": "double"
+        },
+        "meanCellVolume": {
+          "type": "number",
+          "format": "double"
+        },
+        "platelets": {
+          "type": "number",
+          "format": "double"
+        },
+        "redBloodCellCount": {
+          "type": "number",
+          "format": "double"
+        },
+        "testDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "whiteBloodCellCount": {
+          "type": "number",
+          "format": "double"
+        }
+      },
+      "title": "BloodTest"
     },
     "Change": {
       "type": "object",
@@ -2463,6 +3636,15 @@
       },
       "title": "Clinician"
     },
+    "ComboBoxClinician": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      },
+      "title": "ComboBoxClinician"
+    },
     "ContactDetails": {
       "type": "object",
       "properties": {
@@ -2561,6 +3743,12 @@
       "properties": {
         "attachedUser": {
           "$ref": "#/definitions/User"
+        },
+        "disqualifiedOrgans": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OrgansWithDisqualification"
+          }
         },
         "empty": {
           "type": "boolean"
@@ -2721,6 +3909,12 @@
         "birthGender": {
           "type": "string"
         },
+        "bloodTests": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BloodTest"
+          }
+        },
         "bloodType": {
           "type": "string"
         },
@@ -2876,6 +4070,51 @@
         }
       },
       "title": "Memento«User»"
+    },
+    "OrgansWithDisqualification": {
+      "type": "object",
+      "properties": {
+        "currentlyDisqualified": {
+          "type": "boolean"
+        },
+        "date": {
+          "type": "string",
+          "format": "date"
+        },
+        "disqualifiedId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "eligibleDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "organType": {
+          "type": "string",
+          "enum": [
+            "Liver",
+            "Kidney",
+            "Pancreas",
+            "Heart",
+            "Lung",
+            "Intestine",
+            "Cornea",
+            "Middle Ear",
+            "Skin",
+            "Bone Marrow",
+            "Bone",
+            "Connective Tissue",
+            "Test Organ"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "staffId": {
+          "type": "string"
+        }
+      },
+      "title": "OrgansWithDisqualification"
     },
     "ProcedureKey": {
       "type": "object",
@@ -3458,6 +4697,10 @@
           "items": {
             "$ref": "#/definitions/Memento«User»"
           }
+        },
+        "uniqueId": {
+          "type": "integer",
+          "format": "int32"
         },
         "updateHistory": {
           "type": "object",
