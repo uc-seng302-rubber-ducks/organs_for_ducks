@@ -6,15 +6,13 @@ import odms.App;
 import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
 import odms.bridge.*;
+import odms.commons.exception.UnauthorisedException;
 import odms.commons.model.Clinician;
 import odms.commons.model.Disease;
 import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 
@@ -33,6 +31,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.eq;
 
 
 public class NewDiseaseControllerGUITest extends ApplicationTest {
@@ -53,7 +52,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
     }
 
     @Before
-    public void setUpCreateScene() throws TimeoutException, IOException {
+    public void setUpCreateScene() throws TimeoutException, IOException, UnauthorisedException {
         controller = AppControllerMocker.getFullMock();
         bridge = mock(UserBridge.class);
         clinicianBridge = mock(ClinicianBridge.class);
@@ -85,7 +84,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
 
         when(controller.getUserOverviews()).thenReturn(Collections.singleton(UserOverview.fromUser(testUser)));
         when(bridge.getUser(anyString())).thenReturn(testUser);
-        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
+        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any(), eq(null));
 
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class, "--testConfig=true");
@@ -159,21 +158,20 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
         assertEquals("B0", getCellValue("#currentDiseaseTableView", 1, 1).toString());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void deletedPastDiseaseShouldBeRemovedFromPastDiseases() {
         clickOn(getCell("#pastDiseaseTableView", 0, 0));
         clickOnButton(this,"#deleteDiseaseButton");
-        getCellValue("#pastDiseaseTableView", 0, 0);
+        Assert.assertNull(getCellValue("#pastDiseaseTableView", 0, 0));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void deletedCurrentDiseaseShouldBeRemovedFromCurrentDisease() throws NullPointerException {
         clickOn(getCell("#currentDiseaseTableView", 0, 0));
         clickOnButton(this,"#deleteDiseaseButton");
-        getCellValue("#currentDiseaseTableView", 0, 0);
+        Assert.assertNull(getCellValue("#currentDiseaseTableView", 0, 0));
     }
 
-    //Only other things I can think of testing are the ordering
     @Test
     public void deletedChronicDiseaseShouldNotBeDeletedFromCurrentDiseases() {
         clickOn(getCell("#currentDiseaseTableView", 0, 0));

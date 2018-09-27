@@ -13,6 +13,8 @@ public abstract class AbstractUpdateStrategy {
      *
      * @param roles      Collection of roles to update
      * @param connection Connection to the target database
+     * @param <T>        Type of the collection being updated
+     * @throws SQLException if the update cannot be performed
      */
     public abstract <T> void update(Collection<T> roles, Connection connection) throws SQLException;
 }

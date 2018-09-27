@@ -34,6 +34,7 @@ public class CountrySelectionController {
      * initialise country selection pop up window.
      * @param admin current admin
      * @param stage gui stage
+     * @param appController instance of AppController
      */
     public void init(Administrator admin, Stage stage, AppController appController) {
         this.stage = stage;

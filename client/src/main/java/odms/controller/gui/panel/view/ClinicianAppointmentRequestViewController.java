@@ -31,6 +31,7 @@ import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.controller.gui.widget.CalendarEntryFactory;
 import odms.controller.gui.widget.CalendarWidget;
 import odms.controller.gui.widget.CalendarWidgetFactory;
+import odms.controller.gui.widget.LoadingTableView;
 import odms.socket.ServerEventNotifier;
 import utils.Converter;
 
@@ -41,8 +42,9 @@ import java.util.Comparator;
 
 public class ClinicianAppointmentRequestViewController implements Converter {
 
+
     @FXML
-    private TableView<Appointment> clinicianAppointmentsRequestView;
+    private LoadingTableView<Appointment> clinicianAppointmentsRequestView;
 
     @FXML
     private DatePicker appointmentRequestDate;
@@ -115,13 +117,16 @@ public class ClinicianAppointmentRequestViewController implements Converter {
 
     /**
      * Initialises the panel
+     * @param appController the instance of appController
+     * @param clinician clinician to initialise the tab with
      */
     public void init(AppController appController, Clinician clinician) {
         availableAppointments.addListener((ListChangeListener<? super Appointment>) observable -> {
+            clinicianAppointmentsRequestView.setWaiting(false);
             populateTable(false);
             populateCalendar();
         });
-        logicController = new ClinicianAppointmentRequestLogicController(availableAppointments, appController, clinician, availableTimes);
+        logicController = new ClinicianAppointmentRequestLogicController(availableAppointments, appController, clinician, availableTimes, clinicianAppointmentsRequestView);
         appointmentRequestDescription.setTextFormatter(new TextFormatter<String>(change ->
                 change.getControlNewText().length() <= 255 ? change : null)); // limits user input to 255 characters
 
@@ -173,7 +178,7 @@ public class ClinicianAppointmentRequestViewController implements Converter {
         clinicianAppointmentDateColumn.setCellValueFactory(foo -> new SimpleStringProperty(foo.getValue().getRequestedDate().format(formatter)));
         clinicianAppointmentCategoryColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentCategory"));
         clinicianAppointmentStatusColumn.setCellFactory(cell -> AppointmentTableCellFactory.generateAppointmentTableCell());
-
+        clinicianAppointmentsRequestView.setWaiting(true);
         logicController.updateTable(0);
         populateTable(true);
         setTableOnClickBehaviour();
@@ -351,20 +356,20 @@ public class ClinicianAppointmentRequestViewController implements Converter {
             return;
         }
         boolean valid = true;
-
+        resetAppointmentFields();
         if (appointmentRequestTime.getSelectionModel().getSelectedItem() == null){
             valid = false;
             AlertWindowFactory.generateInfoWindow("please pick a time");
         } else {
 
-            if (!AttributeValidation.validateTimeString(appointmentRequestTime.getValue().toString())) {
-                appointmentRequestTime.setStyle("-fx-background-color: rgba(100%, 0%, 0%, 0.25); -fx-border-color: RED");
+            if (!AttributeValidation.validateTimeString(appointmentRequestTime.getValue().toString()) || appointmentRequestTime.getValue().toString().equals("00:00")) {
+                appointmentRequestTime.getStyleClass().add("invalid");
                 valid = false;
             }
         }
 
         if (!AttributeValidation.validateDateOfAppointment(appointmentRequestDate.getValue())) {
-            appointmentRequestDate.setStyle("-fx-background-color: rgba(100%, 0%, 0%, 0.25); -fx-border-color: RED");
+            appointmentRequestDate.getStyleClass().add("invalid");
             valid = false;
         }
 
@@ -374,7 +379,7 @@ public class ClinicianAppointmentRequestViewController implements Converter {
             if (status == AppointmentStatus.PENDING) {
                 logicController.updateAppointment(getSelectedAppointment(), appointmentRequestCategory.getValue(),
                         appointmentRequestDate.getValue(), appointmentRequestTime.getValue().toString(), appointmentRequestDescription.getText(), true);
-            } else if (status == AppointmentStatus.ACCEPTED || status == AppointmentStatus.ACCEPTED_SEEN) {
+            } else if (status == AppointmentStatus.ACCEPTED || status == AppointmentStatus.ACCEPTED_SEEN || status == AppointmentStatus.UPDATED) {
                 logicController.updateAppointment(getSelectedAppointment(), appointmentRequestCategory.getValue(),
                         appointmentRequestDate.getValue(), appointmentRequestTime.getValue().toString(), appointmentRequestDescription.getText(), false);
             } else {
@@ -383,6 +388,13 @@ public class ClinicianAppointmentRequestViewController implements Converter {
         }
 
 
+    }
+
+    private void resetAppointmentFields() {
+
+
+        appointmentRequestDate.getStyleClass().remove("invalid");
+        appointmentRequestTime.getStyleClass().remove("invalid");
     }
 
     /**

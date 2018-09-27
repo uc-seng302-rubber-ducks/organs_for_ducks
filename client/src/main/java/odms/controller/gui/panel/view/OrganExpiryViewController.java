@@ -25,6 +25,9 @@ public class OrganExpiryViewController {
     @FXML
     private Label warningLabelOE;
 
+    @FXML
+    private Label organProhibitingLabel;
+
     private OrganExpiryLogicController logicController;
     private Stage stage;
     private DonationTabPageController donationTabPageController;
@@ -38,9 +41,10 @@ public class OrganExpiryViewController {
      * @param user                      the current user
      * @param stage                     a new stage
      * @param donationTabPageController the donation tab which holds tables that need to be refreshed
+     * @param isExpiry                  whether it is because the organ was expired or disqualified
      */
     @FXML
-    public void init(AppController appController, Organs organs, ExpiryReason expiryReason, User user, Stage stage, DonationTabPageController donationTabPageController) {
+    public void init(AppController appController, Organs organs, ExpiryReason expiryReason, User user, Stage stage, DonationTabPageController donationTabPageController, boolean isExpiry) {
         logicController = new OrganExpiryLogicController(appController, expiryReason);
         expirationOrgan.setText(organs.toString());
         expirationReasonTextArea.setText(expiryReason
@@ -49,6 +53,11 @@ public class OrganExpiryViewController {
         this.stage = stage;
         this.donationTabPageController = donationTabPageController;
         warningLabelOE.setText("");
+        if (isExpiry) {
+            organProhibitingLabel.setText("Expiration of available organ");
+        } else {
+            organProhibitingLabel.setText("Disqualification of organ");
+        }
     }
 
     /**

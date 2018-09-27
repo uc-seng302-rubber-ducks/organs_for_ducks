@@ -110,12 +110,12 @@ public class AttributeValidation {
      * checks that date of birth is before tomorrow's date if the
      * date of birth is not null.
      *
-     * @param birth date
+     * @param date date
      * @return true if date of death is
      * before the current date, false otherwise.
      */
-    public static boolean validateDateOfBirth(LocalDate birth) {
-        return birth != null && birth.isBefore(LocalDate.now().plusDays(1));
+    public static boolean validateDateBeforeTomorrow(LocalDate date) {
+        return date != null && date.isBefore(LocalDate.now().plusDays(1));
     }
 
     /**
@@ -128,6 +128,19 @@ public class AttributeValidation {
      */
     public static boolean validateDateOfAppointment(LocalDate apptDate) {
         return apptDate != null && apptDate.isAfter(LocalDate.now());
+    }
+
+    /**
+     * checks that Eligible Organ Date is after
+     * today's date. Eligible date is optional field.
+     *
+     * @param eligibleDate date to allow organs to be eligible for
+     *                     donation again
+     * @return true if appointment date is
+     * after the current date, false otherwise.
+     */
+    public static boolean validateEligibleOrganDate(LocalDate eligibleDate) {
+        return eligibleDate == null || eligibleDate.isAfter(LocalDate.now());
     }
 
     /**
@@ -219,5 +232,27 @@ public class AttributeValidation {
      */
     public static boolean validateTimeString(String time) {
         return time.matches("(([01][0-9])|(2[0-3])):([0-5][0-9])");
+    }
+
+    /**
+     * Checks if the given value is greater than or equal to the given lower bound
+     *
+     * @param lowerBound Lower bound of a blood test property
+     * @param value Blood test property value
+     * @return true if the given value is greater than or equal to the lower bound, false otherwise
+     */
+    public static boolean checkAboveLowerBound(double lowerBound, double value) {
+        return value >= lowerBound;
+    }
+
+    /**
+     * Checks if the given value is less than or equal to the upper bound
+     *
+     * @param upperBound Higher bound of a blood test property
+     * @param value Blood test property value
+     * @return true if the given value is less than or equal to the upper bound, false otherwise
+     */
+    public static boolean checkBelowUpperBound(double upperBound, double value) {
+        return value <= upperBound;
     }
 }

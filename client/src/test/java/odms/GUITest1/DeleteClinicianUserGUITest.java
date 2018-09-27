@@ -8,6 +8,7 @@ import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
 import odms.TestUtils.TableViewsMethod;
 import odms.bridge.*;
+import odms.commons.exception.UnauthorisedException;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
@@ -34,6 +35,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.eq;
 import static org.testfx.api.FxAssert.verifyThat;
 
 public class DeleteClinicianUserGUITest extends ApplicationTest {
@@ -55,7 +57,7 @@ public class DeleteClinicianUserGUITest extends ApplicationTest {
     }
 
     @Before
-    public void setUpCreateScene() throws TimeoutException, IOException {
+    public void setUpCreateScene() throws TimeoutException, IOException, UnauthorisedException {
         controller = AppControllerMocker.getFullMock();
         bridge = mock(UserBridge.class);
         clinicianBridge = mock(ClinicianBridge.class);
@@ -86,7 +88,7 @@ public class DeleteClinicianUserGUITest extends ApplicationTest {
         when(loginBridge.loginToServer(anyString(), anyString(), anyString())).thenReturn("haHAA");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(new Clinician("Default", "0", "admin"));
         when(controller.getTransplantList()).thenReturn(new ArrayList<>());
-        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
+        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any(), eq(null));
 
         clickOn("#clinicianTab");
         setTextField(this,"#staffIdTextField", "0");

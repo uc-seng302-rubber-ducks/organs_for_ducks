@@ -10,6 +10,7 @@ import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.utils.Log;
 import odms.commons.utils.OrganSorter;
 import odms.controller.AppController;
+import odms.controller.gui.widget.LoadingWidget;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -22,8 +23,7 @@ public class OrgansBridge extends Bifrost {
 
     /**
      * Gets all the organs available for donation by making a request to the server and populating the observable list.
-     *
-     * @param startIndex     the position to start obtaining items from
+     *  @param startIndex     the position to start obtaining items from
      * @param count          how many entries to obtain
      * @param organ          if specified, return only organs of that type
      * @param region         if specified, return only organs located within that region
@@ -31,8 +31,9 @@ public class OrgansBridge extends Bifrost {
      * @param city           if specified, return only organs in that city
      * @param country        if specified, return only organs in that country
      * @param observableList observable list to populate.
+     * @param widget widget to stop loading if the call is finished
      */
-    public void getAvailableOrgansList(int startIndex, int count, String organ, String region, String bloodType, String city, String country, ObservableList<AvailableOrganDetail> observableList) {
+    public void getAvailableOrgansList(int startIndex, int count, String organ, String region, String bloodType, String city, String country, ObservableList<AvailableOrganDetail> observableList, LoadingWidget widget) {
         StringBuilder url = new StringBuilder(ip);
         url.append("/availableOrgans?count=").append(count);
         url.append("&startIndex=").append(startIndex);
@@ -77,7 +78,12 @@ public class OrgansBridge extends Bifrost {
                         detail.generateProgressTask();
                     }
                 }
-                Platform.runLater(()-> observableList.addAll(availableOrgansDetails));
+                Platform.runLater(()-> {
+                    if (widget != null) {
+                        widget.setWaiting(false);
+                    }
+                    observableList.addAll(availableOrgansDetails);
+                });
             }
         });
 
@@ -90,9 +96,10 @@ public class OrgansBridge extends Bifrost {
      * @param donorNhi user who is donating the organ
      * @param organToDonate Available organ detail to identify the map entry of the response
      * @param observableList the observable list to populate the potential matches with
+     * @param widget widget to stop loading if the call is finished
      */
     public void getMatchingOrgansList(int startIndex, int count, String donorNhi, AvailableOrganDetail organToDonate,
-                                      ObservableList<TransplantDetails> observableList) {
+                                      ObservableList<TransplantDetails> observableList, LoadingWidget widget) {
         String url = ip + "/matchingOrgans?" +
                 "count=" + count +
                 "&organ=" + organToDonate.getOrgan().toString() +
@@ -118,6 +125,9 @@ public class OrgansBridge extends Bifrost {
                 List<TransplantDetails> matchingTransplants = handler.decodeMatchingOrgansList(response);
 
                 Platform.runLater(() ->{
+                    if (widget != null) {
+                        widget.setWaiting(false);
+                    }
                     observableList.clear();
                     observableList.addAll( OrganSorter.sortOrgansIntoRankedOrder(organToDonate, matchingTransplants));
                 } );

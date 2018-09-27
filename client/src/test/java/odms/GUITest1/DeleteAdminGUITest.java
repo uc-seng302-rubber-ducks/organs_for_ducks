@@ -3,6 +3,7 @@ package odms.GUITest1;
 import odms.App;
 import odms.TestUtils.CommonTestMethods;
 import odms.bridge.*;
+import odms.commons.exception.UnauthorisedException;
 import odms.commons.model.Administrator;
 import odms.controller.AppController;
 import org.junit.After;
@@ -35,7 +36,7 @@ public class DeleteAdminGUITest extends ApplicationTest {
     }
 
     @Before
-    public void setUpCreateScene() throws TimeoutException, IOException {
+    public void setUpCreateScene() throws TimeoutException, IOException, UnauthorisedException {
         when(appC.getUserBridge()).thenReturn(uBridge);
         when(appC.getClinicianBridge()).thenReturn(cBridge);
         when(appC.getAdministratorBridge()).thenReturn(aBridge);

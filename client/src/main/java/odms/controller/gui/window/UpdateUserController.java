@@ -4,14 +4,10 @@ package odms.controller.gui.window;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.exception.InvalidFieldsException;
@@ -19,12 +15,13 @@ import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.model._enum.Regions;
+import odms.commons.model.datamodel.DeathDetails;
 import odms.commons.model.datamodel.ExpiryReason;
 import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.FileSelectorController;
-import odms.controller.gui.popup.RemoveDeathDetailsAlertController;
+import odms.controller.gui.popup.utils.AlertWindowFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,8 +44,10 @@ import static odms.commons.utils.PhotoHelper.setUpImageFile;
  */
 public class UpdateUserController {
 
-    private final int MAX_FILE_SIZE = 2097152;
+    private static final int MAX_FILE_SIZE = 2097152;
     //<editor-fold desc="fxml stuff">
+    @FXML
+    private CheckBox userDead;
     @FXML
     private Label fNameErrorLabel;
     @FXML
@@ -172,8 +171,6 @@ public class UpdateUserController {
     @FXML
     private Label updateDeathDetailsOverrideWarningLabel;
     @FXML
-    private Button removeUpdateDeathDetailsButton;
-    @FXML
     private Tab deathtab;
     //</editor-fold>
     @FXML
@@ -188,12 +185,15 @@ public class UpdateUserController {
     private String defaultCountry = "New Zealand";
     private UserController userController;
     private boolean isNewZealand;
+    private boolean changed = false;
 
 
     /**
      * @param user       The current user.
      * @param controller An instance of the AppController class.
      * @param stage      The applications stage.
+     * @param userController the usercontroller this update form is tied to.
+     * @param fromClinician if the user opening this is a clinician
      */
     public void init(User user, AppController controller, Stage stage, UserController userController, boolean fromClinician) {
         countrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
@@ -220,30 +220,30 @@ public class UpdateUserController {
             stage.setTitle("Update User: " + user.getFirstName());
         }
 
-        Scene scene = stage.getScene();
 
-        boolean hasOverridedExpiry = false;
+        boolean hasOverriddenExpiry = false;
         for (Map.Entry<Organs, ExpiryReason> pair: currentUser.getDonorDetails().getOrganMap().entrySet()) {
             try {
                 sleep(10);
             } catch (InterruptedException e) {
-                Log.warning("Sleep was interupted", e);
+                Log.warning("Sleep was interrupted", e);
                 Thread.currentThread().interrupt();
             }
             if (pair.getValue().getTimeOrganExpired() != null) {
-                hasOverridedExpiry = true;
+                hasOverriddenExpiry = true;
                 break;
             }
         }
-        if (hasOverridedExpiry) {
+        if (hasOverriddenExpiry) {
             updateDeathDetailsOverrideWarningLabel.setVisible(true);
-            removeUpdateDeathDetailsButton.setDisable(true);
             updateDeathDetailsDatePicker.setDisable(true);
             updateDeathDetailsTimeTextField.setDisable(true);
         }
 
         if (currentUser.getMomentDeath() == null) {
-            removeUpdateDeathDetailsButton.setDisable(true);
+            setDeathDetailsFieldsDisabled(false);
+        } else {
+            userDead.setSelected(true);
         }
 
         prefillDeathDetailsTab();
@@ -276,6 +276,7 @@ public class UpdateUserController {
         datePickerListener(updateDeathDetailsDatePicker);
 
         addCheckBoxListener(smokerCheckBox);
+        addDeathCheckBoxListener(userDead);
 
         if (!fromClinician) {
             deathtab.setDisable(true);
@@ -334,7 +335,7 @@ public class UpdateUserController {
         dp.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (listen) {
                 dp.getStyleClass().remove("invalid");
-                update();
+                changed = true;
             }
         });
     }
@@ -347,9 +348,51 @@ public class UpdateUserController {
     private void addCheckBoxListener(CheckBox checkBox) {
         checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (listen) {
-                update();
+                changed = true;
             }
         });
+    }
+
+    /**
+     * listens for a change on a checkbox and enables/disables the death details form
+     *
+     * @param checkBox checkbox to add a listener to
+     */
+    private void addDeathCheckBoxListener(CheckBox checkBox) {
+        checkBox.setOnAction(a -> {
+            if (!checkBox.isSelected()) {
+                Optional<ButtonType> option = AlertWindowFactory.generateConfirmation("Removing death details will mean this user is treated as alive.\nFor example, " +
+                        "any organs they were donating will be removed from the currently available organs list.");
+                if (option.isPresent() && option.get() == ButtonType.CANCEL) {
+                    checkBox.setSelected(true);
+                }
+            }
+            setDeathDetailsFieldsDisabled(checkBox.isSelected());
+
+        });
+    }
+
+    /**
+     * disables or enables death details form based on whether the user is dead
+     *
+     * @param isDead true if the user is dead
+     */
+    private void setDeathDetailsFieldsDisabled(Boolean isDead) {
+        if (isDead) {
+            updateDeathDetailsDatePicker.setDisable(false);
+            updateDeathDetailsTimeTextField.setDisable(false);
+            updateDeathDetailsCityTextField.setDisable(false);
+            updateDeathDetailsRegionComboBox.setDisable(false);
+            updateDeathDetailsCountryComboBox.setDisable(false);
+            updateDeathDetails();
+        } else {
+            updateDeathDetailsDatePicker.setDisable(true);
+            updateDeathDetailsTimeTextField.setDisable(true);
+            updateDeathDetailsCityTextField.setDisable(true);
+            updateDeathDetailsRegionComboBox.setDisable(true);
+            updateDeathDetailsCountryComboBox.setDisable(true);
+            currentUser.setDeathDetails(new DeathDetails());
+        }
     }
 
     /**
@@ -360,7 +403,7 @@ public class UpdateUserController {
     private void comboBoxListener(ComboBox<String> cb) {
         cb.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (listen) {
-                update();
+                changed = true;
             }
         });
     }
@@ -374,7 +417,7 @@ public class UpdateUserController {
         field.textProperty().addListener((observable, oldValue, newValue) -> {
             if (listen) {
                 field.getStyleClass().remove("invalid");
-                update();
+                changed = true;
             }
         });
 
@@ -484,36 +527,13 @@ public class UpdateUserController {
         if (!(AttributeValidation.validateTimeString(timeOfDeath))) {
             updateDeathDetailsErrorLabel.setText("The format of the Time of Death is incorrect");
             isValid = false;
-        } else if (LocalTime.parse(updateDeathDetailsTimeTextField.getText()).isAfter(LocalTime.now())) {
+        } else if (LocalDateTime.of(dateOfDeath, LocalTime.parse(updateDeathDetailsTimeTextField.getText())).isAfter(LocalDateTime.now())) {
             updateDeathDetailsErrorLabel.setText("The time of death cannot be in the future");
             isValid = false;
         }
 
         return isValid;
     }
-
-    /**
-     * Opens the alert window asking if the user really wants to remove the death details
-     */
-    @FXML
-    private void removeUpdateDeathDetails() {
-        FXMLLoader removeDeathDetailsLoader = new FXMLLoader(getClass().getResource("/FXML/removeDeathDetailsAlert.fxml"));
-        Parent root;
-        try {
-            root = removeDeathDetailsLoader.load();
-            RemoveDeathDetailsAlertController removeDeathDetailsController = removeDeathDetailsLoader.getController();
-            Stage updateStage = new Stage();
-            updateStage.initModality(Modality.APPLICATION_MODAL);
-            updateStage.setScene(new Scene(root));
-            removeDeathDetailsController.init(AppController.getInstance(), updateStage, currentUser);
-            updateStage.show();
-            Log.info("Successfully remove death details window for User NHI: " + currentUser.getNhi());
-
-        } catch (IOException e) {
-            Log.severe("Failed to load remove death details window for User NHI: " + currentUser.getNhi(), e);
-        }
-    }
-
 
     /**
      * Sets the details for the current user
@@ -524,7 +544,6 @@ public class UpdateUserController {
     private void setUserDetails(User user) {
         //personal
         String region = user.getRegion() == null ? "" : user.getRegion();
-        String country = user.getCountry();
 
         listen = false;
         fNameInput.setText(user.getFirstName());
@@ -781,7 +800,6 @@ public class UpdateUserController {
                 isValid = false;
             }
             if (isValid) {
-                update();
                 displayImage(profileImage, inFile.getPath());
                 currentUser.setProfilePhotoFilePath(inFile.getPath());
             }
@@ -791,6 +809,7 @@ public class UpdateUserController {
     /**
      * Checks that all fields with user input are valid and confirms the update if they are,
      * otherwise the update is rejected.
+     * @throws IOException if there is an issue setting up the image file
      */
     @FXML
     public void confirmUpdate() throws IOException {
@@ -798,7 +817,7 @@ public class UpdateUserController {
         boolean valid = validateFields();
 
         if (valid) {
-            removeFormChanges();
+            update();
             if (inFile != null) {
                 String filePath = setUpImageFile(inFile, currentUser.getNhi());
                 currentUser.setProfilePhotoFilePath(filePath);
@@ -816,15 +835,6 @@ public class UpdateUserController {
             stage.close();
         } else {
             genericErrorLabel.setVisible(true);
-        }
-    }
-
-    /**
-     * Pops all but the specified number of changes off the stack.
-     */
-    private void removeFormChanges() {
-        while (currentUser.getUndoStack().size() > undoMarker + 1) {
-            currentUser.getUndoStack().pop();
         }
     }
 
@@ -857,7 +867,7 @@ public class UpdateUserController {
             valid = false;
         }
 
-        if (!AttributeValidation.validateDateOfBirth(dob)) {
+        if (!AttributeValidation.validateDateBeforeTomorrow(dob)) {
             invalidateTextField(dobInput);
             dobErrorLabel.setVisible(true);
             valid = false;
@@ -901,10 +911,11 @@ public class UpdateUserController {
         } catch (InvalidFieldsException e) {
             valid = false;
         }
-        if (!validateDeathDetailsFields()) {
-            valid = false;
+        if (userDead.isSelected()) {
+            if (!validateDeathDetailsFields()) {
+                valid = false;
+            }
         }
-
         if (valid) { // only updates if everything is valid
             appController.update(currentUser);
         }
@@ -921,6 +932,7 @@ public class UpdateUserController {
      */
     private void invalidateTextField(Node node) {
         node.getStyleClass().add("invalid");
+        node.requestFocus();
     }
 
     private boolean checkChangedProperty(String newString, String oldString) {
@@ -1008,22 +1020,24 @@ public class UpdateUserController {
      */
     private boolean updateDeathDetails() {
         boolean changed = false;
-        LocalDate dateOfDeath = updateDeathDetailsDatePicker.getValue();
-        try {
-            LocalTime timeOfDeath = LocalTime.parse(updateDeathDetailsTimeTextField.getText());
-            currentUser.setMomentOfDeath(currentUser.getDeathDetails().createMomentOfDeath(dateOfDeath, timeOfDeath));
-        } catch (DateTimeParseException e) {
-            Log.severe("There is an incorrect time format in the death details time field", e);
-        }
+        if (userDead.isSelected()) {
+            LocalDate dateOfDeath = updateDeathDetailsDatePicker.getValue();
+            try {
+                LocalTime timeOfDeath = LocalTime.parse(updateDeathDetailsTimeTextField.getText());
+                currentUser.setMomentOfDeath(currentUser.getDeathDetails().createMomentOfDeath(dateOfDeath, timeOfDeath));
+            } catch (DateTimeParseException e) {
+                Log.warning("There is an incorrect time format in the death details time field");
+            }
 
-        currentUser.setDeathCity(updateDeathDetailsCityTextField.getText());
-        if (isNewZealand) {
-            //if checkChangedProperty(u)
-            currentUser.setDeathRegion(updateDeathDetailsRegionComboBox.getValue());
-        } else {
-            currentUser.setDeathRegion(updateDeathDetailsRegionTextField.getText());
+            currentUser.setDeathCity(updateDeathDetailsCityTextField.getText());
+            if (isNewZealand) {
+                //if checkChangedProperty(u)
+                currentUser.setDeathRegion(updateDeathDetailsRegionComboBox.getValue());
+            } else {
+                currentUser.setDeathRegion(updateDeathDetailsRegionTextField.getText());
+            }
+            currentUser.setDeathCountry(updateDeathDetailsCountryComboBox.getValue());
         }
-        currentUser.setDeathCountry(updateDeathDetailsCountryComboBox.getValue());
         return changed;
     }
 
@@ -1139,10 +1153,8 @@ public class UpdateUserController {
                 AttributeValidation.validateGender(birthGenderComboBox.getValue()) ? birthGenderComboBox.getValue()
                         : "";
 
-        if (birthGender != null && !birthGender.equals(bGender)) {
-            currentUser.setBirthGender(bGender);
-            changed = true;
-        } else if (birthGender == null && bGender != null) {
+        if ((birthGender != null && !birthGender.equals(bGender)) ||
+                (birthGender == null && bGender != null)) {
             currentUser.setBirthGender(bGender);
             changed = true;
         }
@@ -1167,10 +1179,8 @@ public class UpdateUserController {
         String blood =
                 AttributeValidation.validateBlood(bloodComboBox.getValue()) ? bloodComboBox.getValue()
                         : "";
-        if (bloodType != null && !bloodType.equals("U") && !bloodType.equals(blood)) {
-            currentUser.setBloodType(blood);
-            changed = true;
-        } else if (bloodType == null && blood != null) {
+        if ((bloodType != null && !bloodType.equals("U") && !bloodType.equals(blood)) ||
+                (bloodType == null && blood != null)) {
             currentUser.setBloodType(blood);
             changed = true;
         }
@@ -1347,17 +1357,17 @@ public class UpdateUserController {
      */
     @FXML
     void goBack() {
-        if (currentUser.getUndoStack().size() > undoMarker) { // has changes
+        if (changed) { // has changes
             Alert alert = new Alert(Alert.AlertType.WARNING,
-                    "You have unsaved changes, are you sure you want to cancel?",
+                    "You have unsaved changes, would you like to save these changes?",
                     ButtonType.YES, ButtonType.NO);
 
             alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-            Button yesButton = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
-            yesButton.setId("yesButton");
+            Button noButton = (Button) alert.getDialogPane().lookupButton(ButtonType.NO);
+            noButton.setId("yesButton");
 
             Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.YES) {
+            if (result.isPresent() && result.get() == ButtonType.NO) {
                 AppController appController = AppController.getInstance();
                 UserController userController = appController.getUserController();
                 try {

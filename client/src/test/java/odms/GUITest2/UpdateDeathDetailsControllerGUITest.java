@@ -8,7 +8,9 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableView;
 import odms.App;
 import odms.TestUtils.AppControllerMocker;
+import odms.TestUtils.CommonTestMethods;
 import odms.bridge.*;
+import odms.commons.exception.UnauthorisedException;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
@@ -46,11 +48,11 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
 
     @BeforeClass
     public static void initialization() {
-        //CommonTestMethods.runMethods();
+        CommonTestMethods.runMethods();
     }
 
     @Before
-    public void setUpCreateScene() throws TimeoutException, IOException {
+    public void setUpCreateScene() throws TimeoutException, IOException, UnauthorisedException {
 
         UserBridge bridge = mock(UserBridge.class);
         ClinicianBridge clinicianBridge = mock(ClinicianBridge.class);
@@ -86,7 +88,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
 
         when(application.getOrgansBridge()).thenReturn(organsBridge);
         doNothing().when(organsBridge).getAvailableOrgansList(anyInt(),anyInt(),anyString(),anyString(),
-                anyString(),anyString(),anyString(),any(ObservableList.class));
+                anyString(), anyString(), anyString(), any(ObservableList.class), eq(null));
 
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class, "--testConfig=true");
@@ -132,11 +134,12 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         clickOn("#deathtab");
+        clickOn("#userDead");
 
         setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now().plusDays(1));
         setTextField(this, "#updateDeathDetailsTimeTextField", LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
         clickOnButton(this, "#updateProfileButton");
-        verifyThat("#updateDeathDetailsErrorLabel", LabeledMatchers.hasText(dateErrorText));
+        verifyThat("#updateDeathDetailsErrorLabel", LabeledMatchers.hasText("The time of death cannot be in the future"));
     }
 
     @Test
@@ -145,6 +148,9 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         clickOn("#deathtab");
+
+        clickOn("#userDead");
+
         setDateValue(this, "#updateDeathDetailsDatePicker", testUser.getDateOfBirth().minusDays(1));
         setTextField(this, "#updateDeathDetailsTimeTextField", LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
         clickOnButton(this, "#updateProfileButton");
@@ -158,6 +164,9 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         clickOn("#deathtab");
+
+        clickOn("#userDead");
+
         setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now()); //Make sure date is not invalid
         //Doing multiple in one test to speed up tests
         setTextField(this, "#updateDeathDetailsTimeTextField", "12:30pm");
@@ -179,6 +188,9 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         clickOn("#deathtab");
+
+        clickOn("#userDead");
+
         setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now());
         setTextField(this, "#updateDeathDetailsTimeTextField", LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
         setTextField(this, "#updateDeathDetailsCityTextField", "Atlantis");
@@ -197,20 +209,18 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         clickOn("#deathtab");
+
+        clickOn("#userDead");
+
         setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now());
         setTextField(this, "#updateDeathDetailsTimeTextField", LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
         setTextField(this, "#updateDeathDetailsCityTextField", "Atlantis");
         setTextField(this, "#updateDeathDetailsRegionTextField", "Atlantic");
 
         Optional<ButtonType> result = Optional.of(ButtonType.YES);
-//        try {
-            Alert alert = mock(Alert.class);
-            doReturn(result).when(alert.showAndWait());
-            //doReturn(result).when(Alert.class.getMethod("showAndWait"));
-//        }
-//        } catch (NoSuchMethodException e) {
-//            Log.error("The method showAndWait in Alert does not exist", e);
-//        }
+        Alert alert = mock(Alert.class);
+        doReturn(result).when(alert.showAndWait());
+
 
         clickOnButton(this, "#UserCancelButton");
 
@@ -234,8 +244,8 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         setTextField(this, "#updateDeathDetailsTimeTextField", timeString);
         setTextField(this, "#updateDeathDetailsCityTextField", "Atlantis");
         setTextField(this, "#updateDeathDetailsRegionTextField", "Atlantic");
-        clickOnButton(this, "#removeUpdateDeathDetailsButton");
-        clickOnButton(this, "#cancelRemoveDeathDetailsButton");
+        clickOn("#userDead");
+        clickOn("#cancelButton");
 
         verifyThat("#updateDeathDetailsTimeTextField", TextInputControlMatchers.hasText(timeString));
         verifyThat("#updateDeathDetailsCityTextField", TextInputControlMatchers.hasText("Atlantis"));
@@ -254,8 +264,8 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         clickOn("#deathtab");
-        clickOnButton(this, "#removeUpdateDeathDetailsButton");
-        clickOnButton(this, "#confirmRemoveDeathDetailsButton");
+        clickOn("#userDead");
+        clickOn("#okButton");
         clickOnButton(this, "#updateProfileButton");
 
         verifyThat("#DODValue", LabeledMatchers.hasText(""));
@@ -278,7 +288,6 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         verifyThat("#updateDeathDetailsOverrideWarningLabel", Node::isVisible);
         verifyThat("#updateDeathDetailsTimeTextField", Node::isDisabled);
         verifyThat("#updateDeathDetailsDatePicker", Node::isDisabled);
-        verifyThat("#removeUpdateDeathDetailsButton", Node::isDisabled);
     }
 
     @Test
@@ -290,6 +299,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         clickOn("#deathtab");
+        clickOn("#userDead");
         setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now());
         setTextField(this, "#updateDeathDetailsTimeTextField", inputTime);
         clickOn( "#updateProfileButton");
@@ -307,6 +317,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
         clickOn("#deathtab");
+        clickOn("#userDead");
         LocalDate stableNow = LocalDate.now();
         setDateValue(this, "#updateDeathDetailsDatePicker", stableNow);
         setTextField(this, "#updateDeathDetailsTimeTextField", inputTime);

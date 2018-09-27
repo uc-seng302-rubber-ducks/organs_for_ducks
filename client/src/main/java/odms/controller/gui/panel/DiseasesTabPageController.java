@@ -17,6 +17,7 @@ import odms.controller.AppController;
 import odms.controller.gui.popup.NewDiseaseController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.controller.gui.window.UserController;
+import utils.StageIconLoader;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -52,6 +53,7 @@ public class DiseasesTabPageController {
      * @param controller the application controller
      * @param user       the current user
      * @param parent     the UserController class this belongs to
+     * @param fromClinician whether the user opening this tab if a clinician
      */
     public void init(AppController controller, User user, boolean fromClinician,
                      UserController parent) {
@@ -80,6 +82,8 @@ public class DiseasesTabPageController {
 
     /**
      * show the current and past diseases of the user.
+     * @param user user to show diseases of
+     * @param init if this was called from the initialization phase
      */
     public void showUserDiseases(User user, boolean init) {
         if (user.getCurrentDiseases().isEmpty()) {
@@ -185,6 +189,8 @@ public class DiseasesTabPageController {
             Stage stage = new Stage();
             newDiseaseController.init(currentUser, application, stage, disease, parent);
             stage.setScene(new Scene(root));
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            stage = stageIconLoader.addStageIcon(stage);
             stage.show();
             Log.info("successfully launched add/update Diseases pop-up window for User NHI: " + currentUser.getNhi());
         } catch (IOException e) {

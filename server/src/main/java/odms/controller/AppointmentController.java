@@ -180,6 +180,8 @@ public class AppointmentController extends BaseController {
      * If the appointment status is being changed to rejected seen, this function deletes that appointment from the database
      * @param statusId Id of the status the appointment is being changed to. The function will do nothing if this is not 7
      * @param appointmentId Id of the appointment to delete id the status is correct
+     * @param appointmentUpdateStrategy update strategy to use to update the appointment
+     * @param connection a non null connection to the database
      */
     private void deleteRejectedSeen(Connection connection, AppointmentUpdateStrategy appointmentUpdateStrategy, int statusId, int appointmentId) {
         if (statusId == AppointmentStatus.REJECTED_SEEN.getDbValue()) {
@@ -248,6 +250,7 @@ public class AppointmentController extends BaseController {
      * Checks the appointment previous status to confirm that the status update is valid.
      *
      * @param apptId Id of the appointment to check
+     * @param statusId the database value of the appointment status
      * @return true if the status update is valid, false otherwise
      */
     public boolean checkStatusUpdateAllowed(int apptId, int statusId) {

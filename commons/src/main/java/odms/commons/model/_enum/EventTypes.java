@@ -6,7 +6,9 @@ public enum EventTypes {
     ADMIN_UPDATE("ADMIN"),
     COUNTRY_UPDATE("COUNTRY"),
     APPOINTMENT_UPDATE("APPOINTMENT"),
-    REQUEST_UPDATE("REQUEST");
+    REQUEST_UPDATE("REQUEST"),
+    BLOOD_TEST_UPDATE("BLOOD_TEST"),
+    USER_DELETE("USER_DELETE");
 
     private final String name;
 

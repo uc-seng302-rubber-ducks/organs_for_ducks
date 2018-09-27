@@ -15,6 +15,7 @@ import odms.commons.utils.Log;
 import odms.commons.utils.PhotoHelper;
 import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
+import odms.controller.gui.widget.LoadingWidget;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -23,29 +24,36 @@ import java.util.*;
 public class UserBridge extends RoleBridge {
 
     private static final String USERS = "/users/";
-    public static final String FAILED_TO_PUT_TO = "Failed to PUT to ";
+    private static final String FAILED_TO_PUT_TO = "Failed to PUT to ";
     public static final String COULD_NOT_MAKE_A_CALL_TO = "Could not make a call to ";
-    public static final String FAILED_TO_POST_TO = "Failed to POST to ";
+    private static final String FAILED_TO_POST_TO = "Failed to POST to ";
+
+    private Call inProgress;
 
     public UserBridge(OkHttpClient client) {
         super(client);
     }
 
-    public void getUsers(int startIndex, int count, String name, String region, String gender, String token) {
+    public void getUsers(int startIndex, int count, String name, String region, String gender, String token, LoadingWidget tableview) {
+       if (inProgress != null) {
+            inProgress.cancel();
+        }
         String url = ip + "/users?startIndex=" + startIndex + "&count=" + count + "&name=" + name + "&region=" + region + "&gender=" + gender;
-        Request request = new Request.Builder().header(tokenHeader, token).url(url).build();
+        Request request = new Request.Builder().header(tokenHeader, token).url(url).tag("Tag").build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Platform.runLater(() -> AlertWindowFactory.generateError(e));
+                Platform.runLater(() -> AlertWindowFactory.generateError("Users:" + e));
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 Collection<UserOverview> overviews = new Gson().fromJson(response.body().string(), new TypeToken<Collection<UserOverview>>() {
                 }.getType());
-                for (UserOverview overview : overviews) {
-                    AppController.getInstance().addUserOverview(overview);
+                AppController.getInstance().getUserOverviews().clear();
+                AppController.getInstance().addUserOverviews(overviews);
+                if (overviews.isEmpty() && tableview != null) {
+                    Platform.runLater(() -> tableview.setWaiting(false));
                 }
                 response.close();
             }
@@ -362,6 +370,7 @@ public class UserBridge extends RoleBridge {
      * Asks the server to get the preferred clinician for the specified user
      * @param nhi of the user to get the preferred clinician for.
      * @return comboBoxClinician representing the preferred clinician
+     * @throws IOException if the call cannot be made
      */
     public ComboBoxClinician getPreferredClinician(String nhi) throws IOException{
         ComboBoxClinician clinician = null;

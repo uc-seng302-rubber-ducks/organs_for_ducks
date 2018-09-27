@@ -3,11 +3,9 @@ package odms.commons.model;
 import com.google.gson.annotations.Expose;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.ExpiryReason;
+import odms.commons.model.datamodel.OrgansWithDisqualification;
 
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 
 /**
@@ -17,6 +15,8 @@ public class DonorDetails {
 
     @Expose
     private Map<Organs, ExpiryReason> organs;
+    @Expose
+    private Collection<OrgansWithDisqualification> disqualifiedOrgans;
     private transient User attachedUser; //NOSONAR
 
     /**
@@ -27,6 +27,7 @@ public class DonorDetails {
     DonorDetails(User attachedUser) {
         this.attachedUser = attachedUser;
         this.organs = new EnumMap<>(Organs.class);
+        this.disqualifiedOrgans = new ArrayList<>();
     }
 
     public void setOrgans(Map<Organs, ExpiryReason> organs) {
@@ -40,6 +41,36 @@ public class DonorDetails {
 
     public Set<Organs> getOrgans() {
         return organs.keySet();
+    }
+
+    public Collection<OrgansWithDisqualification> getDisqualifiedOrgans() {
+        return disqualifiedOrgans;
+    }
+
+    /**
+     * Adds a disqualified organ to the users list of disqualified organs
+     * @param disqualification OrgansWithDisqualification object to go into the list
+     */
+    public void addDisqualification(OrgansWithDisqualification disqualification) {
+        if (attachedUser != null) {
+            attachedUser.saveStateForUndo();
+            attachedUser.updateLastModified();
+            attachedUser.addChange(new Change("Added disqualification " + disqualification.toString()));
+
+            disqualifiedOrgans.add(disqualification);
+        }
+    }
+
+    /**
+     * Removes a disqualification from the users list of disqualified organs
+     * @param disqualification OrgansWithDisqualification object to go remove from the list
+     */
+    public void removeDisqualification(OrgansWithDisqualification disqualification) {
+        if (disqualifiedOrgans.contains(disqualification)) {
+            attachedUser.saveStateForUndo();
+            attachedUser.updateLastModified();
+            attachedUser.addChange(new Change("Removed disqualification " + disqualification.toString()));
+        }
     }
 
     /**

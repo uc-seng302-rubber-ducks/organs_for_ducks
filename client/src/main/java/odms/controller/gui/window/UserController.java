@@ -25,9 +25,12 @@ import odms.controller.AppController;
 import odms.controller.gui.StatusBarController;
 import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.panel.*;
+import odms.controller.gui.panel.view.BloodTestViewController;
 import odms.controller.gui.panel.view.UserAppointmentViewController;
 import odms.controller.gui.popup.UserAppointmentAlertController;
+import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.socket.ServerEventNotifier;
+import utils.StageIconLoader;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -125,7 +128,11 @@ public class UserController implements PropertyChangeListener {
     private StatusBarController statusBarPageController;
 
     @FXML
-    private UserAppointmentViewController appointmentTabPageController; //</editor-fold>
+    private UserAppointmentViewController appointmentTabPageController;
+
+    @FXML
+    private BloodTestViewController bloodTestTabPageController;
+    //</editor-fold>
 
     private User currentUser;
     private boolean fromClinician;
@@ -133,6 +140,7 @@ public class UserController implements PropertyChangeListener {
     private EmergencyContact contact = null;
     private ObservableList<Change> changelog;
     private UserAppointmentAlertController userAppointmentAlertController = new UserAppointmentAlertController();
+    private String userNhi;
 
     /**
      * Gives the user view the application controller and hides all label and buttons that are not
@@ -142,12 +150,14 @@ public class UserController implements PropertyChangeListener {
      * @param user          the current user
      * @param stage         the application stage
      * @param fromClinician boolean value indication if from clinician view
+     * @param parentListeners property change listeners from the parent window
      */
     public void init(AppController controller, User user, Stage stage, boolean fromClinician,
                      Collection<PropertyChangeListener> parentListeners) {
         if (user == null) {
             return;
         }
+        userNhi = user.getNhi();
         //add change listeners of parent controllers to the current user
         if (parentListeners != null && !parentListeners.isEmpty()) {
             for (PropertyChangeListener listener : parentListeners) {
@@ -155,6 +165,7 @@ public class UserController implements PropertyChangeListener {
             }
         }
         this.stage = stage;
+        stage.setResizable(true);
         application = controller;
         this.fromClinician = fromClinician;
         stage.setMinWidth(1200);
@@ -169,6 +180,7 @@ public class UserController implements PropertyChangeListener {
         diseasesTabPageController.init(controller, user, fromClinician, this);
         receiverTabPageController.init(controller, this.stage, user, fromClinician, this);
         appointmentTabPageController.init(user);
+        bloodTestTabPageController.init(user, fromClinician);
         statusBarPageController.init();
         //arbitrary default values
 
@@ -231,6 +243,8 @@ public class UserController implements PropertyChangeListener {
             updateStage.initModality(Modality.APPLICATION_MODAL);
             updateStage.setScene(new Scene(root));
             updateUserController.init(currentUser, application, updateStage, this, this.fromClinician);
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            updateStage = stageIconLoader.addStageIcon(updateStage);
             updateStage.show();
             Log.info("Successfully launched update user window for User NHI: " + currentUser.getNhi());
 
@@ -318,6 +332,8 @@ public class UserController implements PropertyChangeListener {
             root = loader.load();
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            newStage = stageIconLoader.addStageIcon(newStage);
             newStage.show();
             stage.close();
             LoginController loginController = loader.getController();
@@ -430,6 +446,7 @@ public class UserController implements PropertyChangeListener {
     @FXML
     private void undo() {
         currentUser.undo();
+        donationTabPageController.refreshDisqualifiedOrgans();
         updateUndoRedoButtons();
         showUser(currentUser);
     }
@@ -441,6 +458,7 @@ public class UserController implements PropertyChangeListener {
     @FXML
     private void redo() {
         currentUser.redo();
+        donationTabPageController.refreshDisqualifiedOrgans();
         updateUndoRedoButtons();
         showUser(currentUser);
     }
@@ -465,6 +483,7 @@ public class UserController implements PropertyChangeListener {
      */
     public void showUser(User user) {
         changeCurrentUser(user);
+        userNhi = currentUser.getNhi();
         setContactPage();
         userProfileTabPageController.showUser(user);
         medicationTabPageController.refreshLists(user);
@@ -604,20 +623,23 @@ public class UserController implements PropertyChangeListener {
             return;
         }
         if (event.getType().equals(EventTypes.USER_UPDATE)
-                && event.getOldIdentifier().equalsIgnoreCase(currentUser.getNhi())
-                || event.getNewIdentifier().equalsIgnoreCase(currentUser.getNhi())) {
+                && (event.getOldIdentifier().equalsIgnoreCase(userNhi)
+                || event.getNewIdentifier().equalsIgnoreCase(userNhi))) {
 
             try {
                 currentUser = application.getUserBridge().getUser(event.getNewIdentifier());
                 if (currentUser != null) {
-                    showUser(currentUser); //TODO: Apply change once we solve the DB race 7/8/18 JB
+                    showUser(currentUser);
                 }
             } catch (IOException ex) {
                 Log.warning("failed to get updated user", ex);
             }
 
         } else if (event.getType().equals(EventTypes.REQUEST_UPDATE)) {
-            userAppointmentAlertController.checkForUnseenUpdates(currentUser.getNhi());
+            userAppointmentAlertController.checkForUnseenUpdates(userNhi);
+        } else if(event.getType().equals(EventTypes.USER_DELETE) && event.getOldIdentifier().equalsIgnoreCase(userNhi)){
+            AlertWindowFactory.generateInfoWindow("This user has been deleted from the server.\nThank you for using Organs for Ducks");
+            stage.close();
         }
     }
 }

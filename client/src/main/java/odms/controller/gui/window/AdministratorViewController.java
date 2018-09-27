@@ -49,8 +49,10 @@ import odms.controller.gui.popup.AlertUnclosedWindowsController;
 import odms.controller.gui.popup.CountrySelectionController;
 import odms.controller.gui.popup.DeletedUserController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
+import odms.controller.gui.widget.LoadingTableView;
 import odms.socket.ServerEventNotifier;
 import odms.view.CLI;
+import utils.StageIconLoader;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -76,17 +78,17 @@ public class AdministratorViewController implements PropertyChangeListener, User
     private static final String ERROR = "error";
     public static final String FAILED_TO_GET_USER_OVERVIEWS_FROM_SERVER = "failed to get user overviews from server";
     @FXML
-    private TableView<UserOverview> userTableView;
+    private LoadingTableView<UserOverview> userTableView;
     @FXML
     private Label adminLastNameLabel;
     @FXML
     private CheckBox allCheckBox;
     @FXML
-    private TableView<Clinician> clinicianTableView;
+    private LoadingTableView<Clinician> clinicianTableView;
     @FXML
     private TextField cliInputTextField;
     @FXML
-    private TableView<Administrator> adminTableView;
+    private LoadingTableView<Administrator> adminTableView;
     @FXML
     private TextArea adminCliTextArea;
     @FXML
@@ -172,9 +174,11 @@ public class AdministratorViewController implements PropertyChangeListener, User
      * @param administrator administrator to view
      * @param appController appController instance to get data from
      * @param stage         stage to display on
+     * @param owner         if it is the owner of the account
      */
     public void init(Administrator administrator, AppController appController, Stage stage, boolean owner) {
         this.stage = stage;
+        stage.setResizable(true);
         this.appController = appController;
         this.administrator = administrator;
         this.owner = owner;
@@ -188,8 +192,8 @@ public class AdministratorViewController implements PropertyChangeListener, User
         availableOrgansViewController.init(this);
         ServerEventNotifier.getInstance().addPropertyChangeListener(this);
         stage.setMaximized(true);
-
-        userBridge.getUsers(userStartIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), genderComboBox.getValue(), appController.getToken());
+        userTableView.setWaiting(true);
+        userBridge.getUsers(userStartIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), genderComboBox.getValue(), appController.getToken(), userTableView);
 
         adminUndoButton.setDisable(true);
         adminRedoButton.setDisable(true);
@@ -421,7 +425,9 @@ public class AdministratorViewController implements PropertyChangeListener, User
      */
     private void populateUserSearchTable(int startIndex, int count, String name, String region, String gender) {
         appController.getUserOverviews().clear();
-        userBridge.getUsers(startIndex, count, name, region, gender, appController.getToken());
+        userTableView.setItems(FXCollections.observableArrayList(appController.getUserOverviews()));
+        userTableView.setWaiting(true);
+        userBridge.getUsers(startIndex, count, name, region, gender, appController.getToken(), userTableView);
 
         displayUserSearchTable();
     }
@@ -436,12 +442,10 @@ public class AdministratorViewController implements PropertyChangeListener, User
 
         if (!appController.getUserOverviews().isEmpty()) {
             userTableView.setItems(sUsers);
-        } else {
-            userTableView.setItems(null);
-            Platform.runLater(() -> userTableView.setPlaceholder(new Label("No users match this criteria"))); // Do this to prevent threading issues when this method is not called on an FX thread
         }
 
         setTableOnClickBehaviour(User.class, userTableView);
+        userTableView.refresh();
     }
 
     private void setTableOnClickBehaviour(Type type, TableView tv) {
@@ -547,6 +551,8 @@ public class AdministratorViewController implements PropertyChangeListener, User
             Stage countrySelectStage = new Stage();
             countrySelectionController.init(administrator, countrySelectStage, appController);
             countrySelectStage.setScene(new Scene(root));
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            countrySelectStage = stageIconLoader.addStageIcon(countrySelectStage);
             countrySelectStage.show();
             Log.info("successfully launched countrySelectionView pop-up window for admin user name: " + administrator.getUserName());
         } catch (IOException e) {
@@ -814,6 +820,8 @@ public class AdministratorViewController implements PropertyChangeListener, User
             Stage unclosedWindowStage = new Stage();
             alertUnclosedWindowsController.init(unclosedWindowStage, this);
             unclosedWindowStage.setScene(new Scene(root));
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            unclosedWindowStage = stageIconLoader.addStageIcon(unclosedWindowStage);
             unclosedWindowStage.show();
         } catch (IOException e) {
             Log.severe("IOException encountered", e);
@@ -834,6 +842,8 @@ public class AdministratorViewController implements PropertyChangeListener, User
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
             newStage.setTitle("Create New User Profile");
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            newStage = stageIconLoader.addStageIcon(newStage);
             newStage.show();
             NewUserController donorController = userLoader.getController();
             donorController.init(AppController.getInstance(), stage, newStage);
@@ -863,6 +873,8 @@ public class AdministratorViewController implements PropertyChangeListener, User
                 Collection<PropertyChangeListener> listeners = new ArrayList<>();
                 listeners.add(this);
                 userController.init(AppController.getInstance(), user, newStage, true, listeners);
+                StageIconLoader stageIconLoader = new StageIconLoader();
+                newStage = stageIconLoader.addStageIcon(newStage);
                 newStage.show();
                 Log.info(messageAdmin + administrator.getUserName() + " successfully launched user overview window for User NHI: " + user.getNhi());
             } catch (IOException e) {
@@ -890,6 +902,8 @@ public class AdministratorViewController implements PropertyChangeListener, User
             Collection<PropertyChangeListener> listeners = new ArrayList<>();
             listeners.add(this);
             clinicianController.init(newStage, AppController.getInstance(), clinician, owner, listeners);
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            newStage = stageIconLoader.addStageIcon(newStage);
             newStage.show();
             Log.info(messageAdmin + administrator.getUserName() + " successfully launched clinician overview window for Clinician Staff ID:" + clinician.getStaffId());
         } catch (IOException e) {
@@ -914,6 +928,8 @@ public class AdministratorViewController implements PropertyChangeListener, User
             AdministratorViewController adminLoaderController = adminLoader.getController();
             administratorViewControllers.add(adminLoaderController);
             adminLoaderController.init(administrator, AppController.getInstance(), newStage, false);
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            newStage = stageIconLoader.addStageIcon(newStage);
             newStage.show();
             Log.info(messageAdmin + administrator.getUserName() + " successfully launched administrator overview window");
         } catch (IOException e) {
@@ -933,6 +949,8 @@ public class AdministratorViewController implements PropertyChangeListener, User
             root = clinicianLoader.load();
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            newStage = stageIconLoader.addStageIcon(newStage);
             newStage.show();
             UpdateClinicianController newClinician = clinicianLoader.getController();
             newClinician.init(null, appController, stage, true, newStage);
@@ -954,6 +972,8 @@ public class AdministratorViewController implements PropertyChangeListener, User
             Stage newStage = new Stage();
             newStage.initModality(Modality.APPLICATION_MODAL);
             newStage.setScene(new Scene(root));
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            newStage = stageIconLoader.addStageIcon(newStage);
             newStage.show();
             UpdateAdminController updateAdminController = adminLoader.getController();
             updateAdminController.init(new Administrator(), newStage, true);
@@ -989,6 +1009,8 @@ public class AdministratorViewController implements PropertyChangeListener, User
             root = loginLoader.load();
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            newStage = stageIconLoader.addStageIcon(newStage);
             newStage.show();
             stage.close();
             LoginController loginController = loginLoader.getController();
@@ -1080,6 +1102,8 @@ public class AdministratorViewController implements PropertyChangeListener, User
             root = adminLoader.load();
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            newStage = stageIconLoader.addStageIcon(newStage);
             newStage.show();
             UpdateAdminController updateAdminController = adminLoader.getController();
             updateAdminController.init(administrator, newStage, false);
@@ -1128,6 +1152,8 @@ public class AdministratorViewController implements PropertyChangeListener, User
             deleteStage.setScene(new Scene(root));
             deletedUserController.init(true);
             deleteStage.initModality(Modality.APPLICATION_MODAL);
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            deleteStage = stageIconLoader.addStageIcon(deleteStage);
             deleteStage.showAndWait();
         } catch (IOException e) {
             Log.warning(e.getMessage());
@@ -1219,7 +1245,9 @@ public class AdministratorViewController implements PropertyChangeListener, User
      */
     private void populateClinicianSearchTable(int startIndex, int rowsPerPage, String name, String region) {
         appController.getClinicians().clear();
-        clinicianBridge.getClinicians(startIndex, rowsPerPage, name, region, appController.getToken());
+        clinicianTableView.setItems(FXCollections.observableArrayList(appController.getClinicians()));
+        clinicianTableView.setWaiting(true);
+        clinicianBridge.getClinicians(startIndex, rowsPerPage, name, region, appController.getToken(), clinicianTableView);
 
         displayClinicianSearchTable();
     }
@@ -1235,10 +1263,6 @@ public class AdministratorViewController implements PropertyChangeListener, User
 
         if (!appController.getClinicians().isEmpty()) {
             clinicianTableView.setItems(sClinicians);
-        } else {
-            clinicianTableView.setItems(null);
-            // Do this to prevent threading issues when this method is not called on an FX thread
-            Platform.runLater(() -> clinicianTableView.setPlaceholder(new Label("No clinicians to show")));
         }
 
         setTableOnClickBehaviour(Clinician.class, clinicianTableView);
@@ -1261,7 +1285,8 @@ public class AdministratorViewController implements PropertyChangeListener, User
      */
     private void populateAdminSearchTable(int startIndex, int rowsPerPage, String name) {
         appController.getAdmins().clear();
-        adminBridge.getAdmins(startIndex, rowsPerPage, name, appController.getToken());
+        adminTableView.setWaiting(true);
+        adminBridge.getAdmins(startIndex, rowsPerPage, name, appController.getToken(), adminTableView);
 
         displayAdminSearchTable();
     }
@@ -1273,10 +1298,6 @@ public class AdministratorViewController implements PropertyChangeListener, User
 
         if (!appController.getClinicians().isEmpty()) {
             adminTableView.setItems(sAdmins);
-        } else {
-            adminTableView.setItems(null);
-            // Do this to prevent threading issues when this method is not called on an FX thread
-            Platform.runLater(() -> adminTableView.setPlaceholder(new Label("No admins to show")));
         }
 
         setTableOnClickBehaviour(Administrator.class, adminTableView);
@@ -1304,7 +1325,11 @@ public class AdministratorViewController implements PropertyChangeListener, User
         }
         Log.info("refresh listener fired in admin controller");
         if (event.getType().equals(EventTypes.USER_UPDATE) || event.getType().equals(EventTypes.CLINICIAN_UPDATE)) {
-            refreshTables();
+            populateUserSearchTable();
+            populateClinicianSearchTable();
+            populateAdminSearchTable();
+            transplantWaitListTabPageController.populateWaitListTable();
+            transplantWaitListTabPageController.displayWaitListTable();
             availableOrgansViewController.search();
         } else if (event.getType().equals(EventTypes.ADMIN_UPDATE) && administrator.getUserName().equals(event.getOldIdentifier())) {
             try {

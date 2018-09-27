@@ -7,11 +7,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import odms.bridge.LoginBridge;
+import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.exception.ApiException;
+import odms.commons.exception.UnauthorisedException;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
@@ -19,9 +23,10 @@ import odms.commons.model._enum.UserType;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
-import odms.view.CLI;
+import utils.StageIconLoader;
 
 import java.io.IOException;
+import java.net.URL;
 
 /**
  * Class for the login functionality of the application
@@ -35,6 +40,7 @@ public class LoginController {
     private static final String HELP_VIEW_URL = "/FXML/loginHelp.fxml";
     private static final String NETWORK_ERROR = "A network error occurred. Please try again or contact your IT department.";
     private static final String UNSPECIFIED_ERROR = "An unspecified error occurred. Please try again or contact your IT department.";
+    private static final String UNAUTHORISED_ERROR = "Either the user does not exist, the password is incorrect or the username is incorrect\nPlease try again";
     @FXML
     private TextField userIDTextField;
     @FXML
@@ -53,6 +59,11 @@ public class LoginController {
     private Label adminWarningLabel;
     @FXML
     private TabPane loginTabPane;
+    @FXML
+    private ImageView logoImageView;
+    @FXML
+    private Label poweredByLabel;
+
     private Stage helpStage = null;
     private AppController appController;
     private Stage stage;
@@ -69,9 +80,11 @@ public class LoginController {
         userWarningLabel.setText("");
         clinicianWarningLabel.setText("");
         adminWarningLabel.setText("");
+        poweredByLabel.setText("Powered by Rubber Duck Software Group");
         this.appController = appController;
         this.stage = stage;
         stage.setTitle("Login");
+        stage.setResizable(false);
         appController.setUsername("");
         appController.setName("");
         Scene scene = stage.getScene();
@@ -88,6 +101,24 @@ public class LoginController {
                 }
             }
         });
+
+        loadLogoImage();
+    }
+
+    private void loadLogoImage() {
+        if (!ConfigPropertiesSession.getInstance().getProperty("testConfig", "false").equalsIgnoreCase("true")) {
+            URL url = getClass().getResource("/logos/LoveDuck.png");
+            if (url == null) {
+                Log.warning("Could not load the icon for the taskbar. Check that the filepath is correct");
+            } else {
+                try {
+                    javafx.scene.image.Image image = new Image(url.openStream());
+                    logoImageView.setImage(image);
+                } catch (IOException io) {
+                    Log.warning("Could not the logo image for the login controller", io);
+                }
+            }
+        }
     }
 
     /**
@@ -152,6 +183,11 @@ public class LoginController {
             token = loginBridge.loginToServer(wantedClinician, clinicianPassword, "clinician");
         } catch (ApiException ex) {
             clinicianWarningLabel.setText("An error occurred. Please try again later.");
+            Log.severe(UNSPECIFIED_ERROR, ex);
+            return;
+        } catch (UnauthorisedException e) {
+            clinicianWarningLabel.setText(UNAUTHORISED_ERROR);
+            return;
         }
 
         if (token == null) {
@@ -214,6 +250,9 @@ public class LoginController {
             adminWarningLabel.setText(UNSPECIFIED_ERROR);
             Log.severe(UNSPECIFIED_ERROR, e);
             return;
+        } catch (UnauthorisedException e) {
+            adminWarningLabel.setText(UNAUTHORISED_ERROR);
+            return;
         }
         if (token == null) {
             return;
@@ -265,6 +304,8 @@ public class LoginController {
             newStage.initModality(Modality.APPLICATION_MODAL);
             newStage.setScene(new Scene(root));
             newStage.setTitle("Create New User Profile");
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            newStage = stageIconLoader.addStageIcon(newStage);
             newStage.show();
             NewUserController userController = userLoader.getController();
             Log.info("Opening new user window");
@@ -275,51 +316,5 @@ public class LoginController {
 
     }
 
-    /**
-     * Displays a pop up window with instructions to help the user on the login page.
-     */
-    @FXML
-    private void helpButton() {
-
-        if (helpStage == null) {
-            try {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(HELP_VIEW_URL));
-                Parent root = fxmlLoader.load();
-                helpStage = new Stage();
-                helpStage.setTitle("Login Help");
-                helpStage.setScene(new Scene(root));
-                helpStage.setResizable(false);
-                helpStage.setOnCloseRequest(event -> helpStage = null);
-                helpStage.show();
-                Log.info("Successfully launched help window");
-            } catch (Exception e) {
-                Log.severe("could not load help window", e);
-            }
-        }
-    }
-
-
-    /**
-     * Opens the Command Line version of the application
-     */
-    @FXML
-    void openCLI() {
-        stage.hide();
-
-        CLI.main(new String[]{"gui"});
-        stage.show();
-        FXMLLoader adminLoader = new FXMLLoader(getClass().getResource(ADMIN_VIEW_URL));
-        Parent root;
-        try {
-            root = adminLoader.load();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Administrator");
-            AdministratorViewController administratorViewController = adminLoader.getController();
-            administratorViewController.init(new Administrator(), appController, stage, true);
-            Log.info("Successfully launched CLI");
-        } catch (IOException e) {
-            Log.severe("could not load CLI", e);
-        }
-    }
 }
 

@@ -6,6 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -25,6 +26,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextBoundsType;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import odms.bridge.AppointmentsBridge;
 import odms.bridge.ClinicianBridge;
@@ -48,7 +50,9 @@ import odms.controller.gui.panel.view.AvailableOrgansViewController;
 import odms.controller.gui.panel.view.ClinicianAppointmentRequestViewController;
 import odms.controller.gui.popup.DeletedUserController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
+import odms.controller.gui.widget.LoadingTableView;
 import odms.socket.ServerEventNotifier;
+import utils.StageIconLoader;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -74,10 +78,8 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
     //<editor-fold desc="FXML declarations">
     @FXML
     private Button undoButton;
-
     @FXML
     private Button backButton;
-
     @FXML
     private Label staffIdLabel;
     @FXML
@@ -98,13 +100,8 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
     private Label countryLabel;
     @FXML
     private TextField searchTextField;
-
-
     @FXML
-    private Tooltip searchToolTip;
-    @FXML
-    private TableView<UserOverview> searchTableView;
-
+    private LoadingTableView<UserOverview> searchTableView;
 
     @FXML
     private Label searchCountLabel;
@@ -134,7 +131,6 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
     private MenuItem deleteClinician;
     @FXML
     private MenuItem logoutMenuClinician;
-
     @FXML
     private ImageView profileImage;
     @FXML
@@ -172,6 +168,8 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
      * @param stage         The applications stage.
      * @param appController the applications controller.
      * @param clinician     The current clinician.
+     * @param parentListeners The listeners of the parent controller that created this
+     * @param fromAdmin     If the user opening the clinician is from an admin
      */
     public void init(Stage stage, AppController appController, Clinician clinician, boolean fromAdmin,
                      Collection<PropertyChangeListener> parentListeners) {
@@ -188,7 +186,8 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         setDefaultFilters();
         stage.setResizable(true);
         showClinician(clinician);
-        appController.getUserBridge().getUsers(0, 30, "", "", "", appController.getToken());
+        searchTableView.setWaiting(true);
+        appController.getUserBridge().getUsers(0, ROWS_PER_PAGE, "", "", "", appController.getToken(), searchTableView);
         searchCount = appController.getUserOverviews().size();
         initSearchTable();
         transplantWaitListTabPageController.init(appController, this);
@@ -216,7 +215,12 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
             logoutMenuClinician.setOnAction(e -> logout());
         }
 
-        stage.setOnCloseRequest(e -> availableOrgansViewController.shutdownThreads());
+        EventHandler<WindowEvent> closeEvent = stage.getOnCloseRequest();
+        stage.setOnCloseRequest(e -> {
+            availableOrgansViewController.shutdownThreads();
+            closeEvent.handle(e);
+
+        });
 
         displayImage(profileImage, clinician.getProfilePhotoFilePath());
         if (ConfigPropertiesSession.getInstance().getProperty("testConfig", "false").equals("false")) {
@@ -291,6 +295,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
 
     /**
      * initialises the clinicians details
+     * @param clinician clinician to show the details of
      */
     public void showClinician(Clinician clinician) {
         this.clinician = clinician;
@@ -417,10 +422,11 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
             UserController userController = userLoader.getController();
             AppController.getInstance().setUserController(userController);
             userController.init(AppController.getInstance(), user, userStage, true, parentListeners);
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            userStage = stageIconLoader.addStageIcon(userStage);
             userStage.show();
             Log.info("Clinician " + clinician.getStaffId()
                     + " successfully launched user overview window");
-            userStage.show();
         } catch (IOException e) {
             Log.severe("Clinician " + clinician.getStaffId() + " Failed to load user overview window", e);
             AlertWindowFactory.generateError(e);
@@ -482,7 +488,8 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
      */
     private void search() {
         appController.getUserOverviews().clear();
-        appController.getUserBridge().getUsers(startIndex, ROWS_PER_PAGE, searchTextField.getText(), regionSearchTextField.getText(), genderComboBox.getValue(), appController.getToken());
+        appController.getUserBridge().getUsers(startIndex, ROWS_PER_PAGE, searchTextField.getText(), regionSearchTextField.getText(), genderComboBox.getValue(), appController.getToken(), searchTableView);
+        searchTableView.setWaiting(true);
         appController.setUserOverviews(appController.getUserOverviews().stream().filter(p -> (p.getDonating().isEmpty() != donorFilterCheckBox.isSelected() &&
                 p.getReceiving().isEmpty() != receiverFilterCheckBox.isSelected()) || allCheckBox.isSelected()).collect(Collectors.toSet()));
         searchCount = appController.getUserOverviews().size();
@@ -544,6 +551,8 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
             root = loader.load();
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            newStage = stageIconLoader.addStageIcon(newStage);
             newStage.show();
             stage.close();
             availableOrgansViewController.shutdownThreads();
@@ -597,6 +606,8 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
             newStage.setScene(new Scene(root));
             updateClinicianController.init(clinician, appController, stage, false, newStage);
             newStage.initModality(Modality.APPLICATION_MODAL); // background window is no longer selectable
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            newStage = stageIconLoader.addStageIcon(newStage);
             newStage.showAndWait();
             showClinician(clinician);
             Log.info("Clinician " + clinician.getStaffId() + " successfully launched update clinician window");
@@ -641,6 +652,8 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
             stage.setScene(new Scene(root));
             deletedUserController.init(false);
             stage.initModality(Modality.APPLICATION_MODAL);
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            stage = stageIconLoader.addStageIcon(stage);
             stage.showAndWait();
             Log.info("Clinician " + clinician.getStaffId() + " successfully launched delete user window");
         } catch (IOException e) {
@@ -689,6 +702,8 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         if (event.getType().equals(EventTypes.USER_UPDATE)) {
             search();
             refreshTables();
+            transplantWaitListTabPageController.populateWaitListTable();
+            transplantWaitListTabPageController.displayWaitListTable();
             availableOrgansViewController.search();
         } else if (event.getType().equals(EventTypes.CLINICIAN_UPDATE) && clinician.getStaffId().equals(event.getOldIdentifier())){
             String newStaffId = event.getNewIdentifier();

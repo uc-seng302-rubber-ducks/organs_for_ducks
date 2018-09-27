@@ -51,6 +51,7 @@ public class AppConfigurator {
 
     /**
      * sets up logging to the correct environment
+     * @param env logging environment
      */
     public void setupLogging(Environments env) {
         Log.setup(env);

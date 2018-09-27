@@ -68,7 +68,8 @@ public class AppController {
     private StatusBarController statusBarController = new StatusBarController();
     private String token;
     private SQLBridge sqlBridge = new SQLBridge(client);
-    private AppointmentsBridge appointmentsBridge = new AppointmentsBridge(client);
+    private AppointmentsBridge appointmentsBridge;
+    private BloodTestBridge bloodTestBridge;
     private OdmsSocketHandler socketHandler = new OdmsSocketHandler(client, ServerEventNotifier.getInstance());
     private String username = "";
     private String name = "";
@@ -91,6 +92,7 @@ public class AppController {
         transplantBridge = new TransplantBridge(client);
         countriesBridge = new CountriesBridge(client);
         appointmentsBridge = new AppointmentsBridge(client);
+        bloodTestBridge = new BloodTestBridge(client);
     }
 
     /**
@@ -128,6 +130,8 @@ public class AppController {
      * @param countrySelector Combo Box
      * @param regionSelector Combo Box
      * @param regionInput Text Field
+     * @param user user to attach this to, null if not applicable
+     * @param clinician clinician to attach this too, null if not applicable
      */
     public void countrySelectorEventHandler(ComboBox countrySelector, ComboBox regionSelector, TextField regionInput, User user, Clinician clinician) {
         if(! countrySelector.getSelectionModel().getSelectedItem().equals("New Zealand")) {
@@ -352,6 +356,16 @@ public class AppController {
         }
     }
 
+    public void addUserOverviews(Collection<UserOverview> overviews) {
+        this.overviews.addAll(overviews);
+        if (clinicianController != null) {
+            clinicianController.refreshTables();
+        }
+        if (administratorViewController != null) {
+            administratorViewController.refreshTables();
+        }
+    }
+
     /**
      * @param users An array list of users.
      */
@@ -487,6 +501,7 @@ public class AppController {
      * The clinician is saved to the database by a put request if the entry is found, otherwise by a post request.
      *
      * @param clinician Clinician to be saved
+     * @throws IOException if the clinician cannot be saved
      */
     public void saveClinician(Clinician clinician) throws IOException {
         try {
@@ -736,6 +751,10 @@ public class AppController {
         return appointmentsBridge;
     }
 
+    public BloodTestBridge getBloodTestBridge() {
+        return bloodTestBridge;
+    }
+
     public OdmsSocketHandler getSocketHandler() {
         return socketHandler;
     }
@@ -766,5 +785,9 @@ public class AppController {
 
     public void setAppointmentsBridge(AppointmentsBridge appointmentsBridge) {
         this.appointmentsBridge = appointmentsBridge;
+    }
+
+    public void setBloodTestBridge(BloodTestBridge bloodTestBridge) {
+        this.bloodTestBridge = bloodTestBridge;
     }
 }

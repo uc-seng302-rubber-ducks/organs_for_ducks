@@ -246,7 +246,9 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         return PasswordManager.isExpectedPassword(passwordAttempt, salt, getPassword());
     }
 
-
+    /**
+     * Saves the administrator's current state and pushes it onto the undo stack
+     */
     private void saveStateForUndo() {
         //attempt to find out who called this method
         //if the caller is annotated with IgnoreForUndo, skip the memento/cloning process.
@@ -310,7 +312,9 @@ public class Administrator extends Undoable<Administrator> implements Listenable
 
 
     /**
-     * Could this and changeInto be combined somehow?
+     * Returns the clone of the administrator
+     * @param admin administrator to clone
+     * @return a deep copy of the administrator given
      */
     public static Administrator clone(Administrator admin) {
         Administrator newAdmin = new Administrator();

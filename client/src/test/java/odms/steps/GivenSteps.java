@@ -8,6 +8,7 @@ import javafx.scene.control.TableView;
 import odms.App;
 import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.exception.ApiException;
+import odms.commons.exception.UnauthorisedException;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
@@ -117,7 +118,7 @@ public class GivenSteps extends ApplicationTest {
     }
 
     @Given("^The Create New Disease screen is loaded$")
-    public void theCreateNewDiseaseScreenIsLoaded() throws IOException {
+    public void theCreateNewDiseaseScreenIsLoaded() throws IOException, UnauthorisedException {
         when(CucumberTestModel.getClinicianBridge().getClinician(anyString(), anyString())).thenReturn(
                 new Clinician("", "0", "")
         );
@@ -168,7 +169,6 @@ public class GivenSteps extends ApplicationTest {
 
     @Given("^the cache is pre-populated$")
     public void the_cache_is_pre_populated() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
         CucumberTestModel.getHttpRequester().getDrugInteractions("Xanax", "Codeine");
         CucumberTestModel.getHttpRequester().getDrugInteractions("Aceon", "pancreaze");
         CucumberTestModel.getHttpRequester().getDrugInteractions("Aceon", "Codeine");
@@ -178,7 +178,6 @@ public class GivenSteps extends ApplicationTest {
 
     @Given("^the app is logged in as a \"([^\"]*)\"$")
     public void the_app_is_logged_in_as_a(String User) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
         iHaveStartedTheGUI();
         aUserWithTheNHIExists(User);
         setTextField(this, "#userIDTextField", User);
@@ -187,7 +186,6 @@ public class GivenSteps extends ApplicationTest {
 
     @Given("^the user is taking \"([^\"]*)\" and \"([^\"]*)\"$")
     public void the_user_is_taking_and(String drugA, String drugB) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
         CucumberTestModel.getController().findUser(CucumberTestModel.getUserNhi()).addCurrentMedication(drugA);
         CucumberTestModel.getController().findUser(CucumberTestModel.getUserNhi()).addCurrentMedication(drugB);
     }
@@ -195,13 +193,11 @@ public class GivenSteps extends ApplicationTest {
 
     @Given("^the \"([^\"]*)\" tab is selected$")
     public void the_tab_is_selected(String tab) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
         clickOn("#" + tab);
     }
 
     @Given("^a clinician with Staff Id \"([^\"]*)\" and password \"([^\"]*)\" exists$")
     public void aClinicianWithStaffIdAndPasswordExists(String arg0, String arg1) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
         when(CucumberTestModel.getLoginBridge().loginToServer(eq(arg0), eq(arg1), anyString())).thenReturn("haHAA");
         when(CucumberTestModel.getLoginBridge().loginToServer(eq(arg0), AdditionalMatchers.not(eq(arg1)), anyString())).thenThrow(new ApiException(401, "could not log in as the requested user"));
         when(CucumberTestModel.getClinicianBridge().getClinician(eq(arg0), anyString())).thenReturn(new Clinician("", arg0, arg1));
@@ -209,8 +205,29 @@ public class GivenSteps extends ApplicationTest {
 
     @Given("^a clinician with staff id \"([^\"]*)\" does not exist$")
     public void aClinicianWithStaffIdDoesNotExist(String arg0) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
         when(CucumberTestModel.getLoginBridge().loginToServer(anyString(), anyString(), anyString())).thenReturn("haHAA");
         when(CucumberTestModel.getClinicianBridge().getClinician(eq(arg0), anyString())).thenReturn(null);
+    }
+
+    @Given("^The donation tab is open$")
+    public void theDonationTabIsLoaded() throws IOException, UnauthorisedException {
+        when(CucumberTestModel.getClinicianBridge().getClinician(anyString(), anyString())).thenReturn(
+                new Clinician("", "0", "")
+        );
+        CucumberTestModel.getController().setUserOverviews(Collections.singleton(UserOverview.fromUser(CucumberTestModel.getUser())));
+        when(CucumberTestModel.getLoginBridge().loginToServer(anyString(), anyString(), anyString())).thenReturn("FakeToken");
+        //Use default clinician
+        clickOn("#clinicianTab");
+        setTextField(this, "#staffIdTextField", "0");
+        setTextField(this, "#staffPasswordField", "admin");
+        clickOnButton(this, "#loginCButton");
+        verifyThat("#staffIdLabel", LabeledMatchers.hasText("0"));
+        clickOn("#searchTab");
+        interact(() -> {
+            lookup("#searchTableView").queryAs(TableView.class).setItems(FXCollections.observableList(Collections.singletonList(UserOverview.fromUser(CucumberTestModel.getUser()))));
+            lookup("#searchTableView").queryAs(TableView.class).refresh();
+        });
+        doubleClickOn(getCell("#searchTableView", 0, 0));
+        clickOn("#organsTab");
     }
 }

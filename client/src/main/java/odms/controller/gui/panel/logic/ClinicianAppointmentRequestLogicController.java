@@ -20,7 +20,9 @@ import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.controller.gui.popup.view.RejectAppointmentReasonViewController;
+import odms.controller.gui.widget.LoadingWidget;
 import odms.socket.ServerEventNotifier;
+import utils.StageIconLoader;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -42,6 +44,7 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
     private ObservableSet<LocalDateTime> bookedDateTimes;
     private ObservableSet<LocalTime> bookedTimes;
     private Set<LocalTime> TIMES = new HashSet<>(Arrays.asList(LocalTime.of(8,0),LocalTime.of(9,0),LocalTime.of(10,0),LocalTime.of(11,0),LocalTime.of(12,0),LocalTime.of(13,0),LocalTime.of(14,0),LocalTime.of(15,0),LocalTime.of(16,0),LocalTime.of(17,0)));
+    private LoadingWidget loadingWidget;
 
 
     /**
@@ -51,8 +54,10 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
      * @param controller           instance of appController to be used
      * @param clinician            host clinician to use
      * @param availableTimes       list of times when the clinician is available
+     * @param tableView widget to stop loading when any call has finished
      */
-    public ClinicianAppointmentRequestLogicController(ObservableList<Appointment> availableAppointment, AppController controller, Clinician clinician, ObservableList<LocalTime> availableTimes) {
+    public ClinicianAppointmentRequestLogicController(ObservableList<Appointment> availableAppointment, AppController controller, Clinician clinician, ObservableList<LocalTime> availableTimes, LoadingWidget tableView) {
+        this.loadingWidget = tableView;
         this.availableAppointments = availableAppointment;
         this.appController = controller;
         this.clinician = clinician;
@@ -68,6 +73,9 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
      */
     public void updateTable(int startIndex) {
         availableAppointments.clear();
+        if (loadingWidget != null) {
+            loadingWidget.setWaiting(true);
+        }
         appController.getAppointmentsBridge().getClinicianAppointments(startIndex, ROWS_PER_PAGE, clinician.getStaffId(), appController.getToken(), availableAppointments);
     }
 
@@ -110,6 +118,8 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
             rejectionStage.setScene(new Scene(root));
 
             rejectionController.init(selectedAppointment, rejectionStage);
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            rejectionStage = stageIconLoader.addStageIcon(rejectionStage);
             rejectionStage.show();
         } catch (IOException e) {
             Log.severe("failed to load login window FXML", e);
@@ -157,7 +167,7 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
     /**
      * Creates a confirmation alert pop-up with the given message
      * Extracted for easier testability
-     *
+     * @param message message to put in the alert window
      * @return the confirmation alert window result
      */
     public Optional<ButtonType> confirmOption(String message) {
@@ -178,6 +188,7 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
     /**
      * gets all the times the clinician is booked for the given date and add
      * @param wantedDate the date for the appointment
+     * @param appointment the currently selected appointment
      */
     public void refreshClinicianAvailableTimes(LocalDate wantedDate, Appointment appointment) {
         AppointmentsBridge appointmentsbridge = appController.getAppointmentsBridge();
@@ -196,6 +207,11 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
      * Updates / accepts the given appointment with the given values
      *
      * @param appointment Appointment to be updated
+     * @param category category of the appointment
+     * @param date date of the appointment
+     * @param time time of the appointment
+     * @param description description of the appointment
+     * @param pending whether the appointment is still pending
      */
     public void updateAppointment(Appointment appointment, AppointmentCategory category, LocalDate date, String time, String description, boolean pending) {
         String[] timeParts = time.split(":");

@@ -69,10 +69,7 @@ public class UpdateAdminController {
     private AdministratorViewController adminViewController;
 
 
-    /**
-     * @param administrator .
-     * @param stage         .
-     */
+
     public void init(Administrator administrator, Stage stage, boolean newAdmin) {
         this.admin = administrator;
         this.newAdmin = newAdmin;
