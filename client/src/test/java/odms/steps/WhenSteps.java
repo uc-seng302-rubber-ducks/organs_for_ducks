@@ -3,6 +3,7 @@ package odms.steps;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.When;
 import javafx.collections.FXCollections;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -239,7 +240,7 @@ public class WhenSteps extends ApplicationTest {
 
     @When("^I click on the first organ in the available organs list$")
     public void click_on_first_available_organ() {
-        clickOn("#canDonate");
+        interact(() -> lookup("#canDonate").queryAs(ListView.class).getSelectionModel().selectFirst());
     }
 
 

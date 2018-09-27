@@ -87,7 +87,7 @@ public class LoginControllerGUITest extends ApplicationTest {
             lookup("#userIDTextField").queryAs(TextField.class).setText("AD");
             lookup("#loginUButton").queryAs(Button.class).getOnAction().handle(new ActionEvent());
         });
-        verifyThat("#userWarningLabel", LabeledMatchers.hasText("User was not found. \nTo register a new user, please click sign up."));
+        verifyThat("#userWarningLabel", LabeledMatchers.hasText("User was not found. \nTo register a new user, please sign up."));
     }
 
     @Test

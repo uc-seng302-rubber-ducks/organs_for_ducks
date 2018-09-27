@@ -1,6 +1,7 @@
 package odms.GUITest2;
 
 import javafx.collections.FXCollections;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TableView;
 import odms.App;
 import odms.TestUtils.AppControllerMocker;
@@ -100,7 +101,7 @@ public class OrganExpiryGUITest extends ApplicationTest {
         });
         doubleClickOn(getCell("#searchTableView", 0, 0));
         clickOn("#organsTab");
-        clickOn("#canDonate");
+        interact(() -> lookup("#canDonate").queryAs(ListView.class).getSelectionModel().selectFirst());
         clickOnButton(this, "#donate");
         clickOnButton(this, "#donate");
     }

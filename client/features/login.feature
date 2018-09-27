@@ -14,7 +14,7 @@ Feature: As an user, I want to login to the system, either as a User or Clinicia
     Given a user with the NHI "AD" does not exist
     When I entered NHI "AD"
     And clicked on user Login button
-    Then I should see error message "User was not found. \nTo register a new user, please click sign up."
+    Then I should see error message "User was not found. \nTo register a new user, please sign up."
 
   Scenario: I login as Clinician with valid credentials
     Given a clinician with Staff Id "0" and password "admin" exists
