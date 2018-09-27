@@ -3,7 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="800.0" prefWidth="1200.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.panel.DiseasesTabPageController">
+<AnchorPane maxHeight="Infinity" maxWidth="Infinity" minHeight="0.0" minWidth="0.0" prefHeight="800.0" prefWidth="1200.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.panel.DiseasesTabPageController">
     <children>
       <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -11,24 +11,24 @@
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
         <rowConstraints>
+          <RowConstraints maxHeight="63.0" minHeight="44.0" prefHeight="63.0" vgrow="SOMETIMES" />
           <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
           <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="727.0" vgrow="SOMETIMES" />
-          <RowConstraints maxHeight="63.0" minHeight="44.0" prefHeight="63.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-              <TableView fx:id="pastDiseaseTableView" prefHeight="470.0" prefWidth="415.0" GridPane.rowIndex="1">
+              <TableView fx:id="pastDiseaseTableView" prefHeight="470.0" prefWidth="415.0" GridPane.rowIndex="2">
                <GridPane.margin>
                   <Insets bottom="20.0" left="50.0" right="50.0" />
                </GridPane.margin>
             </TableView>
-              <TableView fx:id="currentDiseaseTableView" prefHeight="470.0" prefWidth="415.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+              <TableView fx:id="currentDiseaseTableView" prefHeight="470.0" prefWidth="415.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <GridPane.margin>
                   <Insets bottom="20.0" left="50.0" right="50.0" />
                </GridPane.margin>
             </TableView>
-              <Label styleClass="label-sub-title" text="Past Diseases" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM" />
-              <Label styleClass="label-sub-title" text="Current Diseases" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM" />
-            <HBox alignment="TOP_CENTER" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="TOP">
+              <Label styleClass="label-sub-title" text="Past Diseases" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
+              <Label styleClass="label-sub-title" text="Current Diseases" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
+            <HBox alignment="BOTTOM_CENTER" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
                <children>
                     <Button fx:id="deleteDiseaseButton" layoutX="326.0" layoutY="549.0" mnemonicParsing="false" onAction="#deleteDisease" text="Delete">
                      <HBox.margin>
