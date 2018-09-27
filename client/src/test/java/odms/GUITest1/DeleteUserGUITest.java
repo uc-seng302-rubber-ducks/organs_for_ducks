@@ -66,7 +66,7 @@ public class DeleteUserGUITest extends ApplicationTest {
         setTextField(this,"#userIDTextField", "ABC1234");
         clickOnButton(this,"#loginUButton");
         verifyThat("#userWarningLabel", LabeledMatchers
-                .hasText("User was not found. \nTo register a new user, please click sign up."));
+                .hasText("User was not found. \nTo register a new user, please sign up."));
     }
 
     @Test
