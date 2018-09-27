@@ -31,9 +31,9 @@
                                         <Label layoutX="192.0" layoutY="450.0" styleClass="label-title" text="Region:" />
                                         <Label layoutX="17.0" layoutY="518.0" styleClass="label-title" text="Email:" />
                                         <Label layoutX="17.0" layoutY="548.0" styleClass="label-title" text="Relationship:" />
-                                        <Separator layoutY="29.0" prefHeight="16.0" prefWidth="900.0" />
-                                        <Separator layoutY="294.0" prefHeight="10.0" prefWidth="894.0" />
-                                        <Separator layoutY="257.0" prefHeight="17.0" prefWidth="894.0" />
+                                        <Separator layoutY="29.0" prefHeight="16.0" prefWidth="900.0" AnchorPane.rightAnchor="0.0" AnchorPane.leftAnchor="0.0"/>
+                                        <Separator layoutY="294.0" prefHeight="10.0" prefWidth="894.0" AnchorPane.rightAnchor="0.0" AnchorPane.leftAnchor="0.0"/>
+                                        <Separator layoutY="257.0" prefHeight="17.0" prefWidth="894.0" AnchorPane.rightAnchor="0.0" AnchorPane.leftAnchor="0.0"/>
                                         <Label fx:id="pHomePhone" layoutX="120.0" layoutY="50.0" />
                                         <Label fx:id="pCellPhone" layoutX="120.0" layoutY="80.0" />
                                         <Label fx:id="pAddress" layoutX="120.0" layoutY="110.0" />
