@@ -130,6 +130,8 @@ public class AppController {
      * @param countrySelector Combo Box
      * @param regionSelector Combo Box
      * @param regionInput Text Field
+     * @param user user to attach this to, null if not applicable
+     * @param clinician clinician to attach this too, null if not applicable
      */
     public void countrySelectorEventHandler(ComboBox countrySelector, ComboBox regionSelector, TextField regionInput, User user, Clinician clinician) {
         if(! countrySelector.getSelectionModel().getSelectedItem().equals("New Zealand")) {
@@ -499,6 +501,7 @@ public class AppController {
      * The clinician is saved to the database by a put request if the entry is found, otherwise by a post request.
      *
      * @param clinician Clinician to be saved
+     * @throws IOException if the clinician cannot be saved
      */
     public void saveClinician(Clinician clinician) throws IOException {
         try {

@@ -15,6 +15,7 @@ public class CommonMethods {
      * generic callback that does not require any further action
      *
      * @param url url being used (will only be used for logging failures)
+     * @param method HTTP method used to make the call
      * @return standard handler that logs on failure and throws an exception on bad response code
      */
     public static Callback loggedCallback(String method, String url) {

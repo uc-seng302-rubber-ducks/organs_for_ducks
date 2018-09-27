@@ -13,6 +13,7 @@ public enum AppointmentStatement {
 
     /**
      * Returns the statement associated with the enum
+     * @return the string value of the enum
      */
     public String getStatement() {
         return statement;

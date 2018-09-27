@@ -3,10 +3,8 @@ package odms.bridge;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.exception.ApiException;
-import odms.commons.model.Appointment;
 import odms.commons.model.Clinician;
 import odms.commons.model.datamodel.ComboBoxClinician;
 import odms.commons.utils.JsonHandler;
@@ -63,6 +61,7 @@ public class ClinicianBridge extends RoleBridge {
      * and staff Id only
      * @param region that the clinicians are registered to
      * @return list of ComboBoxClinicians
+     * @throws IOException if the call cannot be made
      */
     public List<ComboBoxClinician> getBasicClinicians(String region) throws IOException{
         List<ComboBoxClinician> returnList = new ArrayList<>();

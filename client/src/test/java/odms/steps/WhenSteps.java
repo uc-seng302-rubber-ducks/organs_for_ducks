@@ -26,6 +26,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 
 import static odms.TestUtils.FxRobotHelper.*;
+import static odms.TestUtils.TableViewsMethod.getCell;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -214,7 +215,6 @@ public class WhenSteps extends ApplicationTest {
 
     @When("^the app is closed and reopened$")
     public void the_app_is_closed_and_reopened() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);
         clickOn("#userIDTextField");
@@ -224,19 +224,80 @@ public class WhenSteps extends ApplicationTest {
 
     @When("^the cache is cleared$")
     public void the_cache_is_cleared() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
         CucumberTestModel.getMedicationInteractionCache().removeOlderThan(LocalDateTime.now());
     }
 
     @When("^all data before \"([^\"]*)\" is removed$")
     public void all_data_before_is_removed(String date) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
         CucumberTestModel.getMedicationInteractionCache().removeOlderThan(LocalDateTime.now().minusDays(2));
     }
 
     @When("^the interactions between \"([^\"]*)\" and \"([^\"]*)\" are requested$")
     public void the_interactions_between_and_are_requested(String drugA, String drugB) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
         CucumberTestModel.getHttpRequester().getDrugInteractions(drugA, drugB);
     }
+
+    @When("^I click on the first organ in the available organs list$")
+    public void click_on_first_available_organ() {
+        clickOn("#canDonate");
+    }
+
+
+    @And("^I click on the disqualify organ button$")
+    public void iClickOnTheDisqualifyOrganButton() throws Throwable {
+        clickOnButton(this, "#disqualifyOrganButton");
+    }
+
+    @And("^I enter a description$")
+    public void iEnterADescription() throws Throwable {
+        setTextArea(this, "#disqualifyOrganDescriptionInput", "Test");
+    }
+
+    @And("^I click confirm$")
+    public void iClickConfirm() throws Throwable {
+        clickOnButton(this,"#disqualifyOrganConfirmButton");
+    }
+
+    @And("^I click on the disqualified organ in the table$")
+    public void iClickOnTheDisqualifiedOrganInTheTable() throws Throwable {
+        clickOn(getCell("#userDisqualifiedOrgansTable", 0, 0));
+    }
+
+    @And("^I click the remove disqualification button$")
+    public void iClickTheRemoveDisqualificationButton() throws Throwable {
+        clickOnButton(this, "#removeDisqualificationButton");
+    }
+
+    @And("^I enter a reason why$")
+    public void iEnterAReasonWhy() throws Throwable {
+        setTextArea(this, "#removeDisqualificationDescriptionTextField", "End of test");
+    }
+
+    @And("^I confirm the removal$")
+    public void iConfirmTheRemoval() throws Throwable {
+        clickOnButton( this, "#removeDisqualificationConfirmButton");
+    }
+
+
+    @And("^then i open the user details$")
+    public void thenIOpenTheUserDetails() throws Throwable {
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
+        clickOn("#deathtab");
+    }
+
+    @And("^then i mark the user dead$")
+    public void thenIMarkTheUserDead() throws Throwable {
+        clickOn("#userDead");
+        clickOn("#updateProfileButton");
+    }
+
+    @And("^then i revive the user$")
+    public void iReviveTheUser() throws Throwable {
+        clickOn("#removeUpdateDeathDetailsButton");
+        clickOn("#confirmRemoveDeathDetailsButton");
+        clickOn("#updateProfileButton");
+    }
+
+
 }

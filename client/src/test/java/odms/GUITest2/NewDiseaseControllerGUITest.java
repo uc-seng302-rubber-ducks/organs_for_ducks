@@ -158,24 +158,23 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
         assertEquals("B0", getCellValue("#currentDiseaseTableView", 1, 1).toString());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void deletedPastDiseaseShouldBeRemovedFromPastDiseases() {
         clickOn(getCell("#pastDiseaseTableView", 0, 0));
         clickOnButton(this,"#deleteDiseaseButton");
-        getCellValue("#pastDiseaseTableView", 0, 0);
+        Assert.assertNull(getCellValue("#pastDiseaseTableView", 0, 0));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void deletedCurrentDiseaseShouldBeRemovedFromCurrentDisease() throws NullPointerException {
         clickOn(getCell("#currentDiseaseTableView", 0, 0));
         clickOnButton(this,"#deleteDiseaseButton");
-        getCellValue("#currentDiseaseTableView", 0, 0);
+        Assert.assertNull(getCellValue("#currentDiseaseTableView", 0, 0));
     }
 
 
     @Test @Ignore // TODO: Bad things happen that cause TestFX to die at line 183 - 184
     public void deletedChronicDiseaseShouldNotBeDeletedFromCurrentDiseases() {
-        //testfx wont click in the ok button despite all efforts jb 27/9
         clickOn(getCell("#currentDiseaseTableView", 0, 0));
         clickOn("#updateDiseaseButton");
         clickOn("#chronicRadioButton");

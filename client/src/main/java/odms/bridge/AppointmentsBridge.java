@@ -69,6 +69,7 @@ public class AppointmentsBridge extends Bifrost {
      * @param toAddTo  Observable list to add to.
      * @param user     user's unique ID
      * @param userType UserType to determine whether they are a user, clinician or admin.
+     * @param start    starting index to return appointments from
      */
     public void getAppointments(int count, int start, ObservableList<Appointment> toAddTo, String user, UserType userType) {
         String url = null;
@@ -340,6 +341,7 @@ public class AppointmentsBridge extends Bifrost {
      * Fires a put request to the server to update the appointment
      *
      * @param appointment the updated appointment
+     * @param token authentication token to use
      */
     public void putAppointment(Appointment appointment, String token) {
         String url = String.format("%s/clinicians/%s%s/%d", ip, appointment.getRequestedClinicianId(), APPOINTMENTS, appointment.getAppointmentId());

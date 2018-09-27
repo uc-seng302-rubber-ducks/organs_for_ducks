@@ -117,6 +117,8 @@ public class ClinicianAppointmentRequestViewController implements Converter {
 
     /**
      * Initialises the panel
+     * @param appController the instance of appController
+     * @param clinician clinician to initialise the tab with
      */
     public void init(AppController appController, Clinician clinician) {
         availableAppointments.addListener((ListChangeListener<? super Appointment>) observable -> {

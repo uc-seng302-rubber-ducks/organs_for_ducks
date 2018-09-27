@@ -18,7 +18,7 @@
                                         <Button fx:id="loginUButton" mnemonicParsing="false" onAction="#loginUser" prefHeight="25.0" prefWidth="146.0" text="Login" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                         <TextField fx:id="userIDTextField" GridPane.columnIndex="1" />
                                         <Label styleClass="label-title" text="NHI:" />
-                                        <Label fx:id="userWarningLabel" prefHeight="73.0" prefWidth="177.0" text="Label" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                        <Label fx:id="userWarningLabel" styleClass="label-error" prefHeight="73.0" prefWidth="177.0" text="Label" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                     </children>
                                     <columnConstraints>
                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="97.0" minWidth="10.0" prefWidth="75.0" />
@@ -55,7 +55,7 @@
                                         <TextField fx:id="staffIdTextField" GridPane.columnIndex="1" />
                                         <Label styleClass="label-title" text="Staff ID:" />
                                         <Label styleClass="label-title" text="Password:" GridPane.rowIndex="1" />
-                                        <Label fx:id="clinicianWarningLabel" prefHeight="73.0" prefWidth="177.0" text="Label" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                        <Label fx:id="clinicianWarningLabel" styleClass="label-error" prefHeight="73.0" prefWidth="177.0" text="Label" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                         <PasswordField fx:id="staffPasswordField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                     </children>
                                 </GridPane>
@@ -73,7 +73,7 @@
                                         <TextField fx:id="adminUsernameTextField" GridPane.columnIndex="1" />
                                         <Label styleClass="label-title" text="Username:" />
                                         <Label styleClass="label-title" text="Password:" GridPane.rowIndex="1" />
-                                        <Label fx:id="adminWarningLabel" prefHeight="73.0" prefWidth="177.0" text="Label" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                        <Label fx:id="adminWarningLabel" styleClass="label-error" prefHeight="73.0" prefWidth="177.0" text="Label" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                         <PasswordField fx:id="adminPasswordField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                     </children>
                                     <columnConstraints>
@@ -98,11 +98,11 @@
                 <Font size="22.0" />
             </font>
         </Label>
-      <ImageView fx:id="logoImageView" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="225.0" AnchorPane.rightAnchor="225.0" AnchorPane.topAnchor="55.0" />
-      <Label fx:id="poweredByLabel" text="Powered By Rubber Duck Software" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0"  styleClass="label-powered">
-         <font>
-            <Font size="9.0" />
-         </font>
-      </Label>
+        <ImageView fx:id="logoImageView" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="225.0" AnchorPane.rightAnchor="225.0" AnchorPane.topAnchor="55.0" />
+        <Label fx:id="poweredByLabel" text="Powered By Rubber Duck Software" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0"  styleClass="label-powered">
+            <font>
+                <Font size="9.0" />
+            </font>
+        </Label>
     </children>
 </AnchorPane>

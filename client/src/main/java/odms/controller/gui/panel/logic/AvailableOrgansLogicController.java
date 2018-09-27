@@ -37,6 +37,7 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
      * @param startIndex the number of entries to skip
      * @param organ the organ to filter by
      * @param region the region to filter by
+     * @param widget widget to stop loading when the call has finished
      */
     public void search(int startIndex, String organ, String region, LoadingWidget widget) {
         shutdownThreads();
@@ -51,6 +52,7 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
 
     /**
      * Goes to the previous page in the available organs table.
+     * @param widget widget to stop loading when the call has finished
      */
     public void goPrevPage(LoadingWidget widget) {
         if (startingIndex - ROWS_PER_PAGE < 0) {
@@ -63,6 +65,7 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
 
     /**
      * Goes to the next page in the available organs table
+     * @param widget widget to stop loading when the call has finished
      */
     public void goNextPage(LoadingWidget widget) {
         if (availableOrganDetails.size() < ROWS_PER_PAGE) {
@@ -87,6 +90,7 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
 
     /**
      * Goes to the next page of the potential matches table
+     * @param widget widget to stop loading when the call has finished
      */
     public void goNextPageMatches(LoadingWidget widget) {
         if(transplantDetails.size() < ROWS_PER_PAGE){
@@ -100,6 +104,7 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
     /**
      * Provides pagination functionality for the matches table
      * @param startingIndexMatches how many entries to skip before returning
+     * @param widget widget to stop loading when the call has finished
      */
     private void searchMatches(int startingIndexMatches, LoadingWidget widget) {
         if(availableOrgan == null){
@@ -113,6 +118,7 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
 
     /**
      * Goes to the previous page of the potential matches table
+     * @param widget widget to stop loading when the call has finished
      */
     public void goPrevPageMatches(LoadingWidget widget) {
         if (startingIndexMatches - ROWS_PER_PAGE < 0) {
@@ -126,6 +132,7 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
     /**
      * Populates the potential matches for a selected organ
      * @param selectedItem selected item in the available organs list
+     * @param widget widget to stop loading when the call has finished
      */
     public void showMatches(AvailableOrganDetail selectedItem, LoadingWidget widget) {
         this.availableOrgan = selectedItem;

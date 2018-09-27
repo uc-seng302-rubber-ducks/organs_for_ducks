@@ -17,6 +17,7 @@ import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.controller.gui.popup.view.AppointmentPickerViewController;
 import odms.socket.ServerEventNotifier;
+import utils.StageIconLoader;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -62,6 +63,8 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
             Stage appointmentPickerStage = new Stage();
             appointmentPickerViewController.init(user, appointmentPickerStage);
             appointmentPickerStage.setScene(new Scene(root));
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            appointmentPickerStage.getIcons().add(stageIconLoader.getIconImage());
             appointmentPickerStage.showAndWait();
             Log.info("Successfully launched the appointment picker pop-up window for user: " + user.getNhi());
 
@@ -104,7 +107,7 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
     /**
      * Creates a confirmation alert pop-up with the given message
      * Extracted for easier testability
-     *
+     * @param message message to display in the alert window
      * @return the confirmation alert window result
      */
     public Optional<ButtonType> confirmOption(String message) {
@@ -113,6 +116,7 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
 
     /**
      * Calls the database to get updated appointment entries
+     * @param startIndex how many entries to skip before returning
      */
     public void updateTable(int startIndex) {
         appointments.clear();

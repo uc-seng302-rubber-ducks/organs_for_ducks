@@ -19,6 +19,7 @@ import odms.controller.gui.popup.MedicationsTimeController;
 import odms.controller.gui.window.UserController;
 import okhttp3.OkHttpClient;
 import org.controlsfx.control.textfield.TextFields;
+import utils.StageIconLoader;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -70,6 +71,7 @@ public class MedicationTabController {
      * @param controller    the application controller
      * @param user          the current user
      * @param fromClinician boolean value indication if from clinician view
+     * @param parent        Usercontroller window it is tied to
      */
     public void init(AppController controller, User user, boolean fromClinician, UserController parent) {
 
@@ -172,8 +174,8 @@ public class MedicationTabController {
     public void refreshLists(User user) {
         currentUser = user;
 
+        currentMeds.clear();
         if (!user.getCurrentMedication().isEmpty()) {
-            currentMeds.clear();
             currentMedicationListView.getItems().clear();
             List<String> medications = new ArrayList<>();
             for (Medication meds : user.getCurrentMedication()) {
@@ -187,8 +189,8 @@ public class MedicationTabController {
             currentMedicationListView.setItems(currentMeds);
         }
 
+        previousMeds.clear();
         if (!user.getPreviousMedication().isEmpty()) {
-            previousMeds.clear();
             previousMedicationListView.getItems().clear();
             List<String> medications2 = new ArrayList<>();
             for (Medication meds : user.getPreviousMedication()) {
@@ -220,6 +222,7 @@ public class MedicationTabController {
             Log.info("Medication: " + medication + " already exist, updated GUI instead of adding new medication for User NHI: " + currentUser.getNhi());
             return;
         }
+        currentUser.getRedoStack().clear();
         currentUser.saveStateForUndo();
         medicationTextField.setText("");
         currentMeds.add(medication);
@@ -341,6 +344,8 @@ public class MedicationTabController {
             MedicationsTimeController medicationsTimeController = medicationTimeViewLoader
                     .getController();
             medicationsTimeController.init(currentUser, stage, med);
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            stage.getIcons().add(stageIconLoader.getIconImage());
             stage.show();
             Log.info("successfully launched Medications Time view window for User NHI: " + currentUser.getNhi());
         } catch (IOException e) {

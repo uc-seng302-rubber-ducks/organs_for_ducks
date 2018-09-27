@@ -35,6 +35,9 @@ public class UserBridge extends RoleBridge {
     }
 
     public void getUsers(int startIndex, int count, String name, String region, String gender, String token, LoadingWidget tableview) {
+       if (inProgress != null) {
+            inProgress.cancel();
+        }
         String url = ip + "/users?startIndex=" + startIndex + "&count=" + count + "&name=" + name + "&region=" + region + "&gender=" + gender;
         Request request = new Request.Builder().header(tokenHeader, token).url(url).tag("Tag").build();
         client.newCall(request).enqueue(new Callback() {
@@ -367,6 +370,7 @@ public class UserBridge extends RoleBridge {
      * Asks the server to get the preferred clinician for the specified user
      * @param nhi of the user to get the preferred clinician for.
      * @return comboBoxClinician representing the preferred clinician
+     * @throws IOException if the call cannot be made
      */
     public ComboBoxClinician getPreferredClinician(String nhi) throws IOException{
         ComboBoxClinician clinician = null;

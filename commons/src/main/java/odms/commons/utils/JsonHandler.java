@@ -9,6 +9,7 @@ import odms.commons.model.*;
 import odms.commons.model._enum.Directory;
 import odms.commons.model.datamodel.AvailableOrganDetail;
 import odms.commons.model.datamodel.BloodTest;
+import odms.commons.model.datamodel.OrgansWithDisqualification;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.model.dto.LoginResponse;
 import okhttp3.Response;
@@ -353,6 +354,8 @@ public class JsonHandler extends DataHandler {
      * converts a raw response into a list of transplant details
      * @param response response to decode
      * @return all valid TransplantDetails objects. will return empty list if none
+     *
+     * @throws IOException on undecodable json
      */
     public List<TransplantDetails> decodeTransplantList(Response response) throws IOException{
         return new Gson().fromJson(response.body().string(), new TypeToken<List<TransplantDetails>>() {}.getType());
@@ -385,6 +388,7 @@ public class JsonHandler extends DataHandler {
      * converts a raw response into a list of matching organs
      * @param response response to decode
      * @return a map of matching organs. will return empty map if none
+     * @throws IOException on undecodable json
      */
     public List<TransplantDetails> decodeMatchingOrgansList(Response response) throws IOException {
         return new Gson().fromJson(response.body().string(), new TypeToken<List<TransplantDetails>>() {
@@ -421,6 +425,16 @@ public class JsonHandler extends DataHandler {
     public Collection<LocalDateTime> decodeDateTimes(String bodyString) {
         return new Gson().fromJson(bodyString, new TypeToken<Collection<LocalDateTime>>(){
 
+        }.getType());
+    }
+
+    /**
+     * Decodes raw json stirng into a collection of OrgansWithDisqualification
+     * @param bodyString raw json string
+     * @return Collection of OrgansWithDisqualifications
+     */
+    public List<OrgansWithDisqualification> decodeDisqualified(String bodyString) {
+        return new Gson().fromJson(bodyString, new TypeToken<List<OrgansWithDisqualification>>() {
         }.getType());
     }
 

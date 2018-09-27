@@ -6,10 +6,6 @@ import org.loadui.testfx.controls.TableViews;
 import org.loadui.testfx.exceptions.NoNodesFoundException;
 import org.loadui.testfx.exceptions.NoNodesVisibleException;
 
-import java.awt.*;
-import java.lang.reflect.InvocationTargetException;
-import java.util.NoSuchElementException;
-
 import static org.loadui.testfx.GuiTest.find;
 
 /**
@@ -42,8 +38,12 @@ public class TableViewsMethod extends TableViews {
      * @return the content of a cell
      */
     public static Object getCellValue(String tableName, int column, int row) {
-        TableView<?> table = getTableView(tableName);
-        return table.getColumns().get(column).getCellObservableValue(row).getValue();
+        try {
+            TableView<?> table = getTableView(tableName);
+            return table.getColumns().get(column).getCellObservableValue(row).getValue();
+        } catch (NullPointerException n) {
+            return null;
+        }
     }
 
     /**

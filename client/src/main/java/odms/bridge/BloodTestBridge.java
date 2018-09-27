@@ -28,6 +28,7 @@ public class BloodTestBridge extends Bifrost {
      *
      * @param bloodTest blood test to post
      * @param nhi nhi of the user to post the blood test for
+     * @param token authentication token
      */
     public void postBloodTest(BloodTest bloodTest, String nhi, String token) {
         String url = ip + "/" + USER + nhi + "/bloodTest";
@@ -41,6 +42,7 @@ public class BloodTestBridge extends Bifrost {
      *
      * @param bloodTest blood test to patch
      * @param nhi nhi of the user to patch the blood test for
+     * @param token authentication token
      */
     public void patchBloodTest(BloodTest bloodTest, String nhi, String token) {
         String url = ip + "/" + USER + nhi +"/bloodTest/"+bloodTest.getBloodTestId();
@@ -54,6 +56,7 @@ public class BloodTestBridge extends Bifrost {
      *
      * @param bloodTestId blood test id to delete
      * @param nhi nhi of the user to delete the blood test for
+     * @param token authentication token
      */
     public void deleteBloodTest(String bloodTestId, String nhi, String token) {
         String url = ip +"/" + USER + nhi +" /bloodTest/"+ bloodTestId;
@@ -87,6 +90,11 @@ public class BloodTestBridge extends Bifrost {
      *
      * @param nhi nhi of the user associated with the blood tests
      * @param widget spinning wheel widget to give feedback that the graph is loading
+     * @param startIndex number of entries to skip before returning
+     * @param count number of entries to return
+     * @param endDate gets blood tests up to this date
+     * @param startDate gets blood tests after this date
+     * @param observableBloodTests blood test list to populate
      */
     public void getBloodTests(String nhi, String startDate, String endDate, int count, int startIndex, ObservableList<BloodTest> observableBloodTests, LoadingWidget widget) {
         String url = String.format("%s/%s%s/bloodTests?startDate=%s&endDate=%s&count=%d&startIndex=%d", ip, USER, nhi, startDate, endDate, count, startIndex);
@@ -148,6 +156,7 @@ public class BloodTestBridge extends Bifrost {
     /**
      * Checks to see if each blood test property is within the upper and lower bounds.
      * If a property is not within those bounds, it is added to the corresponding list.
+     * @param bloodTest blood test to check the bounds of
      */
     private void checkBounds(BloodTest bloodTest) {
         List<BloodTestProperties> lowValues = new ArrayList<>();

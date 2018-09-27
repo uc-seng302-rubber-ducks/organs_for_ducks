@@ -37,8 +37,14 @@ public class UserController extends BaseController {
     }
 
     /**
+     *
      * sends a list of users depending on query parameters
      *
+     * @param startIndex index to start in
+     * @param count hpow many to fetch
+     * @param name name to search by
+     * @param region region to search in
+     * @param gender gender to search by
      * @return list of users
      */
     @IsClinician
@@ -125,6 +131,7 @@ public class UserController extends BaseController {
     public ResponseEntity deleteUser(@PathVariable("nhi") String nhi) {
         try (Connection connection = driver.getConnection()) {
             handler.deleteUser(connection, nhi);
+            socketHandler.broadcast(EventTypes.USER_DELETE, nhi, nhi);
             socketHandler.broadcast(EventTypes.USER_UPDATE, nhi, nhi);
         } catch (SQLException ex) {
             Log.severe("cannot delete user " + nhi, ex);
@@ -132,6 +139,7 @@ public class UserController extends BaseController {
         } catch (IOException ex) {
             Log.warning("failed to broadcast update when deleting user", ex);
         }
+
         return new ResponseEntity(HttpStatus.OK);
     }
 

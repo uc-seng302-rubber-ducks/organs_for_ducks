@@ -2,8 +2,11 @@ package odms.steps;
 
 import cucumber.api.java.en.Then;
 import javafx.scene.Node;
+import javafx.scene.control.TableView;
 import odms.TestUtils.TableViewsMethod;
 import odms.commons.model.User;
+import odms.commons.model._enum.Organs;
+import org.junit.Assert;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 
@@ -14,6 +17,7 @@ import static org.junit.Assert.*;
 import static org.testfx.api.FxAssert.verifyThat;
 
 public class ThenSteps extends ApplicationTest {
+
     @Then("^There are two profiles with first name \"([^\"]*)\" and last name \"([^\"]*)\"$")
     public void thereAreTwoProfilesWithFirstNameAndLastName(String name, String arg2) {
         List<User> user = CucumberTestModel.getController().findUsers(name);
@@ -109,21 +113,35 @@ public class ThenSteps extends ApplicationTest {
 
     @Then("^an entry for \"([^\"]*)\" and \"([^\"]*)\" should be in the cache$")
     public void an_entry_for_and_should_be_in_the_cache(String drugA, String drugB) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
         String key = drugA + "-" + drugB;
         assertTrue(CucumberTestModel.getMedicationInteractionCache().containsKey(key));
     }
 
     @Then("^the cache should not contain an entry with key \"([^\"]*)\"$")
     public void the_cache_should_not_contain_an_entry_with_key(String key) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
         assertFalse(CucumberTestModel.getMedicationInteractionCache().containsKey(key));
     }
 
 
     @Then("^the cache should be empty$")
     public void the_cache_should_be_empty() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
         assertTrue(CucumberTestModel.getMedicationInteractionCache().isEmpty());
+    }
+
+    @Then("^I should see the disqualified organ in the table$")
+    public void iShouldSeeTheDisqualifiedOrganInTheTable() throws Throwable {
+        Organs organ = (Organs) getCellValue("#userDisqualifiedOrgansTable", 0, 0);
+        Assert.assertEquals(Organs.BONE_MARROW, organ);
+    }
+
+    @Then("^I should see that the disqualified organ is not in the table$")
+    public void iShouldSeeThatTheDisqualifiedOrganIsNotInTheTable() throws Throwable {
+        interact(() -> assertTrue(lookup("#userDisqualifiedOrgansTable").queryAs(TableView.class).getItems().isEmpty()));
+    }
+
+    @Then("^the organ should be expired$")
+    public void theOrganShouldBeExpired() throws Throwable {
+        Organs organ = (Organs) getCellValue("#currentlyDonating", 0, 0);
+        Assert.assertEquals(Organs.BONE_MARROW, organ);
     }
 }

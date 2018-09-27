@@ -2,8 +2,7 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
-<AnchorPane prefHeight="735.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.panel.view.UserAppointmentViewController">
+<AnchorPane prefHeight="735.0" prefWidth="1200.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.panel.view.UserAppointmentViewController">
     <children>
         <AnchorPane layoutX="455.0" prefHeight="735.0" prefWidth="332.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -24,17 +23,14 @@
                         <RowConstraints maxHeight="269.0" minHeight="10.0" prefHeight="245.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
-                        <Label text="Appointment Details" GridPane.columnSpan="2">
-                            <font>
-                                <Font name="System Bold" size="14.0" />
-                            </font>
+                        <Label styleClass="label-sub-title" text="Appointment Details" GridPane.columnSpan="2">
                         </Label>
-                        <Label text="Status:" GridPane.rowIndex="1" />
-                        <Label text="Date:" GridPane.rowIndex="2" />
-                        <Label text="Time:" GridPane.rowIndex="3" />
-                        <Label text="Clinician Id:" GridPane.rowIndex="4" />
-                        <Label text="Category:" GridPane.rowIndex="5" />
-                        <Label text="Description:" GridPane.rowIndex="6" />
+                        <Label styleClass="label-title" text="Status:" GridPane.rowIndex="1" />
+                        <Label styleClass="label-title" text="Date:" GridPane.rowIndex="2" />
+                        <Label styleClass="label-title" text="Time:" GridPane.rowIndex="3" />
+                        <Label styleClass="label-title" text="Clinician Id:" GridPane.rowIndex="4" />
+                        <Label styleClass="label-title" text="Category:" GridPane.rowIndex="5" />
+                        <Label styleClass="label-title" text="Description:" GridPane.rowIndex="6" />
                         <Label fx:id="userAppointmentDescriptionLabel" alignment="TOP_LEFT" wrapText="true" GridPane.columnSpan="2" GridPane.rowIndex="7" GridPane.valignment="TOP" />
                         <Label fx:id="userAppointmentStatusLabel" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <Label fx:id="userAppointmentDateLabel" GridPane.columnIndex="1" GridPane.rowIndex="2" />
@@ -67,10 +63,7 @@
                 </HBox>
             </children>
         </AnchorPane>
-        <Label prefHeight="24.0" prefWidth="355.0" text="Appointments" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="17.0">
-            <font>
-                <Font name="System Bold" size="19.0" />
-            </font>
+        <Label prefHeight="24.0" prefWidth="355.0" styleClass="label-sub-title" text="Appointments" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="17.0">
         </Label>
     </children>
 </AnchorPane>

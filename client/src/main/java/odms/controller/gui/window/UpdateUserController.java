@@ -192,6 +192,8 @@ public class UpdateUserController {
      * @param user       The current user.
      * @param controller An instance of the AppController class.
      * @param stage      The applications stage.
+     * @param userController the usercontroller this update form is tied to.
+     * @param fromClinician if the user opening this is a clinician
      */
     public void init(User user, AppController controller, Stage stage, UserController userController, boolean fromClinician) {
         countrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
@@ -807,6 +809,7 @@ public class UpdateUserController {
     /**
      * Checks that all fields with user input are valid and confirms the update if they are,
      * otherwise the update is rejected.
+     * @throws IOException if there is an issue setting up the image file
      */
     @FXML
     public void confirmUpdate() throws IOException {

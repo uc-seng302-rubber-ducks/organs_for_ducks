@@ -3,8 +3,10 @@ package odms.controller.userDetailsControllerTests;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.ExpiryReason;
+import odms.commons.model.datamodel.OrgansWithDisqualification;
 import odms.controller.user.details.DonatingOrgansController;
 import odms.database.DBHandler;
+import odms.database.DisqualifiedOrgansHandler;
 import odms.database.JDBCDriver;
 import odms.exception.ServerDBException;
 import odms.utils.DBManager;
@@ -17,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,6 +32,7 @@ import static org.mockito.Mockito.when;
 
 public class DonatingOrgansControllerTest {
     private DonatingOrgansController controller;
+    DisqualifiedOrgansHandler disqualifiedOrgansHandler;
     private Connection connection;
     private JDBCDriver driver;
     private DBManager manager;
@@ -44,6 +49,7 @@ public class DonatingOrgansControllerTest {
         when(manager.getHandler()).thenReturn(handler);
         when(manager.getDriver()).thenReturn(driver);
         controller = new DonatingOrgansController(manager);
+        disqualifiedOrgansHandler = new DisqualifiedOrgansHandler();
         testUser = new User("steve", LocalDate.now(), "ABC1234");
     }
 
@@ -108,5 +114,18 @@ public class DonatingOrgansControllerTest {
         donating.put(LIVER, null);
         donating.put(HEART, null);
         controller.putDonatingOrgans("ABC1234", donating);
+    }
+
+    /**
+     * Helper function for tests to use instead of repeating code
+     * @return a collection of OrgansWithDisqualification
+     */
+    private Collection<OrgansWithDisqualification> createTestCollection() {
+        Collection<OrgansWithDisqualification> disqualified = new ArrayList<>();
+        OrgansWithDisqualification testOrgan = new  OrgansWithDisqualification(Organs.LIVER, "Testing", LocalDate.now(),"ABC1234");
+        testOrgan.setEligibleDate(LocalDate.now().plusDays(1));
+
+        disqualified.add(testOrgan);
+        return disqualified;
     }
 }

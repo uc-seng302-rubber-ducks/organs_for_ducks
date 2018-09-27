@@ -13,6 +13,7 @@ public class AlertUnclosedWindowsController {
      * Initializes the AlertUnclosedWindowsController
      *
      * @param stage The applications stage.
+     * @param controller the admin controller to close all windows of
      */
     public void init(Stage stage, AdministratorViewController controller) {
         this.stage = stage;

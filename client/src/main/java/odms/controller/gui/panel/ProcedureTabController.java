@@ -20,6 +20,7 @@ import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.controller.gui.popup.view.ProcedureModificationViewController;
 import odms.controller.gui.window.UserController;
+import utils.StageIconLoader;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -129,6 +130,7 @@ public class ProcedureTabController {
 
     /**
      * Updates the procedure tables and ensure that the selected item is not changed.
+     * @param user user to update the tables with
      */
     public void updateProcedureTables(User user) {
         currentUser = user;
@@ -223,6 +225,8 @@ public class ProcedureTabController {
             Stage stage = new Stage();
             procedureModificationViewController.init(procedure, stage, currentUser, this);
             stage.setScene(new Scene(root));
+            StageIconLoader stageIconLoader = new StageIconLoader();
+            stage.getIcons().add(stageIconLoader.getIconImage());
             stage.show();
             Log.info("successfully launched add procedures pop-up window for User NHI: " + currentUser.getNhi());
         } catch (IOException e) {

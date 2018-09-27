@@ -20,6 +20,7 @@ import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.FileSelectorController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
+import utils.StageIconLoader;
 
 import java.io.File;
 import java.io.IOException;
@@ -145,6 +146,7 @@ public class UpdateClinicianController {
      * @param controller   The application controller.
      * @param stage        The application stage.
      * @param newClinician true if the current clinician is new, false if the clinician is being updated.
+     * @param ownStage     the stage for the update screen
      */
     public void init(Clinician clinician, AppController controller, Stage stage, boolean newClinician, Stage ownStage) {
         currentClinician = clinician;
@@ -558,6 +560,8 @@ public class UpdateClinicianController {
                     Stage clinicianStage = new Stage();
                     clinicianController.init(clinicianStage, AppController.getInstance(), clinician, true, null);
                     clinicianStage.setScene(new Scene(root));
+                    StageIconLoader stageIconLoader = new StageIconLoader();
+                    clinicianStage.getIcons().add(stageIconLoader.getIconImage());
                     clinicianStage.show();
                     ownStage.close();
                     Log.info("successfully launched clinician overview window for Clinician Staff Id: " + clinician.getStaffId());
@@ -574,6 +578,8 @@ public class UpdateClinicianController {
                     ClinicianController clinicianController = loader.getController();
                     clinicianController.init(stage, AppController.getInstance(), clinician, false, null);
                     stage.setScene(new Scene(root));
+                    StageIconLoader stageIconLoader = new StageIconLoader();
+                    stage.getIcons().add(stageIconLoader.getIconImage());
                     stage.show();
                     ownStage.close();
                     Log.info("successfully launched clinician overview window for Clinician Staff Id: " + clinician.getStaffId());
