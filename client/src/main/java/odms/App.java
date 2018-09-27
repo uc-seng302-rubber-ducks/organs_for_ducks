@@ -17,7 +17,6 @@ import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.window.LoginController;
 import utils.AppConfigurator;
-import utils.StageIconLoader;
 
 import java.io.IOException;
 import java.net.URL;
@@ -85,19 +84,21 @@ public class App extends Application {
 
         });
 
-        URL url = getClass().getResource("/logos/LoveDuck.png");
-//        URL url = getClass().getResource("/logos/HeartDuck.png");
-        if (url == null) {
-            Log.warning("Could not load the icon for the taskbar. Check that the filepath is correct");
-        } else {
-            javafx.scene.image.Image image = new Image(url.openStream());
-            primaryStage.getIcons().add(image);
+        if (!ConfigPropertiesSession.getInstance().getProperty("testConfig", "false").equalsIgnoreCase("true")) {
+            URL url = getClass().getResource("/logos/LoveDuck.png");
+            if (url == null) {
+                Log.warning("Could not load the icon for the taskbar. Check that the filepath is correct");
+            } else {
+                try {
+                    javafx.scene.image.Image image = new Image(url.openStream());
+                    primaryStage.getIcons().add(image);
+                } catch (IOException e) {
+                    Log.severe("Openstream failed even though the image exists.", e);
+                }
+            }
         }
 
-
         loginController.init(controller, primaryStage);
-        StageIconLoader stageIconLoader = new StageIconLoader();
-        primaryStage.getIcons().add(stageIconLoader.getIconImage());
         primaryStage.show();
     }
 

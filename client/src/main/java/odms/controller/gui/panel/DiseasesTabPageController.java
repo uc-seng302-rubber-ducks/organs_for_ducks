@@ -190,7 +190,7 @@ public class DiseasesTabPageController {
             newDiseaseController.init(currentUser, application, stage, disease, parent);
             stage.setScene(new Scene(root));
             StageIconLoader stageIconLoader = new StageIconLoader();
-            stage.getIcons().add(stageIconLoader.getIconImage());
+            stage = stageIconLoader.addStageIcon(stage);
             stage.show();
             Log.info("successfully launched add/update Diseases pop-up window for User NHI: " + currentUser.getNhi());
         } catch (IOException e) {

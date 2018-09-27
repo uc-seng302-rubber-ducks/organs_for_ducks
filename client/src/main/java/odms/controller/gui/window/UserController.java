@@ -244,7 +244,7 @@ public class UserController implements PropertyChangeListener {
             updateStage.setScene(new Scene(root));
             updateUserController.init(currentUser, application, updateStage, this, this.fromClinician);
             StageIconLoader stageIconLoader = new StageIconLoader();
-            updateStage.getIcons().add(stageIconLoader.getIconImage());
+            updateStage = stageIconLoader.addStageIcon(updateStage);
             updateStage.show();
             Log.info("Successfully launched update user window for User NHI: " + currentUser.getNhi());
 
@@ -333,7 +333,7 @@ public class UserController implements PropertyChangeListener {
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
             StageIconLoader stageIconLoader = new StageIconLoader();
-            newStage.getIcons().add(stageIconLoader.getIconImage());
+            newStage = stageIconLoader.addStageIcon(newStage);
             newStage.show();
             stage.close();
             LoginController loginController = loader.getController();
