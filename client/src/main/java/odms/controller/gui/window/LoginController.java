@@ -143,7 +143,7 @@ public class LoginController {
         }
         if (user == null || user.isDeleted()) {
             userWarningLabel
-                    .setText("User was not found. \nTo register a new user, please click sign up.");
+                    .setText("User was not found. \nTo register a new user, please sign up.");
             return;
         }
 

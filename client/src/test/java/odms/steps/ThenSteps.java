@@ -131,7 +131,7 @@ public class ThenSteps extends ApplicationTest {
     @Then("^I should see the disqualified organ in the table$")
     public void iShouldSeeTheDisqualifiedOrganInTheTable() throws Throwable {
         Organs organ = (Organs) getCellValue("#userDisqualifiedOrgansTable", 0, 0);
-        Assert.assertEquals(Organs.BONE_MARROW, organ);
+        Assert.assertEquals(Organs.LIVER, organ);
     }
 
     @Then("^I should see that the disqualified organ is not in the table$")
@@ -142,6 +142,6 @@ public class ThenSteps extends ApplicationTest {
     @Then("^the organ should be expired$")
     public void theOrganShouldBeExpired() throws Throwable {
         Organs organ = (Organs) getCellValue("#currentlyDonating", 0, 0);
-        Assert.assertEquals(Organs.BONE_MARROW, organ);
+        Assert.assertEquals(Organs.LIVER, organ);
     }
 }
