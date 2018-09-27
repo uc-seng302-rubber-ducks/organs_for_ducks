@@ -13,11 +13,11 @@
         </columnConstraints>
         <rowConstraints>
           <RowConstraints maxHeight="110.0" minHeight="110.0" prefHeight="117.0" vgrow="SOMETIMES" />
-          <RowConstraints maxHeight="32.0" minHeight="0.0" prefHeight="32.0" vgrow="SOMETIMES" />
-          <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="651.0" vgrow="ALWAYS" />
+          <RowConstraints maxHeight="42.0" minHeight="0.0" prefHeight="42.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="648.0" vgrow="ALWAYS" />
         </rowConstraints>
          <children>
-              <Label fx:id="notReceivingLabel" styleClass="label-sub-title" text="No Longer Waiting" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+              <Label fx:id="notReceivingLabel" styleClass="label-sub-title" text="No Longer Waiting" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                <GridPane.margin>
                   <Insets left="50.0" />
                </GridPane.margin>
@@ -35,7 +35,7 @@
                   <Insets bottom="20.0" right="50.0" top="10.0" />
                </GridPane.margin>
             </TableView>
-              <Label fx:id="currentlyReceivingLabel" styleClass="label-sub-title" text="Waiting For" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+              <Label fx:id="currentlyReceivingLabel" styleClass="label-sub-title" text="Waiting For" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                <GridPane.margin>
                   <Insets right="50.0" />
                </GridPane.margin>
