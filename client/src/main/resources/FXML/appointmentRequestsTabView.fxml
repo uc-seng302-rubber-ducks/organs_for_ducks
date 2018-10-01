@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.collections.FXCollections?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import odms.controller.gui.widget.LoadingTableView?>
-<?import java.lang.*?>
+<?import java.lang.String?>
 <AnchorPane prefHeight="735.0" prefWidth="1200.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.panel.view.ClinicianAppointmentRequestViewController">
     <children>
         <AnchorPane fx:id="tableViewPane" layoutY="60.0" prefHeight="675.0" prefWidth="803.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="397.0" AnchorPane.topAnchor="60.0">
@@ -43,15 +42,6 @@
                 <Label fx:id="appointmentRequestStatus" layoutX="130.0" layoutY="147.0" prefHeight="15.0" prefWidth="218.0" AnchorPane.rightAnchor="49.0" AnchorPane.topAnchor="147.0" />
 
                 <ComboBox fx:id="appointmentRequestCategory" layoutX="130.0" layoutY="285.0" prefHeight="25.0" prefWidth="218.0" AnchorPane.rightAnchor="49.0" AnchorPane.topAnchor="285.0">
-                    <items>
-                        <FXCollections fx:factory="observableArrayList">
-                            <String fx:value="Blood test" />
-                            <String fx:value="General check-up" />
-                            <String fx:value="Health advice" />
-                            <String fx:value="Prescription renewal" />
-                            <String fx:value="Other" />
-                        </FXCollections>
-                    </items>
                     <value>
                         <String fx:value="" />
                     </value>

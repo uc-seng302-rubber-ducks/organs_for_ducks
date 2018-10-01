@@ -129,6 +129,9 @@ public class ClinicianAppointmentRequestViewController implements Converter {
         logicController = new ClinicianAppointmentRequestLogicController(availableAppointments, appController, clinician, availableTimes, clinicianAppointmentsRequestView);
         appointmentRequestDescription.setTextFormatter(new TextFormatter<String>(change ->
                 change.getControlNewText().length() <= 255 ? change : null)); // limits user input to 255 characters
+        for (AppointmentCategory category : AppointmentCategory.values()) {
+            appointmentRequestCategory.getItems().add(category);
+        }
 
         initAppointmentTable();
 
@@ -196,6 +199,7 @@ public class ClinicianAppointmentRequestViewController implements Converter {
         clinicianAppointmentsRequestView.setItems(availableAppointments);
         if (listen)
             Platform.runLater(() -> clinicianAppointmentsRequestView.getSortOrder().add(clinicianAppointmentStatusColumn));
+        clinicianAppointmentsRequestView.refresh();
     }
 
     /**
