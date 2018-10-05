@@ -53,6 +53,10 @@ public class TransplantBridge extends Bifrost {
         Request request = new Request.Builder().get()
                 .header(tokenHeader, AppController.getInstance().getToken())
                 .url(url.toString()).build();
+
+        if (widget != null) {
+            widget.setWaiting(true);
+        }
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -66,10 +70,13 @@ public class TransplantBridge extends Bifrost {
                 }
 
                 List<TransplantDetails> transplantDetails = handler.decodeTransplantList(response);
-                observableList.addAll(transplantDetails);
-                if (widget != null) {
-                    Platform.runLater(() -> widget.setWaiting(false));
-                }
+                Platform.runLater(() -> {
+                    if (widget != null) {
+                        widget.setWaiting(false);
+                    }
+                    observableList.clear();
+                    observableList.addAll(transplantDetails);
+                });
             }
         });
     }
