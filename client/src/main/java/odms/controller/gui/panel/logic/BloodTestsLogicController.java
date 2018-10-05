@@ -62,7 +62,7 @@ public class BloodTestsLogicController implements PropertyChangeListener {
             bloodTestStage.setResizable(false);
             bloodTestStage.setTitle("Add New Blood Test");
             StageIconLoader stageIconLoader = new StageIconLoader();
-            bloodTestStage.getIcons().add(stageIconLoader.getIconImage());
+            bloodTestStage = stageIconLoader.addStageIcon(bloodTestStage);
             bloodTestStage.showAndWait();
             Log.info("Successfully launched the new blood test pop-up window for user: " + user.getNhi());
 

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.AnchorPane?>
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="582.0" prefWidth="790.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.panel.DonationTabPageController">
+<?import javafx.scene.layout.*?>
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="800.0" prefWidth="1200.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.panel.DonationTabPageController">
     <children>
-        <ListView fx:id="canDonate" layoutX="41.0" layoutY="86.0" onMouseClicked="#canDonateMouseClick" prefHeight="437.0" prefWidth="200.0" />
-        <ListView fx:id="currentOrgans" layoutX="368.0" layoutY="86.0" onMouseClicked="#currentOrgansMouseClick" prefHeight="437.0" prefWidth="200.0" />
-        <TableView fx:id="currentlyDonating" layoutX="368.0" layoutY="86.0" prefHeight="437.0" prefWidth="798.0" visible="false">
+        <ListView fx:id="canDonate" layoutX="41.0" layoutY="86.0" onMouseClicked="#canDonateMouseClick" prefHeight="437.0" prefWidth="200.0" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="41.0" AnchorPane.topAnchor="90.0" />
+        <ListView fx:id="currentOrgans" layoutX="368.0" layoutY="86.0" onMouseClicked="#currentOrgansMouseClick" prefHeight="437.0" prefWidth="200.0" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="368.0" AnchorPane.topAnchor="90.0" />
+        <TableView fx:id="currentlyDonating" layoutX="368.0" layoutY="86.0" prefHeight="437.0" prefWidth="798.0" visible="false" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="368.0" AnchorPane.rightAnchor="34.0" AnchorPane.topAnchor="90.0">
             <columns>
                 <TableColumn fx:id="donatingOrganColumn" maxWidth="150" prefWidth="120" text="Organ" />
                 <TableColumn fx:id="organExpiryColumn" maxWidth="180" prefWidth="151.0" text="Expiry Progress" />
@@ -18,23 +18,23 @@
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
         </TableView>
-        <Label layoutX="108.0" layoutY="66.0" styleClass="label-title" text="Donatable" />
-        <Label fx:id="donatingOrgansTableLabel" layoutX="403.0" layoutY="66.0" styleClass="label-title" text="Currently Donating" />
-        <Button fx:id="donate" layoutX="285.0" layoutY="184.0" mnemonicParsing="false" onAction="#donate" text="&gt;&gt;" />
-        <Button fx:id="undonateButton" layoutX="284.0" layoutY="286.0" mnemonicParsing="false" onAction="#undonate" text="&lt;&lt;" />
-        <Button fx:id="expireOrganButton" layoutX="612.0" layoutY="536.0" mnemonicParsing="false" onAction="#expireOrgan" text="Expire organ" />
-        <Button fx:id="removeExpiryReasonButton" layoutX="393.0" layoutY="536.0" mnemonicParsing="false" onAction="#removeExpiry" text="Cancel Manual Expiry" />
-      <TableView fx:id="userDisqualifiedOrgansTable" layoutX="590.0" layoutY="86.0" onMouseClicked="#userDisqualifiedOrgansTableMouseClick" prefHeight="437.0" prefWidth="576.0">
-        <columns>
-          <TableColumn fx:id="disqualifiedOrganColumn" prefWidth="149.0" text="Organ" />
-          <TableColumn fx:id="disqualifiedReasonColumn" prefWidth="190.0" text="Disqualification Reason" />
-            <TableColumn fx:id="disqualifiedDateColumn" prefWidth="148.0" text="Date Disqualified" />
-            <TableColumn fx:id="disqualifiedStaffIdColumn" prefWidth="88.0" text="Staff ID" />
-        </columns>
-      </TableView>
-      <Label fx:id="disqualifiedOrgansTableLabel" layoutX="594.0" layoutY="66.0" text="Disqualified Organs" />
-        <Button fx:id="disqualifyOrganButton" disable="true" layoutX="245.0" layoutY="14.0" mnemonicParsing="false" onAction="#disqualifyOrgan" text="Disqualify Organ" />
-      <Button fx:id="updateDisqualifiedOrgan" disable="true" layoutX="845.0" layoutY="536.0" mnemonicParsing="false" onAction="#updateDisqualifiedOrgan" text="Update" />
-      <Button fx:id="removeDisqualificationButton" disable="true" layoutX="590.0" layoutY="536.0" mnemonicParsing="false" onAction="#removeDisqualification" text="Remove Disqualification" />
+        <Label layoutX="108.0" layoutY="66.0" styleClass="label-title" text="Donatable" AnchorPane.leftAnchor="108.0" AnchorPane.topAnchor="66.0" />
+        <Label fx:id="donatingOrgansTableLabel" layoutX="403.0" layoutY="66.0" styleClass="label-title" text="Currently Donating" AnchorPane.leftAnchor="410.0" AnchorPane.topAnchor="66.0" />
+        <Button fx:id="donate" layoutX="285.0" layoutY="294.0" mnemonicParsing="false" onAction="#donate" text="&gt;&gt;" />
+        <Button fx:id="undonateButton" layoutX="284.0" layoutY="396.0" mnemonicParsing="false" onAction="#undonate" text="&lt;&lt;" />
+        <Button fx:id="expireOrganButton" layoutX="612.0" layoutY="536.0" mnemonicParsing="false" onAction="#expireOrgan" text="Expire organ" AnchorPane.bottomAnchor="25.0" />
+        <Button fx:id="removeExpiryReasonButton" layoutX="393.0" layoutY="536.0" mnemonicParsing="false" onAction="#removeExpiry" text="Cancel Manual Expiry" AnchorPane.bottomAnchor="25.0" />
+        <TableView fx:id="userDisqualifiedOrgansTable" layoutX="590.0" layoutY="86.0" onMouseClicked="#userDisqualifiedOrgansTableMouseClick" prefHeight="437.0" prefWidth="576.0" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="590.0" AnchorPane.rightAnchor="34.0" AnchorPane.topAnchor="90.0">
+            <columns>
+                <TableColumn fx:id="disqualifiedOrganColumn" prefWidth="149.0" text="Organ" />
+                <TableColumn fx:id="disqualifiedReasonColumn" prefWidth="190.0" text="Disqualification Reason" />
+                <TableColumn fx:id="disqualifiedDateColumn" prefWidth="148.0" text="Date Disqualified" />
+                <TableColumn fx:id="disqualifiedStaffIdColumn" prefWidth="88.0" text="Staff ID" />
+            </columns>
+        </TableView>
+        <Label fx:id="disqualifiedOrgansTableLabel" layoutX="594.0" layoutY="66.0" styleClass="label-title" text="Disqualified Organs" AnchorPane.leftAnchor="816.0" AnchorPane.rightAnchor="250.0" AnchorPane.topAnchor="66.0" />
+        <Button fx:id="disqualifyOrganButton" disable="true" layoutX="245.0" layoutY="14.0" mnemonicParsing="false" onAction="#disqualifyOrgan" text="Disqualify Organ" AnchorPane.topAnchor="14.0" />
+        <Button fx:id="updateDisqualifiedOrgan" disable="true" layoutX="845.0" layoutY="536.0" mnemonicParsing="false" onAction="#updateDisqualifiedOrgan" text="Update" AnchorPane.bottomAnchor="25.0" />
+        <Button fx:id="removeDisqualificationButton" disable="true" layoutX="590.0" layoutY="536.0" mnemonicParsing="false" onAction="#removeDisqualification" text="Remove Disqualification" AnchorPane.bottomAnchor="25.0" />
     </children>
 </AnchorPane>

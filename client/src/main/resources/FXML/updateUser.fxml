@@ -9,10 +9,10 @@
 <AnchorPane prefHeight="551.0" prefWidth="694.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.UpdateUserController">
    <children>
       <TabPane layoutY="46.0" prefHeight="439.0" prefWidth="694.0" tabClosingPolicy="UNAVAILABLE">
-        <tabs>
-          <Tab fx:id="userTab" text="User Details">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="167.0" prefWidth="336.0">
+         <tabs>
+            <Tab fx:id="userTab" text="User Details">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="167.0" prefWidth="336.0">
                      <children>
                         <GridPane hgap="10.0" layoutY="51.0" prefHeight="292.0" prefWidth="395.0">
                            <children>
@@ -72,11 +72,11 @@
                         <Label layoutX="7.0" layoutY="7.0" styleClass="label-sub-title" text="User Details" />
                      </children>
                   </AnchorPane>
-            </content>
-          </Tab>
-          <Tab fx:id="healthDetailsTab" text="Health Details">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               </content>
+            </Tab>
+            <Tab fx:id="healthDetailsTab" text="Health Details">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
                         <GridPane hgap="10.0" layoutX="8.0" layoutY="44.0" prefHeight="258.0" prefWidth="675.0">
                            <children>
@@ -187,11 +187,11 @@
                         <Label layoutX="9.0" layoutY="9.0" styleClass="label-sub-title" text="Health Details" />
                      </children>
                   </AnchorPane>
-            </content>
-          </Tab>
+               </content>
+            </Tab>
             <Tab fx:id="detailsTab" text="Contact Details">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="463.0" prefWidth="694.0">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="463.0" prefWidth="694.0">
                      <children>
                         <GridPane layoutY="42.0" prefHeight="306.0" prefWidth="682.0">
                            <children>
@@ -293,11 +293,11 @@
                         <Label layoutX="14.0" layoutY="9.0" styleClass="label-sub-title" text="Contact Details" />
                         <Separator layoutX="-13.0" layoutY="31.0" prefHeight="9.0" prefWidth="706.0" />
                      </children></AnchorPane>
-              </content>
+               </content>
             </Tab>
             <Tab fx:id="ecTab" text="Emergency Contact">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
                         <GridPane layoutY="38.0" prefHeight="316.0" prefWidth="675.0">
                            <children>
@@ -396,34 +396,34 @@
                         <Label layoutX="7.0" layoutY="7.0" styleClass="label-sub-title" text="Emergency Contact" />
                         <Separator layoutX="-6.0" layoutY="357.0" prefHeight="4.0" prefWidth="710.0" />
                      </children></AnchorPane>
-              </content>
+               </content>
             </Tab>
             <Tab fx:id="deathtab" text="Death Details">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
                         <GridPane hgap="5.0" layoutX="13.0" layoutY="32.0" prefHeight="283.0" prefWidth="452.0" vgap="5.0">
                            <children>
-                               <Label styleClass="label-title" text="Date of Death:" GridPane.rowIndex="1"/>
-                               <Label styleClass="label-title" text="Time of Death:" GridPane.rowIndex="2"/>
-                               <Label styleClass="label-title" text="City of Death:" GridPane.rowIndex="4"/>
-                               <Label styleClass="label-title" text="Region of Death:" GridPane.rowIndex="5"/>
-                               <Label styleClass="label-title" text="Country of Death:" GridPane.rowIndex="6"/>
-                               <TextField fx:id="updateDeathDetailsCityTextField" GridPane.columnIndex="1"
-                                          GridPane.rowIndex="4"/>
-                               <DatePicker fx:id="updateDeathDetailsDatePicker" prefHeight="27.0" prefWidth="260.0"
-                                           promptText="YYYY-MM-DD" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-                               <TextField fx:id="updateDeathDetailsTimeTextField" promptText="hh:mm"
-                                          GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-                               <ComboBox fx:id="updateDeathDetailsCountryComboBox"
-                                         onAction="#deathCountrySelectorListener" prefHeight="27.0" prefWidth="259.0"
-                                         GridPane.columnIndex="1" GridPane.rowIndex="6"/>
-                               <TextField fx:id="updateDeathDetailsRegionTextField" GridPane.columnIndex="1"
-                                          GridPane.rowIndex="5"/>
-                               <ComboBox fx:id="updateDeathDetailsRegionComboBox" prefHeight="27.0" prefWidth="259.0"
-                                         GridPane.columnIndex="1" GridPane.rowIndex="5"/>
-                               <CheckBox fx:id="userDead" mnemonicParsing="false" GridPane.columnIndex="1"/>
-                               <Label styleClass="label-title" text="User has died:"/>
+                              <Label styleClass="label-title" text="Date of Death:" GridPane.rowIndex="1"/>
+                              <Label styleClass="label-title" text="Time of Death:" GridPane.rowIndex="2"/>
+                              <Label styleClass="label-title" text="City of Death:" GridPane.rowIndex="4"/>
+                              <Label styleClass="label-title" text="Region of Death:" GridPane.rowIndex="5"/>
+                              <Label styleClass="label-title" text="Country of Death:" GridPane.rowIndex="6"/>
+                              <TextField fx:id="updateDeathDetailsCityTextField" GridPane.columnIndex="1"
+                                         GridPane.rowIndex="4"/>
+                              <DatePicker fx:id="updateDeathDetailsDatePicker" prefHeight="27.0" prefWidth="260.0"
+                                          promptText="YYYY-MM-DD" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                              <TextField fx:id="updateDeathDetailsTimeTextField" promptText="hh:mm"
+                                         GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                              <ComboBox fx:id="updateDeathDetailsCountryComboBox"
+                                        onAction="#deathCountrySelectorListener" prefHeight="27.0" prefWidth="259.0"
+                                        GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+                              <TextField fx:id="updateDeathDetailsRegionTextField" GridPane.columnIndex="1"
+                                         GridPane.rowIndex="5"/>
+                              <ComboBox fx:id="updateDeathDetailsRegionComboBox" prefHeight="27.0" prefWidth="259.0"
+                                        GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+                              <CheckBox fx:id="userDead" mnemonicParsing="false" GridPane.columnIndex="1"/>
+                              <Label styleClass="label-title" text="User has died:"/>
                            </children>
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="169.0" minWidth="10.0" prefWidth="123.0" />
@@ -439,20 +439,20 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                            </rowConstraints>
                         </GridPane>
                         <Label fx:id="updateDeathDetailsErrorLabel" layoutX="14.0" layoutY="321.0" text="Error message" textFill="RED" />
-                         <Label fx:id="updateDeathDetailsOverrideWarningLabel" layoutX="22.0" layoutY="152.0"
-                                prefHeight="45.0" prefWidth="437.0"
-                                text="You cannot change the date and time of death if the user has a manually expired organ"
-                                textFill="#fc940d" wrapText="true"/>
+                        <Label fx:id="updateDeathDetailsOverrideWarningLabel" layoutX="22.0" layoutY="152.0"
+                               prefHeight="45.0" prefWidth="437.0"
+                               text="You cannot changedField the date and time of death if the user has a manually expired organ"
+                               textFill="#fc940d" wrapText="true"/>
                         <Separator layoutY="27.0" prefHeight="9.0" prefWidth="706.0" />
                         <Label layoutX="8.0" layoutY="6.0" styleClass="label-sub-title" text="Death Details" />
                      </children></AnchorPane>
-              </content>
+               </content>
             </Tab>
-        </tabs>
+         </tabs>
       </TabPane>
       <Label layoutX="11.0" layoutY="10.0" styleClass="label-sub-title" text="Update User" />
       <Label fx:id="genericErrorLabel" layoutX="88.0" layoutY="449.0" styleClass="label-error" text="There is an error with one of the entered fields. Please double check your input" visible="false" />

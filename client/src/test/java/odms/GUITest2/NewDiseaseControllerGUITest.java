@@ -4,7 +4,6 @@ import javafx.collections.FXCollections;
 import javafx.scene.control.TableView;
 import odms.App;
 import odms.TestUtils.AppControllerMocker;
-import odms.TestUtils.CommonTestMethods;
 import odms.bridge.*;
 import odms.commons.exception.UnauthorisedException;
 import odms.commons.model.Clinician;
@@ -48,7 +47,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        CommonTestMethods.runMethods();
+        //CommonTestMethods.runMethods();
     }
 
     @Before

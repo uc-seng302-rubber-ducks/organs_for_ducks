@@ -561,7 +561,7 @@ public class UpdateClinicianController {
                     clinicianController.init(clinicianStage, AppController.getInstance(), clinician, true, null);
                     clinicianStage.setScene(new Scene(root));
                     StageIconLoader stageIconLoader = new StageIconLoader();
-                    clinicianStage.getIcons().add(stageIconLoader.getIconImage());
+                    clinicianStage = stageIconLoader.addStageIcon(clinicianStage);
                     clinicianStage.show();
                     ownStage.close();
                     Log.info("successfully launched clinician overview window for Clinician Staff Id: " + clinician.getStaffId());
@@ -579,7 +579,7 @@ public class UpdateClinicianController {
                     clinicianController.init(stage, AppController.getInstance(), clinician, false, null);
                     stage.setScene(new Scene(root));
                     StageIconLoader stageIconLoader = new StageIconLoader();
-                    stage.getIcons().add(stageIconLoader.getIconImage());
+                    stage = stageIconLoader.addStageIcon(stage);
                     stage.show();
                     ownStage.close();
                     Log.info("successfully launched clinician overview window for Clinician Staff Id: " + clinician.getStaffId());

@@ -13,6 +13,7 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import odms.bridge.LoginBridge;
+import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.exception.ApiException;
 import odms.commons.exception.UnauthorisedException;
 import odms.commons.model.Administrator;
@@ -79,9 +80,7 @@ public class LoginController {
         userWarningLabel.setText("");
         clinicianWarningLabel.setText("");
         adminWarningLabel.setText("");
-//        poweredByLabel.setText("Powered by Rubber Duck Software\u2122");
         poweredByLabel.setText("Powered by Rubber Duck Software Group");
-//        poweredByLabel.setText("Powered by Quacks\u2122");
         this.appController = appController;
         this.stage = stage;
         stage.setTitle("Login");
@@ -107,16 +106,17 @@ public class LoginController {
     }
 
     private void loadLogoImage() {
-        URL url = getClass().getResource("/logos/LoveDuck.png");
-//        URL url = getClass().getResource("/logos/HeartDuck.png");
-        if (url == null) {
-            Log.warning("Could not load the icon for the taskbar. Check that the filepath is correct");
-        } else {
-            try {
-                javafx.scene.image.Image image = new Image(url.openStream());
-                logoImageView.setImage(image);
-            } catch (IOException io) {
-                Log.warning("Could not the logo image for the login controller", io);
+        if (!ConfigPropertiesSession.getInstance().getProperty("testConfig", "false").equalsIgnoreCase("true")) {
+            URL url = getClass().getResource("/logos/LoveDuck.png");
+            if (url == null) {
+                Log.warning("Could not load the icon for the taskbar. Check that the filepath is correct");
+            } else {
+                try {
+                    javafx.scene.image.Image image = new Image(url.openStream());
+                    logoImageView.setImage(image);
+                } catch (IOException io) {
+                    Log.warning("Could not the logo image for the login controller", io);
+                }
             }
         }
     }
@@ -143,7 +143,7 @@ public class LoginController {
         }
         if (user == null || user.isDeleted()) {
             userWarningLabel
-                    .setText("User was not found. \nTo register a new user, please click sign up.");
+                    .setText("User was not found. \nTo register a new user, please sign up.");
             return;
         }
 
@@ -305,7 +305,7 @@ public class LoginController {
             newStage.setScene(new Scene(root));
             newStage.setTitle("Create New User Profile");
             StageIconLoader stageIconLoader = new StageIconLoader();
-            newStage.getIcons().add(stageIconLoader.getIconImage());
+            newStage = stageIconLoader.addStageIcon(newStage);
             newStage.show();
             NewUserController userController = userLoader.getController();
             Log.info("Opening new user window");

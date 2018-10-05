@@ -507,7 +507,7 @@ public class DonationTabPageController {
                     updateStage.setScene(new Scene(root));
                     organExpiryViewController.init(this.application, currentlyDonating.getSelectionModel().getSelectedItem().getOrganType(), expir, currentUser, updateStage, this, true);
                     StageIconLoader stageIconLoader = new StageIconLoader();
-                    updateStage.getIcons().add(stageIconLoader.getIconImage());
+                    updateStage = stageIconLoader.addStageIcon(updateStage);
                     updateStage.show();
                     Log.info("Successfully launched organ expiry window for User NHI: " + currentUser.getNhi());
 

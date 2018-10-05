@@ -119,7 +119,7 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
 
             rejectionController.init(selectedAppointment, rejectionStage);
             StageIconLoader stageIconLoader = new StageIconLoader();
-            rejectionStage.getIcons().add(stageIconLoader.getIconImage());
+            rejectionStage = stageIconLoader.addStageIcon(rejectionStage);
             rejectionStage.show();
         } catch (IOException e) {
             Log.severe("failed to load login window FXML", e);

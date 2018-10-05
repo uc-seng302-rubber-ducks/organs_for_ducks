@@ -656,7 +656,7 @@ public class NewUserController {
         Stage userStage = new Stage();
         userStage.setScene(new Scene(root));
         StageIconLoader stageIconLoader = new StageIconLoader();
-        userStage.getIcons().add(stageIconLoader.getIconImage());
+        userStage = stageIconLoader.addStageIcon(userStage);
         userStage.show();
         UserController userController = userLoader.getController();
         AppController.getInstance().setUserController(userController);
