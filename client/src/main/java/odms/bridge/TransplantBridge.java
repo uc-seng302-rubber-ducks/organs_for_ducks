@@ -24,13 +24,13 @@ public class TransplantBridge extends Bifrost {
     /**
      * sends a request to the /transplantList endpoint with filters as set up below. Results are passed out via the callback
      *
-     * @param startIndex number of entries to skip (for pagination)
-     * @param count      number of results to return
-     * @param name       name (or partial name) to search by
-     * @param region     region to search by
-     * @param organs     only return results for the selected organs
+     * @param startIndex     number of entries to skip (for pagination)
+     * @param count          number of results to return
+     * @param name           name (or partial name) to search by
+     * @param region         region to search by
+     * @param organs         only return results for the selected organs
      * @param observableList observable list to populate when the call is successful
-     * @param widget widget to stop loading when the call is finished
+     * @param widget         widget to stop loading when the call is finished
      */
     public void getWaitingList(int startIndex, int count, String name, String region, Collection<Organs> organs, ObservableList<TransplantDetails> observableList, LoadingWidget widget) {
         StringBuilder url = new StringBuilder(ip);
@@ -70,12 +70,13 @@ public class TransplantBridge extends Bifrost {
                 }
 
                 List<TransplantDetails> transplantDetails = handler.decodeTransplantList(response);
+
+                observableList.clear();
+                observableList.addAll(transplantDetails);
                 Platform.runLater(() -> {
                     if (widget != null) {
                         widget.setWaiting(false);
                     }
-                    observableList.clear();
-                    observableList.addAll(transplantDetails);
                 });
             }
         });
