@@ -22,8 +22,9 @@ public class AppointmentTableCellFactory {
             public void updateItem(final AppointmentStatus item, final boolean empty) {
                 super.updateItem(item, empty);
                 if (item != null) {
+                    this.getStyleClass().clear();
                     if (this.getItem().equals(AppointmentStatus.UPDATED)) {
-                        this.setTextFill(Color.BLACK); //This only occurs if the status is updated.
+                        this.setTextFill(Color.BLUE); //This only occurs if the status is updated.
                     } else if (this.getItem().equals(AppointmentStatus.ACCEPTED)
                             || this.getItem().equals(AppointmentStatus.ACCEPTED_SEEN)) {
                         this.setTextFill(Color.GREEN);
