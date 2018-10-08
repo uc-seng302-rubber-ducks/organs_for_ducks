@@ -22,6 +22,7 @@ import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.FileSelectorController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
+import odms.controller.gui.widget.LimitedTextField;
 
 import java.io.File;
 import java.io.IOException;
@@ -77,17 +78,17 @@ public class UpdateUserController {
     @FXML
     private Label dobErrorLabel;
     @FXML
-    private TextField nhiInput;
+    private LimitedTextField nhiInput;
     @FXML
     private Label photoErrorLabel;
     @FXML
-    private TextField fNameInput;
+    private LimitedTextField fNameInput;
     @FXML
-    private TextField preferredFNameTextField;
+    private LimitedTextField preferredFNameTextField;
     @FXML
-    private TextField mNameInput;
+    private LimitedTextField mNameInput;
     @FXML
-    private TextField lNameInput;
+    private LimitedTextField lNameInput;
     @FXML
     private TextField heightInput;
     @FXML
@@ -99,23 +100,23 @@ public class UpdateUserController {
     @FXML
     private TextField streetNumber;
     @FXML
-    private TextField street;
+    private LimitedTextField street;
     @FXML
-    private TextField neighborhood;
+    private LimitedTextField neighborhood;
     @FXML
-    private TextField city;
+    private LimitedTextField city;
     @FXML
-    private TextField regionInput;
+    private LimitedTextField regionInput;
     @FXML
     private ComboBox<String> regionSelector;
     @FXML
-    private TextField zipCode;
+    private LimitedTextField zipCode;
     @FXML
     private ComboBox<String> countrySelector;
     @FXML
     private TextField email;
     @FXML
-    private TextField ecName;
+    private LimitedTextField ecName;
     @FXML
     private TextField ecPhone;
     @FXML
@@ -123,23 +124,23 @@ public class UpdateUserController {
     @FXML
     private TextField ecStreetNumber;
     @FXML
-    private TextField ecStreet;
+    private LimitedTextField ecStreet;
     @FXML
-    private TextField ecNeighborhood;
+    private LimitedTextField ecNeighborhood;
     @FXML
-    private TextField ecCity;
+    private LimitedTextField ecCity;
     @FXML
-    private TextField ecRegionInput;
+    private LimitedTextField ecRegionInput;
     @FXML
     private ComboBox<String> ecRegionSelector;
     @FXML
-    private TextField ecZipCode;
+    private LimitedTextField ecZipCode;
     @FXML
     private ComboBox<String> ecCountrySelector;
     @FXML
-    private TextField ecEmail;
+    private LimitedTextField ecEmail;
     @FXML
-    private TextField ecRelationship;
+    private LimitedTextField ecRelationship;
     @FXML
     private ComboBox<String> birthGenderComboBox;
     @FXML
@@ -157,11 +158,11 @@ public class UpdateUserController {
     @FXML
     private DatePicker updateDeathDetailsDatePicker;
     @FXML
-    private TextField updateDeathDetailsTimeTextField;
+    private LimitedTextField updateDeathDetailsTimeTextField;
     @FXML
-    private TextField updateDeathDetailsCityTextField;
+    private LimitedTextField updateDeathDetailsCityTextField;
     @FXML
-    private TextField updateDeathDetailsRegionTextField;
+    private LimitedTextField updateDeathDetailsRegionTextField;
     @FXML
     private ComboBox<String> updateDeathDetailsRegionComboBox;
     @FXML
