@@ -24,17 +24,16 @@ public class AppointmentTableCellFactory {
                 if (item != null) {
                     this.getStyleClass().clear();
                     if (this.getItem().equals(AppointmentStatus.UPDATED)) {
-                        this.setTextFill(Color.BLUE); //This only occurs if the status is updated.
+                        this.setTextFill(Color.BLUE);
                     } else if (this.getItem().equals(AppointmentStatus.ACCEPTED)
                             || this.getItem().equals(AppointmentStatus.ACCEPTED_SEEN)) {
-                        this.setTextFill(Color.GREEN);
+                        this.setTextFill(Color.LIMEGREEN);
                     } else if (this.getItem().equals(AppointmentStatus.PENDING)) {
                         this.setTextFill(Color.GOLDENROD);
                     } else {
                         this.setTextFill(Color.RED);
                     }
                     setText(item.toString());
-
                 }
             }
         };
