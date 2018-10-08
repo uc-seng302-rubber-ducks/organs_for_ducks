@@ -138,8 +138,6 @@ public class TransplantWaitListController {
      * @param allowedOrgans list of the organs to filter by. If this is empty, all will be returned
      */
     private void populateWaitListTable(int startIndex, int count, String regionSearch, List<Organs> allowedOrgans) {
-        transplantList.clear();
-        transplantWaitListTableView.setWaiting(true);
         appController.getTransplantBridge().getWaitingList(startIndex, count, "", regionSearch, allowedOrgans, transplantList, transplantWaitListTableView);
     }
 
