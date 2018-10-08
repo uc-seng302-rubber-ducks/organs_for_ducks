@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 import odms.commons.model.Administrator;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
+import odms.controller.gui.widget.LimitedTextField;
 
 import java.util.Optional;
 
@@ -18,16 +19,16 @@ public class UpdateAdminController {
 
 
     @FXML
-    private TextField usernameTextField;
+    private LimitedTextField usernameTextField;
 
     @FXML
-    private TextField firstNameTextField;
+    private LimitedTextField firstNameTextField;
 
     @FXML
-    private TextField middleNameTextField;
+    private LimitedTextField middleNameTextField;
 
     @FXML
-    private TextField lastNameTextField;
+    private LimitedTextField lastNameTextField;
 
     @FXML
     private TextField passwordTextField;
