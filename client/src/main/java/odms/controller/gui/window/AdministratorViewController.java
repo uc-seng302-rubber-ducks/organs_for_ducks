@@ -1013,6 +1013,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
             newStage = stageIconLoader.addStageIcon(newStage);
             newStage.show();
             stage.close();
+            ServerEventNotifier.getInstance().removePropertyChangeListener(this);
             LoginController loginController = loginLoader.getController();
             loginController.init(appController, newStage);
             Log.info(messageAdmin + administrator.getUserName() + " Successfully launched Login window after logout");
@@ -1133,6 +1134,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
                 logout();
             } else {
                 stage.close();
+                ServerEventNotifier.getInstance().removePropertyChangeListener(this);
             }
         }
     }
