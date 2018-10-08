@@ -1024,11 +1024,10 @@ public class DBHandler {
             try (ResultSet results = stmt.executeQuery()) {
                 while (results.next()) {
                     if (results.getTimestamp(MOMENT_OF_DEATH) == null) {
-                        String nameBuilder = results.getString("firstName") +
-                                " " +
-                                results.getString("middleName") +
-                                " " +
-                                results.getString("lastName");
+                        String nameBuilder = (results.getString("firstName") == null ? "" : results.getString("firstName")) +
+                                (results.getString("middleName") == null ? "" : " " + results.getString("middleName")) +
+                                (results.getString("lastName") == null ? "" : " " + results.getString("lastName"));
+
                         Organs selectedOrgan = Organs.valueOf(results.getString("organName"));
                         LocalDate dateRegistered = results.getDate("dateRegistered").toLocalDate();
                         String bloodType = results.getString("bloodType");
