@@ -18,6 +18,7 @@ import odms.commons.model._enum.Regions;
 import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
+import odms.controller.gui.widget.LimitedTextField;
 import utils.StageIconLoader;
 
 import java.io.IOException;
@@ -35,15 +36,15 @@ public class NewUserController {
     private Stage stage;
     //<editor-fold desc="FXML declarations">
     @FXML
-    private TextField newUserNhiInput;
+    private LimitedTextField newUserNhiInput;
     @FXML
-    private TextField fNameInput;
+    private LimitedTextField fNameInput;
     @FXML
-    private TextField preferredFNameTextField;
+    private LimitedTextField preferredFNameTextField;
     @FXML
-    private TextField mNameInput;
+    private LimitedTextField mNameInput;
     @FXML
-    private TextField lNameInput;
+    private LimitedTextField lNameInput;
     @FXML
     private TextField heightInput;
     @FXML
@@ -53,15 +54,15 @@ public class NewUserController {
     @FXML
     private TextField cell;
     @FXML
-    private TextField streetNumber;
+    private LimitedTextField streetNumber;
     @FXML
-    private TextField street;
+    private LimitedTextField street;
     @FXML
-    private TextField neighborhood;
+    private LimitedTextField neighborhood;
     @FXML
-    private TextField city;
+    private LimitedTextField city;
     @FXML
-    private TextField regionInput;
+    private LimitedTextField regionInput;
     @FXML
     private ComboBox<String> regionSelector;
     @FXML
@@ -77,15 +78,15 @@ public class NewUserController {
     @FXML
     private TextField ecCellPhone;
     @FXML
-    private TextField ecStreetNumber;
+    private LimitedTextField ecStreetNumber;
     @FXML
-    private TextField ecStreet;
+    private LimitedTextField ecStreet;
     @FXML
-    private TextField ecNeighborhood;
+    private LimitedTextField ecNeighborhood;
     @FXML
-    private TextField ecCity;
+    private LimitedTextField ecCity;
     @FXML
-    private TextField ecRegionInput;
+    private LimitedTextField ecRegionInput;
     @FXML
     private ComboBox<String> ecRegionSelector;
     @FXML
@@ -93,9 +94,9 @@ public class NewUserController {
     @FXML
     private ComboBox<String> ecCountrySelector;
     @FXML
-    private TextField ecEmail;
+    private LimitedTextField ecEmail;
     @FXML
-    private TextField ecRelationship;
+    private LimitedTextField ecRelationship;
     @FXML
     private ComboBox<String> birthGenderComboBox;
     @FXML
