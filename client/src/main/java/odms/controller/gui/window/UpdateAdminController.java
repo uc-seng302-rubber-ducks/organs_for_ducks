@@ -77,7 +77,7 @@ public class UpdateAdminController {
 
         appController = AppController.getInstance();
         adminViewController = appController.getAdministratorViewController();
-
+        stage.setResizable(false);
         stage.getScene();
         invalidUsername.setText("");
         invalidFName.setText("");
@@ -103,6 +103,7 @@ public class UpdateAdminController {
             }
 
         } else {
+            stage.setTitle("Create Administrator");
             adminDetailInputTitle.setText("Create Admin");
 
             styleListener(usernameTextField);

@@ -26,7 +26,11 @@
         </AnchorPane>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
             <children>
-                <LoadingTableView fx:id="transplantWaitListTableView" prefHeight="330.0" prefWidth="617.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                <LoadingTableView fx:id="transplantWaitListTableView" prefHeight="330.0" prefWidth="617.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                    </columnResizePolicy>
+                </LoadingTableView>
                 <Label fx:id="filtersLabel" layoutX="14.0" layoutY="222.0" maxWidth="Infinity" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="14.0" />
             <HBox alignment="CENTER" layoutX="259.0" layoutY="250.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="259.0" AnchorPane.rightAnchor="259.0">
                <children>
