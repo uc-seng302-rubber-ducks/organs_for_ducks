@@ -58,7 +58,6 @@ public class UpdateClinicianController {
     @FXML
     private Label clinicianGenericErrorLabel;
 
-
     @FXML
     private TextField staffIDTextField;
 
@@ -154,6 +153,7 @@ public class UpdateClinicianController {
         this.controller = controller;
         this.stage = stage;
         this.ownStage = ownStage;
+        ownStage.setResizable(false);
         countrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
         for (Regions regions : Regions.values()) {
             regionSelector.getItems().add(regions.toString());
