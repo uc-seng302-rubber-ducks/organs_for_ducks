@@ -50,7 +50,7 @@ import odms.controller.gui.panel.view.AvailableOrgansViewController;
 import odms.controller.gui.panel.view.ClinicianAppointmentRequestViewController;
 import odms.controller.gui.popup.DeletedUserController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
-import odms.controller.gui.widget.LoadingTableView;
+import odms.controller.gui.widget.CountableLoadingTableView;
 import odms.socket.ServerEventNotifier;
 import utils.StageIconLoader;
 
@@ -101,7 +101,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
     @FXML
     private TextField searchTextField;
     @FXML
-    private LoadingTableView<UserOverview> searchTableView;
+    private CountableLoadingTableView<UserOverview> searchTableView;
 
     @FXML
     private Label searchCountLabel;
@@ -190,6 +190,9 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         appController.getUserBridge().getUsers(0, ROWS_PER_PAGE, "", "", "", appController.getToken(), searchTableView);
         searchCount = appController.getUserOverviews().size();
         initSearchTable();
+        searchTableView.countProperty().addListener(((observable, oldValue, newValue) -> {
+            updateCountLabel((int) newValue);
+        }));
         transplantWaitListTabPageController.init(appController, this);
         statusBarPageController.init();
         availableOrgansViewController.init(this);
@@ -397,7 +400,6 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         FilteredList<UserOverview> squished = new FilteredList<>(fListUsers);
 
         SortedList<UserOverview> sListUsers = new SortedList<>(squished);
-        //squished.filtered(user -> !user.isDeleted())
         sListUsers.comparatorProperty().bind(searchTableView.comparatorProperty());
 
         searchTableView.setItems(sListUsers);
@@ -495,10 +497,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         searchTableView.setWaiting(true);
         appController.setUserOverviews(appController.getUserOverviews().stream().filter(p -> (p.getDonating().isEmpty() != donorFilterCheckBox.isSelected() &&
                 p.getReceiving().isEmpty() != receiverFilterCheckBox.isSelected()) || allCheckBox.isSelected()).collect(Collectors.toSet()));
-        searchCount = appController.getUserOverviews().size();
-        endIndex = Math.min(startIndex + ROWS_PER_PAGE, appController.getUserOverviews().size());
         displaySearchTable();
-        searchCountLabel.setText("Showing results " + (searchCount == 0 ? startIndex : startIndex + 1) + " - " + (endIndex) + " of " + searchCount);
     }
 
     /**
@@ -731,6 +730,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         }
 
         startIndex += ROWS_PER_PAGE;
+        updateCountLabel(searchTableView.getCount());
         search();
     }
 
@@ -741,6 +741,12 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         }
 
         startIndex -= ROWS_PER_PAGE;
+        updateCountLabel(searchTableView.getCount());
         search();
+    }
+
+    private void updateCountLabel(int countValue) {
+        endIndex = Math.min(startIndex + ROWS_PER_PAGE, countValue);
+        searchCountLabel.setText("Showing results " + (searchCount != 0 ? startIndex : startIndex + 1) + " - " + (endIndex) + " of " + countValue);
     }
 }

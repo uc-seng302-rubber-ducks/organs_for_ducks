@@ -8,7 +8,7 @@ import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
-import odms.controller.gui.widget.LoadingWidget;
+import odms.controller.gui.widget.CountableLoadingWidget;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -32,7 +32,7 @@ public class TransplantBridge extends Bifrost {
      * @param observableList observable list to populate when the call is successful
      * @param widget         widget to stop loading when the call is finished
      */
-    public void getWaitingList(int startIndex, int count, String name, String region, Collection<Organs> organs, ObservableList<TransplantDetails> observableList, LoadingWidget widget) {
+    public void getWaitingList(int startIndex, int count, String name, String region, Collection<Organs> organs, ObservableList<TransplantDetails> observableList, CountableLoadingWidget widget) {
         StringBuilder url = new StringBuilder(ip);
         url.append("/transplantList?count=").append(count);
         url.append("&startIndex=").append(startIndex);
