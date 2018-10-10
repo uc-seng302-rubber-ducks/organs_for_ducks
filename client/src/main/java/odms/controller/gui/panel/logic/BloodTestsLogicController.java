@@ -12,7 +12,7 @@ import odms.commons.model.event.UpdateNotificationEvent;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.popup.view.NewBloodTestViewController;
-import odms.controller.gui.widget.LoadingWidget;
+import odms.controller.gui.widget.CountableLoadingWidget;
 import odms.socket.ServerEventNotifier;
 import utils.StageIconLoader;
 
@@ -162,7 +162,7 @@ public class BloodTestsLogicController implements PropertyChangeListener {
      * @param timeRange The time range to display blood test results from on the graph
      * @param widget widget to stop loading when the call has finished
      */
-    public void updateGraph(String timeRange, LoadingWidget widget) {
+    public void updateGraph(String timeRange, CountableLoadingWidget widget) {
         String startDate = findStartDate(timeRange);
         String endDate = LocalDate.now().toString();
         AppController.getInstance().getBloodTestBridge().getBloodTests(user.getNhi(), startDate, endDate, RESULTS_ON_GRAPH, 0, graphBloodTests, widget);

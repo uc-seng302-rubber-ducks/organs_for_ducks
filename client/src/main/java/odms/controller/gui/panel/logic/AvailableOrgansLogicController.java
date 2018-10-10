@@ -5,7 +5,7 @@ import javafx.collections.ObservableList;
 import odms.commons.model.datamodel.AvailableOrganDetail;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.controller.AppController;
-import odms.controller.gui.widget.LoadingWidget;
+import odms.controller.gui.widget.CountableLoadingWidget;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -39,7 +39,7 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
      * @param region the region to filter by
      * @param widget widget to stop loading when the call has finished
      */
-    public void search(int startIndex, String organ, String region, LoadingWidget widget) {
+    public void search(int startIndex, String organ, String region, CountableLoadingWidget widget) {
         shutdownThreads();
         availableOrganDetails.clear();
         this.organ = organ;
@@ -54,7 +54,7 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
      * Goes to the previous page in the available organs table.
      * @param widget widget to stop loading when the call has finished
      */
-    public void goPrevPage(LoadingWidget widget) {
+    public void goPrevPage(CountableLoadingWidget widget) {
         if (startingIndex - ROWS_PER_PAGE < 0) {
             return;
         }
@@ -67,7 +67,7 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
      * Goes to the next page in the available organs table
      * @param widget widget to stop loading when the call has finished
      */
-    public void goNextPage(LoadingWidget widget) {
+    public void goNextPage(CountableLoadingWidget widget) {
         if (availableOrganDetails.size() < ROWS_PER_PAGE) {
             return;
         }
@@ -92,7 +92,7 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
      * Goes to the next page of the potential matches table
      * @param widget widget to stop loading when the call has finished
      */
-    public void goNextPageMatches(LoadingWidget widget) {
+    public void goNextPageMatches(CountableLoadingWidget widget) {
         if(transplantDetails.size() < ROWS_PER_PAGE){
             return;
         }
@@ -106,7 +106,7 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
      * @param startingIndexMatches how many entries to skip before returning
      * @param widget widget to stop loading when the call has finished
      */
-    private void searchMatches(int startingIndexMatches, LoadingWidget widget) {
+    private void searchMatches(int startingIndexMatches, CountableLoadingWidget widget) {
         if(availableOrgan == null){
             return;
         }
@@ -120,7 +120,7 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
      * Goes to the previous page of the potential matches table
      * @param widget widget to stop loading when the call has finished
      */
-    public void goPrevPageMatches(LoadingWidget widget) {
+    public void goPrevPageMatches(CountableLoadingWidget widget) {
         if (startingIndexMatches - ROWS_PER_PAGE < 0) {
             return;
         }
@@ -134,7 +134,7 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
      * @param selectedItem selected item in the available organs list
      * @param widget widget to stop loading when the call has finished
      */
-    public void showMatches(AvailableOrganDetail selectedItem, LoadingWidget widget) {
+    public void showMatches(AvailableOrganDetail selectedItem, CountableLoadingWidget widget) {
         this.availableOrgan = selectedItem;
         searchMatches(0, widget);
     }

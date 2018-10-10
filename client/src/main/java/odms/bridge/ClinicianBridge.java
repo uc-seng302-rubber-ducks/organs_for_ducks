@@ -11,7 +11,7 @@ import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
 import odms.commons.utils.PhotoHelper;
 import odms.controller.AppController;
-import odms.controller.gui.widget.LoadingWidget;
+import odms.controller.gui.widget.CountableLoadingWidget;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -26,7 +26,7 @@ public class ClinicianBridge extends RoleBridge {
         super(client);
     }
 
-    public void getClinicians(int startIndex, int count, String name, String region, String token, LoadingWidget clinicianTableView) {
+    public void getClinicians(int startIndex, int count, String name, String region, String token, CountableLoadingWidget clinicianTableView) {
         String url = ip + "/clinicians?startIndex=" + startIndex + "&count=" + count + "&q=" + name + "&region=" + region;
         Request request = new Request.Builder().addHeader(tokenHeader, token).url(url).build();
         client.newCall(request).enqueue(new Callback() {
