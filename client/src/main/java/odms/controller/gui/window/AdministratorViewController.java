@@ -491,7 +491,6 @@ public class AdministratorViewController implements PropertyChangeListener, User
         String filename = fileSelectorController.getFileSelector(stage, extensions);
         if (filename == null) {
             Log.warning(FILE_NAME_NOT_FOUND);
-            fileNotFoundLabel.setVisible(true);
             return;
         }
         importRoleJson(Administrator.class, filename);
@@ -510,7 +509,6 @@ public class AdministratorViewController implements PropertyChangeListener, User
         String filename = fileSelectorController.getFileSelector(stage, extensions);
         if (filename == null) {
             Log.warning(FILE_NAME_NOT_FOUND);
-            fileNotFoundLabel.setVisible(true);
             return;
         }
         Log.info(messageAdmin + administrator.getUserName() + " Importing Clinician profiles");
@@ -529,7 +527,6 @@ public class AdministratorViewController implements PropertyChangeListener, User
         String filename = fileSelectorController.getFileSelector(stage, extensions);
         if (filename == null) {
             Log.warning(FILE_NAME_NOT_FOUND);
-            fileNotFoundLabel.setVisible(true);
             return;
         }
         Log.info(messageAdmin + administrator.getUserName() + " Importing User profiles");
