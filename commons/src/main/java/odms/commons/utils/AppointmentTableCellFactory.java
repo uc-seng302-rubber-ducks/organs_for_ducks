@@ -1,7 +1,6 @@
 package odms.commons.utils;
 
 import javafx.scene.control.TableCell;
-import javafx.scene.paint.Color;
 import odms.commons.model._enum.AppointmentStatus;
 
 public class AppointmentTableCellFactory {
@@ -22,16 +21,15 @@ public class AppointmentTableCellFactory {
             public void updateItem(final AppointmentStatus item, final boolean empty) {
                 super.updateItem(item, empty);
                 if (item != null) {
-                    this.getStyleClass().clear();
                     if (this.getItem().equals(AppointmentStatus.UPDATED)) {
-                        this.setTextFill(Color.BLUE);
+                        this.setStyle("-fx-text-fill: blue");
                     } else if (this.getItem().equals(AppointmentStatus.ACCEPTED)
                             || this.getItem().equals(AppointmentStatus.ACCEPTED_SEEN)) {
-                        this.setTextFill(Color.LIMEGREEN);
+                        this.setStyle("-fx-text-fill: limegreen");
                     } else if (this.getItem().equals(AppointmentStatus.PENDING)) {
-                        this.setTextFill(Color.GOLDENROD);
+                        this.setStyle("-fx-text-fill: goldenrod");
                     } else {
-                        this.setTextFill(Color.RED);
+                        this.setStyle("-fx-text-fill: red");
                     }
                     setText(item.toString());
                 }
