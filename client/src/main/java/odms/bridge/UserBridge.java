@@ -10,12 +10,13 @@ import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.ComboBoxClinician;
 import odms.commons.model.datamodel.Medication;
 import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
+import odms.commons.model.dto.CollectionCountsTransferObject;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.Log;
 import odms.commons.utils.PhotoHelper;
 import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
-import odms.controller.gui.widget.LoadingWidget;
+import odms.controller.gui.widget.CountableLoadingWidget;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -28,16 +29,11 @@ public class UserBridge extends RoleBridge {
     public static final String COULD_NOT_MAKE_A_CALL_TO = "Could not make a call to ";
     private static final String FAILED_TO_POST_TO = "Failed to POST to ";
 
-    private Call inProgress;
-
     public UserBridge(OkHttpClient client) {
         super(client);
     }
 
-    public void getUsers(int startIndex, int count, String name, String region, String gender, String token, LoadingWidget tableview) {
-       if (inProgress != null) {
-            inProgress.cancel();
-        }
+    public void getUsers(int startIndex, int count, String name, String region, String gender, String token, CountableLoadingWidget tableview) {
         String url = ip + "/users?startIndex=" + startIndex + "&count=" + count + "&name=" + name + "&region=" + region + "&gender=" + gender;
         Request request = new Request.Builder().header(tokenHeader, token).url(url).tag("Tag").build();
         client.newCall(request).enqueue(new Callback() {
@@ -48,12 +44,16 @@ public class UserBridge extends RoleBridge {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                Collection<UserOverview> overviews = new Gson().fromJson(response.body().string(), new TypeToken<Collection<UserOverview>>() {
+                CollectionCountsTransferObject<UserOverview> result = new Gson().fromJson(response.body().string(), new TypeToken<CollectionCountsTransferObject<UserOverview>>() {
                 }.getType());
+                Collection<UserOverview> overviews = result.getCollection();
                 AppController.getInstance().getUserOverviews().clear();
                 AppController.getInstance().addUserOverviews(overviews);
-                if (overviews.isEmpty() && tableview != null) {
-                    Platform.runLater(() -> tableview.setWaiting(false));
+                if (tableview != null) {
+                    Platform.runLater(() -> {
+                        if (overviews.isEmpty()) tableview.setWaiting(false);
+                        tableview.setCount(result.getTotalCount());
+                    });
                 }
                 response.close();
             }
