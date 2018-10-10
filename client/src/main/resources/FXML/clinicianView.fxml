@@ -8,7 +8,8 @@
 <?import javafx.scene.text.*?>
 <?import odms.controller.gui.widget.CountableLoadingTableView?>
 <?import java.lang.String?>
-<AnchorPane prefHeight="800.0" prefWidth="1200.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.ClinicianController">
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="800.0" prefWidth="1200.0" stylesheets="@../gui.css"
+            xmlns="http://javafx.com/javafx/8.0.121" fx:controller="odms.controller.gui.window.ClinicianController">
     <children>
         <MenuBar prefHeight="37.0" prefWidth="619.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <menus>
@@ -39,13 +40,16 @@
                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="851.0" minWidth="10.0" prefWidth="10.0" />
                             </columnConstraints>
                             <rowConstraints>
+                                <RowConstraints maxHeight="75.0" minHeight="50.0" prefHeight="55.0" vgrow="SOMETIMES"/>
                                 <RowConstraints maxHeight="75.0" minHeight="50.0" prefHeight="55.0" vgrow="SOMETIMES" />
                                 <RowConstraints maxHeight="301.0" minHeight="10.0" prefHeight="231.0" vgrow="SOMETIMES" />
                                 <RowConstraints maxHeight="362.0" minHeight="10.0" prefHeight="231.0" vgrow="SOMETIMES" />
                                 <RowConstraints maxHeight="486.0" minHeight="10.0" prefHeight="200.0" vgrow="SOMETIMES" />
                             </rowConstraints>
                             <children>
-                                <GridPane layoutX="128.0" layoutY="397.0" prefHeight="232.0" prefWidth="420.0" AnchorPane.leftAnchor="128.0" GridPane.columnIndex="3" GridPane.rowIndex="1" GridPane.rowSpan="2">
+                                <GridPane layoutX="128.0" layoutY="397.0" prefHeight="232.0" prefWidth="420.0"
+                                          AnchorPane.leftAnchor="128.0" GridPane.columnIndex="3" GridPane.rowIndex="2"
+                                          GridPane.rowSpan="2">
                                     <columnConstraints>
                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="204.0" minWidth="10.0" prefWidth="137.0" />
                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="290.0" minWidth="10.0" prefWidth="283.0" />
@@ -110,7 +114,9 @@
                                         </Label>
                                     </children>
                                 </GridPane>
-                                <Label layoutX="19.0" layoutY="343.0" styleClass="label-sub-title" text="Work Address Details" GridPane.columnIndex="3" GridPane.valignment="BOTTOM">
+                                <Label layoutX="19.0" layoutY="343.0" styleClass="label-sub-title"
+                                       text="Work Address Details" underline="true" GridPane.columnIndex="3"
+                                       GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
                                     <font>
                                         <Font size="24.0" />
                                     </font>
@@ -118,7 +124,9 @@
                                         <Insets bottom="5.0" />
                                     </GridPane.margin>
                                 </Label>
-                                <Label layoutX="19.0" layoutY="343.0" styleClass="label-sub-title" text="Personal Details" AnchorPane.rightAnchor="479.0" GridPane.columnIndex="1" GridPane.valignment="BOTTOM">
+                                <Label layoutX="19.0" layoutY="343.0" styleClass="label-sub-title"
+                                       text="Personal Details" underline="true" AnchorPane.rightAnchor="479.0"
+                                       GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
                                     <font>
                                         <Font size="24.0" />
                                     </font>
@@ -126,7 +134,7 @@
                                         <Insets bottom="5.0" />
                                     </padding>
                                 </Label>
-                                <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.rowSpan="2">
+                                <GridPane GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.rowSpan="2">
                                     <columnConstraints>
                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="359.0" minWidth="10.0" prefWidth="302.0" />
                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="208.0" minWidth="10.0" prefWidth="162.0" />
@@ -183,7 +191,7 @@
                                         </Label>
                                     </children>
                                 </GridPane>
-                                <Separator prefWidth="200.0" GridPane.columnSpan="5" GridPane.valignment="BOTTOM" />
+                                <Label styleClass="label-main-title" text="Clinician Details" GridPane.columnIndex="1"/>
                             </children>
                         </GridPane>
                     </content>
