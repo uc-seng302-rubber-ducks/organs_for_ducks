@@ -14,16 +14,18 @@
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="167.0" prefWidth="336.0">
                      <children>
-                        <GridPane hgap="10.0" layoutY="51.0" prefHeight="292.0" prefWidth="395.0">
+                        <GridPane hgap="10.0" layoutY="51.0" prefHeight="341.0" prefWidth="395.0">
                            <children>
                               <VBox alignment="CENTER_LEFT" GridPane.columnIndex="1">
                                  <children>
+                                    <Label styleClass="label-error" visible="false" wrapText="true" />
                                     <TextField fx:id="nhiInput" prefHeight="25.0" prefWidth="131.0" />
                                     <Label fx:id="nhiErrorLabel" styleClass="label-error" visible="false" wrapText="true" />
                                  </children>
                               </VBox>
                               <VBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <children>
+                                    <Label styleClass="label-error" visible="false" wrapText="true" />
                                     <TextField fx:id="fNameInput" alignment="TOP_LEFT" prefHeight="25.0" prefWidth="162.0" />
                                     <Label fx:id="fNameErrorLabel" styleClass="label-error" text="First names cannot be empty or contain special characters." visible="false" wrapText="true" />
                                  </children>
@@ -60,16 +62,16 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                         </GridPane>
-                        <Button layoutX="544.0" layoutY="301.0" mnemonicParsing="false" onAction="#resetProfileImage" text="Reset profile image" />
-                        <VBox layoutX="409.0" layoutY="301.0">
+                        <Button layoutX="555.0" layoutY="337.0" mnemonicParsing="false" onAction="#resetProfileImage" text="Reset profile image" />
+                        <VBox layoutX="408.0" layoutY="337.0">
                            <children>
                               <Button mnemonicParsing="false" onAction="#uploadImage" text="Upload photo" />
                               <Label fx:id="photoErrorLabel" styleClass="label-error" text="The maximum file size is 2MB" visible="false" />
                            </children>
                         </VBox>
-                        <ImageView fx:id="profileImage" fitHeight="216.0" fitWidth="298.0" layoutX="393.0" layoutY="62.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fx:id="profileImage" fitHeight="216.0" fitWidth="273.0" layoutX="405.0" layoutY="81.0" pickOnBounds="true" preserveRatio="true" />
                         <Separator layoutY="30.0" prefHeight="9.0" prefWidth="706.0" />
-                        <Label layoutX="7.0" layoutY="7.0" styleClass="label-sub-title" text="User Details" />
+                        <Label layoutX="7.0" layoutY="9.0" styleClass="label-sub-title" text="User Details" />
                      </children>
                   </AnchorPane>
                </content>
@@ -102,6 +104,7 @@
                               </ComboBox>
                               <VBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                  <children>
+                                    <Label styleClass="label-error" visible="false" wrapText="true" />
                                     <TextField fx:id="heightInput" prefHeight="25.0" prefWidth="375.0" />
                                     <Label fx:id="heightErrorLabel" styleClass="label-error" text="This must be a positive integer" visible="false" />
                                  </children>
@@ -193,16 +196,18 @@
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="463.0" prefWidth="694.0">
                      <children>
-                        <GridPane layoutY="42.0" prefHeight="306.0" prefWidth="682.0">
+                        <GridPane layoutY="42.0" prefHeight="343.0" prefWidth="682.0">
                            <children>
                               <VBox alignment="CENTER_LEFT" GridPane.columnIndex="1">
                                  <children>
+                                    <Label styleClass="label-error" visible="false" wrapText="true" />
                                     <TextField fx:id="phone" />
                                     <Label fx:id="phoneErrorLabel" styleClass="label-error" text="Invalid phone number" visible="false" />
                                  </children>
                               </VBox>
                               <VBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <children>
+                                    <Label styleClass="label-error" visible="false" wrapText="true" />
                                     <TextField fx:id="cell" />
                                     <Label fx:id="cellErrorLabel" styleClass="label-error" text="Invalid cell number" visible="false" />
                                  </children>
@@ -299,10 +304,11 @@
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <GridPane layoutY="38.0" prefHeight="316.0" prefWidth="675.0">
+                        <GridPane layoutY="23.0" prefHeight="389.0" prefWidth="675.0">
                            <children>
                               <VBox GridPane.columnIndex="1">
                                  <children>
+                                    <Label styleClass="label-error" visible="false" wrapText="true" />
                                     <TextField fx:id="ecName">
                                        <VBox.margin>
                                           <Insets />
@@ -312,12 +318,14 @@
                               </VBox>
                               <VBox GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <children>
+                                    <Label styleClass="label-error" visible="false" wrapText="true" />
                                     <TextField fx:id="ecPhone" />
                                     <Label fx:id="ecPhoneErrorLabel" styleClass="label-error" text="Invalid phone number" visible="false" />
                                  </children>
                               </VBox>
                               <VBox GridPane.columnIndex="1" GridPane.rowIndex="2">
                                  <children>
+                                    <Label styleClass="label-error" visible="false" wrapText="true" />
                                     <TextField fx:id="ecCell" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                     <Label fx:id="ecCellPhoneErrorLabel" styleClass="label-error" text="Invalid cell number" visible="false" />
                                  </children>
@@ -330,12 +338,14 @@
                               <ComboBox fx:id="ecRegionSelector" prefHeight="27.0" prefWidth="201.0" GridPane.columnIndex="4" />
                               <VBox GridPane.columnIndex="4" GridPane.rowIndex="1">
                                  <children>
+                                    <Label styleClass="label-error" visible="false" wrapText="true" />
                                     <TextField fx:id="ecZipCode" />
                                     <Label fx:id="ecZipCodeErrorLabel" styleClass="label-error" text="Label" visible="false" />
                                  </children>
                               </VBox>
                               <VBox GridPane.columnIndex="4" GridPane.rowIndex="3">
                                  <children>
+                                    <Label styleClass="label-error" visible="false" wrapText="true" />
                                     <TextField fx:id="ecEmail" />
                                     <Label fx:id="ecEmailErrorLabel" styleClass="label-error" text="Label" visible="false" />
                                  </children>
@@ -397,7 +407,7 @@
                         </GridPane>
                         <Separator layoutY="29.0" prefHeight="9.0" prefWidth="706.0" />
                         <Label layoutX="7.0" layoutY="7.0" styleClass="label-sub-title" text="Emergency Contact" />
-                        <Separator layoutX="-6.0" layoutY="357.0" prefHeight="4.0" prefWidth="710.0" />
+                        <Separator layoutX="-6.0" layoutY="402.0" prefHeight="4.0" prefWidth="710.0" />
                      </children></AnchorPane>
                </content>
             </Tab>
@@ -447,9 +457,9 @@
             </Tab>
          </tabs>
       </TabPane>
-      <Label layoutX="11.0" layoutY="10.0" styleClass="label-sub-title" text="Update User" />
-      <Label fx:id="genericErrorLabel" layoutX="88.0" layoutY="449.0" styleClass="label-error" text="There is an error with one of the entered fields. Please double check your input" visible="false" />
-      <Button fx:id="UserCancelButton" layoutX="15.0" layoutY="514.0" mnemonicParsing="false" onAction="#goBack" text="Cancel" />
-      <Button fx:id="updateProfileButton" layoutX="577.0" layoutY="516.0" mnemonicParsing="false" onAction="#confirmUpdate" text="Update Profile" />
+      <Label layoutX="11.0" layoutY="10.0" styleClass="label-main-title" text="Update User" />
+      <Label fx:id="genericErrorLabel" layoutX="340.0" layoutY="449.0" prefHeight="26.0" prefWidth="350.0" styleClass="label-error" text="There is an error with one of the entered fields. Please double check your input" visible="false" />
+      <Button fx:id="UserCancelButton" layoutX="11.0" layoutY="507.0" mnemonicParsing="false" onAction="#goBack" text="Cancel" />
+      <Button fx:id="updateProfileButton" layoutX="584.0" layoutY="507.0" mnemonicParsing="false" onAction="#confirmUpdate" text="Update Profile" />
    </children>
 </AnchorPane>
