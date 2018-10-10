@@ -4,13 +4,13 @@
 <?import javafx.scene.layout.*?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.popup.CountrySelectionController">
     <children>
-        <Button fx:id="saveCountrySelection" layoutX="470.0" layoutY="338.0" mnemonicParsing="false" onAction="#saveCountriesSelection" prefHeight="25.0" prefWidth="72.0" text="Save" AnchorPane.bottomAnchor="37.0" AnchorPane.leftAnchor="470.0" AnchorPane.rightAnchor="58.0" />
-        <Button fx:id="cancelCountrySelection" layoutX="58.0" layoutY="338.0" mnemonicParsing="false" onAction="#cancelCountrySelection" prefHeight="25.0" prefWidth="72.0" text="Cancel" AnchorPane.bottomAnchor="37.0" AnchorPane.leftAnchor="58.0" AnchorPane.rightAnchor="470.0" />
-        <TextField fx:id="searchCountry" layoutX="146.0" layoutY="41.0" onKeyReleased="#getDesiredCountries" prefHeight="25.0" prefWidth="308.0" AnchorPane.leftAnchor="146.0" AnchorPane.rightAnchor="146.0" AnchorPane.topAnchor="41.0" />
-        <ListView fx:id="countrySelection" layoutX="130.0" layoutY="102.0" prefHeight="216.0" prefWidth="340.0" AnchorPane.bottomAnchor="82.0" AnchorPane.leftAnchor="130.0" AnchorPane.rightAnchor="130.0" AnchorPane.topAnchor="102.0" />
-        <CheckBox fx:id="selectDeselectCountries" layoutX="130.0" layoutY="76.0" mnemonicParsing="false" onAction="#selectDeselectAll" prefHeight="20.0" prefWidth="156.0" styleClass="label-title" text="Select/Deselect All" AnchorPane.leftAnchor="130.0" AnchorPane.rightAnchor="314.0" AnchorPane.topAnchor="76.0" />
-        <Button layoutX="398.0" layoutY="73.0" mnemonicParsing="false" onAction="#resetInitialCountries" prefHeight="25.0" prefWidth="72.0" text="Reset" AnchorPane.leftAnchor="398.0" AnchorPane.rightAnchor="130.0" AnchorPane.topAnchor="73.0" />
-        <Label layoutX="81.0" layoutY="46.0" styleClass="label-title" text="Search:" />
-        <Label layoutX="235.0" layoutY="14.0" styleClass="label-sub-title" text="Country Selection" />
+        <Button fx:id="saveCountrySelection" layoutX="514.0" layoutY="356.0" mnemonicParsing="false" onAction="#saveCountriesSelection" prefHeight="25.0" prefWidth="72.0" text="Save" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+        <Button fx:id="cancelCountrySelection" layoutX="14.0" layoutY="356.0" mnemonicParsing="false" onAction="#cancelCountrySelection" prefHeight="25.0" prefWidth="72.0" text="Cancel" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" />
+        <TextField fx:id="searchCountry" layoutX="131.0" layoutY="41.0" onKeyReleased="#getDesiredCountries" prefHeight="27.0" prefWidth="340.0" AnchorPane.leftAnchor="130.0" AnchorPane.rightAnchor="130.0" AnchorPane.topAnchor="40.0" />
+        <ListView fx:id="countrySelection" layoutX="130.0" layoutY="125.0" prefHeight="216.0" prefWidth="340.0" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="130.0" AnchorPane.rightAnchor="130.0" AnchorPane.topAnchor="125.0" />
+        <CheckBox fx:id="selectDeselectCountries" layoutX="130.0" layoutY="86.0" mnemonicParsing="false" onAction="#selectDeselectAll" prefHeight="20.0" prefWidth="156.0" styleClass="label-title" text="Select/Deselect All" AnchorPane.leftAnchor="130.0" AnchorPane.topAnchor="85.0" />
+        <Button layoutX="398.0" layoutY="81.0" mnemonicParsing="false" onAction="#resetInitialCountries" prefHeight="25.0" prefWidth="72.0" text="Reset" AnchorPane.rightAnchor="130.0" AnchorPane.topAnchor="80.0" />
+        <Label layoutX="64.0" layoutY="46.0" styleClass="label-title" text="Search:" AnchorPane.leftAnchor="65.0" AnchorPane.topAnchor="45.0" />
+        <Label alignment="CENTER" layoutX="131.0" layoutY="14.0" prefHeight="16.0" prefWidth="340.0" styleClass="label-sub-title" text="Country Selection" AnchorPane.leftAnchor="130.0" AnchorPane.rightAnchor="130.0" />
     </children>
 </AnchorPane>
