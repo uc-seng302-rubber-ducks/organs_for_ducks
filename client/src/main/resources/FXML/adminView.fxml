@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<?import odms.controller.gui.widget.LoadingTableView?>
+<?import odms.controller.gui.widget.CountableLoadingTableView?>
 <?import java.lang.String?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.AdministratorViewController">
     <children>
@@ -165,22 +165,22 @@
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="617.0">
                                     <children>
-                                        <LoadingTableView fx:id="adminTableView" layoutY="32.0" prefHeight="240.0" prefWidth="592.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="0.0">
+                                        <CountableLoadingTableView fx:id="adminTableView" layoutY="32.0" prefHeight="240.0" prefWidth="592.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="0.0">
                                             <tooltip>
                                                 <Tooltip fx:id="searchToolTip" text="Empty Tooltip" />
                                             </tooltip>
-                                        </LoadingTableView>
+                                        </CountableLoadingTableView>
                                         <Label fx:id="searchCountLabel" layoutX="14.0" layoutY="336.0" text="" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" />
-                                        <LoadingTableView fx:id="clinicianTableView" prefHeight="240.0" prefWidth="592.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="0.0">
+                                        <CountableLoadingTableView fx:id="clinicianTableView" prefHeight="240.0" prefWidth="592.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="0.0">
                                             <tooltip>
                                                 <Tooltip fx:id="searchToolTip1" text="Empty Tooltip" />
                                             </tooltip>
-                                        </LoadingTableView>
-                                        <LoadingTableView fx:id="userTableView" prefHeight="214.0" prefWidth="595.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="0.0">
+                                        </CountableLoadingTableView>
+                                        <CountableLoadingTableView fx:id="userTableView" prefHeight="214.0" prefWidth="595.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="0.0">
                                             <tooltip>
                                                 <Tooltip fx:id="searchToolTip2" text="Empty Tooltip" />
                                             </tooltip>
-                                        </LoadingTableView>
+                                        </CountableLoadingTableView>
                                         <HBox alignment="CENTER" layoutX="260.0" layoutY="191.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                             <children>
                                                 <Button alignment="CENTER" layoutX="260.0" layoutY="191.0" mnemonicParsing="false" onAction="#goToPrevPage" text="&lt;&lt;" />

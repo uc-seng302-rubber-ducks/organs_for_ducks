@@ -8,7 +8,7 @@ import odms.commons.model.Administrator;
 import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
-import odms.controller.gui.widget.LoadingWidget;
+import odms.controller.gui.widget.CountableLoadingWidget;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -35,7 +35,7 @@ public class AdministratorBridge extends RoleBridge {
      * @param token          authentication token to put in the header
      * @param adminTableView loading table widget to turn off the waiting property of when the call has received a response
      */
-    public void getAdmins(int startIndex, int count, String name, String token, LoadingWidget adminTableView) {
+    public void getAdmins(int startIndex, int count, String name, String token, CountableLoadingWidget adminTableView) {
         String url = ip + "/admins?startIndex=" + startIndex + "&count=" + count + "&q=" + name;
         Request request = new Request.Builder().url(url).addHeader("x-auth-token", token).build();
         client.newCall(request).enqueue(new Callback() {

@@ -3,6 +3,7 @@ package odms.controller;
 import odms.commons.model.User;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model.datamodel.ComboBoxClinician;
+import odms.commons.model.dto.CollectionCountsTransferObject;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.Log;
 import odms.database.DBHandler;
@@ -51,16 +52,17 @@ public class UserController extends BaseController {
     @RequestMapping(
             method = RequestMethod.GET,
             value = "/users")
-    public Collection<UserOverview> getUsers(@RequestParam("startIndex") int startIndex,
+    public CollectionCountsTransferObject<UserOverview> getUsers(@RequestParam("startIndex") int startIndex,
                                              @RequestParam("count") int count,
                                              @RequestParam(value = "name", required = false) String name,
                                              @RequestParam(value = "region", required = false) String region,
                                              @RequestParam(value = "gender", required = false, defaultValue = "All") String gender) {
         try (Connection connection = driver.getConnection()) {
-            Collection<User> rawUsers = handler.getUsers(connection, count, startIndex, name, region, gender.equals("All") ? "" : gender);
+            CollectionCountsTransferObject<User> rawUsers = handler.getUsers(connection, count, startIndex, name, region, gender.equals("All") ? "" : gender);
+
             Log.info("Getting all user overviews...");
             //converts each user in the collection to a userOverview and returns it
-            return rawUsers.stream().map(UserOverview::fromUser).collect(Collectors.toList());
+            return new CollectionCountsTransferObject<>(rawUsers.getCollection().stream().map(UserOverview::fromUser).collect(Collectors.toList()), rawUsers.getTotalCount());
         } catch (SQLException ex) {
             Log.warning("cannot load all user data from database", ex);
             throw new ServerDBException(ex);
