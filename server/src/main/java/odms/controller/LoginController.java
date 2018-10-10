@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 @OdmsController
@@ -34,10 +35,10 @@ public class LoginController extends BaseController {
     @ResponseBody
     public Object login(@RequestBody LoginRequest auth) {
         boolean validLogin;
-        try {
+        try (Connection connection = getDriver().getConnection()) {
             String role = auth.getRole().toString();
             validLogin = getHandler().isValidLogIn(
-                    getDriver().getConnection(), auth.getPassword(), auth.getUsername(),role);
+                    connection, auth.getPassword(), auth.getUsername(), role);
         } catch (SQLException e) {
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
