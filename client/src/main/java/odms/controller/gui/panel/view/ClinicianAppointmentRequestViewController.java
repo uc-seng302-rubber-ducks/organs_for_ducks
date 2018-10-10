@@ -31,7 +31,7 @@ import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.controller.gui.widget.CalendarEntryFactory;
 import odms.controller.gui.widget.CalendarWidget;
 import odms.controller.gui.widget.CalendarWidgetFactory;
-import odms.controller.gui.widget.LoadingTableView;
+import odms.controller.gui.widget.CountableLoadingTableView;
 import odms.socket.ServerEventNotifier;
 import utils.Converter;
 
@@ -44,7 +44,7 @@ public class ClinicianAppointmentRequestViewController implements Converter {
 
 
     @FXML
-    private LoadingTableView<Appointment> clinicianAppointmentsRequestView;
+    private CountableLoadingTableView<Appointment> clinicianAppointmentsRequestView;
 
     @FXML
     private DatePicker appointmentRequestDate;

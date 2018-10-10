@@ -2,6 +2,7 @@ package odms.controller;
 
 import odms.commons.model.User;
 import odms.commons.model.datamodel.ComboBoxClinician;
+import odms.commons.model.dto.CollectionCountsTransferObject;
 import odms.commons.model.dto.UserOverview;
 import odms.database.DBHandler;
 import odms.database.JDBCDriver;
@@ -58,8 +59,8 @@ public class UserControllerTest {
         Collection<User> users = new ArrayList<>();
         users.add(testUser);
         UserOverview expected = UserOverview.fromUser(testUser);
-        when(handler.getUsers(any(Connection.class), anyInt(), anyInt(), anyString(), anyString(), anyString())).thenReturn(users);
-        List<UserOverview> results = new ArrayList<>(controller.getUsers(0, 1, "", "", ""));
+        when(handler.getUsers(any(Connection.class), anyInt(), anyInt(), anyString(), anyString(), anyString())).thenReturn(new CollectionCountsTransferObject<>(users, 1));
+        List<UserOverview> results = new ArrayList<>(controller.getUsers(0, 1, "", "", "").getCollection());
 
         Assert.assertEquals(expected, results.get(0));
         Assert.assertEquals(1, results.size());

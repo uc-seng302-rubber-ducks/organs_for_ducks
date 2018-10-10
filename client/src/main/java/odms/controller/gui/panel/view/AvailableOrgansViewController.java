@@ -18,7 +18,7 @@ import odms.commons.model.datamodel.AvailableOrganDetail;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.utils.ProgressTask;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
-import odms.controller.gui.widget.LoadingTableView;
+import odms.controller.gui.widget.CountableLoadingTableView;
 import odms.controller.gui.widget.ProgressBarTableCellFactory;
 import odms.services.TimeRemainingComparator;
 
@@ -29,7 +29,7 @@ import java.util.Comparator;
 public class AvailableOrgansViewController {
 
     @FXML
-    private LoadingTableView<AvailableOrganDetail> availableOrgansTableView;
+    private CountableLoadingTableView<AvailableOrganDetail> availableOrgansTableView;
 
     @FXML
     private ComboBox<String> availableOrganFilterComboBox;
@@ -53,7 +53,7 @@ public class AvailableOrgansViewController {
     private TableColumn<AvailableOrganDetail, ProgressTask> progressBarColumn;
 
     @FXML
-    private LoadingTableView<TransplantDetails> matchesView;
+    private CountableLoadingTableView<TransplantDetails> matchesView;
 
 
     private ObservableList<AvailableOrganDetail> availableOrganDetails = FXCollections.observableList(new ArrayList<>());
