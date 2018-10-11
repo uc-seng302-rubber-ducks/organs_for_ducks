@@ -204,6 +204,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
         adminCliTextArea.setEditable(false);
         adminCliTextArea.setFont(Font.font("DialogInput"));
         adminCliTextArea.setFocusTraversable(false);
+        adminCliTextArea.setText("Welcome to the Command Line.\nEnter your command or type 'help' for help.\n");
         cliInputTextField.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
                 sendInputToCLI();
