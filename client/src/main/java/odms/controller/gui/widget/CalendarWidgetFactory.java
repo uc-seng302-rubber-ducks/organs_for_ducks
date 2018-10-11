@@ -122,7 +122,7 @@ public class CalendarWidgetFactory {
             } else if (evt.getOldInterval() != null) { // Only put if the times has changed
                 Entry<Appointment> entry = (Entry<Appointment>) evt.getEntry();
                 if (entry != null && !entry.getProperties().containsKey(QUIET_MODE)) {
-                    if (checkNoClashes(calendarView, entry)) {
+                    if (!checkNoClashes(calendarView, entry)) {
                         entry.getProperties().put(QUIET_MODE, true);
                         entry.setInterval(evt.getOldInterval());
                         entry.getProperties().remove(QUIET_MODE);
