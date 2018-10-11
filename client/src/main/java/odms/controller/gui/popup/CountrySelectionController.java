@@ -40,6 +40,8 @@ public class CountrySelectionController {
         this.stage = stage;
         this.appController = appController;
         allowedCountries = appController.getAllowedCountries();
+        stage.setResizable(false);
+        stage.setTitle("Country Configuration");
         initCountrySelectionList();
     }
 

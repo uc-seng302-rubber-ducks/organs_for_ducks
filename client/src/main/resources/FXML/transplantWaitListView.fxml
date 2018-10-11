@@ -3,37 +3,36 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import odms.controller.gui.widget.CountableLoadingTableView?>
-<SplitPane xmlns:fx="http://javafx.com/fxml/1" dividerPositions="0.5" orientation="VERTICAL" prefHeight="400.0"
-           prefWidth="600.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8"
-           fx:controller="odms.controller.gui.panel.TransplantWaitListController">
+<SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="690.0" prefWidth="1168.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.panel.TransplantWaitListController">
     <items>
         <AnchorPane maxHeight="115.0" minHeight="115.0" prefHeight="200.0" prefWidth="200.0">
             <children>
-                <Label layoutX="21.0" layoutY="23.0" styleClass="label-title" text="Region: "
-                       AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="18.0"/>
-                <Label layoutX="14.0" layoutY="43.0" styleClass="label-title" text="Organ:"/>
-                <CheckBox fx:id="boneCheckBox" layoutX="68.0" layoutY="42.0" mnemonicParsing="false" text="Bone" AnchorPane.leftAnchor="68.0" AnchorPane.topAnchor="42.0" />
-                <CheckBox fx:id="boneMarrowCheckBox" layoutX="148.0" layoutY="42.0" mnemonicParsing="false" text="Bone Marrow" AnchorPane.leftAnchor="148.0" AnchorPane.topAnchor="42.0" />
-                <CheckBox fx:id="corneaCheckBox" layoutX="277.0" layoutY="42.0" mnemonicParsing="false" text="Cornea" AnchorPane.leftAnchor="277.0" AnchorPane.topAnchor="42.0" />
-                <CheckBox fx:id="connectiveTissueCheckBox" layoutX="365.0" layoutY="42.0" mnemonicParsing="false" text="Connective Tissue" AnchorPane.leftAnchor="365.0" AnchorPane.topAnchor="42.0" />
-                <CheckBox fx:id="heartCheckBox" layoutX="68.0" layoutY="69.0" mnemonicParsing="false" text="Heart" AnchorPane.leftAnchor="68.0" AnchorPane.topAnchor="69.0" />
-                <CheckBox fx:id="middleEarCheckBox" layoutX="148.0" layoutY="69.0" mnemonicParsing="false" text="Middle Ear" AnchorPane.leftAnchor="148.0" AnchorPane.topAnchor="69.0" />
-                <CheckBox fx:id="intestineCheckBox" layoutX="277.0" layoutY="69.0" mnemonicParsing="false" text="Intestine" AnchorPane.leftAnchor="277.0" AnchorPane.topAnchor="69.0" />
-                <CheckBox fx:id="pancreasCheckBox" layoutX="365.0" layoutY="69.0" mnemonicParsing="false" text="Pancreas" AnchorPane.leftAnchor="365.0" AnchorPane.topAnchor="69.0" />
-                <CheckBox fx:id="lungCheckBox" layoutX="68.0" layoutY="92.0" mnemonicParsing="false" text="Lung" AnchorPane.leftAnchor="68.0" AnchorPane.topAnchor="92.0" />
-                <CheckBox fx:id="kidneyCheckBox" layoutX="148.0" layoutY="92.0" mnemonicParsing="false" text="Kidney" AnchorPane.leftAnchor="148.0" AnchorPane.topAnchor="92.0" />
-                <CheckBox fx:id="liverCheckBox" layoutX="277.0" layoutY="92.0" mnemonicParsing="false" text="Liver" AnchorPane.leftAnchor="277.0" AnchorPane.topAnchor="92.0" />
-                <CheckBox fx:id="skinCheckBox" layoutX="365.0" layoutY="92.0" mnemonicParsing="false" text="Skin" AnchorPane.leftAnchor="365.0" AnchorPane.topAnchor="92.0" />
+                <Label layoutX="21.0" layoutY="23.0" styleClass="label-title" text="Region: " AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="18.0" />
+                <Label layoutX="14.0" layoutY="59.0" styleClass="label-title" text="Organ:" />
+                <CheckBox fx:id="boneCheckBox" layoutX="68.0" layoutY="58.0" mnemonicParsing="false" text="Bone" AnchorPane.leftAnchor="68.0" AnchorPane.topAnchor="58.0" />
+                <CheckBox fx:id="boneMarrowCheckBox" layoutX="148.0" layoutY="58.0" mnemonicParsing="false" text="Bone Marrow" AnchorPane.leftAnchor="148.0" AnchorPane.topAnchor="58.0" />
+                <CheckBox fx:id="corneaCheckBox" layoutX="277.0" layoutY="58.0" mnemonicParsing="false" text="Cornea" AnchorPane.leftAnchor="277.0" AnchorPane.topAnchor="58.0" />
+                <CheckBox fx:id="connectiveTissueCheckBox" layoutX="365.0" layoutY="58.0" mnemonicParsing="false" text="Connective Tissue" AnchorPane.leftAnchor="365.0" AnchorPane.topAnchor="58.0" />
+                <CheckBox fx:id="heartCheckBox" layoutX="68.0" layoutY="85.0" mnemonicParsing="false" text="Heart" AnchorPane.leftAnchor="68.0" AnchorPane.topAnchor="85.0" />
+                <CheckBox fx:id="middleEarCheckBox" layoutX="148.0" layoutY="85.0" mnemonicParsing="false" text="Middle Ear" AnchorPane.leftAnchor="148.0" AnchorPane.topAnchor="85.0" />
+                <CheckBox fx:id="intestineCheckBox" layoutX="277.0" layoutY="85.0" mnemonicParsing="false" text="Intestine" AnchorPane.leftAnchor="277.0" AnchorPane.topAnchor="85.0" />
+                <CheckBox fx:id="pancreasCheckBox" layoutX="365.0" layoutY="85.0" mnemonicParsing="false" text="Pancreas" AnchorPane.leftAnchor="365.0" AnchorPane.topAnchor="85.0" />
+                <CheckBox fx:id="lungCheckBox" layoutX="514.0" layoutY="58.0" mnemonicParsing="false" text="Lung" AnchorPane.leftAnchor="514.0" AnchorPane.topAnchor="58.0" />
+                <CheckBox fx:id="kidneyCheckBox" layoutX="514.0" layoutY="85.0" mnemonicParsing="false" text="Kidney" AnchorPane.leftAnchor="514.0" AnchorPane.topAnchor="85.0" />
+                <CheckBox fx:id="liverCheckBox" layoutX="605.0" layoutY="58.0" mnemonicParsing="false" text="Liver" AnchorPane.leftAnchor="605.0" AnchorPane.topAnchor="58.0" />
+                <CheckBox fx:id="skinCheckBox" layoutX="606.0" layoutY="85.0" mnemonicParsing="false" text="Skin" AnchorPane.leftAnchor="606.0" AnchorPane.topAnchor="85.0" />
                 <TextField fx:id="waitingRegionTextfield" layoutX="68.0" layoutY="13.0" prefHeight="25.0" prefWidth="442.0" AnchorPane.leftAnchor="68.0" AnchorPane.rightAnchor="107.0" AnchorPane.topAnchor="13.0" />
             </children>
         </AnchorPane>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
             <children>
-                <CountableLoadingTableView fx:id="transplantWaitListTableView" prefHeight="330.0" prefWidth="617.0"
-                                           AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0"
-                                           AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                <CountableLoadingTableView fx:id="transplantWaitListTableView" prefHeight="330.0" prefWidth="617.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                    </columnResizePolicy>
+                </CountableLoadingTableView>
                 <Label fx:id="filtersLabel" layoutX="14.0" layoutY="222.0" maxWidth="Infinity" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="14.0" />
-            <HBox alignment="CENTER" layoutX="259.0" layoutY="248.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="259.0" AnchorPane.rightAnchor="259.0">
+            <HBox alignment="CENTER" layoutX="259.0" layoutY="250.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="259.0" AnchorPane.rightAnchor="259.0">
                <children>
                   <Button fx:id="transplantPrevPageButton" layoutX="259.0" layoutY="248.0" mnemonicParsing="false" onAction="#getPrevPage" text="&lt;&lt;" />
                   <Button fx:id="transplantNextPageButton" mnemonicParsing="false" onAction="#getNextPage" text="&gt;&gt;" />

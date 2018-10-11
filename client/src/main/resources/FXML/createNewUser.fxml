@@ -6,8 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import odms.controller.gui.widget.*?>
 <?import java.lang.*?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="508.0" prefWidth="694.0" stylesheets="@../gui.css"
-            xmlns="http://javafx.com/javafx/8.0.121" fx:controller="odms.controller.gui.window.NewUserController">
+<AnchorPane prefHeight="508.0" prefWidth="694.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.NewUserController">
    <children>
        <TabPane layoutY="46.0" prefHeight="421.0" prefWidth="711.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
@@ -179,13 +178,11 @@
                            <children>
                               <TextField fx:id="phone" GridPane.columnIndex="1" />
                               <TextField fx:id="cell" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                               <LimitedTextField fx:id="streetNumber" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-                               <LimitedTextField fx:id="street" prefHeight="7.0" prefWidth="183.0"
-                                                 GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-                               <LimitedTextField fx:id="neighborhood" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
-                               <LimitedTextField fx:id="city" GridPane.columnIndex="4"/>
-                               <LimitedTextField fx:id="regionInput" visible="false" GridPane.columnIndex="4"
-                                          GridPane.rowIndex="1"/>
+                              <LimitedTextField fx:id="streetNumber" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <LimitedTextField fx:id="street" prefHeight="7.0" prefWidth="183.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <LimitedTextField fx:id="neighborhood" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                               <LimitedTextField fx:id="city" GridPane.columnIndex="4" />
+                               <LimitedTextField fx:id="regionInput" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="1" />
                                <ComboBox fx:id="regionSelector" prefHeight="27.0" prefWidth="204.0" GridPane.columnIndex="4" GridPane.rowIndex="1" />
                                <TextField fx:id="zipCode" GridPane.columnIndex="4" GridPane.rowIndex="2" />
                                <ComboBox fx:id="countrySelector" onAction="#countrySelectorListener" prefHeight="27.0" prefWidth="207.0" GridPane.columnIndex="4" GridPane.rowIndex="3" />
@@ -363,7 +360,7 @@
             </Tab>
         </tabs>
       </TabPane>
-      <Label fx:id="headerLabel" layoutX="11.0" layoutY="10.0" styleClass="label-sub-title" text="Create New User" />
+      <Label fx:id="headerLabel" layoutX="11.0" layoutY="10.0" styleClass="label-main-title" text="Create New User" />
       <Button fx:id="cancelButton" layoutX="12.0" layoutY="470.0" mnemonicParsing="false" onAction="#cancelCreation" text="Cancel" />
       <Button fx:id="confirmButton" layoutX="606.0" layoutY="471.0" mnemonicParsing="false" onAction="#confirmCreation" text="Create Profile" />
       <Separator layoutX="1.0" layoutY="464.0" prefHeight="4.0" prefWidth="710.0" />

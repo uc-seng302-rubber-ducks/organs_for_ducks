@@ -59,7 +59,6 @@ public class UpdateClinicianController {
     @FXML
     private Label clinicianGenericErrorLabel;
 
-
     @FXML
     private LimitedTextField staffIDTextField;
 
@@ -119,6 +118,8 @@ public class UpdateClinicianController {
 
     @FXML
     private Button confirmButton;
+    @FXML
+    private Button confirmButton1;
 
     @FXML
     private ImageView profileImage;
@@ -155,6 +156,7 @@ public class UpdateClinicianController {
         this.controller = controller;
         this.stage = stage;
         this.ownStage = ownStage;
+        ownStage.setResizable(false);
         countrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
         for (Regions regions : Regions.values()) {
             regionSelector.getItems().add(regions.toString());
@@ -166,6 +168,7 @@ public class UpdateClinicianController {
             ownStage.setTitle("Update Clinician: " + clinician.getFirstName());
             titleLabel.setText("Update Clinician");
             confirmButton.setText("Save Changes");
+            confirmButton1.setText("Save Changes");
 
             initialPath = clinician.getProfilePhotoFilePath();
 
@@ -206,6 +209,7 @@ public class UpdateClinicianController {
             ownStage.setTitle("Create New Clinician Profile");
             titleLabel.setText("Create Clinician");
             confirmButton.setText("Create Clinician Profile");
+            confirmButton1.setText("Create Clinician Profile");
             countrySelector.setValue(defaultCountry);
             regionSelector.setValue("");
         }

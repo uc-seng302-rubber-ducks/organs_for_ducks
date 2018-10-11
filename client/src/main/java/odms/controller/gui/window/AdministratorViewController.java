@@ -204,6 +204,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
         adminCliTextArea.setEditable(false);
         adminCliTextArea.setFont(Font.font("DialogInput"));
         adminCliTextArea.setFocusTraversable(false);
+        adminCliTextArea.setText("Welcome to the Command Line.\nEnter your command or type 'help' for help.\n");
         cliInputTextField.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
                 sendInputToCLI();
@@ -491,7 +492,6 @@ public class AdministratorViewController implements PropertyChangeListener, User
         String filename = fileSelectorController.getFileSelector(stage, extensions);
         if (filename == null) {
             Log.warning(FILE_NAME_NOT_FOUND);
-            fileNotFoundLabel.setVisible(true);
             return;
         }
         importRoleJson(Administrator.class, filename);
@@ -510,7 +510,6 @@ public class AdministratorViewController implements PropertyChangeListener, User
         String filename = fileSelectorController.getFileSelector(stage, extensions);
         if (filename == null) {
             Log.warning(FILE_NAME_NOT_FOUND);
-            fileNotFoundLabel.setVisible(true);
             return;
         }
         Log.info(messageAdmin + administrator.getUserName() + " Importing Clinician profiles");
@@ -529,7 +528,6 @@ public class AdministratorViewController implements PropertyChangeListener, User
         String filename = fileSelectorController.getFileSelector(stage, extensions);
         if (filename == null) {
             Log.warning(FILE_NAME_NOT_FOUND);
-            fileNotFoundLabel.setVisible(true);
             return;
         }
         Log.info(messageAdmin + administrator.getUserName() + " Importing User profiles");

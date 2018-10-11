@@ -34,6 +34,8 @@ public class RejectAppointmentReasonViewController {
     public void init(Appointment appointment, Stage stage) {
         this.appointment = appointment;
         this.stage = stage;
+        stage.setTitle("Reject Appointment");
+        stage.setResizable(false);
         logicController = new RejectAppointmentReasonLogicController();
         apptPatient.setText(appointment.getRequestingUserId());
         apptDate.setText(appointment.getRequestedDate().toLocalDate().toString());

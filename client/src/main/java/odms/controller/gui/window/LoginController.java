@@ -61,10 +61,7 @@ public class LoginController {
     private TabPane loginTabPane;
     @FXML
     private ImageView logoImageView;
-    @FXML
-    private Label poweredByLabel;
 
-    private Stage helpStage = null;
     private AppController appController;
     private Stage stage;
     private LoginBridge loginBridge = AppController.getInstance().getLoginBridge();
@@ -80,7 +77,6 @@ public class LoginController {
         userWarningLabel.setText("");
         clinicianWarningLabel.setText("");
         adminWarningLabel.setText("");
-        poweredByLabel.setText("Powered by Rubber Duck Software Group");
         this.appController = appController;
         this.stage = stage;
         stage.setTitle("Login");
@@ -295,7 +291,6 @@ public class LoginController {
      */
     @FXML
     void signUp() {
-
         FXMLLoader userLoader = new FXMLLoader(getClass().getResource(NEW_USER_VIEW_URL));
         Parent root;
         try {
