@@ -21,7 +21,7 @@ import odms.commons.utils.AttributeValidation;
 import odms.controller.gui.panel.logic.BloodTestsLogicController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.controller.gui.widget.ColoredLineChart;
-import odms.controller.gui.widget.LoadingWidget;
+import odms.controller.gui.widget.CountableLoadingWidget;
 import odms.controller.gui.widget.TextStringRadioButton;
 
 import java.text.DecimalFormat;
@@ -33,7 +33,7 @@ import java.util.*;
 
 import static odms.commons.utils.BloodTestUtils.*;
 
-public class BloodTestViewController implements LoadingWidget {
+public class BloodTestViewController implements CountableLoadingWidget {
 
     @FXML
     private Control bloodTestGraphPlaceHolder;
@@ -211,6 +211,24 @@ public class BloodTestViewController implements LoadingWidget {
     }
 
     /**
+     * Do nothing method to satisfy the interface
+     * @param value
+     */
+    @Override
+    public void setCount(int value) {
+
+    }
+
+    /**
+     * Do nothing method to satisfy the interface
+     * @return 0
+     */
+    @Override
+    public int getCount() {
+        return 0;
+    }
+
+    /**
      * Makes the extra fields visible to the clinicians so blood tests can be created, updated and deleted.
      */
     private void showFields() {
@@ -276,6 +294,7 @@ public class BloodTestViewController implements LoadingWidget {
         timeRangeAxis.setAutoRanging(false);
         timeRangeAxis.setCategories(timeRangeCategory);
         bloodTestGraph.setLegendVisible(false);
+        bloodTestGraph.setCreateSymbols(false);
         changeLabels();
 
         final ToggleGroup toggleGroup = new ToggleGroup();

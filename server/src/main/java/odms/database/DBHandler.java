@@ -5,6 +5,7 @@ import odms.commons.model._enum.Organs;
 import odms.commons.model._enum.UserType;
 import odms.commons.model.datamodel.*;
 import odms.commons.model.dto.AppointmentWithPeople;
+import odms.commons.model.dto.CollectionCountsTransferObject;
 import odms.commons.utils.Log;
 import odms.commons.utils.PasswordManager;
 import odms.database.db_strategies.*;
@@ -136,40 +137,6 @@ public class DBHandler {
     private AbstractUpdateStrategy updateStrategy;
     private AbstractFetchAppointmentStrategy fetchAppointmentStrategy;
 
-
-    /**
-     * Takes a generic, valid SQL String as an argument and executes it and returns the result
-     *
-     * @param statement Statement to run
-     * @param conn      connection to process it on
-     * @return Result of execution
-     * @throws SQLException Thrown on bad statement
-     */
-    public ResultSet executeStatement(String statement, Connection conn) throws SQLException {
-        try {
-            try (PreparedStatement preparedStatement = conn.prepareStatement(statement)) {
-                return preparedStatement.executeQuery();
-            }
-        } catch (SQLException e) {
-            Log.severe("Exception in executing statement " + statement, e);
-            throw e;
-        }
-    }
-
-    /**
-     * Method with less filtering parameters to obtain all the users information from the database based on filtering provided.
-     * User objects are instantiated and its attributes are set based on the de-serialised information.
-     *
-     * @param connection A valid connection to the database
-     * @param count      number of items returned
-     * @param startIndex number of items to skip
-     * @return a Collection of Users
-     * @throws SQLException if there are any SQL errors
-     */
-    public Collection<User> getUsers(Connection connection, int count, int startIndex) throws SQLException {
-        return this.getUsers(connection, count, startIndex, "", "", "");
-    }
-
     /**
      * Method to obtain all the users information from the database based on filtering provided.
      * User objects are instantiated and its attributes are set based on the de-serialised information.
@@ -183,8 +150,9 @@ public class DBHandler {
      * @return a Collection of Users
      * @throws SQLException if there are any SQL errors
      */
-    public Collection<User> getUsers(Connection connection, int count, int startIndex, String name, String region, String gender) throws SQLException {
+    public CollectionCountsTransferObject<User> getUsers(Connection connection, int count, int startIndex, String name, String region, String gender) throws SQLException {
         Collection<User> users = new ArrayList<>();
+        int counts = 0;
 
         try (PreparedStatement statement = connection.prepareStatement(SELECT_USER_ONE_TO_ONE_INFO_STMT_FILTERED)) {
             statement.setString(1, name + "%");
@@ -200,7 +168,20 @@ public class DBHandler {
             }
         }
 
-        return users;
+        try (PreparedStatement statement = connection.prepareStatement(getCount(SELECT_USER_ONE_TO_ONE_INFO_STMT_FILTERED))) {
+            System.out.println(statement);
+            statement.setString(1, name + "%");
+            statement.setString(2, name + "%");
+            statement.setString(3, region + "%");
+            statement.setString(4, gender + "%");
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    counts = resultSet.getInt("count");
+                }
+            }
+        }
+
+        return new CollectionCountsTransferObject<>(users, counts);
     }
 
 
@@ -765,6 +746,7 @@ public class DBHandler {
         Collection<Administrator> administrators = new ArrayList<>();
 
         try (PreparedStatement statement = connection.prepareStatement(SELECT_ADMIN_ONE_TO_ONE_INFO_STMT)) {
+
             statement.setString(1, name + "%");
             statement.setString(2, name + "%");
             statement.setString(3, name + "%");
@@ -1024,11 +1006,10 @@ public class DBHandler {
             try (ResultSet results = stmt.executeQuery()) {
                 while (results.next()) {
                     if (results.getTimestamp(MOMENT_OF_DEATH) == null) {
-                        String nameBuilder = results.getString("firstName") +
-                                " " +
-                                results.getString("middleName") +
-                                " " +
-                                results.getString("lastName");
+                        String nameBuilder = (results.getString("firstName") == null ? "" : results.getString("firstName")) +
+                                (results.getString("middleName") == null ? "" : " " + results.getString("middleName")) +
+                                (results.getString("lastName") == null ? "" : " " + results.getString("lastName"));
+
                         Organs selectedOrgan = Organs.valueOf(results.getString("organName"));
                         LocalDate dateRegistered = results.getDate("dateRegistered").toLocalDate();
                         String bloodType = results.getString("bloodType");
@@ -1637,6 +1618,19 @@ public class DBHandler {
             }
         }
         return null;
+    }
+
+    /**
+     * Gets the count of the sql statement provided.
+     * @param statement statement to modify to get the count of
+     * @return the modified statement
+     */
+    private String getCount(String statement) {
+        String toReplace = " FROM";
+        String toRemove = " LIMIT";
+        String replacedSelectedStmt = statement.replaceFirst("SELECT ", "SELECT COUNT(").replaceFirst(toReplace, ") AS count FROM");
+        int lastRemoveIndex = replacedSelectedStmt.lastIndexOf(toRemove);
+        return replacedSelectedStmt.substring(0, lastRemoveIndex);
     }
 
     /**

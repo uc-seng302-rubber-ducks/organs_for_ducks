@@ -7,7 +7,7 @@ import odms.commons.model._enum.BloodTestProperties;
 import odms.commons.model.datamodel.BloodTest;
 import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.Log;
-import odms.controller.gui.widget.LoadingWidget;
+import odms.controller.gui.widget.CountableLoadingWidget;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -96,7 +96,7 @@ public class BloodTestBridge extends Bifrost {
      * @param startDate gets blood tests after this date
      * @param observableBloodTests blood test list to populate
      */
-    public void getBloodTests(String nhi, String startDate, String endDate, int count, int startIndex, ObservableList<BloodTest> observableBloodTests, LoadingWidget widget) {
+    public void getBloodTests(String nhi, String startDate, String endDate, int count, int startIndex, ObservableList<BloodTest> observableBloodTests, CountableLoadingWidget widget) {
         String url = String.format("%s/%s%s/bloodTests?startDate=%s&endDate=%s&count=%d&startIndex=%d", ip, USER, nhi, startDate, endDate, count, startIndex);
         Request request = new Request.Builder().get().url(url).build();
         client.newCall(request).enqueue(new Callback() {

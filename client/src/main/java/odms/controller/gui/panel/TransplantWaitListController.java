@@ -14,7 +14,7 @@ import odms.commons.model._abstract.UserLauncher;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.controller.AppController;
-import odms.controller.gui.widget.LoadingTableView;
+import odms.controller.gui.widget.CountableLoadingTableView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +56,7 @@ public class TransplantWaitListController {
     @FXML
     private Button transplantPrevPageButton;
     @FXML
-    private LoadingTableView<TransplantDetails> transplantWaitListTableView;
+    private CountableLoadingTableView<TransplantDetails> transplantWaitListTableView;
     private List<CheckBox> filterCheckBoxList = new ArrayList<>();
     private AppController appController;
     private UserLauncher parent;
@@ -138,8 +138,6 @@ public class TransplantWaitListController {
      * @param allowedOrgans list of the organs to filter by. If this is empty, all will be returned
      */
     private void populateWaitListTable(int startIndex, int count, String regionSearch, List<Organs> allowedOrgans) {
-        transplantList.clear();
-        transplantWaitListTableView.setWaiting(true);
         appController.getTransplantBridge().getWaitingList(startIndex, count, "", regionSearch, allowedOrgans, transplantList, transplantWaitListTableView);
     }
 

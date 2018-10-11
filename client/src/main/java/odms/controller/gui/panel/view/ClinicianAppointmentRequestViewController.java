@@ -31,7 +31,7 @@ import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.controller.gui.widget.CalendarEntryFactory;
 import odms.controller.gui.widget.CalendarWidget;
 import odms.controller.gui.widget.CalendarWidgetFactory;
-import odms.controller.gui.widget.LoadingTableView;
+import odms.controller.gui.widget.CountableLoadingTableView;
 import odms.socket.ServerEventNotifier;
 import utils.Converter;
 
@@ -44,7 +44,7 @@ public class ClinicianAppointmentRequestViewController implements Converter {
 
 
     @FXML
-    private LoadingTableView<Appointment> clinicianAppointmentsRequestView;
+    private CountableLoadingTableView<Appointment> clinicianAppointmentsRequestView;
 
     @FXML
     private DatePicker appointmentRequestDate;
@@ -129,6 +129,9 @@ public class ClinicianAppointmentRequestViewController implements Converter {
         logicController = new ClinicianAppointmentRequestLogicController(availableAppointments, appController, clinician, availableTimes, clinicianAppointmentsRequestView);
         appointmentRequestDescription.setTextFormatter(new TextFormatter<String>(change ->
                 change.getControlNewText().length() <= 255 ? change : null)); // limits user input to 255 characters
+        for (AppointmentCategory category : AppointmentCategory.values()) {
+            appointmentRequestCategory.getItems().add(category);
+        }
 
         initAppointmentTable();
 
@@ -196,6 +199,7 @@ public class ClinicianAppointmentRequestViewController implements Converter {
         clinicianAppointmentsRequestView.setItems(availableAppointments);
         if (listen)
             Platform.runLater(() -> clinicianAppointmentsRequestView.getSortOrder().add(clinicianAppointmentStatusColumn));
+        clinicianAppointmentsRequestView.refresh();
     }
 
     /**

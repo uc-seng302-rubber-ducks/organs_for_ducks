@@ -45,6 +45,8 @@ public class ColoredLineChart<X, Y extends Number> extends LineChart<X, Y> {
                 colorPoly.toFront();
                 colorPoly.setFill(linearGrad);
             }
+        } else {
+            getPlotChildren().remove(colorPoly);
         }
     }
 }

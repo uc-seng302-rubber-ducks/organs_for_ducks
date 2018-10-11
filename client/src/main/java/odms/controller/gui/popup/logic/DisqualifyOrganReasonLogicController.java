@@ -41,6 +41,9 @@ public class DisqualifyOrganReasonLogicController {
         organsWithDisqualification.setCurrentlyDisqualified(true);
         for (int i = 0; i < disqualifications.size(); i++) {
             if (disqualifications.get(i).getOrganType().equals(disqualifiedOrgan)) {
+                if (!disqualifications.get(i).isCurrentlyDisqualified()) { //It has previously been disqualified, so is still in the list but has the boolean flag set to false
+                    user.getDonorDetails().getOrgans().remove(organsWithDisqualification.getOrganType()); //Therefore we need to run the code to remove it from the users donating list
+                }
                 disqualifications.remove(i);
                 disqualifications.add(i, organsWithDisqualification);
                 user.getUndoStack().pop();
@@ -54,7 +57,6 @@ public class DisqualifyOrganReasonLogicController {
             user.getUndoStack().pop();
             disqualifications.add(organsWithDisqualification);
             user.getDonorDetails().getOrgans().remove(organsWithDisqualification.getOrganType());
-
         }
     }
 

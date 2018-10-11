@@ -20,6 +20,7 @@ import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.FileSelectorController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
+import odms.controller.gui.widget.LimitedTextField;
 import utils.StageIconLoader;
 
 import java.io.File;
@@ -58,9 +59,8 @@ public class UpdateClinicianController {
     @FXML
     private Label clinicianGenericErrorLabel;
 
-
     @FXML
-    private TextField staffIDTextField;
+    private LimitedTextField staffIDTextField;
 
     @FXML
     private PasswordField passwordField;
@@ -69,32 +69,32 @@ public class UpdateClinicianController {
     private PasswordField confirmPasswordField;
 
     @FXML
-    private TextField firstNameTextField;
+    private LimitedTextField firstNameTextField;
 
     @FXML
-    private TextField middleNameTextField;
+    private LimitedTextField middleNameTextField;
 
     @FXML
-    private TextField lastNameTextField;
+    private LimitedTextField lastNameTextField;
 
     @FXML
-    private TextField streetNoTextField;
+    private LimitedTextField streetNoTextField;
 
     @FXML
-    private TextField streetNameTextField;
+    private LimitedTextField streetNameTextField;
 
     @FXML
-    private TextField neighbourhoodTextField;
+    private LimitedTextField neighbourhoodTextField;
 
     @FXML
-    private TextField cityTextField;
+    private LimitedTextField cityTextField;
 
     @FXML
-    private TextField regionTextField;
+    private LimitedTextField regionTextField;
     @FXML
     private ComboBox<String> regionSelector;
     @FXML
-    private TextField zipCodeTextField;
+    private LimitedTextField zipCodeTextField;
 
     @FXML
     private ComboBox<String> countrySelector;
@@ -118,6 +118,8 @@ public class UpdateClinicianController {
 
     @FXML
     private Button confirmButton;
+    @FXML
+    private Button confirmButton1;
 
     @FXML
     private ImageView profileImage;
@@ -154,6 +156,7 @@ public class UpdateClinicianController {
         this.controller = controller;
         this.stage = stage;
         this.ownStage = ownStage;
+        ownStage.setResizable(false);
         countrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
         for (Regions regions : Regions.values()) {
             regionSelector.getItems().add(regions.toString());
@@ -165,6 +168,7 @@ public class UpdateClinicianController {
             ownStage.setTitle("Update Clinician: " + clinician.getFirstName());
             titleLabel.setText("Update Clinician");
             confirmButton.setText("Save Changes");
+            confirmButton1.setText("Save Changes");
 
             initialPath = clinician.getProfilePhotoFilePath();
 
@@ -205,6 +209,7 @@ public class UpdateClinicianController {
             ownStage.setTitle("Create New Clinician Profile");
             titleLabel.setText("Create Clinician");
             confirmButton.setText("Create Clinician Profile");
+            confirmButton1.setText("Create Clinician Profile");
             countrySelector.setValue(defaultCountry);
             regionSelector.setValue("");
         }

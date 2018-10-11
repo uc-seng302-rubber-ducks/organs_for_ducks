@@ -49,6 +49,7 @@ public class DisqualifyOrganReasonViewController {
      */
     public void init(Organs disqualifiedOrgan, User user, Stage stage, String staffId, ObservableList<OrgansWithDisqualification> disqualifiedOrgans, DonationTabPageController controller) {
         stage.setResizable(false);
+        stage.setTitle("Disqualify Organ");
         this.stage = stage;
         this.disqualifiedOrgan = disqualifiedOrgan;
         this.staffId = staffId;
@@ -60,7 +61,6 @@ public class DisqualifyOrganReasonViewController {
                                                      "Max 255 characters.\n" +
                                                      "Alphanumeric, apostrophe, and hyphen characters only.");
         this.controller = controller;
-
     }
 
     /**

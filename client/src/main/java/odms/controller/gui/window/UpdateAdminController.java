@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 import odms.commons.model.Administrator;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
+import odms.controller.gui.widget.LimitedTextField;
 
 import java.util.Optional;
 
@@ -18,16 +19,16 @@ public class UpdateAdminController {
 
 
     @FXML
-    private TextField usernameTextField;
+    private LimitedTextField usernameTextField;
 
     @FXML
-    private TextField firstNameTextField;
+    private LimitedTextField firstNameTextField;
 
     @FXML
-    private TextField middleNameTextField;
+    private LimitedTextField middleNameTextField;
 
     @FXML
-    private TextField lastNameTextField;
+    private LimitedTextField lastNameTextField;
 
     @FXML
     private TextField passwordTextField;
@@ -77,7 +78,7 @@ public class UpdateAdminController {
 
         appController = AppController.getInstance();
         adminViewController = appController.getAdministratorViewController();
-
+        stage.setResizable(false);
         stage.getScene();
         invalidUsername.setText("");
         invalidFName.setText("");
@@ -103,6 +104,7 @@ public class UpdateAdminController {
             }
 
         } else {
+            stage.setTitle("Create Administrator");
             adminDetailInputTitle.setText("Create Admin");
 
             styleListener(usernameTextField);
