@@ -174,7 +174,8 @@
                         <CategoryAxis fx:id="timeRangeAxis" label="Time range" side="BOTTOM" />
                     </xAxis>
                     <yAxis>
-                        <NumberAxis fx:id="bloodTestPropertyAxis" label="Property (unit)" side="LEFT" />
+                        <NumberAxis fx:id="bloodTestPropertyAxis" label="Red Blood Cell Count (x10^9 cells/Litre)"
+                                    side="LEFT"/>
                     </yAxis>
                 </ColoredLineChart>
             </children>
