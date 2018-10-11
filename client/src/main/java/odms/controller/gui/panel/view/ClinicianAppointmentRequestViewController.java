@@ -1,6 +1,7 @@
 package odms.controller.gui.panel.view;
 
 import com.calendarfx.model.Calendar;
+import com.calendarfx.model.CalendarSource;
 import com.calendarfx.model.Entry;
 import com.calendarfx.view.CalendarView;
 import javafx.application.Platform;
@@ -17,6 +18,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.model.Appointment;
 import odms.commons.model.Clinician;
@@ -35,10 +37,13 @@ import odms.controller.gui.widget.CountableLoadingTableView;
 import odms.socket.ServerEventNotifier;
 import utils.Converter;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 public class ClinicianAppointmentRequestViewController implements Converter {
 
@@ -96,7 +101,7 @@ public class ClinicianAppointmentRequestViewController implements Converter {
     private Label appointmentDetailsNhiLabel;
 
     @FXML
-    private AnchorPane formPane;
+    private GridPane formPane;
 
     private CalendarWidget calendarView;
 
@@ -276,6 +281,23 @@ public class ClinicianAppointmentRequestViewController implements Converter {
                     rejectAppointmentButton.setText("Reject Appointment");
                     acceptAppointmentButton.setText("Accept Appointment");
                 }
+
+                if (calendarView != null) {
+                    LocalDate date = getSelectedAppointment().getRequestedDate().toLocalDate();
+                    for (CalendarSource cs : calendarView.getCalendarSources()) {
+                        for (Calendar c : cs.getCalendars()) {
+                            for (List<Entry<?>> list : c.findEntries(date, date, ZoneId.of("NZ")).values()) {
+                                for (Entry<?> entry : list) {
+                                    if ((entry.getUserObject()).equals(getSelectedAppointment())) {
+                                        calendarView.getSelections().clear();
+                                        calendarView.getSelections().add(entry);
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         });
     }
@@ -391,6 +413,10 @@ public class ClinicianAppointmentRequestViewController implements Converter {
             }
         }
 
+        if (calendarView != null) {
+            calendarView.getSelections().clear();
+        }
+
 
     }
 
@@ -455,6 +481,8 @@ public class ClinicianAppointmentRequestViewController implements Converter {
             temp.setText(((Label) appointmentRequestUserNhi).getText());
             temp.setPrefWidth(TITLE_CONTROL_FORM_PREF_WIDTH);
             temp.setPrefHeight(TITLE_CONTROL_PREF_HEIGHT);
+            GridPane.setRowIndex(temp, GridPane.getRowIndex(appointmentRequestUserNhi));
+            GridPane.setColumnIndex(temp, GridPane.getColumnIndex(appointmentRequestUserNhi));
             formPane.getChildren().replaceAll(node -> node.equals(appointmentRequestUserNhi) ? temp : node);
             appointmentRequestUserNhi = temp;
             AnchorPane.setTopAnchor(appointmentRequestUserNhi, TITLE_CONTROL_TOP_ANCHOR);
@@ -471,6 +499,8 @@ public class ClinicianAppointmentRequestViewController implements Converter {
             Label temp = new Label(((TextField) appointmentRequestUserNhi).getText());
             temp.setPrefWidth(TITLE_CONTROL_FORM_PREF_WIDTH);
             temp.setPrefHeight(TITLE_CONTROL_PREF_HEIGHT);
+            GridPane.setRowIndex(temp, GridPane.getRowIndex(appointmentRequestUserNhi));
+            GridPane.setColumnIndex(temp, GridPane.getColumnIndex(appointmentRequestUserNhi));
             formPane.getChildren().replaceAll(node -> node.equals(appointmentRequestUserNhi) ? temp : node);
             appointmentRequestUserNhi = temp;
             AnchorPane.setTopAnchor(appointmentRequestUserNhi, TITLE_CONTROL_TOP_ANCHOR);
