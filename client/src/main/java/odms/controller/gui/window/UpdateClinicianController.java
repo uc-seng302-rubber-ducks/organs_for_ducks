@@ -20,6 +20,7 @@ import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.FileSelectorController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
+import odms.controller.gui.widget.LimitedTextField;
 import utils.StageIconLoader;
 
 import java.io.File;
@@ -59,7 +60,7 @@ public class UpdateClinicianController {
     private Label clinicianGenericErrorLabel;
 
     @FXML
-    private TextField staffIDTextField;
+    private LimitedTextField staffIDTextField;
 
     @FXML
     private PasswordField passwordField;
@@ -68,32 +69,32 @@ public class UpdateClinicianController {
     private PasswordField confirmPasswordField;
 
     @FXML
-    private TextField firstNameTextField;
+    private LimitedTextField firstNameTextField;
 
     @FXML
-    private TextField middleNameTextField;
+    private LimitedTextField middleNameTextField;
 
     @FXML
-    private TextField lastNameTextField;
+    private LimitedTextField lastNameTextField;
 
     @FXML
-    private TextField streetNoTextField;
+    private LimitedTextField streetNoTextField;
 
     @FXML
-    private TextField streetNameTextField;
+    private LimitedTextField streetNameTextField;
 
     @FXML
-    private TextField neighbourhoodTextField;
+    private LimitedTextField neighbourhoodTextField;
 
     @FXML
-    private TextField cityTextField;
+    private LimitedTextField cityTextField;
 
     @FXML
-    private TextField regionTextField;
+    private LimitedTextField regionTextField;
     @FXML
     private ComboBox<String> regionSelector;
     @FXML
-    private TextField zipCodeTextField;
+    private LimitedTextField zipCodeTextField;
 
     @FXML
     private ComboBox<String> countrySelector;

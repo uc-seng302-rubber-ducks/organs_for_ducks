@@ -3,6 +3,7 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import odms.controller.gui.widget.LimitedTextField?>
 <AnchorPane prefHeight="453.0" prefWidth="694.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.UpdateAdminController">
     <children>
         <TabPane layoutY="43.0" prefHeight="409.0" prefWidth="700.0" tabClosingPolicy="UNAVAILABLE">
@@ -43,10 +44,14 @@
                                                 <Insets right="15.0" />
                                             </padding>
                                         </Label>
-                                        <TextField fx:id="usernameTextField" prefHeight="25.0" prefWidth="212.0" GridPane.columnIndex="1" />
-                                        <TextField fx:id="firstNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                        <TextField fx:id="middleNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                        <TextField fx:id="lastNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                        <LimitedTextField fx:id="usernameTextField" prefHeight="25.0" prefWidth="212.0"
+                                                          GridPane.columnIndex="1"/>
+                                        <LimitedTextField fx:id="firstNameTextField" GridPane.columnIndex="1"
+                                                          GridPane.rowIndex="1"/>
+                                        <LimitedTextField fx:id="middleNameTextField" GridPane.columnIndex="1"
+                                                          GridPane.rowIndex="2"/>
+                                        <LimitedTextField fx:id="lastNameTextField" GridPane.columnIndex="1"
+                                                          GridPane.rowIndex="3"/>
                                         <PasswordField fx:id="passwordTextField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                         <PasswordField fx:id="cPasswordTextField" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                         <Label fx:id="confirmPasswordErrorLabel" styleClass="label-error" text="Passwords do not match" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="5" GridPane.valignment="BOTTOM" />

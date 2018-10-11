@@ -4,6 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
+<?import odms.controller.gui.widget.*?>
 <AnchorPane prefHeight="453.0" prefWidth="694.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.UpdateClinicianController">
    <children>
       <TabPane layoutY="49.0" prefHeight="403.0" prefWidth="694.0" tabClosingPolicy="UNAVAILABLE">
@@ -22,7 +23,7 @@
                               <VBox GridPane.columnIndex="1">
                                  <children>
                                     <Label styleClass="label-error" visible="false" />
-                                    <TextField fx:id="staffIDTextField" GridPane.columnIndex="1" />
+                                    <LimitedTextField fx:id="staffIDTextField" GridPane.columnIndex="1" />
                                     <Label fx:id="staffIdErrorLabel" styleClass="label-error" text="Only alphanumeric characters are allowed" visible="false" />
                                  </children>
                               </VBox>
@@ -43,12 +44,12 @@
                               <VBox GridPane.columnIndex="1" GridPane.rowIndex="3">
                                  <children>
                                     <Label styleClass="label-error" visible="false" />
-                                    <TextField fx:id="firstNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                    <LimitedTextField fx:id="firstNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                     <Label fx:id="firstNameErrorLabel" prefHeight="36.0" prefWidth="231.0" styleClass="label-error" text="Only alphanumeric characters are allowed" visible="false" wrapText="true" />
                                  </children>
                               </VBox>
-                              <TextField fx:id="middleNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                              <TextField fx:id="lastNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                              <LimitedTextField fx:id="middleNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <LimitedTextField fx:id="lastNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                               <Label styleClass="label-title" text="StaffID: *" />
                            </children>
                            <columnConstraints>
@@ -84,11 +85,13 @@
                      <children>
                         <GridPane hgap="20.0" layoutX="5.0" prefHeight="323.0" prefWidth="669.0" vgap="5.0">
                            <children>
-                              <TextField fx:id="streetNoTextField" GridPane.columnIndex="1" />
-                              <TextField fx:id="streetNameTextField" alignment="TOP_LEFT" prefHeight="22.0" prefWidth="201.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <TextField fx:id="neighbourhoodTextField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <TextField fx:id="cityTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <TextField fx:id="zipCodeTextField" GridPane.columnIndex="3" />
+                              <LimitedTextField fx:id="streetNoTextField" GridPane.columnIndex="1"/>
+                              <LimitedTextField fx:id="streetNameTextField" alignment="TOP_LEFT" prefHeight="22.0"
+                                                prefWidth="201.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                              <LimitedTextField fx:id="neighbourhoodTextField" GridPane.columnIndex="1"
+                                                GridPane.rowIndex="2"/>
+                              <LimitedTextField fx:id="cityTextField" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                              <LimitedTextField fx:id="zipCodeTextField" GridPane.columnIndex="3"/>
                               <Label styleClass="label-title" text="Street Number:" />
                               <Label styleClass="label-title" text="Street Name:" GridPane.rowIndex="1" />
                               <Label styleClass="label-title" text="Neighbourhood:" GridPane.rowIndex="2" />
@@ -98,7 +101,7 @@
                               <Label styleClass="label-title" text="Country:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                               <Label fx:id="emptyRegionLabel" text="Region cannot be empty" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                               <ComboBox fx:id="regionSelector" prefHeight="25.0" prefWidth="222.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                              <TextField fx:id="regionTextField" visible="false" />
+                              <LimitedTextField fx:id="regionTextField" visible="false"/>
                               <Label fx:id="regionErrorLabel" styleClass="label-error" text="A region must be provided" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.valignment="BOTTOM" />
                               <ComboBox fx:id="countrySelector" onAction="#countrySelectorListener" prefHeight="25.0" prefWidth="223.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                            </children>
