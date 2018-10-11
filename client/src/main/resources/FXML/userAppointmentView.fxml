@@ -63,7 +63,8 @@
                 </HBox>
             </children>
         </AnchorPane>
-        <Label prefHeight="24.0" prefWidth="355.0" styleClass="label-main-title" text="Appointments" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="17.0">
+        <Label prefHeight="24.0" prefWidth="355.0" styleClass="label-main-title" text="Appointments"
+               AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="11.0">
         </Label>
     </children>
 </AnchorPane>
