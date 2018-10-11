@@ -2,7 +2,7 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<AnchorPane prefHeight="735.0" prefWidth="1200.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.panel.view.UserAppointmentViewController">
+<AnchorPane prefHeight="735.0" prefWidth="1200.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.panel.view.UserAppointmentViewController">
     <children>
         <AnchorPane layoutX="455.0" prefHeight="735.0" prefWidth="332.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -63,7 +63,7 @@
                 </HBox>
             </children>
         </AnchorPane>
-        <Label prefHeight="24.0" prefWidth="355.0" styleClass="label-sub-title" text="Appointments" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="17.0">
+        <Label prefHeight="24.0" prefWidth="355.0" styleClass="label-main-title" text="Appointments" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="17.0">
         </Label>
     </children>
 </AnchorPane>
