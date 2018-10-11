@@ -45,7 +45,8 @@
                         <Button fx:id="removeProcedureButton" layoutX="500.0" layoutY="692.0" mnemonicParsing="false" onAction="#removeProcedure" prefHeight="25.0" prefWidth="220.0" text="Remove Selected Procedure" AnchorPane.bottomAnchor="75.0" GridPane.columnIndex="1" />
                     </children>
                 </GridPane>
-            <Label layoutX="25.0" layoutY="14.0" styleClass="label-main-title" text="Procedures" />
+                <Label layoutX="25.0" layoutY="14.0" styleClass="label-main-title" text="Procedures"
+                       AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="11.0"/>
             </children>
         </AnchorPane>
     </children>

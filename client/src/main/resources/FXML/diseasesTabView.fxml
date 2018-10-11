@@ -54,7 +54,12 @@
                            onAction="#updateDisease" text="Update"/>
                </children>
             </HBox>
-             <Label styleClass="label-main-title" text="Diseases" GridPane.columnIndex="1"/>
+             <AnchorPane>
+                 <children>
+                     <Label styleClass="label-main-title" text="Diseases" AnchorPane.leftAnchor="25.0"
+                            AnchorPane.topAnchor="11.0" GridPane.columnSpan="2"/>
+                 </children>
+             </AnchorPane>
              <Button fx:id="addDiseaseButton" mnemonicParsing="false" onAction="#addDisease" text="Add New Disease"
                      GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM"/>
          </children>

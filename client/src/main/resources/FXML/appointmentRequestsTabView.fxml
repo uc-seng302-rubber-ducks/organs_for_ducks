@@ -4,8 +4,8 @@
 <?import javafx.scene.layout.*?>
 <?import odms.controller.gui.widget.CountableLoadingTableView?>
 <?import java.lang.String?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="735.0" prefWidth="1200.0" stylesheets="@../gui.css"
-            xmlns="http://javafx.com/javafx/8"
+<AnchorPane prefHeight="735.0" prefWidth="1200.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="odms.controller.gui.panel.view.ClinicianAppointmentRequestViewController">
     <children>
         <AnchorPane fx:id="tableViewPane" layoutY="60.0" prefHeight="675.0" prefWidth="803.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="397.0" AnchorPane.topAnchor="60.0">
@@ -96,6 +96,7 @@
             </children>
         </AnchorPane>
         <AnchorPane fx:id="calendarViewPane" layoutY="60.0" prefHeight="675.0" prefWidth="792.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="408.0" AnchorPane.topAnchor="60.0" />
-        <Label prefHeight="24.0" prefWidth="355.0" styleClass="label-main-title" text="Appointments" AnchorPane.leftAnchor="36.0" AnchorPane.topAnchor="28.0" />
+        <Label prefHeight="24.0" prefWidth="355.0" styleClass="label-main-title" text="Appointments"
+               AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="11.0"/>
     </children>
 </AnchorPane>

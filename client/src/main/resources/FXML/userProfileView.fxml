@@ -6,7 +6,8 @@
 <AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.panel.UserOverviewController">
     <children>
         <AnchorPane layoutX="447.0" layoutY="31.0" />
-      <GridPane hgap="15.0" layoutY="60.0" prefHeight="700.0" prefWidth="1200.0" AnchorPane.bottomAnchor="90.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
+        <GridPane hgap="15.0" layoutY="60.0" prefHeight="700.0" prefWidth="1200.0" AnchorPane.bottomAnchor="90.0"
+                  AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="80.0" minWidth="3.0" prefWidth="20.0" />
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="636.0" minWidth="10.0" prefWidth="300.0" />
@@ -139,7 +140,12 @@
                       <Label fx:id="countryOfDeathValue" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                </children>
             </GridPane>
-            <Label styleClass="label-main-title" text="User Details" GridPane.columnIndex="1" />
+             <AnchorPane>
+                 <children>
+                     <Label styleClass="label-main-title" text="User Details" AnchorPane.leftAnchor="25.0"
+                            AnchorPane.topAnchor="11.0" GridPane.columnSpan="3"/>
+                 </children>
+             </AnchorPane>
          </children>
       </GridPane>
     </children>

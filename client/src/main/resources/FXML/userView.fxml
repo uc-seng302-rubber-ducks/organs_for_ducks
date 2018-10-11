@@ -17,7 +17,10 @@
                             <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                     <children>
-                              <GridPane hgap="15.0" layoutY="15.0" prefHeight="617.0" prefWidth="1200.0" vgap="15.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="15.0">
+                                        <GridPane hgap="15.0" layoutY="15.0" prefHeight="617.0" prefWidth="1200.0"
+                                                  vgap="15.0" AnchorPane.bottomAnchor="100.0"
+                                                  AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                                  AnchorPane.topAnchor="0.0">
                                 <columnConstraints>
                                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" prefWidth="50.0" />
                                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="549.0" minWidth="10.0" prefWidth="469.0" />
@@ -33,11 +36,18 @@
                                   <RowConstraints maxHeight="208.0" minHeight="10.0" prefHeight="139.0" vgrow="SOMETIMES" />
                                 </rowConstraints>
                                  <children>
-                                    <Label styleClass="label-main-title" text="Contact Details" GridPane.columnIndex="1" />
+                                     <AnchorPane>
+                                         <children>
+                                             <Label styleClass="label-main-title" text="Contact Details"
+                                                    AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="11.0"
+                                                    GridPane.columnSpan="2"/>
+                                         </children>
+                                     </AnchorPane>
                                     <GridPane prefHeight="280.0" prefWidth="1000.0" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.rowSpan="2">
                                       <columnConstraints>
                                           <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="10.0" prefWidth="130.0" />
                                           <ColumnConstraints hgrow="SOMETIMES" maxWidth="467.0" minWidth="10.0" prefWidth="390.0" />
+                                          <ColumnConstraints/>
                                       </columnConstraints>
                                       <rowConstraints>
                                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -61,6 +71,7 @@
                                       <columnConstraints>
                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="10.0" prefWidth="130.0" />
                                           <ColumnConstraints hgrow="SOMETIMES" maxWidth="422.0" minWidth="10.0" prefWidth="328.0" />
+                                          <ColumnConstraints/>
                                       </columnConstraints>
                                       <rowConstraints>
                                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -146,7 +157,12 @@
                             <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                     <children>
-                                        <TableView fx:id="historyTableView" layoutY="6.0" prefHeight="579.0" prefWidth="894.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                        <TableView fx:id="historyTableView" layoutY="6.0" prefHeight="579.0"
+                                                   prefWidth="894.0" AnchorPane.bottomAnchor="0.0"
+                                                   AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                                   AnchorPane.topAnchor="60.0"/>
+                                        <Label layoutY="7.0" styleClass="label-main-title" text="History"
+                                               AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="11.0"/>
                                     </children>
                                 </AnchorPane>
                             </content>
