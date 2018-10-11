@@ -39,6 +39,7 @@ public class RemoveDisqualificationViewController {
      */
     public void init(OrgansWithDisqualification disqualifiedOrgan, User user, Stage stage, ObservableList<OrgansWithDisqualification> disqualifiedOrgans, DonationTabPageController controller) {
         stage.setResizable(false);
+        stage.setTitle("Remove Organ Disqualification");
         this.stage = stage;
         this.disqualifiedOrgan = disqualifiedOrgan;
         this.logicController = new RemoveDisqualificationLogicController(user, disqualifiedOrgans);
