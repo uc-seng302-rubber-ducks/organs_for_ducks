@@ -629,11 +629,9 @@ public class DonationTabPageController {
 
             } else {
                 disqualifyOrganReasonViewController.init(organ, currentUser, disqualifyOrganReasonStage, application.getUsername(), observableDisqualifiedOrgans, this);
-
             }
 
             disqualifyOrganReasonStage.setScene(new Scene(root));
-            disqualifyOrganReasonStage.setTitle("");
             disqualifyOrganReasonStage.initModality(Modality.APPLICATION_MODAL);
             disqualifyOrganReasonStage.show();
             updateDisqualifiedOrgan.setDisable(true);
@@ -662,7 +660,6 @@ public class DonationTabPageController {
             removeDisqualificationViewController.init(userDisqualifiedOrgansTable.getSelectionModel().getSelectedItem(), currentUser, removeDisqualifiedStage, observableDisqualifiedOrgans, this);
 
             removeDisqualifiedStage.setScene(new Scene(root));
-            removeDisqualifiedStage.setTitle("");
             removeDisqualifiedStage.initModality(Modality.APPLICATION_MODAL);
             removeDisqualifiedStage.show();
             refreshCurrentlyDonating();
