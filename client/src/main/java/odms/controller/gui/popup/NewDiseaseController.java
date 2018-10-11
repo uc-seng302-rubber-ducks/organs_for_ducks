@@ -60,9 +60,12 @@ public class NewDiseaseController {
         this.controller = controller;
         this.stage = stage;
         this.userController = userController;
+        stage.setResizable(false);
+        stage.setTitle("Create New Disease");
         currentUser = user;
         editableDisease = disease;
         if(disease != null) {
+            stage.setTitle("Update Disease");
             String diseaseName = disease.getName();
             LocalDate date = disease.getDiagnosisDate();
             boolean isCured = disease.getIsCured();
