@@ -51,7 +51,7 @@ public class CalendarWidgetFactory {
         CalendarSource appointmentCategories = new CalendarSource("Appointments");
 
         Calendar bloodTestCalendar = new Calendar(AppointmentCategory.BLOOD_TEST.toString());
-        bloodTestCalendar.setStyle(Calendar.Style.STYLE1);
+        bloodTestCalendar.setStyle(Calendar.Style.STYLE6);
 
         Calendar generalCheckUpCalendar = new Calendar(AppointmentCategory.GENERAL_CHECK_UP.toString());
         generalCheckUpCalendar.setStyle(Calendar.Style.STYLE2);
@@ -98,16 +98,31 @@ public class CalendarWidgetFactory {
         personal.addEventHandler(evt -> {
             if (evt.isEntryAdded()) {
                 if (!evt.getEntry().getProperties().containsKey(QUIET_MODE)) {
-                    AppController.getInstance().getAppointmentsBridge().postAppointment((Appointment) evt.getEntry().getUserObject());
+                    if (checkNoClashes(calendarView, evt.getEntry())) {
+                        AppController.getInstance().getAppointmentsBridge().postAppointment((Appointment) evt.getEntry().getUserObject());
+                    } else {
+                        AlertWindowFactory.generateError("Cannot generate an entry there as it clashes with another existing entry");
+                        evt.getEntry().getProperties().put(QUIET_MODE, true);
+                        evt.getEntry().getCalendar().removeEntry(evt.getEntry());
+                    }
                 } else {
                     evt.getEntry().getProperties().remove(QUIET_MODE);
                 }
             } else if (evt.isEntryRemoved()) {
-                AppController.getInstance().getAppointmentsBridge().deleteAppointment((Appointment) evt.getEntry().getUserObject());
+                if (!evt.getEntry().getProperties().containsKey(QUIET_MODE)) {
+                    AppController.getInstance().getAppointmentsBridge().deleteAppointment((Appointment) evt.getEntry().getUserObject());
+                } else {
+                    evt.getEntry().getProperties().remove(QUIET_MODE);
+                }
             } else if (evt.getOldInterval() != null) { // Only put if the times has changed
                 Entry<Appointment> entry = (Entry<Appointment>) evt.getEntry();
                 if (entry != null && !entry.getProperties().containsKey(QUIET_MODE)) {
-                    checkNoClashes(calendarView, entry, evt);
+                    if (checkNoClashes(calendarView, entry)) {
+                        entry.getProperties().put(QUIET_MODE, true);
+                        entry.setInterval(evt.getOldInterval());
+                        entry.getProperties().remove(QUIET_MODE);
+                        AlertWindowFactory.generateInfoWindow("You cannot move this there because it clashes with another existing entry");
+                    }
                     checkNotInPast(entry, evt);
                     if (!entry.getInterval().equals(evt.getOldInterval())) {
                         AppController.getInstance().getAppointmentsBridge().putAppointment(entry.getUserObject(), AppController.getInstance().getToken());
@@ -142,21 +157,20 @@ public class CalendarWidgetFactory {
      *
      * @param calendarView calendarview to check the entry against
      * @param entry        entry to check
-     * @param evt          The Calendar event that triggered the call
      */
-    private static void checkNoClashes(CalendarWidget calendarView, Entry entry, CalendarEvent evt) {
-        calendarView.getCalendarSources().forEach(cs -> cs.getCalendars().forEach(c -> {
-            for (List<Entry<?>> list : c.findEntries(entry.getStartDate(), entry.getEndDate(), entry.getZoneId()).values()) {
-                for (Entry<?> e : list) {
-                    if (entry.intersects(e) && !e.equals(entry)) {
-                        entry.getProperties().put(QUIET_MODE, true);
-                        entry.setInterval(evt.getOldInterval());
-                        entry.getProperties().remove(QUIET_MODE);
-                        AlertWindowFactory.generateInfoWindow("You cannot move this there because it clashes with another existing entry");
+    private static boolean checkNoClashes(CalendarWidget calendarView, Entry entry) {
+        for (CalendarSource cs : calendarView.getCalendarSources()) {
+            for (Calendar c : cs.getCalendars()) {
+                for (List<Entry<?>> list : c.findEntries(entry.getStartDate(), entry.getEndDate(), entry.getZoneId()).values()) {
+                    for (Entry<?> e : list) {
+                        if (entry.intersects(e) && !e.equals(entry)) {
+                            return false;
+                        }
                     }
                 }
             }
-        }));
+        }
+        return true;
     }
 
     /**
