@@ -99,7 +99,12 @@ public class CalendarWidgetFactory {
             if (evt.isEntryAdded()) {
                 if (!evt.getEntry().getProperties().containsKey(QUIET_MODE)) {
                     if (checkNoClashes(calendarView, evt.getEntry())) {
-                        AppController.getInstance().getAppointmentsBridge().postAppointment((Appointment) evt.getEntry().getUserObject());
+                        if (checkNotInPast((Entry<Appointment>) evt.getEntry(), evt)) {
+                            AppController.getInstance().getAppointmentsBridge().postAppointment((Appointment) evt.getEntry().getUserObject());
+                        } else {
+                            evt.getEntry().getProperties().put(QUIET_MODE, true);
+                            evt.getEntry().getCalendar().removeEntry(evt.getEntry());
+                        }
                     } else {
                         AlertWindowFactory.generateError("Cannot generate an entry there as it clashes with another existing entry");
                         evt.getEntry().getProperties().put(QUIET_MODE, true);
@@ -137,18 +142,23 @@ public class CalendarWidgetFactory {
      *
      * @param entry entry to be checked
      */
-    private static void checkNotInPast(Entry<Appointment> entry, CalendarEvent event) {
+    private static boolean checkNotInPast(Entry<Appointment> entry, CalendarEvent event) {
         if (entry.getInterval().getStartDateTime().isBefore(LocalDateTime.now())) {
             entry.getProperties().put(QUIET_MODE, true);
-            entry.setInterval(event.getOldInterval());
+            if (event.getOldInterval() != null)
+                entry.setInterval(event.getOldInterval());
             entry.getProperties().remove(QUIET_MODE);
-            AlertWindowFactory.generateInfoWindow("Cannot move entries into the past");
+            AlertWindowFactory.generateInfoWindow("You cannot have entries in the past");
+            return false;
         } else if (entry.getInterval().getStartTime().isAfter(LocalTime.of(END_TIME, 0)) || entry.getInterval().getStartTime().isBefore(LocalTime.of(START_TIME, 0))) {
             entry.getProperties().put(QUIET_MODE, true);
-            entry.setInterval(event.getOldInterval());
+            if (event.getOldInterval() != null)
+                entry.setInterval(event.getOldInterval());
             entry.getProperties().remove(QUIET_MODE);
-            AlertWindowFactory.generateInfoWindow("Cannot move entries before the hours of 8am and 6 pm");
+            AlertWindowFactory.generateInfoWindow("You cannot have entries before the hours of 8am and 6 pm");
+            return false;
         }
+        return true;
     }
 
     /**
