@@ -57,6 +57,10 @@ public class MedicationTabController {
 
     @FXML
     private Label drugDetailsLabel;
+
+    @FXML
+    private Label medicationLabel;
+
     private AppController application;
     private ObservableList<String> currentMeds;
     private ObservableList<String> previousMeds;
@@ -85,6 +89,7 @@ public class MedicationTabController {
             deleteMedicationButton.setVisible(false);
             takeMedicationButton.setVisible(false);
             untakeMedicationButton.setVisible(false);
+            medicationLabel.setVisible(false);
         }
 
         currentMeds = FXCollections.observableArrayList();
