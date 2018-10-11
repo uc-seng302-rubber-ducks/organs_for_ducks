@@ -40,13 +40,16 @@
                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="851.0" minWidth="10.0" prefWidth="10.0" />
                             </columnConstraints>
                             <rowConstraints>
+                                <RowConstraints maxHeight="75.0" minHeight="50.0" prefHeight="55.0" vgrow="SOMETIMES"/>
                                 <RowConstraints maxHeight="75.0" minHeight="50.0" prefHeight="55.0" vgrow="SOMETIMES" />
                                 <RowConstraints maxHeight="301.0" minHeight="10.0" prefHeight="231.0" vgrow="SOMETIMES" />
                                 <RowConstraints maxHeight="362.0" minHeight="10.0" prefHeight="231.0" vgrow="SOMETIMES" />
                                 <RowConstraints maxHeight="486.0" minHeight="10.0" prefHeight="200.0" vgrow="SOMETIMES" />
                             </rowConstraints>
                             <children>
-                                <GridPane layoutX="128.0" layoutY="397.0" prefHeight="232.0" prefWidth="420.0" AnchorPane.leftAnchor="128.0" GridPane.columnIndex="3" GridPane.rowIndex="1" GridPane.rowSpan="2">
+                                <GridPane layoutX="128.0" layoutY="397.0" prefHeight="232.0" prefWidth="420.0"
+                                          AnchorPane.leftAnchor="128.0" GridPane.columnIndex="3" GridPane.rowIndex="2"
+                                          GridPane.rowSpan="2">
                                     <columnConstraints>
                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="204.0" minWidth="10.0" prefWidth="137.0" />
                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="290.0" minWidth="10.0" prefWidth="283.0" />
@@ -69,8 +72,7 @@
                                                 <Font size="18.0" />
                                             </font>
                                         </Label>
-                                        <Label fx:id="asdf" styleClass="label-title" text="Region:"
-                                               GridPane.rowIndex="2">
+                                        <Label fx:id="asdf" styleClass="label-title" text="Region:" GridPane.rowIndex="2">
                                             <font>
                                                 <Font size="18.0" />
                                             </font>
@@ -113,8 +115,8 @@
                                     </children>
                                 </GridPane>
                                 <Label layoutX="19.0" layoutY="343.0" styleClass="label-sub-title"
-                                       text="Work Address Details" GridPane.columnIndex="3"
-                                       GridPane.valignment="BOTTOM">
+                                       text="Work Address Details" underline="true" GridPane.columnIndex="3"
+                                       GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
                                     <font>
                                         <Font size="24.0" />
                                     </font>
@@ -123,8 +125,8 @@
                                     </GridPane.margin>
                                 </Label>
                                 <Label layoutX="19.0" layoutY="343.0" styleClass="label-sub-title"
-                                       text="Personal Details" AnchorPane.rightAnchor="479.0" GridPane.columnIndex="1"
-                                       GridPane.valignment="BOTTOM">
+                                       text="Personal Details" underline="true" AnchorPane.rightAnchor="479.0"
+                                       GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
                                     <font>
                                         <Font size="24.0" />
                                     </font>
@@ -132,12 +134,10 @@
                                         <Insets bottom="5.0" />
                                     </padding>
                                 </Label>
-                                <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.rowSpan="2">
+                                <GridPane GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.rowSpan="2">
                                     <columnConstraints>
-                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="359.0" minWidth="10.0"
-                                                           prefWidth="302.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="208.0" minWidth="10.0"
-                                                           prefWidth="162.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="359.0" minWidth="10.0" prefWidth="302.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="208.0" minWidth="10.0" prefWidth="162.0" />
                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="251.0" minWidth="10.0" prefWidth="245.0" />
                                     </columnConstraints>
                                     <rowConstraints>
@@ -148,9 +148,7 @@
                                         <RowConstraints maxHeight="245.0" minHeight="10.0" prefHeight="173.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
-                                        <ImageView fx:id="profileImage" fitHeight="267.0" fitWidth="267.0"
-                                                   pickOnBounds="true" preserveRatio="true" GridPane.rowSpan="2"
-                                                   GridPane.valignment="TOP"/>
+                                        <ImageView fx:id="profileImage" fitHeight="267.0" fitWidth="267.0" pickOnBounds="true" preserveRatio="true" GridPane.rowSpan="2" GridPane.valignment="TOP" />
                                         <Label styleClass="label-title" text="First Name:" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                             <font>
                                                 <Font size="18.0" />
@@ -193,7 +191,7 @@
                                         </Label>
                                     </children>
                                 </GridPane>
-                                <Separator prefWidth="200.0" GridPane.columnSpan="5" GridPane.valignment="BOTTOM" />
+                                <Label styleClass="label-main-title" text="Clinician Details" GridPane.columnIndex="1"/>
                             </children>
                         </GridPane>
                     </content>
@@ -236,6 +234,9 @@
                                                 <TableColumn prefWidth="75.0" text="C1" />
                                                 <TableColumn prefWidth="75.0" text="C2" />
                                             </columns>
+                                            <columnResizePolicy>
+                                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                            </columnResizePolicy>
                                         </CountableLoadingTableView>
                                         <Label fx:id="searchCountLabel" layoutX="14.0" layoutY="336.0" text="" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" />
                                         <HBox alignment="CENTER" layoutX="269.0" layoutY="244.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
@@ -272,22 +273,12 @@
                 <fx:include fx:id="statusBarPage" source="statusBar.fxml" />
             </children>
         </AnchorPane>
-      <Label layoutX="262.0" layoutY="6.0" text="Clinician" AnchorPane.leftAnchor="262.0" AnchorPane.rightAnchor="272.0">
-          <font>
-              <Font size="20.0" />
-          </font>
-      </Label>
-        <Button onAction="#save" styleClass="button-secondary, save-button" text="" AnchorPane.rightAnchor="70.0"
-                AnchorPane.topAnchor="2.0">
+        <Button layoutX="1080.0" layoutY="5.0" onAction="#save" styleClass="button-secondary, save-button" text="" AnchorPane.rightAnchor="90.0" AnchorPane.topAnchor="5.0">
             <tooltip>
-                <Tooltip text="Save"/>
+                <Tooltip text="Save" />
             </tooltip>
         </Button>
-        <Button fx:id="undoButton" layoutX="481.0" layoutY="5.0" mnemonicParsing="false" onAction="#undo"
-                styleClass="button-secondary, undo-button" text="Undo" AnchorPane.rightAnchor="38.0"
-                AnchorPane.topAnchor="5.0"/>
-        <Button fx:id="redoButton" layoutX="545.0" layoutY="5.0" mnemonicParsing="false" onAction="#redo"
-                styleClass="button-secondary, redo-button" text="Redo" AnchorPane.rightAnchor="6.0"
-                AnchorPane.topAnchor="5.0"/>
+        <Button fx:id="undoButton" layoutX="480.0" layoutY="5.0" mnemonicParsing="false" onAction="#undo" styleClass="button-secondary, undo-button" text="Undo" AnchorPane.rightAnchor="38.0" AnchorPane.topAnchor="5.0" />
+        <Button fx:id="redoButton" layoutX="545.0" layoutY="5.0" mnemonicParsing="false" onAction="#redo" styleClass="button-secondary, redo-button" text="Redo" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="5.0" />
     </children>
 </AnchorPane>
