@@ -59,6 +59,6 @@
             </HBox>
          </children>
       </GridPane>
-        <Label fx:id="notReceiverLabel" alignment="TOP_CENTER" layoutX="273.0" layoutY="272.0" prefHeight="15.0" prefWidth="304.0" text="You are currently not registered as Receiver" textAlignment="CENTER" visible="false" />
+        <Label fx:id="notReceiverLabel" alignment="TOP_CENTER" layoutX="500.0" layoutY="272.0" prefHeight="15.0" prefWidth="304.0" text="You are currently not registered as Receiver" textAlignment="CENTER" visible="false" AnchorPane.leftAnchor="450.0" AnchorPane.rightAnchor="446.0" />
     </children>
 </AnchorPane>

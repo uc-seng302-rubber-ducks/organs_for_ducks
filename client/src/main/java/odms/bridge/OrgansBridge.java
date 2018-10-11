@@ -10,7 +10,7 @@ import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.utils.Log;
 import odms.commons.utils.OrganSorter;
 import odms.controller.AppController;
-import odms.controller.gui.widget.LoadingWidget;
+import odms.controller.gui.widget.CountableLoadingWidget;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -33,7 +33,7 @@ public class OrgansBridge extends Bifrost {
      * @param observableList observable list to populate.
      * @param widget widget to stop loading if the call is finished
      */
-    public void getAvailableOrgansList(int startIndex, int count, String organ, String region, String bloodType, String city, String country, ObservableList<AvailableOrganDetail> observableList, LoadingWidget widget) {
+    public void getAvailableOrgansList(int startIndex, int count, String organ, String region, String bloodType, String city, String country, ObservableList<AvailableOrganDetail> observableList, CountableLoadingWidget widget) {
         StringBuilder url = new StringBuilder(ip);
         url.append("/availableOrgans?count=").append(count);
         url.append("&startIndex=").append(startIndex);
@@ -99,7 +99,7 @@ public class OrgansBridge extends Bifrost {
      * @param widget widget to stop loading if the call is finished
      */
     public void getMatchingOrgansList(int startIndex, int count, String donorNhi, AvailableOrganDetail organToDonate,
-                                      ObservableList<TransplantDetails> observableList, LoadingWidget widget) {
+                                      ObservableList<TransplantDetails> observableList, CountableLoadingWidget widget) {
         String url = ip + "/matchingOrgans?" +
                 "count=" + count +
                 "&organ=" + organToDonate.getOrgan().toString() +

@@ -8,7 +8,6 @@ import java.time.LocalDate;
  * a class that holds all
  * details related to transplant.
  *
- * @author acb116
  */
 public class TransplantDetails {
     private String bloodType;

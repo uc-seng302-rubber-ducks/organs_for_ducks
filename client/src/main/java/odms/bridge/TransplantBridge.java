@@ -8,7 +8,7 @@ import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
-import odms.controller.gui.widget.LoadingWidget;
+import odms.controller.gui.widget.CountableLoadingWidget;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -24,15 +24,15 @@ public class TransplantBridge extends Bifrost {
     /**
      * sends a request to the /transplantList endpoint with filters as set up below. Results are passed out via the callback
      *
-     * @param startIndex number of entries to skip (for pagination)
-     * @param count      number of results to return
-     * @param name       name (or partial name) to search by
-     * @param region     region to search by
-     * @param organs     only return results for the selected organs
+     * @param startIndex     number of entries to skip (for pagination)
+     * @param count          number of results to return
+     * @param name           name (or partial name) to search by
+     * @param region         region to search by
+     * @param organs         only return results for the selected organs
      * @param observableList observable list to populate when the call is successful
-     * @param widget widget to stop loading when the call is finished
+     * @param widget         widget to stop loading when the call is finished
      */
-    public void getWaitingList(int startIndex, int count, String name, String region, Collection<Organs> organs, ObservableList<TransplantDetails> observableList, LoadingWidget widget) {
+    public void getWaitingList(int startIndex, int count, String name, String region, Collection<Organs> organs, ObservableList<TransplantDetails> observableList, CountableLoadingWidget widget) {
         StringBuilder url = new StringBuilder(ip);
         url.append("/transplantList?count=").append(count);
         url.append("&startIndex=").append(startIndex);
@@ -53,6 +53,10 @@ public class TransplantBridge extends Bifrost {
         Request request = new Request.Builder().get()
                 .header(tokenHeader, AppController.getInstance().getToken())
                 .url(url.toString()).build();
+
+        if (widget != null) {
+            widget.setWaiting(true);
+        }
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -66,10 +70,14 @@ public class TransplantBridge extends Bifrost {
                 }
 
                 List<TransplantDetails> transplantDetails = handler.decodeTransplantList(response);
+
+                observableList.clear();
                 observableList.addAll(transplantDetails);
-                if (widget != null) {
-                    Platform.runLater(() -> widget.setWaiting(false));
-                }
+                Platform.runLater(() -> {
+                    if (widget != null) {
+                        widget.setWaiting(false);
+                    }
+                });
             }
         });
     }

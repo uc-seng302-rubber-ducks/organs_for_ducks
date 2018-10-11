@@ -20,7 +20,7 @@ import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.controller.gui.popup.view.RejectAppointmentReasonViewController;
-import odms.controller.gui.widget.LoadingWidget;
+import odms.controller.gui.widget.CountableLoadingWidget;
 import odms.socket.ServerEventNotifier;
 import utils.StageIconLoader;
 
@@ -44,7 +44,7 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
     private ObservableSet<LocalDateTime> bookedDateTimes;
     private ObservableSet<LocalTime> bookedTimes;
     private Set<LocalTime> TIMES = new HashSet<>(Arrays.asList(LocalTime.of(8,0),LocalTime.of(9,0),LocalTime.of(10,0),LocalTime.of(11,0),LocalTime.of(12,0),LocalTime.of(13,0),LocalTime.of(14,0),LocalTime.of(15,0),LocalTime.of(16,0),LocalTime.of(17,0)));
-    private LoadingWidget loadingWidget;
+    private CountableLoadingWidget countableLoadingWidget;
 
 
     /**
@@ -56,8 +56,8 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
      * @param availableTimes       list of times when the clinician is available
      * @param tableView widget to stop loading when any call has finished
      */
-    public ClinicianAppointmentRequestLogicController(ObservableList<Appointment> availableAppointment, AppController controller, Clinician clinician, ObservableList<LocalTime> availableTimes, LoadingWidget tableView) {
-        this.loadingWidget = tableView;
+    public ClinicianAppointmentRequestLogicController(ObservableList<Appointment> availableAppointment, AppController controller, Clinician clinician, ObservableList<LocalTime> availableTimes, CountableLoadingWidget tableView) {
+        this.countableLoadingWidget = tableView;
         this.availableAppointments = availableAppointment;
         this.appController = controller;
         this.clinician = clinician;
@@ -73,8 +73,8 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
      */
     public void updateTable(int startIndex) {
         availableAppointments.clear();
-        if (loadingWidget != null) {
-            loadingWidget.setWaiting(true);
+        if (countableLoadingWidget != null) {
+            countableLoadingWidget.setWaiting(true);
         }
         appController.getAppointmentsBridge().getClinicianAppointments(startIndex, ROWS_PER_PAGE, clinician.getStaffId(), appController.getToken(), availableAppointments);
     }

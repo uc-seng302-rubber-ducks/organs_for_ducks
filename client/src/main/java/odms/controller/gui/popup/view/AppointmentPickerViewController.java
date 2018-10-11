@@ -40,6 +40,8 @@ public class AppointmentPickerViewController {
      * @param stage         The applications stage.
      */
     public void init(User user, Stage stage) {
+        stage.setResizable(false);
+        stage.setTitle("New Appointment");
         this.logicController = new AppointmentPickerLogicController(user, stage);
         appointmentBookingTypeInput.getItems().addAll(AppointmentCategory.values());
         appointmentBookingTypeInput.getItems().remove(AppointmentCategory.PERSONAL); //Only clinicians can use this category

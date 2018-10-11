@@ -49,7 +49,7 @@ import odms.controller.gui.popup.AlertUnclosedWindowsController;
 import odms.controller.gui.popup.CountrySelectionController;
 import odms.controller.gui.popup.DeletedUserController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
-import odms.controller.gui.widget.LoadingTableView;
+import odms.controller.gui.widget.CountableLoadingTableView;
 import odms.socket.ServerEventNotifier;
 import odms.view.CLI;
 import utils.StageIconLoader;
@@ -78,17 +78,17 @@ public class AdministratorViewController implements PropertyChangeListener, User
     private static final String ERROR = "error";
     public static final String FAILED_TO_GET_USER_OVERVIEWS_FROM_SERVER = "failed to get user overviews from server";
     @FXML
-    private LoadingTableView<UserOverview> userTableView;
+    private CountableLoadingTableView<UserOverview> userTableView;
     @FXML
     private Label adminLastNameLabel;
     @FXML
     private CheckBox allCheckBox;
     @FXML
-    private LoadingTableView<Clinician> clinicianTableView;
+    private CountableLoadingTableView<Clinician> clinicianTableView;
     @FXML
     private TextField cliInputTextField;
     @FXML
-    private LoadingTableView<Administrator> adminTableView;
+    private CountableLoadingTableView<Administrator> adminTableView;
     @FXML
     private TextArea adminCliTextArea;
     @FXML
@@ -204,6 +204,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
         adminCliTextArea.setEditable(false);
         adminCliTextArea.setFont(Font.font("DialogInput"));
         adminCliTextArea.setFocusTraversable(false);
+        adminCliTextArea.setText("Welcome to the Command Line.\nEnter your command or type 'help' for help.\n");
         cliInputTextField.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
                 sendInputToCLI();
@@ -491,7 +492,6 @@ public class AdministratorViewController implements PropertyChangeListener, User
         String filename = fileSelectorController.getFileSelector(stage, extensions);
         if (filename == null) {
             Log.warning(FILE_NAME_NOT_FOUND);
-            fileNotFoundLabel.setVisible(true);
             return;
         }
         importRoleJson(Administrator.class, filename);
@@ -510,7 +510,6 @@ public class AdministratorViewController implements PropertyChangeListener, User
         String filename = fileSelectorController.getFileSelector(stage, extensions);
         if (filename == null) {
             Log.warning(FILE_NAME_NOT_FOUND);
-            fileNotFoundLabel.setVisible(true);
             return;
         }
         Log.info(messageAdmin + administrator.getUserName() + " Importing Clinician profiles");
@@ -529,7 +528,6 @@ public class AdministratorViewController implements PropertyChangeListener, User
         String filename = fileSelectorController.getFileSelector(stage, extensions);
         if (filename == null) {
             Log.warning(FILE_NAME_NOT_FOUND);
-            fileNotFoundLabel.setVisible(true);
             return;
         }
         Log.info(messageAdmin + administrator.getUserName() + " Importing User profiles");
@@ -1013,6 +1011,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
             newStage = stageIconLoader.addStageIcon(newStage);
             newStage.show();
             stage.close();
+            ServerEventNotifier.getInstance().removePropertyChangeListener(this);
             LoginController loginController = loginLoader.getController();
             loginController.init(appController, newStage);
             Log.info(messageAdmin + administrator.getUserName() + " Successfully launched Login window after logout");
@@ -1133,6 +1132,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
                 logout();
             } else {
                 stage.close();
+                ServerEventNotifier.getInstance().removePropertyChangeListener(this);
             }
         }
     }
