@@ -83,7 +83,7 @@
                                            AnchorPane.leftAnchor="36.0" AnchorPane.rightAnchor="33.0"
                                            AnchorPane.topAnchor="50.0">
                     <columns>
-                        <TableColumn fx:id="clinicianAppointmentUserIdColumn" prefWidth="75.0" text="NHI"/>
+                        <TableColumn fx:id="clinicianAppointmentUserIdColumn" prefWidth="75.0" text="Title"/>
                         <TableColumn fx:id="clinicianAppointmentStatusColumn" prefWidth="183.0" text="Status"/>
                         <TableColumn fx:id="clinicianAppointmentDateColumn" prefWidth="182.0" text="Date/Time"/>
                         <TableColumn fx:id="clinicianAppointmentCategoryColumn" prefWidth="121.0" text="Category"/>

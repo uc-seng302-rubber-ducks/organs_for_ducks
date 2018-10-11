@@ -181,7 +181,13 @@ public class ClinicianAppointmentRequestViewController implements Converter {
      * Changes the default sorting order to sort by the appointment status
      */
     private void initAppointmentTable() {
-        clinicianAppointmentUserIdColumn.setCellValueFactory(new PropertyValueFactory<>("requestingUserId"));
+        clinicianAppointmentUserIdColumn.setCellValueFactory(param -> {
+            if (param.getValue().getRequestingUserId() == null) {
+                return new SimpleStringProperty(param.getValue().getTitle());
+            } else {
+                return new SimpleStringProperty(param.getValue().getRequestingUserId());
+            }
+        });
         clinicianAppointmentStatusColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentStatus"));
         clinicianAppointmentDateColumn.setCellValueFactory(foo -> new SimpleStringProperty(foo.getValue().getRequestedDate().format(formatter)));
         clinicianAppointmentCategoryColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentCategory"));
