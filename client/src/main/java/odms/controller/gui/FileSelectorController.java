@@ -23,8 +23,6 @@ public class FileSelectorController {
      * @return the file path of the file
      */
     public String getFileSelector(final Stage stage, Collection<String> extensions) {
-        stage.setTitle("File Selector");
-
         FileChooser fileChooser = new FileChooser();
         configureFileChooser(fileChooser, extensions);
         File file = fileChooser.showOpenDialog(stage);

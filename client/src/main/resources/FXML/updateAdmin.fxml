@@ -3,9 +3,9 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<AnchorPane prefHeight="453.0" prefWidth="694.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.UpdateAdminController">
+<AnchorPane prefHeight="453.0" prefWidth="694.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.UpdateAdminController">
     <children>
-        <TabPane layoutY="43.0" prefHeight="409.0" prefWidth="694.0" tabClosingPolicy="UNAVAILABLE">
+        <TabPane layoutY="43.0" prefHeight="409.0" prefWidth="700.0" tabClosingPolicy="UNAVAILABLE">
             <tabs>
                 <Tab text="Admin Details">
                     <content>
@@ -78,7 +78,7 @@
                 </Tab>
             </tabs>
         </TabPane>
-        <Label fx:id="adminDetailInputTitle" layoutX="9.0" layoutY="11.0" styleClass="label-sub-title" stylesheets="@../gui.css" text="Update Admin" />
+        <Label fx:id="adminDetailInputTitle" layoutX="9.0" layoutY="11.0" styleClass="label-main-title" stylesheets="@../gui.css" text="Update Admin" />
         <Label fx:id="adminGenericErrorLabel" layoutX="86.0" layoutY="417.0" styleClass="label-error" text="There is an error in the fields. Please double check your inputs" visible="false" />
     </children>
 </AnchorPane>
