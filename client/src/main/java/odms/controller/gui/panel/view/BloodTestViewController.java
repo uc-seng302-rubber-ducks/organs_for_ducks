@@ -294,6 +294,7 @@ public class BloodTestViewController implements CountableLoadingWidget {
         timeRangeAxis.setAutoRanging(false);
         timeRangeAxis.setCategories(timeRangeCategory);
         bloodTestGraph.setLegendVisible(false);
+        bloodTestGraph.setCreateSymbols(false);
         changeLabels();
 
         final ToggleGroup toggleGroup = new ToggleGroup();
