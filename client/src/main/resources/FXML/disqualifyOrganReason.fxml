@@ -4,9 +4,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="475.0" prefWidth="370.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.popup.view.DisqualifyOrganReasonViewController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="475.0" prefWidth="370.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.popup.view.DisqualifyOrganReasonViewController">
     <children>
-        <GridPane layoutX="30.0" layoutY="7.0" prefHeight="418.0" prefWidth="303.0" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="7.0">
+        <GridPane layoutX="30.0" layoutY="44.0" prefHeight="406.0" prefWidth="310.0" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="44.0">
             <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="143.0" minWidth="10.0" prefWidth="118.0" />
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="163.0" />
@@ -53,5 +53,6 @@
                 </Label>
             </children>
         </GridPane>
+      <Label layoutX="30.0" layoutY="17.0" styleClass="label-sub-title" text="Disqualify Organ Reason" />
     </children>
 </AnchorPane>
